@@ -6,15 +6,204 @@ can be used for the presentation of the view to the site user, as well as
 being parsed out by machines - typically by JavaScript in your page to build
 up the data model for your client code.
 
-This saves duplication of data and AJAX round-trip on first page load, and
-means you have SEO-friendly data in your pages.
+This saves duplication of data and/or an AJAX round-trip on first page load,
+and means you have SEO-friendly data in your pages.
 
 
 Overview
 ========
 
+The basic premise of this specification is to use microformat-like techniques
+to embed data in your HTML output that will be used by your scripting code
+(JavaScript).
+
+By using certain CSS classes in combination with regular HTML tags, you can
+embed data that the user sees immediately on page load that is also then used
+by the scripted code also. Your client-side data model becomes part of the
+page.
+
+Take a simple example: a page that displays a list of books, their titles and
+authors - and you want the user to be able to edit and update this using
+JavaScript.
+
+With HORN you can have this HTML page render correctly without any Javascript
+running, but when JavaScript does run, it has access to the array of books and
+their fields - simply by calling a HORN function on page load.
+
+This approach decouples your JavaScript from the HTML layout of the page, as
+your code is not searching for DOM nodes in specific places to extract the
+information it needs.
+
+Different data types can be parsed out of the HTML as required, with
+declarative support for this in the reference implementation.
+
+See the [REFERENCE IMPLEMENTATION EXAMPLE HTML PAGE] for a working example.
+
 
 Weaving data into your content
 ==============================
+
+HORN 1.0 uses css classes to identify nodes that contain data.
+
+There are a few different ways to inline your data:
+
+* Literal text seen by the user and extracted as data 
+* Literal text seen by the user with an alternative data format extracted as data 
+* Literal JSON data objects 
+
+To define data for the model, you need to have a name for it. All data is a
+property of a named object.
+
+You do this by defining a CSS class on a DOM element that defines the object
+name, and adding the class "data". Whenever you add the "data" class do a tag
+in your HTML, you are defining a new, possibly nested, data object:
+
+<div class="data _book">
+</div>
+
+This HTML indicates that data for the "book" object will be defined within
+this div and its descendent nodes. The underscore prefix indicates to HORN
+that this is the name (minus the underscore) of your object.
+
+So now we need to add the title and authors information:
+
+<div class="data _book">
+	<h1 class="_title">Presentation Zen</h1>
+	<p>by <span class="_authors">Garr Reynolds</span>.</p>
+</div>
+
+By using _title and _authors as classes, this is defining HORN properties
+"book.title" and "book.authors".
+
+Notice that the descendent text nodes of the tag with the underscore class
+applied are used as the value. So after applying the reference JavaScript
+implementation of HORN we would end up with the equivalent of this data object
+accessible to our code:
+
+{ 'book': { 'title':'Presentation Zen', 'authors':'Garr Reynolds' } }
+
+Of course the most important part here is that this is also immediately
+viewable by the user even without JS code loaded or running, and indexable by
+search engines.
+
+Now let's say we want to show the genre, but internally this genre is
+represented by a code or unique id - we use the HTML <abbr> tag:
+
+<div class="data _book">
+	<h1 class="_title">Presentation Zen</h1>
+	<p>
+		by <span class="_authors">Garr Reynolds</span> 
+		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>.
+	</p>
+</div>
+
+This is declaring that while the display value of the genre is "Business", the
+value to put into "book.genre" is "GENRE_BUSINESS".
+
+Next let's add the publication date. However for the sake of usability we may
+be showing a relative date to the user, but we still need the full date object in code:
+
+<div class="data _book">
+	<h1 class="_title">Presentation Zen</h1>
+	<p>
+		Written by <span class="_authors">Garr Reynolds</span> 
+		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+		published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+	</p>
+</div>
+
+Here, you will typically want the parser implementation to convert the date
+string into a native JavaScript date. For the HORN 1.0 reference
+implementation you can do this using meta tags in the <head> section of your page:
+
+<meta name="typeof book.*date" content="Date"/>
+
+This says that any property ending with "date" will be parsed as a Date, one
+of the built-in parser type transformations. This lets you build up your model
+with native JavaScript types so that it isn't just an object with string
+property values.
+
+Now we might also need to add some unique id information so that we can tally
+up this object to the book in the database during AJAX calls. For this we use data-json:
+
+<div class="data _book">
+	<p class="data-json hidden">{ 'id':384855 }</p>
+	<h1 class="_title">Presentation Zen</h1>
+	<p>
+		Written by <span class="_authors">Garr Reynolds</span> 
+		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+		published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+	</p>
+</div>
+
+Now this isn't something we necessarily want the user to see, so we may apply
+a "hidden" CSS class to the content (this is not defined as part of the specification).
+
+What this does is tell your HORN parser that the text nodes inside the <p> tag
+with "data-json" are to be merged with the "current" object. Current object
+means the object named by the nearest element with the "data" class in DOM
+ancestry terms.
+
+So with all the above, we'd end up with the equivalent of this JSON data model:
+
+{ 'book': 
+	{ 
+		'title': 'Presentation Zen', 
+		'authors': 'Garr Reynolds',
+		'genre': 'GENRE_BUSINESS',
+		'publishDate': new Date(234857489357),
+		'id': 384855,
+	} 
+}
+
+Complex data: nesting and collections
+=====================================
+
+HORN fully supports object graphs and arrays.
+
+To specify that an element is part of an array, you simply suffix the CSS
+class that defines the property name, with a hypen and index number:
+
+<div class="data _books-0">
+	<p class="data-json hidden">{ 'id':384855 }</p>
+	<h1 class="_title">Presentation Zen</h1>
+	<p>
+		Written by <span class="_authors">Garr Reynolds</span> 
+		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+		published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+	</p>
+</div>
+
+<div class="data _books-1">
+	<p class="data-json hidden">{ 'id':384855 }</p>
+	<h1 class="_title">Reality Check</h1>
+	<p>
+		Written by <span class="_authors">Guy Kawasaki</span> 
+		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+		published <abbr class="_publishDate" title="13/10/2010">last year</abbr>.
+	</p>
+</div>
+
+The above defines a "books" property in the model that will have two elements, 0 and 1.
+
+The HORN parser must extract this and automatically collate these into an array for you.
+
+To nest objects, for example a publisher information object, you simply nest
+nodes with "data" class and property names:
+
+<div class="data _books-0">
+	<p class="data-json hidden">{ 'id':384855 }</p>
+	<h1 class="_title">Presentation Zen</h1>
+	<p>
+		Written by <span class="_authors">Garr Reynolds</span> 
+		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+		published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+	</p>
+	<div class="data _publisher">
+		<h2 class="_name">New Riders</h2>
+	</div>
+</div>
+
+This defines "books[0].publisher.name" as "New Riders."
 
 
