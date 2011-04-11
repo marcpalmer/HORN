@@ -1,0 +1,23 @@
+.title {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.detail {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 1.2em;
+}
+
+.addressPanel {
+    background-color: #f9e3d2;
+    border: 1px solid #e36d39;
+}
+
+.dateValue,
+.stringValue,
+.booleanValue,
+.integerValue {
+    border: 1px solid red;
+    background-color: pink;
+}
