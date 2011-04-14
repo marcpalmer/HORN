@@ -239,7 +239,8 @@ test(
                 ok( horn.valueNodes === undefined);
             },
             $('<meta name="typeof key" content="HornIntegerConverter" />'),
-            false);
+            false,
+            true);
     });
 
 test(
@@ -252,6 +253,7 @@ test(
                 ok( horn.valueNodes.hasOwnProperty( '-key'));
             },
             $('<meta name="typeof key" content="HornIntegerConverter" />'),
+            true,
             true);
     });
 
@@ -689,33 +691,29 @@ test(
 test(
     "coerceValue() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
-        var node = $('<meta name="typeof .*" content="HornIntegerConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.parse();
-
-            var hornKey = "_hornKey";
-            ok( horn.coerceValue( "1", hornKey, false) === 1);
-        } finally {
-            node.remove();
-        }
+        dataTest(
+            null,
+            null,
+            function( data, horn ) {
+                ok( horn.coerceValue( "1", "_hornKey", false) === 1);
+            },
+            $('<meta name="typeof .*" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
     "coerceValue() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
-        var node = $('<meta name="typeof .*" content="HornIntegerConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.parse();
-
-            var hornKey = "_hornKey";
-            ok( horn.coerceValue( "-1", hornKey, false) === -1);
-        } finally {
-            node.remove();
-        }
+        dataTest(
+            null,
+            null,
+            function( data, horn ) {
+                ok( horn.coerceValue( "-1", "_hornKey", false) === -1);
+            },
+            $('<meta name="typeof .*" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -736,41 +734,40 @@ test(
 test(
     "coerceValue() - that dates are coerced and parsed correctly.",
     function() {
-        var node = $('<meta name="typeof .*date.*" content="HornDateConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.parse();
+        dataTest(
+            null,
+            null,
+            function( data, horn ) {
+                var coercedValue = horn.coerceValue( "2011-04-01", "_ourdate", false);
+                ok( coercedValue.constructor.toString().indexOf( 'Date') > 0);
 
-            var coercedValue = horn.coerceValue( "2011-04-01", "_ourdate", false);
-            ok( coercedValue.constructor.toString().indexOf( 'Date') > 0);
+                ok( coercedValue.getFullYear() === 2011);
+                ok( coercedValue.getMonth() === 3);
+                ok( coercedValue.getDate() === 1);
+            },
+            $('<meta name="typeof .*date.*" content="HornDateConverter" />'),
+            false,
+            true);
 
-            ok( coercedValue.getFullYear() === 2011);
-            ok( coercedValue.getMonth() === 3);
-            ok( coercedValue.getDate() === 1);
-        } finally {
-            node.remove();
-        }
     });
 
 test(
     "coerceValue() - that boolean values are coerced and parsed correctly.",
     function() {
-        var node = $('<meta name="typeof .*truth.*" content="HornBooleanConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.parse();
-
-            ok( horn.coerceValue( "true",   "_ourtruth", false) === true);
-            ok( horn.coerceValue( "tRuE",   "_ourtruth", false) === true);
-            ok( horn.coerceValue( "TRUE",   "_ourtruth", false) === true);
-            ok( horn.coerceValue( "false",  "_ourtruth", false) === false);
-            ok( horn.coerceValue( "FaLsE",  "_ourtruth", false) === false);
-            ok( horn.coerceValue( "FALSE",  "_ourtruth", false) === false);
-        } finally {
-            node.remove();
-        }
+        dataTest(
+            null,
+            null,
+            function( data, horn ) {
+                ok( horn.coerceValue( "true",   "_ourtruth", false) === true);
+                ok( horn.coerceValue( "tRuE",   "_ourtruth", false) === true);
+                ok( horn.coerceValue( "TRUE",   "_ourtruth", false) === true);
+                ok( horn.coerceValue( "false",  "_ourtruth", false) === false);
+                ok( horn.coerceValue( "FaLsE",  "_ourtruth", false) === false);
+                ok( horn.coerceValue( "FALSE",  "_ourtruth", false) === false);
+            },
+            $('<meta name="typeof .*truth.*" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 
@@ -877,7 +874,9 @@ test(
                 ok( data.length === 2);
                 ok( data[ 1] === 2);
             },
-            $('<meta name="typeof 1" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 1" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -890,7 +889,9 @@ test(
                 ok( data.length === 3);
                 ok( data[ 2] === true);
             },
-            $('<meta name="typeof 2" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 2" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -923,7 +924,9 @@ test(
 
                 ok( data[ 3][ 1] === 4);
             },
-            $('<meta name="typeof 3-1" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 3-1" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -940,7 +943,9 @@ test(
 
                 ok( data[ 3][ 2] === false);
             },
-            $('<meta name="typeof 3-2" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 3-2" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -979,7 +984,9 @@ test(
 
                 ok( data[ 3][ 3][ 1] === 6);
             },
-            $('<meta name="typeof 3-3-1" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 3-3-1" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -999,7 +1006,9 @@ test(
 
                 ok( data[ 3][ 3][ 2] === true);
             },
-            $('<meta name="typeof 3-3-2" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 3-3-2" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1034,7 +1043,9 @@ test(
                 ok( isObject( data[ 3][ 4]));
                 ok( data[ 3][ 4][ 'l'] === 8);
             },
-            $('<meta name="typeof 3-4-l" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 3-4-l" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1052,7 +1063,9 @@ test(
                 ok( isObject( data[ 3][ 4]));
                 ok( data[ 3][ 4][ 'm'] === false);
             },
-            $('<meta name="typeof 3-4-m" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 3-4-m" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1081,7 +1094,9 @@ test(
                 ok( isObject( data[ 4]));
                 ok( data[ 4][ 'g'] === 10);
             },
-            $('<meta name="typeof 4-g" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 4-g" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1096,7 +1111,9 @@ test(
                 ok( isObject( data[ 4]));
                 ok( data[ 4][ 'h'] === true);
             },
-            $('<meta name="typeof 4-h" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 4-h" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1133,7 +1150,9 @@ test(
 
                 ok( data[ 4][ 'i'][ 2] === 12);
             },
-            $('<meta name="typeof 4-i-2" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 4-i-2" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1152,7 +1171,9 @@ test(
 
                 ok( data[ 4][ 'i'][ 3] === false);
             },
-            $('<meta name="typeof 4-i-3" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 4-i-3" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1185,7 +1206,9 @@ test(
 
                 ok( data[ 4][ 'j'][ 'o'] === 14);
             },
-            $('<meta name="typeof 4-j-o" content="HornIntegerConverter" />'));
+            $('<meta name="typeof 4-j-o" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1202,7 +1225,9 @@ test(
 
                 ok( data[ 4][ 'j'][ 'p'] === true);
             },
-            $('<meta name="typeof 4-j-p" content="HornBooleanConverter" />'));
+            $('<meta name="typeof 4-j-p" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1225,7 +1250,9 @@ test(
                 ok( isObject( data));
                 ok( data.b === 2);
             },
-            $('<meta name="typeof b" content="HornIntegerConverter" />'));
+            $('<meta name="typeof b" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1252,7 +1279,9 @@ test(
                 ok( data.d.length === 2);
                 ok( data.d[ 1] === 4);
             },
-            $('<meta name="typeof d-1" content="HornIntegerConverter" />'));
+            $('<meta name="typeof d-1" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1266,7 +1295,9 @@ test(
                 ok( data.d.length === 3);
                 ok( data.d[ 2] === false);
             },
-            $('<meta name="typeof d-2" content="HornBooleanConverter" />'));
+            $('<meta name="typeof d-2" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1297,7 +1328,9 @@ test(
                 ok( data.d[3].length === 2);
                 ok( data.d[3][1] === 6);
             },
-            $('<meta name="typeof d-3-1" content="HornIntegerConverter" />'));
+            $('<meta name="typeof d-3-1" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1313,7 +1346,9 @@ test(
                 ok( data.d[3].length === 3);
                 ok( data.d[3][2] === true);
             },
-            $('<meta name="typeof d-3-2" content="HornBooleanConverter" />'));
+            $('<meta name="typeof d-3-2" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1348,7 +1383,9 @@ test(
 
                 ok( data.d[ 4].l === 8);
             },
-            $('<meta name="typeof d-4-l" content="HornIntegerConverter" />'));
+            $('<meta name="typeof d-4-l" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1366,7 +1403,9 @@ test(
 
                 ok( data.d[ 4].m === false);
             },
-            $('<meta name="typeof d-4-m" content="HornBooleanConverter" />'));
+            $('<meta name="typeof d-4-m" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1391,7 +1430,9 @@ test(
                 ok( isObject( data.e));
                 ok( data.e.g === 10);
             },
-            $('<meta name="typeof e-g" content="HornIntegerConverter" />'));
+            $('<meta name="typeof e-g" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1404,7 +1445,9 @@ test(
                 ok( isObject( data.e));
                 ok( data.e.h === true);
             },
-            $('<meta name="typeof e-h" content="HornBooleanConverter" />'));
+            $('<meta name="typeof e-h" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1434,7 +1477,9 @@ test(
                 ok( data.e.i.length === 3);
                 ok( data.e.i[ 2] === 12);
             },
-            $('<meta name="typeof e-i-2" content="HornIntegerConverter" />'));
+            $('<meta name="typeof e-i-2" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1450,7 +1495,9 @@ test(
                 ok( data.e.i[ 3] === false);
 
             },
-            $('<meta name="typeof e-i-3" content="HornBooleanConverter" />'));
+            $('<meta name="typeof e-i-3" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1479,7 +1526,9 @@ test(
                 ok( data.e.i.o === 14);
 
             },
-            $('<meta name="typeof e-i-o" content="HornIntegerConverter" />'));
+            $('<meta name="typeof e-i-o" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1493,7 +1542,9 @@ test(
                 ok( isObject( data.e.i));
                 ok( data.e.i.p === true);
             },
-            $('<meta name="typeof e-i-p" content="HornBooleanConverter" />'));
+            $('<meta name="typeof e-i-p" content="HornBooleanConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1505,7 +1556,9 @@ test(
                 ok( isObject( data));
                 ok( data.a === 16);
             },
-            $('<meta name="typeof a" content="HornIntegerConverter" />'));
+            $('<meta name="typeof a" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1517,7 +1570,9 @@ test(
                 ok( isObject( data));
                 ok( data.a === 52653656);
             },
-            $('<meta name="typeof a" content="HornIntegerConverter" />'));
+            $('<meta name="typeof a" content="HornIntegerConverter" />'),
+            false,
+            true);
     });
 
 test(
@@ -1528,7 +1583,9 @@ test(
             function( data) {
                 ok( data.a.b.c.d === -23);
           },
-          $('<meta name="typeof a-b-c-d" content="HornIntegerConverter" />'));
+          $('<meta name="typeof a-b-c-d" content="HornIntegerConverter" />'),
+            false,
+            true);
   });
 
 test(
@@ -1596,9 +1653,10 @@ test(
                 ok( data.key === -1);
                 data.key = 13;
                 horn.populate();
-                ok( $('._key').val() === '13');
+                ok( $('._key').text() === '13');
             },
             $('<meta name="typeof key" content="HornIntegerConverter" />'),
+            true,
             true);
     });
 

@@ -1,6 +1,3 @@
-/**
- *      caching of converter classes
- */
 function Horn() {
 
     this.CONST_HORN_TYPE_BOOLEAN                        = 'Boolean';
@@ -93,9 +90,10 @@ function Horn() {
                 modelValue = valueNode.context[ valueNode.key];
                 if ( modelValue !== valueNode.value ) {
                     typeOfPattern = this.firstPattern( key);
-                    newValue = (typeOfPattern !== null) ?
-                        (new window[ typeOfPattern.contentAttribute]()).toScreen( modelValue) :
-                        modelValue.toString();
+                    newValue = typeOfPattern !== null ?
+                        this.convert( modelValue,
+                            typeOfPattern.contentAttribute, false) :
+                                modelValue.toString();
 
                     if ( valueNode.node.nodeName.toLowerCase() === "abbr" ) {
                         valueNode.value = newValue;
@@ -111,17 +109,21 @@ function Horn() {
     };
 
     this.definesArgument = function( args, propertyName ) {
-        return (args !== undefined) && (args !== null) && (args.hasOwnProperty( propertyName));
+        return (args !== undefined) && (args !== null) &&
+            (args.hasOwnProperty( propertyName));
     };
 
     /**
      *
      */
     this.parse = function( args ) {
-
         this.cacheMetaElements();
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;
+
+        this.converters = this.definesArgument( args, 'converters') ?
+            args.converters : {};
+
         this.each(
             $("." + this.CONST_HORN_CSS_DATA),
             function( i, n ) {
@@ -258,11 +260,8 @@ function Horn() {
         }
         typeOfPattern = this.firstPattern( hornKey);
         if ( typeOfPattern !== null ) {
-            var converter = new window[ typeOfPattern.contentAttribute]();
-            return toScreen ? converter.toScreen( value, hornKey) :
-                converter.fromScreen( value, hornKey);
+            return this.convert( value, typeOfPattern.contentAttribute, !toScreen);
         }
-
         return null;
     };
 
@@ -288,7 +287,7 @@ function Horn() {
         if ( contained.length === 1 ) {
             theContained = contained[ 0];
             if ( theContained.nodeType === window.Node.TEXT_NODE ) {
-                return unescape( theContained.nodeValue);
+                return window.unescape( theContained.nodeValue);
             }
         }
 
@@ -307,12 +306,14 @@ function Horn() {
         var contents = $(node).contents();
         var isJSON = $(node).hasClass( this.CONST_HORN_CSS_DATA_JSON);
         if ( (contents.length === 1) && (isJSON || (this.isAdjustingKey( key))) ) {
-            fullKey = this.isAdjustingKey( key) ? (parentKey + this.CONST_HORN_CSS_DELIMITER + key) : parentKey;
+            fullKey = this.isAdjustingKey( key) ?
+                (parentKey + this.CONST_HORN_CSS_DELIMITER + key) :
+                parentKey;
             theContained = contents[0];
             isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
             isABBRNode = theContained.nodeName.toLowerCase() === "abbr";
             if ( isTextNode || isABBRNode ) {
-                text = isTextNode ? unescape( $(theContained).text()) :
+                text = isTextNode ? window.unescape( $(theContained).text()) :
                     $(theContained).attr('title');
                 typedValue = isJSON ? $.evalJSON( text) :
                     this.coerceValue( text, fullKey, false);
@@ -360,7 +361,6 @@ function Horn() {
                 this.visitNodes.call( this, n, hornKey);
             }
         }, this);
-
     };
 
     /**
@@ -375,5 +375,16 @@ function Horn() {
      */
     this.each = function( collection, fn, ctx ) {
         $.each( collection, this.bind( fn, ctx));
+    };
+
+    this.convert = function( value, converterName, fromScreen ) {
+        var cachedConverter = this.converters[ converterName];
+        if ( cachedConverter === undefined ) { return value.toString(); }
+        if ( typeof cachedConverter === 'function' ) {
+            cachedConverter = new this.converters[ converterName]();
+            this.converters[ converterName] = cachedConverter;
+        }
+        return fromScreen === false ? cachedConverter.toScreen( value) :
+            cachedConverter.fromScreen( value);
     };
 }

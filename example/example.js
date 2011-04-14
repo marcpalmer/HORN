@@ -102,7 +102,35 @@ $(document).ready(function() {
     var index;
     var converter;
     horn = new Horn();
-    var model = horn.parse({storeBackRefs: true});
+    var model = horn.parse({
+        storeBackRefs: true,
+        converters: {
+            IntegerConverter: function () {
+                this.toScreen = function( value, key, pattern ) {
+                    return value.toString();
+                }
+                this.fromScreen = function( value, key, pattern ) {
+                    return parseInt( value);
+                }
+            },
+            BooleanConverter: function () {
+                this.toScreen = function( value, key, pattern ) {
+                    return value ? "Yes" : "No";
+                }
+                this.fromScreen = function( value, key, pattern ) {
+                    return value.toLowerCase() === 'Yes';
+                }
+            },
+            DateConverter: function () {
+                this.toScreen = function( value, key, pattern ) {
+                    return $.datepicker.formatDate( "yy-mm-dd", value);
+                }
+                this.fromScreen = function( value, key, pattern ) {
+                    return $.datepicker.parseDate( "yy-mm-dd", value);
+                }
+            }
+        }
+    });
     $('#formattedOutput').html( render( model, 0));
     $('.dynamic').change( function( event ) {
         var binding = bindings[ $(this).attr('id')];
