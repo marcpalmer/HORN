@@ -116,7 +116,7 @@ $(document).ready(function() {
                     return value ? "Yes" : "No";
                 };
                 this.fromScreen = function( value, key, pattern ) {
-                    return value.toLowerCase() === 'Yes';
+                    return value.toLowerCase() === 'yes';
                 };
             },
             DateConverter: function () {
