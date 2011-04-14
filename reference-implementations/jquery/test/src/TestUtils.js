@@ -54,26 +54,26 @@ var dataTest = function( name, bodyNodes, dataCallback, headNodes, storeBackRefs
         if ( passConverters ) {
             opts.converters = {
                 HornIntegerConverter: function () {
-                    this.toScreen = function( value, key, pattern ) {
+                    this.toScreen = function( value ) {
                         return value.toString();
                     }
-                    this.fromScreen = function( value, key, pattern ) {
+                    this.fromScreen = function( value ) {
                         return parseInt( value);
                     }
                 },
                 HornBooleanConverter: function () {
-                    this.toScreen = function( value, key, pattern ) {
+                    this.toScreen = function( value ) {
                         return value + "";
                     }
-                    this.fromScreen = function( value, key, pattern ) {
+                    this.fromScreen = function( value ) {
                         return value.toLowerCase() === 'true';
                     }
                 },
                 HornDateConverter: function () {
-                    this.toScreen = function( value, key, pattern ) {
+                    this.toScreen = function( value ) {
                         return $.datepicker.formatDate( "yy-mm-dd", value);
                     }
-                    this.fromScreen = function( value, key, pattern ) {
+                    this.fromScreen = function( value ) {
                         return $.datepicker.parseDate( "yy-mm-dd", value);
                     }
                 }

@@ -96,10 +96,10 @@ function Horn() {
                                 modelValue.toString();
 
                     if ( valueNode.node.nodeName.toLowerCase() === "abbr" ) {
-                        valueNode.value = newValue;
+                        valueNode.value = modelValue;
                         $(valueNode.node).attr('title', newValue);
                     } else {
-                        valueNode.value = newValue;
+                        valueNode.value = modelValue;
                         $(valueNode.node).text( newValue);
                     }
 
@@ -384,7 +384,7 @@ function Horn() {
             cachedConverter = new this.converters[ converterName]();
             this.converters[ converterName] = cachedConverter;
         }
-        return fromScreen === false ? cachedConverter.toScreen( value) :
-            cachedConverter.fromScreen( value);
+        return fromScreen ? cachedConverter.fromScreen( value) :
+            cachedConverter.toScreen( value);
     };
 }

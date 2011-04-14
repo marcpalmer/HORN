@@ -90,6 +90,9 @@ var render = function ( object, ind, parent, pk ) {
         if ( type !== undefined ) {
             i = makeID();
             bindings[ i] = {parent: parent, pk: pk, type: type};
+            if ( type === 'booleanValue' ) {
+                object = (object ? "Yes" : "No");
+            } else
             if ( type === 'dateValue' ) {
                 object = $.datepicker.formatDate( "d MM yy", object);
             }
@@ -104,26 +107,26 @@ $(document).ready(function() {
         storeBackRefs: true,
         converters: {
             IntegerConverter: function () {
-                this.toScreen = function( value, key, pattern ) {
+                this.toScreen = function( value ) {
                     return value.toString();
                 };
-                this.fromScreen = function( value, key, pattern ) {
+                this.fromScreen = function( value ) {
                     return parseInt( value);
                 };
             },
             BooleanConverter: function () {
-                this.toScreen = function( value, key, pattern ) {
+                this.toScreen = function( value ) {
                     return value ? "Yes" : "No";
                 };
-                this.fromScreen = function( value, key, pattern ) {
-                    return value.toLowerCase() === 'yes';
+                this.fromScreen = function( value ) {
+                    return value.toLowerCase() == 'yes';
                 };
             },
             DateConverter: function () {
-                this.toScreen = function( value, key, pattern ) {
+                this.toScreen = function( value ) {
                     return $.datepicker.formatDate( "d MM yy", value);
                 };
-                this.fromScreen = function( value, key, pattern ) {
+                this.fromScreen = function( value ) {
                     return $.datepicker.parseDate( "d MM yy", value);
                 };
             }
@@ -133,10 +136,11 @@ $(document).ready(function() {
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
-        binding.parent[ binding.pk] = horn.convert( obj.val(), converterNameForNode(obj), true);
+        var converterName = converterNameForNode(obj);
+        var val = horn.convert( obj.val(), converterName, true);
+        binding.parent[ binding.pk] = val;
     });
     $('.dateValue').datepicker({dateFormat: 'd MM yy'});
-    $('#populateButton').click( function(event) {
-        horn.populate();
-    });
+
+    $('#populateButton').click( function( event ) {horn.populate();});
 });
