@@ -43,7 +43,7 @@ See the [REFERENCE IMPLEMENTATION EXAMPLE HTML PAGE] for a working example.
 Weaving data into your content
 ==============================
 
-HORN 1.0 uses css classes to identify nodes that contain data.
+HORN 1.0 uses CSS classes to identify nodes that contain data.
 
 There are a few different ways to inline your data:
 
