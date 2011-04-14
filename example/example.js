@@ -3,24 +3,24 @@ var maxID = -1;
 
 var makeID = function () {
     return "hi_" + (++maxID);
-}
+};
 
-var converterForNode = function( node ) {
+var converterNameForNode = function( node ) {
     node = $(node);
     if ( node.hasClass( 'integerValue') ) {
-        return new TestIntegerConverter();
+        return "IntegerConverter";
     }
 
     if ( node.hasClass( 'dateValue') ) {
-        return new TestDateConverter();
+        return "DateConverter";
     }
 
     if ( node.hasClass( 'booleanValue') ) {
-        return new TestBooleanConverter();
+        return "BooleanConverter";
     }
 
     return null;
-}
+};
 
 var indent = function ( count ) {
     var rv = '';
@@ -50,7 +50,7 @@ var render = function ( object, ind, parent, pk ) {
         for ( i = 0; i < object.length; i++ ) {
             childText += ("<br/>" + indent( ind) +
                 this.render.call( this, object[ i], ind + 1, object, i));
-            if ( i != object.length - 1) { childText += ', '; }
+            if ( i !== object.length - 1) { childText += ', '; }
         }
         return  span( "[") + childText + span("]");
     } else
@@ -96,11 +96,9 @@ var render = function ( object, ind, parent, pk ) {
             return input( object.toString(), type, object, parent, i);
         }
     }
-}
+};
 
 $(document).ready(function() {
-    var index;
-    var converter;
     horn = new Horn();
     var model = horn.parse({
         storeBackRefs: true,
@@ -108,35 +106,34 @@ $(document).ready(function() {
             IntegerConverter: function () {
                 this.toScreen = function( value, key, pattern ) {
                     return value.toString();
-                }
+                };
                 this.fromScreen = function( value, key, pattern ) {
                     return parseInt( value);
-                }
+                };
             },
             BooleanConverter: function () {
                 this.toScreen = function( value, key, pattern ) {
                     return value ? "Yes" : "No";
-                }
+                };
                 this.fromScreen = function( value, key, pattern ) {
                     return value.toLowerCase() === 'Yes';
-                }
+                };
             },
             DateConverter: function () {
                 this.toScreen = function( value, key, pattern ) {
-                    return $.datepicker.formatDate( "yy-mm-dd", value);
-                }
+                    return $.datepicker.formatDate( "d MM yy", value);
+                };
                 this.fromScreen = function( value, key, pattern ) {
-                    return $.datepicker.parseDate( "yy-mm-dd", value);
-                }
+                    return $.datepicker.parseDate( "d MM yy", value);
+                };
             }
         }
     });
     $('#formattedOutput').html( render( model, 0));
     $('.dynamic').change( function( event ) {
-        var binding = bindings[ $(this).attr('id')];
-        converter = converterForNode( $(this));
-        binding.parent[ binding.pk] = converter !== null ?
-            converter.fromScreen( $(this).val()) : $(this).val();
+        var obj = $(this);
+        var binding = bindings[ obj.attr('id')];
+        binding.parent[ binding.pk] = horn.convert( obj.val(), converterNameForNode(obj), true);
     });
     $('.dateValue').datepicker({dateFormat: 'd MM yy'});
     $('#populateButton').click( function(event) {
