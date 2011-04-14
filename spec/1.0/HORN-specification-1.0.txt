@@ -1,5 +1,5 @@
-HORN
-=====
+HORN                                                                                NOTES
+=====                                                                               =====
 
 This is a specification for inlining model data into your HTML pages, which
 can be used for the presentation of the view to the site user, as well as
@@ -37,26 +37,27 @@ information it needs.
 Different data types can be parsed out of the HTML as required, with
 declarative support for this in the reference implementation.
 
-See the [REFERENCE IMPLEMENTATION EXAMPLE HTML PAGE] for a working example.
+See the [REFERENCE IMPLEMENTATION EXAMPLE HTML PAGE] for a working example.     =/example/example.html
 
 
 Weaving data into your content
 ==============================
 
-HORN 1.0 uses css classes to identify nodes that contain data.
+HORN 1.0 uses css classes to identify nodes that contain data.                  css->CSS
 
 There are a few different ways to inline your data:
 
 * Literal text seen by the user and extracted as data 
-* Literal text seen by the user with an alternative data format extracted as data 
+* Literal text seen by the user with an alternative data format extracted as
+  data                                                                          not completely clear to me, where does the data come from?
 * Literal JSON data objects 
 
 To define data for the model, you need to have a name for it. All data is a
 property of a named object.
 
-You do this by defining a CSS class on a DOM element that defines the object
-name, and adding the class "data". Whenever you add the "data" class do a tag
-in your HTML, you are defining a new, possibly nested, data object:
+You do this by defining a CSS class on a DOM element that defines the object    'data' class simply defines the root of parse trees only.
+name, and adding the class "data". Whenever you add the "data" class do a tag   no other element needs define it.
+in your HTML, you are defining a new, possibly nested, data object:             it doesn't mean create a new object, that's worked out from the key only.
 
 <div class="data _book">
 </div>
@@ -75,14 +76,14 @@ So now we need to add the title and authors information:
 By using _title and _authors as classes, this is defining HORN properties
 "book.title" and "book.authors".
 
-Notice that the descendent text nodes of the tag with the underscore class
+Notice that the descendent text nodes of the tag with the underscore class      descendent->descendant
 applied are used as the value. So after applying the reference JavaScript
-implementation of HORN we would end up with the equivalent of this data object
-accessible to our code:
+implementation of HORN we would end up with the equivalent of this data object  - please look at handleValue method with reference to this and the main traversal code.
+accessible to our code:                                                         A value node has a single child node (that node can be an abbr or text node). (note abbr nodes can't contain other shit afaik).
+                                                                                    value nodes with abbr children use their title attr as value, else we use the text nodes value
+{ 'book': { 'title':'Presentation Zen', 'authors':'Garr Reynolds' } }               also value nodes can declare data-json in which their single contained text node contains literal json bound in the current keys context
 
-{ 'book': { 'title':'Presentation Zen', 'authors':'Garr Reynolds' } }
-
-Of course the most important part here is that this is also immediately
+Of course the most important part here is that this is also immediately         note that in particular, value nodes need not define a key!
 viewable by the user even without JS code loaded or running, and indexable by
 search engines.
 
@@ -116,8 +117,8 @@ Here, you will typically want the parser implementation to convert the date
 string into a native JavaScript date. For the HORN 1.0 reference
 implementation you can do this using meta tags in the <head> section of your page:
 
-<meta name="typeof book.*date" content="Date"/>
-
+<meta name="typeof book.*date" content="Date"/>                                 This has changed now, the content is simply the name of a transducer class that is instantiated (and cached)
+                                                                                and used to convert between string screen values and native horn types using toScreen() and fromScreen() methods
 This says that any property ending with "date" will be parsed as a Date, one
 of the built-in parser type transformations. This lets you build up your model
 with native JavaScript types so that it isn't just an object with string
@@ -142,7 +143,7 @@ a "hidden" CSS class to the content (this is not defined as part of the specific
 What this does is tell your HORN parser that the text nodes inside the <p> tag
 with "data-json" are to be merged with the "current" object. Current object
 means the object named by the nearest element with the "data" class in DOM
-ancestry terms.
+ancestry terms.                                                                 Might be worth making it explicit that the data-json defines its own types, we don't coerce them at all.
 
 So with all the above, we'd end up with the equivalent of this JSON data model:
 
@@ -207,3 +208,36 @@ nodes with "data" class and property names:
 This defines "books[0].publisher.name" as "New Riders."
 
 
+
+CHANGES
+
+
+The root context can be an array or object now, based on datum key definition.
+Have a look at the tests.
+
+Other changes are populate() to populate the screen? with data that has changed in the model previously
+returned by horn.
+
+To accomplish this (see tests) you need to call parse like this: horn.parse({storeBackRefs: true});
+this will cause horn to cache the values returned previously and enable diff checking.
+
+When .populate() is called, any values that have been changed in the model returned by horn are extracted, converted using
+.toScreen() and the appropriate converter and the value pushed to the screen elements.
+
+There is currently no tracking of the removal of dom nodes - x.x
+
+
+Also, converters:
+
+Rather than being defined in the global scope, they are now passed as an option
+when calling parse()
+
+    horn.parse(
+        {
+            converters: {
+                date: function() {
+                    this.toScreen = function( value, key, pattern ) { ... };
+                    this.fromScreen = function( value, key, pattern ) { ... }
+                }
+            }
+        });

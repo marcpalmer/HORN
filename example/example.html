@@ -10,16 +10,16 @@
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
 
         <!-- Include the J Query, JSON plugin -->
-        <script type="text/javascript" src="../test/jquery/plugins/json/jquery.json-2.2.min.js"></script>
+        <script type="text/javascript" src="../reference-implementations/jquery/test/jquery/plugins/json/jquery.json-2.2.min.js"></script>
 
         <!-- Include our custom converters -->
         <script type="text/javascript" src="converters.js"></script>
 
         <!-- Include the Horn -->
-        <script type="text/javascript" src="../src/js/horn.js"></script>
+        <script type="text/javascript" src="../reference-implementations/jquery/src/js/horn.js"></script>
 
         <!-- Include the Horn TestUtils.js class for some useful utility functions -->
-        <script type="text/javascript" src="../test/src/TestUtils.js"></script>
+        <script type="text/javascript" src="../reference-implementations/jquery/test/src/TestUtils.js"></script>
 
         <!-- Our Example JS file  -->
         <script type="text/javascript" src="example.js"></script>
@@ -28,9 +28,9 @@
         <link rel="stylesheet" href="example.css" type="text/css"/>
 
         <!-- Type converter specification-->
-        <meta name="typeof .*dob" content="TestDateConverter" />
-        <meta name="typeof .*numDependants" content="TestIntegerConverter" />
-        <meta name="typeof .*holdsLicense" content="TestBooleanConverter" />
+        <meta name="typeof .*dob" content="DateConverter" />
+        <meta name="typeof .*numDependants" content="IntegerConverter" />
+        <meta name="typeof .*holdsLicense" content="BooleanConverter" />
     </head>
     <body>
         <div class="data _people">

@@ -3,6 +3,7 @@ var isAttached = function( node ) {
 };
 
 var countOwnProps = function( object ) {
+    var index;
     var count = 0;
     for ( index in object ) { if ( object.hasOwnProperty( index) ) { count++; } }
     return count;
@@ -37,7 +38,7 @@ var isArray = function( object ) {
     return true;
 };
 
-var dataTest = function( name, bodyNodes, dataCallback, headNodes, storeBackRefs ) {
+var dataTest = function( name, bodyNodes, dataCallback, headNodes, storeBackRefs, passConverters ) {
     var body = $('body');
     var head = $('head');
     if ( bodyNodes != null ) {
@@ -49,7 +50,36 @@ var dataTest = function( name, bodyNodes, dataCallback, headNodes, storeBackRefs
     try {
         var horn = new Horn();
         horn.name = name;
-        dataCallback( horn.parse({storeBackRefs: storeBackRefs === true}), horn);
+        var opts = {storeBackRefs: storeBackRefs === true};
+        if ( passConverters ) {
+            opts.converters = {
+                HornIntegerConverter: function () {
+                    this.toScreen = function( value, key, pattern ) {
+                        return value.toString();
+                    }
+                    this.fromScreen = function( value, key, pattern ) {
+                        return parseInt( value);
+                    }
+                },
+                HornBooleanConverter: function () {
+                    this.toScreen = function( value, key, pattern ) {
+                        return value + "";
+                    }
+                    this.fromScreen = function( value, key, pattern ) {
+                        return value.toLowerCase() === 'true';
+                    }
+                },
+                HornDateConverter: function () {
+                    this.toScreen = function( value, key, pattern ) {
+                        return $.datepicker.formatDate( "yy-mm-dd", value);
+                    }
+                    this.fromScreen = function( value, key, pattern ) {
+                        return $.datepicker.parseDate( "yy-mm-dd", value);
+                    }
+                }
+            };
+        }
+        dataCallback( horn.parse(opts), horn);
         horn.populate();
     } finally {
         if ( bodyNodes != null ) {
