@@ -1639,6 +1639,58 @@ test(
 
 
 
+module( "TestHorn - ABBR");
+
+test(
+    "ABBR - ABBR node for value, no type conversion.",
+    function() {
+        dataTest(
+            null,
+            $('<div class="data"><abbr class="_key" title="alternative">value</abbr></div>'),
+            function( data, horn ) {
+                ok( isObject( data));
+                ok( data.key === 'alternative');
+            },
+            null,
+            true,
+            false);
+    });
+
+test(
+    "ABBR - ABBR node for value, converted to Integer.",
+    function() {
+        dataTest(
+            null,
+            $('<div class="data"><abbr class="_key" title="12">value</abbr></div>'),
+            function( data, horn ) {
+                ok( isObject( data));
+                ok( data.key === 12);
+            },
+            $('<meta name="typeof key" content="HornIntegerConverter" />'),
+            true,
+            true);
+    });
+
+test(
+    "ABBR - ABBR node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        ok( isAttached( $('._key')) === false);
+        dataTest(
+            null,
+            $('<div class="data"><abbr class="_key" title="true">value</abbr></div>'),
+            function( data, horn ) {
+                ok( isAttached( $('._key')));
+                ok( isObject( data));
+                ok( data.key === true);
+                horn.populate();
+                ok( $('._key').attr( 'title') === 'true');
+            },
+            $('<meta name="typeof key" content="HornBooleanConverter" />'),
+            true,
+            true);
+    });
+
+
 module( "TestHorn - Population");
 
 test(
@@ -1659,4 +1711,3 @@ test(
             true,
             true);
     });
-
