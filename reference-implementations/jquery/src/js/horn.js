@@ -374,7 +374,7 @@ function Horn() {
      * Call $Query.each against 'collection' using callback 'fn' under context 'ctx'.
      */
     this.each = function( collection, fn, ctx ) {
-        $.each( collection, this.bind( fn, ctx));
+        $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
     };
 
     this.convert = function( value, converterName, fromScreen ) {

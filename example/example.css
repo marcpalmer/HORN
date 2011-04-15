@@ -14,10 +14,7 @@
     border: 1px solid #e36d39;
 }
 
-.dateValue,
-.stringValue,
-.booleanValue,
-.integerValue {
+.dynamic {
     border: 1px solid red;
     background-color: pink;
 }

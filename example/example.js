@@ -7,7 +7,7 @@ var makeID = function () {
 
 var converterNameForNode = function( node ) {
     node = $(node);
-    if ( node.hasClass( 'integerValue') ) {
+    if ( node.hasClass( 'numberValue') ) {
         return "IntegerConverter";
     }
 
@@ -33,71 +33,38 @@ var span = function ( text, classAttribute ) {
         classAttribute.toString() + '\'') : '') + '>' + text + '</span>';
 };
 
-var input = function ( content, classAttr, object, parent, id ) {
-    return "<input value='" + content + "' class='dynamic " + classAttr +
+var input = function ( value, type, id ) {
+    var insert = (type ? "Value" : "");
+    return "<input value='" + value + "' class='dynamic " + type + insert +
         "'  id='" + id + "' type='text'/>";
 };
 
+
 var render = function ( object, ind, parent, pk ) {
-    var count;
     var rv;
-    var i;
-    var index;
-    var childText = indent( ind);
-    var type;
-    if ( rv === undefined ) { rv = ''; }
-    if ( isArray( object) ) {
-        for ( i = 0; i < object.length; i++ ) {
-            childText += ("<br/>" + indent( ind) +
-                this.render.call( this, object[ i], ind + 1, object, i));
-            if ( i !== object.length - 1) { childText += ', '; }
-        }
-        return  span( "[") + childText + span("]");
-    } else
-    if ( isObject( object) ) {
-        count = countOwnProps( object);
-        index = 0;
-        for ( i in object ) {
-            if ( object.hasOwnProperty( i) ) {
-                childText += ("<br/>" + span( indent( ind) + "\"" + i + "\": ") +
-                    this.render.call( this, object[ i], ind + 1, object, i) +
-                        ((index < count - 1) ? span(",") : ''));
-                index++;
-            }
-        }
-        return span("{") + childText + span("}");
+    var isO = isObject( object);
+    var isA = isArray( object);
+    if ( ind === undefined ) { ind = 0; }
+    if ( isO || isA ) {
+        rv = (isA ? "[" : "{") + "<br/>"
+        horn.each( object, function( key, value ) {
+            rv +=   span( indent( ind + 1) + "\"" + key + "\": ") +
+                    render( value, ind + 1, object, key) + ",<br/>";
+        });
+        rv += span(indent( ind) + (isA ? "]" : "}"));
+        return  rv;
     } else {
-        switch (typeof object) {
-            case 'string':
-                type = 'stringValue';
-            break;
+        rv = typeof object;
+        isO = makeID();
+        isA = "";
 
-            case 'boolean':
-                type = 'booleanValue';
-            break;
-
-            default:
-                i = object.constructor.toString();
-                if ( i.indexOf( 'Date') > 0  ) {
-                    type = 'dateValue';
-                } else
-                if ( i.indexOf( 'Number') > 0  ) {
-                    type = 'integerValue';
-                }
-            break;
-        }
-
-        if ( type !== undefined ) {
-            i = makeID();
-            bindings[ i] = {parent: parent, pk: pk, type: type};
-            if ( type === 'booleanValue' ) {
-                object = (object ? "Yes" : "No");
-            } else
-            if ( type === 'dateValue' ) {
-                object = $.datepicker.formatDate( "d MM yy", object);
-            }
-            return input( object.toString(), type, object, parent, i);
-        }
+        if ( object instanceof Date ) { rv = 'date'; }
+        if ( rv === 'string' ) { isA = "\"" + input( object, null, isO) + "\""; } else
+        if ( rv === 'boolean' ) { isA = input( object ? "Yes" : "No", rv, isO); } else
+        if ( rv === 'number' ) { isA = input( object, rv, isO); } else
+        if ( rv === 'date' ) { isA = input( $.datepicker.formatDate( "d MM yy", object), rv, isO); }
+        if ( isA !== "" ) { bindings[ isO] = {parent: parent, pk: pk, type: rv + "Value"}; }
+        return isA;
     }
 };
 
@@ -132,7 +99,7 @@ $(document).ready(function() {
             }
         }
     });
-    $('#formattedOutput').html( render( model, 0));
+    $('#formattedOutput').html( render( model));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
