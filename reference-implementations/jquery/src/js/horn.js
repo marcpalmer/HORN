@@ -65,24 +65,29 @@ function Horn() {
     };
 
     this.populate = function() {
+        var key;
+        var valueNode;
         var typeOfPattern;
         var modelValue;
         var newValue;
-        this.each( this.valueNodes, function( key, valueNode ) {
-            modelValue = valueNode.context[ valueNode.key];
-            if ( modelValue !== valueNode.value ) {
+
+        this.each( this.valueNodes, function (i, n) {
+            modelValue = n.context[ n.key];
+            if ( modelValue !== n.value ) {
                 typeOfPattern = this.firstPattern( key);
                 newValue = typeOfPattern !== null ?
                     this.convert( modelValue,
                         typeOfPattern.contentAttribute, false) :
                             modelValue.toString();
-                if ( valueNode.node.nodeName.toLowerCase() === "abbr" ) {
-                    valueNode.value = modelValue;
-                    $(valueNode.node).attr('title', newValue);
+
+                if ( n.node.nodeName.toLowerCase() === "abbr" ) {
+                    n.value = modelValue;
+                    $(n.node).attr('title', newValue);
                 } else {
-                    valueNode.value = modelValue;
-                    $(valueNode.node).text( newValue);
+                    n.value = modelValue;
+                    $(n.node).text( newValue);
                 }
+
             }
         }, this);
     };
@@ -315,6 +320,9 @@ function Horn() {
     };
 
     this.each = function( collection, fn, ctx ) {
+        if ( (collection === undefined) || (collection === null) ) {
+            return;
+        }
         $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
     };
 
