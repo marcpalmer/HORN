@@ -48,10 +48,10 @@ var render = function ( object, ind, parent, pk ) {
     if ( isO || isA ) {
         rv = (isA ? "[" : "{") + "<br/>"
         horn.each( object, function( key, value ) {
-            rv +=   span( indent( ind + 1) + "\"" + key + "\": ") +
+            rv +=   indent( ind + 1) + "\"" + key + "\": " +
                     render( value, ind + 1, object, key) + ",<br/>";
         });
-        rv += span(indent( ind) + (isA ? "]" : "}"));
+        rv += indent( ind) + (isA ? "]" : "}");
         return  rv;
     } else {
         rv = typeof object;
