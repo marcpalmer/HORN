@@ -23,19 +23,13 @@ function Horn() {
         = 'json';
 
     if ( !window.Node ) {
-        window.Node = {
-            ELEMENT_NODE: 1,
-            ATTRIBUTE_NODE: 2,
-            TEXT_NODE: 3,
-            CDATA_SECTION_NODE: 4,
-            ENTITY_REFERENCE_NODE: 5,
-            ENTITY_NODE: 6,
-            PROCESSING_INSTRUCTION_NODE: 7,
-            COMMENT_NODE: 8,
-            DOCUMENT_NODE: 9,
-            DOCUMENT_TYPE_NODE: 10,
-            DOCUMENT_FRAGMENT_NODE: 11,
-            NOTATION_NODE: 12};
+        $.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
+            'CDATA_SECTION_NODE', 'ENTITY_REFERENCE_NODE', 'ENTITY_NODE',
+            'PROCESSING_INSTRUCTION_NODE', 'COMMENT_NODE', 'DOCUMENT_NODE',
+            'DOCUMENT_TYPE_NODE', 'DOCUMENT_FRAGMENT_NODE', 'NOTATION_NODE'],
+            function( i, n ) {
+                window.Node[ n] = i + 1;
+            });
     }
 
     this.startsWith = function ( value, stem ) {
@@ -65,16 +59,14 @@ function Horn() {
     };
 
     this.populate = function() {
-        var key;
         var valueNode;
         var typeOfPattern;
         var modelValue;
         var newValue;
-
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
-                typeOfPattern = this.firstPattern( key);
+                typeOfPattern = this.firstPattern( i);
                 newValue = typeOfPattern !== null ?
                     this.convert( modelValue,
                         typeOfPattern.contentAttribute, false) :
@@ -227,7 +219,8 @@ function Horn() {
         }
         typeOfPattern = this.firstPattern( hornKey);
         if ( typeOfPattern !== null ) {
-            return this.convert( value, typeOfPattern.contentAttribute, !toScreen);
+            return this.convert(
+                value, typeOfPattern.contentAttribute, !toScreen);
         }
         return null;
     };
@@ -268,7 +261,8 @@ function Horn() {
         var key = this.extractKey( node);
         var contents = $(node).contents();
         var isJSON = $(node).hasClass( this.CONST_HORN_CSS_DATA_JSON);
-        if ( (contents.length === 1) && (isJSON || (this.isAdjustingKey( key))) ) {
+        if ( (contents.length === 1) &&
+            (isJSON || (this.isAdjustingKey( key))) ) {
             fullKey = this.isAdjustingKey( key) ?
                 (parentKey + this.CONST_HORN_CSS_DELIMITER + key) :
                 parentKey;
@@ -286,10 +280,9 @@ function Horn() {
                     if ( this.valueNodes === undefined ) {
                         this.valueNodes = {};
                     }
-
-                    this.valueNodes[ fullKey] = { node: node, hornKey: fullKey,
-                        context: details.context, key: details.key,
-                        value: details.value};
+                    this.valueNodes[ details.key] = { node: node,
+                        hornKey: fullKey, context: details.context,
+                        key: details.key, value: details.value};
                 }
                 return true;
             }

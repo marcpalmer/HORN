@@ -250,7 +250,7 @@ test(
             $('<div class="data"><span class="value _key">-1</span></div>'),
             function( data, horn ) {
                 ok( countOwnProps( horn.valueNodes) === 1);
-                ok( horn.valueNodes.hasOwnProperty( '-key'));
+                ok( horn.valueNodes.hasOwnProperty( 'key'));
             },
             $('<meta name="typeof key" content="HornIntegerConverter" />'),
             true,
@@ -263,7 +263,7 @@ test(
         dataTest( null,
             $('<div class="data"><span class="value _key">-1</span></div>'),
             function( data, horn ) {
-                var node = horn.valueNodes[ '-key'];
+                var node = horn.valueNodes[ 'key'];
                 ok( node !== undefined);
                 ok( node.hornKey === '-key');
                 ok( node.key === 'key');
@@ -1682,8 +1682,9 @@ test(
                 ok( isAttached( $('._key')));
                 ok( isObject( data));
                 ok( data.key === true);
+                data.key = false;
                 horn.populate();
-                ok( $('._key').attr( 'title') === 'true');
+                ok( $('._key').attr( 'title') === 'false');
             },
             $('<meta name="typeof key" content="HornBooleanConverter" />'),
             true,
