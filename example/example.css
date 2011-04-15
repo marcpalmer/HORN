@@ -1,17 +1,21 @@
-.title {
+body {
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 1.3em;
-    font-weight: bold;
+    font-size: 1em;
 }
 
-.detail {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 1.2em;
+._title {
+    font-size: 1.4em;
 }
 
-.addressPanel {
+._author {
+    font-size: 1.1em;
+}
+
+.book {
     background-color: #f9e3d2;
-    border: 1px solid #e36d39;
+    border: 1px solid black;
+    margin-top: .5em;
+    margin-bottom: .5em;
 }
 
 .dynamic {

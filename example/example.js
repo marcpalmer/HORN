@@ -1,6 +1,8 @@
 var bindings = {};
 var maxID = -1;
 
+var DATE_FORMAT = "dd MM yy";
+
 var makeID = function () {
     return "hi_" + (++maxID);
 };
@@ -62,7 +64,7 @@ var render = function ( object, ind, parent, pk ) {
         if ( rv === 'string' ) { isA = "\"" + input( object, null, isO) + "\""; } else
         if ( rv === 'boolean' ) { isA = input( object ? "Yes" : "No", rv, isO); } else
         if ( rv === 'number' ) { isA = input( object, rv, isO); } else
-        if ( rv === 'date' ) { isA = input( $.datepicker.formatDate( "d MM yy", object), rv, isO); }
+        if ( rv === 'date' ) { isA = input( $.datepicker.formatDate( DATE_FORMAT, object), rv, isO); }
         if ( isA !== "" ) { bindings[ isO] = {parent: parent, pk: pk, type: rv + "Value"}; }
         return isA;
     }
@@ -74,12 +76,8 @@ $(document).ready(function() {
         storeBackRefs: true,
         converters: {
             IntegerConverter: function () {
-                this.toScreen = function( value ) {
-                    return value.toString();
-                };
-                this.fromScreen = function( value ) {
-                    return parseInt( value);
-                };
+                this.toScreen = function( value ) { return value.toString(); };
+                this.fromScreen = function( value ) { return parseInt( value); };
             },
             BooleanConverter: function () {
                 this.toScreen = function( value ) {
@@ -91,14 +89,15 @@ $(document).ready(function() {
             },
             DateConverter: function () {
                 this.toScreen = function( value ) {
-                    return $.datepicker.formatDate( "d MM yy", value);
+                    return $.datepicker.formatDate( DATE_FORMAT, value);
                 };
                 this.fromScreen = function( value ) {
-                    return $.datepicker.parseDate( "d MM yy", value);
+                    return $.datepicker.parseDate( DATE_FORMAT, value);
                 };
             }
         }
     });
+
     $('#formattedOutput').html( render( model));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
@@ -107,7 +106,7 @@ $(document).ready(function() {
         var val = horn.convert( obj.val(), converterName, true);
         binding.parent[ binding.pk] = val;
     });
-    $('.dateValue').datepicker({dateFormat: 'd MM yy'});
+    $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
 
     $('#populateButton').click( function( event ) {horn.populate();});
 });

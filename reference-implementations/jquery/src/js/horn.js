@@ -1,25 +1,27 @@
+/**
+ * A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
+ *
+ * Authors: Chris Denman and Marc Palmer
+ */
 function Horn() {
 
-    this.CONST_HORN_TYPE_BOOLEAN                        = 'Boolean';
-    this.CONST_HORN_TYPE_INTEGER                        = 'Integer';
-    this.CONST_HORN_TYPE_DATE                           = 'Date';
-
-    this.CONST_HORN_CSS_PREFIX                          = '_';
-    this.CONST_HORN_CSS_DELIMITER                       = '-';
-    this.CONST_HORN_CSS_DATA                            = 'data';
-    this.CONST_HORN_CSS_DATA_JSON                       = 'data-json';
-
-    this.CONST_META_NAME_TYPEOF                         = 'typeof';
-    this.CONST_META_NAME_JSON                           = 'json';
-
+    this.CONST_HORN_CSS_PREFIX
+        = '_';
     this.CONST_HORN_CSS_PREFIX_LENGTH
         = this.CONST_HORN_CSS_PREFIX.length;
+    this.CONST_HORN_CSS_DELIMITER
+        = '-';
+    this.CONST_HORN_CSS_DATA
+        = 'data';
+    this.CONST_HORN_CSS_DATA_JSON
+        = 'data-json';
+    this.CONST_META_NAME_TYPEOF
+        = 'typeof';
     this.CONST_META_NAME_TYPEOF_LENGTH
         = this.CONST_META_NAME_TYPEOF.length;
+    this.CONST_META_NAME_JSON
+        = 'json';
 
-    /**
-     * Define the usual Window.node constants if not present, IE workaround.
-     */
     if ( !window.Node ) {
         window.Node = {
             ELEMENT_NODE: 1,
@@ -36,17 +38,6 @@ function Horn() {
             NOTATION_NODE: 12};
     }
 
-    /**
-     * Returns true iff 'value' as String begins with 'stem' as String.
-     * <p>
-     * Both arguments have <code>toString</code> called on them before
-     * comparison.
-     * <p>
-     * Note that an empty stem (length 0) is not considered to start any other
-     * string (event itself).
-     *
-     * @return true if value.toString() begins with stem.toString()
-     */
     this.startsWith = function ( value, stem ) {
         value = value.toString();
         stem = stem.toString();
@@ -59,9 +50,6 @@ function Horn() {
 	    return ref.parents(':last').is('html');
     };
 
-    /**
-     *  
-     */
     this.toTokens = function ( value, delimiter ) {
         var obj = {};
 
@@ -77,35 +65,26 @@ function Horn() {
     };
 
     this.populate = function() {
-        var key;
-        var valueNode;
         var typeOfPattern;
         var modelValue;
         var newValue;
-
-            // change to each when working
-        for ( key in this.valueNodes ) {
-            if ( this.valueNodes.hasOwnProperty( key) ) {
-                valueNode = this.valueNodes[ key];
-                modelValue = valueNode.context[ valueNode.key];
-                if ( modelValue !== valueNode.value ) {
-                    typeOfPattern = this.firstPattern( key);
-                    newValue = typeOfPattern !== null ?
-                        this.convert( modelValue,
-                            typeOfPattern.contentAttribute, false) :
-                                modelValue.toString();
-
-                    if ( valueNode.node.nodeName.toLowerCase() === "abbr" ) {
-                        valueNode.value = modelValue;
-                        $(valueNode.node).attr('title', newValue);
-                    } else {
-                        valueNode.value = modelValue;
-                        $(valueNode.node).text( newValue);
-                    }
-
+        this.each( this.valueNodes, function( key, valueNode ) {
+            modelValue = valueNode.context[ valueNode.key];
+            if ( modelValue !== valueNode.value ) {
+                typeOfPattern = this.firstPattern( key);
+                newValue = typeOfPattern !== null ?
+                    this.convert( modelValue,
+                        typeOfPattern.contentAttribute, false) :
+                            modelValue.toString();
+                if ( valueNode.node.nodeName.toLowerCase() === "abbr" ) {
+                    valueNode.value = modelValue;
+                    $(valueNode.node).attr('title', newValue);
+                } else {
+                    valueNode.value = modelValue;
+                    $(valueNode.node).text( newValue);
                 }
             }
-        }
+        }, this);
     };
 
     this.definesArgument = function( args, propertyName ) {
@@ -113,9 +92,6 @@ function Horn() {
             (args.hasOwnProperty( propertyName));
     };
 
-    /**
-     *
-     */
     this.parse = function( args ) {
         this.cacheMetaElements();
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
@@ -136,9 +112,6 @@ function Horn() {
         return this.target;
     };
 
-    /**
-     *
-     */
     this.cacheMetaElements = function() {
         this.metaInfo = [];
         this.each( $("meta"), function( i, n ) {
@@ -162,9 +135,6 @@ function Horn() {
             }}, this);
     };
 
-    /**
-     *
-     */
     this.patternDefined = function( pattern ) {
         var rv = false;
         $.each( this.metaInfo, function( i, n ) {
@@ -195,11 +165,6 @@ function Horn() {
         return rv;
     };
 
-    /**
-     *  Extracts and returns the first 'class' attribute token String that defines a horn key.
-     *  <p>
-     *  If no horn key is found, <code>null</code> is returned.
-     */
     this.extractKey = function( n ) {
         var key = null;
         this.each(
@@ -216,9 +181,6 @@ function Horn() {
         return key;
     };
 
-    /**
-     * Returns true if the given property was removed from the object supplied.
-     */
     this.didRemoveProperty = function( object, property ) {
         return object.hasOwnProperty( property) && delete object[ property];
     };
@@ -277,10 +239,6 @@ function Horn() {
         return parent;
     };
 
-    /**
-     *  If the element contains a single text node, get, un-escape and return
-     *  its value.
-     */
     this.getIfSingleTextNode = function( element ) {
         var contained = $(element).contents();
         var theContained;
@@ -311,10 +269,10 @@ function Horn() {
                 parentKey;
             theContained = contents[0];
             isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
-            isABBRNode = theContained.nodeName.toLowerCase() === "abbr";
+            isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
             if ( isTextNode || isABBRNode ) {
-                text = isTextNode ? window.unescape( $(theContained).text()) :
-                    $(theContained).attr('title');
+                text = isABBRNode ? $(node).attr('title') :
+                    window.unescape( $(theContained).text());
                 typedValue = isJSON ? $.evalJSON( text) :
                     this.coerceValue( text, fullKey, false);
                 details = this.setValue( typedValue !== null ?
@@ -334,23 +292,12 @@ function Horn() {
         return false;
     };
 
-    /**
-     * Return true if the given key represents a valid, context altering horn
-     * key.
-     */
     this.isAdjustingKey = function ( key ) {
         return (key !== null) &&
             (key !== undefined) &&
             (key.toString().trim() !== '');
     };
 
-    /**
-     * Called (initially) on the root (has no parent with the same CSS class
-     * that distinguishes itself) 'data' elements in the DOM.
-     * <p>
-     * We traverse down through the DOM looking for elements that satisfy
-     * Horn's criteria for any particular element.
-     */
     this.visitNodes = function( dataElement, hornKey ) {
         var key = this.extractKey( dataElement);
         hornKey = this.isAdjustingKey( key) ?
@@ -363,16 +310,10 @@ function Horn() {
         }, this);
     };
 
-    /**
-     * Returns a function that calls function 'fn' using the given context 'ctx'.
-     */
     this.bind = function( fn, ctx ) {
         return function() { return fn.apply(ctx, arguments); };
     };
 
-    /**
-     * Call $Query.each against 'collection' using callback 'fn' under context 'ctx'.
-     */
     this.each = function( collection, fn, ctx ) {
         $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
     };
