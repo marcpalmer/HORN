@@ -16,6 +16,7 @@ body {
     border: 1px solid black;
     margin-top: .5em;
     margin-bottom: .5em;
+    padding: 8px;
 }
 
 .dynamic {
