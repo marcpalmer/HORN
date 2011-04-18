@@ -62,7 +62,6 @@ function Horn() {
      * Update DOM with data from the internal model, to update your UI
      */
     this.populate = function() {
-        var valueNode;
         var typeOfPattern;
         var modelValue;
         var newValue;

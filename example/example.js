@@ -108,5 +108,9 @@ $(document).ready(function() {
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
 
+<<<<<<< HEAD
     $('a.populateButton').click( function( event ) { horn.populate.call(horn); event.stopPropagation(); });
+=======
+    $('#populateButton').click( function( event ) {horn.populate.call(horn);});
+>>>>>>> 28d0b51d2600b471b2b43ce14172281f8d1bfa98
 });
