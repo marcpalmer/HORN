@@ -58,11 +58,15 @@ function Horn() {
         return obj;
     };
 
+    /* 
+     * Update DOM with data from the internal model, to update your UI
+     */
     this.populate = function() {
         var valueNode;
         var typeOfPattern;
         var modelValue;
         var newValue;
+        
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
@@ -89,6 +93,12 @@ function Horn() {
             (args.hasOwnProperty( propertyName));
     };
 
+    /*
+     * Parse the HORN data out of the DOM
+     * Args supplied are a map of options:
+     * - storeBackRefs
+     * - converters
+     */
     this.parse = function( args ) {
         this.cacheMetaElements();
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
