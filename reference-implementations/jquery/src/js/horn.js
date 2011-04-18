@@ -69,7 +69,7 @@ function Horn() {
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
-                typeOfPattern = this.firstPattern( n.fullKey);
+                typeOfPattern = this.firstPattern( i);
                 newValue = typeOfPattern !== null ?
                     this.convert( modelValue,
                         typeOfPattern.contentAttribute, false) :
