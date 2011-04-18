@@ -32,90 +32,109 @@
         <meta name="typeof .*pages" content="IntegerConverter" />
     </head>
     <body>
-        <div class="contentpanel">
-            <h1>Book List &raquo;&raquo;&raquo;</h1>
-            <p>This is HTML content served verbatim by the server.</p>
-            <div class="data _books">
-                <div class="_0 book">
-                    <span class="_title">XML Complete</span><br/>
-                    by <span class="_author">by Steven Holzner</span><br/>
-                    <ol>
-                        <li>Publisher: <span class="_publisher">McGraw-Hill</span></li>
-                        <li>ISBN: <span class="_isbn">0-079-13702-4</span></li>
-                        <li>Pages: <span class="_pages">600</span></li>
-                        <li>Price: $<span class="_price">44.95</span></li>
-                        <li>Publication Date: <span class="_pubDate">01 December 1997</span></li>
-                    </ol>
-                </div>
-
-                <div class="_1 book">
-                    <span class="_title">Presenting XML</span><br/>
-                    by <span class="_author">Richard Light</span><br/>
-                    <ol>
-                        <li>Publisher: <span class="_publisher">Sams</span></li>
-                        <li>ISBN: <span class="_isbn">1-575-21334-6</span></li>
-                        <li>Pages: <span class="_pages">414</span></li>
-                        <li>Price: $<span class="_price">24.99</span></li>
-                        <li>Publication Date: <span class="_pubDate">01 September 1997</span></li>
-                    </ol>
-                </div>
-
-                <div class="_2 book">
-                    <span class="_title">XML: Extensible Markup Language</span><br/>
-                    by <span class="_author">Elliotte Rusty Harold</span><br/>
-                    <ol>
-                        <li>Publisher: <span class="_publisher">IDG Books</span></li>
-                        <li>ISBN: <span class="_isbn">0-764-53199-9</span></li>
-                        <li>Pages: <span class="_pages">400</span></li>
-                        <li>Price: $<span class="_price">39.99</span></li>
-                        <li>Publication Date: <span class="_pubDate">01 August 1998</span></li>
-                    </ol>
-                </div>
-
-                <div class="_3 book">
-                    <span class="_title">XML: Principles, Tools, and Techniques</span><br/>
-                    by <span class="_author">Dan Connolly</span><br/>
-                    <ol>
-                        <li>Publisher: <span class="_publisher">O'Reilly & Associates</span></li>
-                        <li>ISBN: <span class="_isbn">1-565-92349-9</span></li>
-                        <li>Pages: <span class="_pages">250</span></li>
-                        <li>Price: $<span class="_price">29.95</span></li>
-                        <li>Publication Date: <span class="_pubDate">01 November 1997</span></li>
-                    </ol>
-                </div>
-
-                <div class="_4 book">
-                    <span class="_title">The XML Handbook</span><br/>
-                    by <span class="_author">Charles F. Goldfarb, Paul Prescod</span><br/>
-                    <ol>
-                        <li>Publisher: <span class="_publisher">Prentice Hall Computer Books</span></li>
-                        <li>ISBN: <span class="_isbn">0-130-81152-1</span></li>
-                        <li>Pages: <span class="_pages">450</span></li>
-                        <li>Price: $<span class="_price">39.95</span></li>
-                        <li>Publication Date: <span class="_pubDate">01 August 1998</span></li>
-                    </ol>
-                </div>
-
-                <div class="_5 book">
-                    <span class="_title">XML in Record Time</span><br/>
-                    by <span class="_author">Natanya Pitts-Moultis</span><br/>
-                    <ol>
-                        <li>Publisher: <span class="_publisher">Sybex</span></li>
-                        <li>ISBN: <span class="_isbn">0-782-12340-6</span></li>
-                        <li>Pages: <span class="_pages">548</span></li>
-                        <li>Price: $<span class="_price">29.99</span></li>
-                        <li>Publication Date: <span class="_pubDate">01 February 1999</span></li>
-                    </ol>
-                </div>
+        <div>
+            <div class="contentpanel">
+                <p>
+                    This example demonstrates using the HORN specification plus the jQuery reference implementation to extract data from vanilla HTML, in a way similar to microformats.
+                    The information on the left, the book list, is straight HTML from the server.</p>
+                <p>On the right is the data that
+                    the JS HORN implementation extracted from the page, in a JSON-like presentation purely to show the model that
+                    is extracted.</p>
+            </div>
+            <div class="datapanel">
+                <p>
+                    You can change values in the panel on the right and click the update button to reverse the process
+                    and push the JS data model back into the original DOM nodes. This includes type coercions and data conversions in both directions.
+                </p>
             </div>
         </div>
 
-        <div class="datapanel">
-            <h1>&laquo;&laquo;&laquo; HORN Data model</h1>
-            <p>This is the JS data module extracted from the HTML by HORN.</p>
-            <a href="#" class="populateButton">Click to update DOM with your changes</a>
-            <div id="formattedOutput"></div>
-            <a href="#" class="populateButton">Click to update DOM with your changes</a>
+        <div class="demo">
+            <div class="contentpanel">
+                <h1>Book List &raquo;&raquo;&raquo;</h1>
+                <p>This is HTML content served verbatim by the server.</p>
+                <div class="data _books">
+                    <div class="_0 book">
+                        <span class="_title">XML Complete</span><br/>
+                        by <span class="_author">by Steven Holzner</span><br/>
+                        <ol>
+                            <li>Publisher: <span class="_publisher">McGraw-Hill</span></li>
+                            <li>ISBN: <span class="_isbn">0-079-13702-4</span></li>
+                            <li>Pages: <span class="_pages">600</span></li>
+                            <li>Price: $<span class="_price">44.95</span></li>
+                            <li>Publication Date: <span class="_pubDate">01 December 1997</span></li>
+                        </ol>
+                    </div>
+
+                    <div class="_1 book">
+                        <span class="_title">Presenting XML</span><br/>
+                        by <span class="_author">Richard Light</span><br/>
+                        <ol>
+                            <li>Publisher: <span class="_publisher">Sams</span></li>
+                            <li>ISBN: <span class="_isbn">1-575-21334-6</span></li>
+                            <li>Pages: <span class="_pages">414</span></li>
+                            <li>Price: $<span class="_price">24.99</span></li>
+                            <li>Publication Date: <span class="_pubDate">01 September 1997</span></li>
+                        </ol>
+                    </div>
+
+                    <div class="_2 book">
+                        <span class="_title">XML: Extensible Markup Language</span><br/>
+                        by <span class="_author">Elliotte Rusty Harold</span><br/>
+                        <ol>
+                            <li>Publisher: <span class="_publisher">IDG Books</span></li>
+                            <li>ISBN: <span class="_isbn">0-764-53199-9</span></li>
+                            <li>Pages: <span class="_pages">400</span></li>
+                            <li>Price: $<span class="_price">39.99</span></li>
+                            <li>Publication Date: <span class="_pubDate">01 August 1998</span></li>
+                        </ol>
+                    </div>
+
+                    <div class="_3 book">
+                        <span class="_title">XML: Principles, Tools, and Techniques</span><br/>
+                        by <span class="_author">Dan Connolly</span><br/>
+                        <ol>
+                            <li>Publisher: <span class="_publisher">O'Reilly & Associates</span></li>
+                            <li>ISBN: <span class="_isbn">1-565-92349-9</span></li>
+                            <li>Pages: <span class="_pages">250</span></li>
+                            <li>Price: $<span class="_price">29.95</span></li>
+                            <li>Publication Date: <span class="_pubDate">01 November 1997</span></li>
+                        </ol>
+                    </div>
+
+                    <div class="_4 book">
+                        <span class="_title">The XML Handbook</span><br/>
+                        by <span class="_author">Charles F. Goldfarb, Paul Prescod</span><br/>
+                        <ol>
+                            <li>Publisher: <span class="_publisher">Prentice Hall Computer Books</span></li>
+                            <li>ISBN: <span class="_isbn">0-130-81152-1</span></li>
+                            <li>Pages: <span class="_pages">450</span></li>
+                            <li>Price: $<span class="_price">39.95</span></li>
+                            <li>Publication Date: <span class="_pubDate">01 August 1998</span></li>
+                        </ol>
+                    </div>
+
+                    <div class="_5 book">
+                        <span class="_title">XML in Record Time</span><br/>
+                        by <span class="_author">Natanya Pitts-Moultis</span><br/>
+                        <ol>
+                            <li>Publisher: <span class="_publisher">Sybex</span></li>
+                            <li>ISBN: <span class="_isbn">0-782-12340-6</span></li>
+                            <li>Pages: <span class="_pages">548</span></li>
+                            <li>Price: $<span class="_price">29.99</span></li>
+                            <li>Publication Date: <span class="_pubDate">01 February 1999</span></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="datapanel">
+                <h1>&laquo;&laquo;&laquo; HORN Data model</h1>
+                <p>This is the JS data module extracted from the HTML by HORN.</p>
+                <a href="#" class="populateButton">Click to update DOM with your changes</a>
+                <div id="formattedOutput"></div>
+                <a href="#" class="populateButton">Click to update DOM with your changes</a>
+            </div>
         </div>
     </body>
 </html>

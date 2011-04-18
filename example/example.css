@@ -26,14 +26,25 @@ body {
 
 .contentpanel {
     float: left;
+    width: 500px;
     margin-left: 50px;
     padding-right: 50px;
-    padding-bottom: 50px;
+    padding-bottom: 25px;
 }
 
 .datapanel {
     border-left: 1px dashed #888;
     float: left;
     padding-left: 50px;
-    padding-bottom: 50px;
+    width: 500px;
+    padding-bottom: 25px;
+}
+
+div.text {
+    margin-left: 50px;
+    width: 500px;
+}
+
+div.demo {
+    clear: both;
 }
