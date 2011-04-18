@@ -19,6 +19,20 @@ body {
 }
 
 .dynamic {
-    border: 1px solid red;
-    background-color: pink;
+    border: 1px solid black;
+    background-color: #eee;
+}
+
+.contentpanel {
+    float: left;
+    margin-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
+}
+
+.datapanel {
+    border-left: 1px dashed #888;
+    float: left;
+    padding-left: 50px;
+    padding-bottom: 50px;
 }
