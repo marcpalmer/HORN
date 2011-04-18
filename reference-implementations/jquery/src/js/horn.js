@@ -59,7 +59,6 @@ function Horn() {
     };
 
     this.populate = function() {
-        var valueNode;
         var typeOfPattern;
         var modelValue;
         var newValue;
