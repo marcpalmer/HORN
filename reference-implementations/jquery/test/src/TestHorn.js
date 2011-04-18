@@ -276,6 +276,18 @@ test(
             true);
     });
 
+test(
+    "{valueNodes:X} - 2 Value nodes if two values.",
+    function() {
+        dataTest( null,
+            $('<div class="data"><div class="_a"><span class="value _key">-1</span></div><div class="_b"><span class="value _key">-1</span></div></div>'),
+            function( data, horn ) {
+                ok( countOwnProps( horn.valueNodes) === 2);
+            },
+            $('<meta name="typeof key" content="HornIntegerConverter" />'),
+            true,
+            true);
+    });
 
 
 

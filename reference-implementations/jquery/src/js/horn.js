@@ -69,7 +69,7 @@ function Horn() {
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
-                typeOfPattern = this.firstPattern( i);
+                typeOfPattern = this.firstPattern( n.fullKey);
                 newValue = typeOfPattern !== null ?
                     this.convert( modelValue,
                         typeOfPattern.contentAttribute, false) :
@@ -289,7 +289,8 @@ function Horn() {
                     if ( this.valueNodes === undefined ) {
                         this.valueNodes = {};
                     }
-                    this.valueNodes[ details.key] = { node: node,
+
+                    this.valueNodes[ fullKey.substring( 1)] = { node: node,
                         hornKey: fullKey, context: details.context,
                         key: details.key, value: details.value};
                 }
