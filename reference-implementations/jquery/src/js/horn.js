@@ -19,8 +19,6 @@ function Horn() {
         = 'typeof';
     this.CONST_META_NAME_TYPEOF_LENGTH
         = this.CONST_META_NAME_TYPEOF.length;
-    this.CONST_META_NAME_JSON
-        = 'json';
 
     if ( !window.Node ) {
         $.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
