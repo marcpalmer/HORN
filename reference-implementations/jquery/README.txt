@@ -54,7 +54,7 @@ populate()
 ==========
 
 When .populate() is called, any values that have been changed in the model
-returned by horn are extracted, converted using .toScreen() and the
+returned by horn are extracted, converted using .toText() and the
 appropriate converter and the value pushed to the screen elements.
 
 There is currently no tracking of the removal of DOM nodes.

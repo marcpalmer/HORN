@@ -76,22 +76,22 @@ $(document).ready(function() {
         storeBackRefs: true,
         converters: {
             IntegerConverter: function () {
-                this.toScreen = function( value ) { return value.toString(); };
-                this.fromScreen = function( value ) { return parseInt( value); };
+                this.toText = function( value ) { return value.toString(); };
+                this.fromText = function( value ) { return parseInt( value); };
             },
             BooleanConverter: function () {
-                this.toScreen = function( value ) {
+                this.toText = function( value ) {
                     return value ? "Yes" : "No";
                 };
-                this.fromScreen = function( value ) {
+                this.fromText = function( value ) {
                     return value.toLowerCase() == 'yes';
                 };
             },
             DateConverter: function () {
-                this.toScreen = function( value ) {
+                this.toText = function( value ) {
                     return $.datepicker.formatDate( DATE_FORMAT, value);
                 };
-                this.fromScreen = function( value ) {
+                this.fromText = function( value ) {
                     return $.datepicker.parseDate( DATE_FORMAT, value);
                 };
             }

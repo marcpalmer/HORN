@@ -219,7 +219,7 @@ function Horn() {
         }
     };
 
-    this.coerceValue = function( value, hornKey, toScreen ) {
+    this.coerceValue = function( value, hornKey, toText ) {
         var typeOfPattern;
         if ( this.startsWith( hornKey, this.CONST_HORN_CSS_DELIMITER) ) {
             hornKey = hornKey.substring( 1);
@@ -227,7 +227,7 @@ function Horn() {
         typeOfPattern = this.firstPattern( hornKey);
         if ( typeOfPattern !== null ) {
             return this.convert(
-                value, typeOfPattern.contentAttribute, !toScreen);
+                value, typeOfPattern.contentAttribute, !toText);
         }
         return null;
     };
@@ -327,14 +327,14 @@ function Horn() {
         $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
     };
 
-    this.convert = function( value, converterName, fromScreen ) {
+    this.convert = function( value, converterName, fromText ) {
         var cachedConverter = this.converters[ converterName];
         if ( cachedConverter === undefined ) { return value.toString(); }
         if ( typeof cachedConverter === 'function' ) {
             cachedConverter = new this.converters[ converterName]();
             this.converters[ converterName] = cachedConverter;
         }
-        return fromScreen ? cachedConverter.fromScreen( value) :
-            cachedConverter.toScreen( value);
+        return fromText ? cachedConverter.fromText( value) :
+            cachedConverter.toText( value);
     };
 }
