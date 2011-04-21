@@ -30,40 +30,18 @@ function Horn() {
             });
     }
 
-    this.startsWith = function ( value, stem ) {
-        value = value.toString();
-        stem = stem.toString();
-        return  (stem.length > 0) &&
-                ((value = value.match( "^" + stem)) !== null) &&
-                (value.toString() === stem);
-    };
 
-    this.isAttached = function( ref ) {
-	    return ref.parents(':last').is('html');
-    };
+	// Privileged Functions - public access, can access privates, can't be
+    // modified but can be replaced with public flavours
 
-    this.toTokens = function ( value, delimiter ) {
-        var obj = {};
-
-        $.each(
-            value.split( delimiter !== undefined ? delimiter : " "),
-            function( i, n ) {
-                n = n.trim();
-                if ( n !== "" ) {
-                    obj[ n] = n;
-                }});
-
-        return obj;
-    };
-
-    /* 
+    /*
      * Update DOM with data from the internal model, to update your UI
      */
     this.populate = function() {
         var typeOfPattern;
         var modelValue;
         var newValue;
-        
+
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
@@ -83,11 +61,6 @@ function Horn() {
 
             }
         }, this);
-    };
-
-    this.definesArgument = function( args, propertyName ) {
-        return (args !== undefined) && (args !== null) &&
-            (args.hasOwnProperty( propertyName));
     };
 
     /*
@@ -185,10 +158,6 @@ function Horn() {
         return key;
     };
 
-    this.didRemoveProperty = function( object, property ) {
-        return object.hasOwnProperty( property) && delete object[ property];
-    };
-
     this.setValue = function( value, key, parentContext ) {
         var token;
         var numTokens;
@@ -244,19 +213,6 @@ function Horn() {
         return parent;
     };
 
-    this.getIfSingleTextNode = function( element ) {
-        var contained = $(element).contents();
-        var theContained;
-        if ( contained.length === 1 ) {
-            theContained = contained[ 0];
-            if ( theContained.nodeType === window.Node.TEXT_NODE ) {
-                return window.unescape( theContained.nodeValue);
-            }
-        }
-
-        return null;
-    };
-
     this.handleValue = function( node, parentKey ) {
         var theContained;
         var fullKey;
@@ -298,12 +254,6 @@ function Horn() {
         return false;
     };
 
-    this.isAdjustingKey = function ( key ) {
-        return (key !== null) &&
-            (key !== undefined) &&
-            (key.toString().trim() !== '');
-    };
-
     this.visitNodes = function( dataElement, hornKey ) {
         var key = this.extractKey( dataElement);
         hornKey = this.isAdjustingKey( key) ?
@@ -314,17 +264,6 @@ function Horn() {
                 this.visitNodes.call( this, n, hornKey);
             }
         }, this);
-    };
-
-    this.bind = function( fn, ctx ) {
-        return function() { return fn.apply(ctx, arguments); };
-    };
-
-    this.each = function( collection, fn, ctx ) {
-        if ( (collection === undefined) || (collection === null) ) {
-            return;
-        }
-        $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
     };
 
     this.convert = function( value, converterName, fromText ) {
@@ -338,3 +277,67 @@ function Horn() {
             cachedConverter.toText( value);
     };
 }
+
+
+// Prototype functions, anyone may read/write
+Horn.prototype.isAdjustingKey = function ( key ) {
+    return (key !== null) &&
+        (key !== undefined) &&
+        (key.toString().trim() !== '');
+};
+
+Horn.prototype.bind = function( fn, ctx ) {
+    return function() { return fn.apply(ctx, arguments); };
+};
+
+Horn.prototype.each = function( collection, fn, ctx ) {
+    if ( (collection === undefined) || (collection === null) ) {
+        return;
+    }
+    $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
+};
+
+Horn.prototype.didRemoveProperty = function( object, property ) {
+    return object.hasOwnProperty( property) && delete object[ property];
+};
+
+Horn.prototype.definesArgument = function( args, propertyName ) {
+    return (args !== undefined) && (args !== null) &&
+        (args.hasOwnProperty( propertyName));
+};
+
+Horn.prototype.startsWith = function ( value, stem ) {
+    value = value.toString();
+    stem = stem.toString();
+    return  (stem.length > 0) &&
+            ((value = value.match( "^" + stem)) !== null) &&
+            (value.toString() === stem);
+};
+
+Horn.prototype.isAttached = function( ref ) {
+    return ref.parents(':last').is('html');
+};
+
+Horn.prototype.toTokens = function ( value, delimiter ) {
+    var obj = {};
+
+    $.each( value.split( delimiter !== undefined ? delimiter : " "),
+        function( i, n ) {
+            n = n.trim();
+            if ( n !== "" ) { obj[ n] = n; }});
+
+    return obj;
+};
+
+Horn.prototype.getIfSingleTextNode = function( element ) {
+    var contained = $(element).contents();
+    var theContained;
+    if ( contained.length === 1 ) {
+        theContained = contained[ 0];
+        if ( theContained.nodeType === window.Node.TEXT_NODE ) {
+            return window.unescape( theContained.nodeValue);
+        }
+    }
+
+    return null;
+};
