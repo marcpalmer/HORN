@@ -269,7 +269,7 @@ test(
                 ok( node.key === 'key');
                 ok( node.value === '-1');
                 ok( $(node.node).text() === node.value);
-                ok( node.context === horn.target);
+                ok( node.context === horn.model);
                 ok( node.context[ node.key] === data.key);
             },
             null,

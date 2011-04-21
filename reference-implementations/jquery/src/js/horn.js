@@ -11,7 +11,7 @@ function Horn() {
         = this.CONST_HORN_CSS_PREFIX.length;
     this.CONST_HORN_CSS_DELIMITER
         = '-';
-    this.CONST_HORN_CSS_HORN
+        this.CONST_HORN_CSS_HORN
         = 'horn';
     this.CONST_HORN_CSS_HORN_JSON
         = 'horn-json';
@@ -113,7 +113,7 @@ function Horn() {
             },
             this);
 
-        return this.target;
+        return this.model;
     };
 
     this.cacheMetaElements = function() {
@@ -196,10 +196,10 @@ function Horn() {
         if ( typeof key === 'string' ) {
             key = key.split( this.CONST_HORN_CSS_DELIMITER);
             if ( key[0] === '' ) { key.shift(); }
-            if ( this.target === undefined ) {
-                this.target = !isNaN(   parseInt( key[ 0])) ? [] : {};
+            if ( this.model === undefined ) {
+                this.model = !isNaN(   parseInt( key[ 0])) ? [] : {};
             }
-            return this.setValue( value, key, this.target);
+            return this.setValue( value, key, this.model);
         }
         numTokens = key.length;
         if ( numTokens > 0 ) {
