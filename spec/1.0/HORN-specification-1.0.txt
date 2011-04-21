@@ -212,7 +212,7 @@ How you access this is up to the parser implementation you use, but for the
 jQuery reference implementation you will use something like:
 
 var horn = new Horn()
-var myModel = horn.parse()
+var myModel = horn.extract()
 
 The rules: how HORN knows what is a value
 =========================================

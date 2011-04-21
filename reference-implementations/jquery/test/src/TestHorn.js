@@ -28,7 +28,7 @@ test(
     "Horn.patternDefined() - No patterns with no content.",
     function() {
         var horn = new Horn();
-        horn.parse();
+        horn.extract();
 
         ok( isEmptyArray( horn.metaInfo));
     });
@@ -347,7 +347,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 0);
         } finally {
@@ -362,7 +362,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 1);
 
@@ -380,7 +380,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 1);
 
@@ -398,7 +398,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 0);
         } finally {
@@ -413,7 +413,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 0);
         } finally {
@@ -428,7 +428,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 0);
         } finally {
@@ -443,7 +443,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 0);
         } finally {
@@ -458,7 +458,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
             ok( horn.metaInfo.length === 1);
         } finally {
             node.remove();
@@ -472,7 +472,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
             ok( horn.metaInfo.length === 2);
 
             ok( horn.metaInfo[0].contentAttribute === 'HornBooleanConverter');
@@ -494,7 +494,7 @@ test(
         node2.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 1, "This isn't critical as more of an implementation detail but could add proportionally more overhead in large document scenarios than fixing this test.");
         } finally {
@@ -511,7 +511,7 @@ test(
 
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.metaInfo.length === 1);
         } finally {
@@ -735,7 +735,7 @@ test(
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
-            horn.parse();
+            horn.extract();
 
             ok( horn.convertValue( "-1", "_hornKey", false) === null);
         } finally {

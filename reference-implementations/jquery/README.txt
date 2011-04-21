@@ -9,20 +9,20 @@ The horn-jquery.js file defines the Horn class which you instantiate and call
 methods on:
 
 var horn = new Horn();
-var data = horn.parse();
+var data = horn.extract();
 
 This implementation uses HORN CSS classe indicators to support all browsers.
 
 Methods
 =======
 
-parse(options)
+extract(options)
 ==============
 
-The parse method takes an optional map of options to define how you would like
+The extract method takes an optional map of options to define how you would like
 the parser to operate, and which type converters you wish to use.
 
-The return value of the parse() function is the root of your data model.
+The return value of the extract() function is the root of your data model.
 
 Available options include:
 
@@ -34,7 +34,7 @@ Available options include:
 
 To define a custom type converter you can do the following:
 
-var data = horn.parse({
+var data = horn.extract({
 	storeBackRefs:true,
 	converters: {
 		date: function() {
@@ -72,4 +72,4 @@ use the <meta> tag in your <head> section:
 This uses regex patterns to tell the HORN parser to match any property path
 ending in "Date" or "pages" to use the appropriate converter.
 
-The converter must be defined in the call to parse() as detailed earlier.
+The converter must be defined in the call to extract() as detailed earlier.

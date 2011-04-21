@@ -72,7 +72,7 @@ var render = function ( object, ind, parent, pk ) {
 
 $(document).ready(function() {
     horn = new Horn();
-    var model = horn.parse({
+    var model = horn.extract({
         storeBackRefs: true,
         converters: {
             IntegerConverter: function () {

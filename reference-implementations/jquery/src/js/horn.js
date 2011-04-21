@@ -91,12 +91,12 @@ function Horn() {
     };
 
     /*
-     * Parse the HORN data out of the DOM
+     * extract the HORN data out of the DOM
      * Args supplied are a map of options:
      * - storeBackRefs
      * - converters
      */
-    this.parse = function( args ) {
+    this.extract = function( args ) {
         this.cacheMetaElements();
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;

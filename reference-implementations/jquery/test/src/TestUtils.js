@@ -79,7 +79,7 @@ var dataTest = function( name, bodyNodes, dataCallback, headNodes, storeBackRefs
                 }
             };
         }
-        dataCallback( horn.parse(opts), horn);
+        dataCallback( horn.extract(opts), horn);
     } finally {
         if ( bodyNodes != null ) {
             jQuery.each( bodyNodes, function(i, n) {$(n).remove();});
