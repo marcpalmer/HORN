@@ -279,8 +279,8 @@ function Horn() {
             isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
             isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
             if ( isTextNode || isABBRNode ) {
-                text = isABBRNode ? $(node).attr('title') :
-                    window.unescape( $(theContained).text());
+                text = window.unescape( isABBRNode ?
+                    $(node).attr('title') : $(theContained).text());
                 typedValue = isJSON ? $.evalJSON( text) :
                     this.coerceValue( text, fullKey, false);
                 details = this.setValue( typedValue !== null ?
