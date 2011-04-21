@@ -13,8 +13,8 @@ function Horn() {
         = '-';
     this.CONST_HORN_CSS_DATA
         = 'data';
-    this.CONST_HORN_CSS_DATA_JSON
-        = 'data-json';
+    this.CONST_HORN_CSS_HORN_JSON
+        = 'horn-json';
     this.CONST_META_NAME_TYPEOF
         = 'typeof';
     this.CONST_META_NAME_TYPEOF_LENGTH
@@ -267,7 +267,7 @@ function Horn() {
         var details;
         var key = this.extractKey( node);
         var contents = $(node).contents();
-        var isJSON = $(node).hasClass( this.CONST_HORN_CSS_DATA_JSON);
+        var isJSON = $(node).hasClass( this.CONST_HORN_CSS_HORN_JSON);
         if ( (contents.length === 1) &&
             (isJSON || (this.isAdjustingKey( key))) ) {
             fullKey = this.isAdjustingKey( key) ?

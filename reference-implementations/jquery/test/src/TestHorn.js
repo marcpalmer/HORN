@@ -1604,7 +1604,7 @@ test(
     "Data Output Tests - Embedded JSON Object with string property stored in object in root context.",
     function() {
         dataTest( null,
-            $('<div class="data _0"><span class="data-json">{"a": "hello"}</span></div>'),
+            $('<div class="data _0"><span class="horn-json">{"a": "hello"}</span></div>'),
             function( data) {
                 ok( isArray( data));
                 ok( isObject( data[0]));
@@ -1616,7 +1616,7 @@ test(
     "Data Output Tests - Embedded JSON Object with integer property stored in array root context.",
     function() {
         dataTest( null,
-            $('<div class="data _0"><span class="data-json">{"a": 1}</span></div>'),
+            $('<div class="data _0"><span class="horn-json">{"a": 1}</span></div>'),
             function( data) {
                 ok( isArray( data));
                 ok( isObject( data[ 0]));
@@ -1628,7 +1628,7 @@ test(
     "Data Output Tests - Embedded JSON Object with boolean property stored in array root context.",
     function() {
         dataTest( null,
-            $('<div class="data _0"><span class="data-json">{"a": true}</span></div>'),
+            $('<div class="data _0"><span class="horn-json">{"a": true}</span></div>'),
             function( data) {
                 ok( isArray( data));
                 ok( isObject( data[ 0]));
