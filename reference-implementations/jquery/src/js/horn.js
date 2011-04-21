@@ -219,7 +219,7 @@ function Horn() {
         }
     };
 
-    this.coerceValue = function( value, hornKey, toText ) {
+    this.convertValue = function( value, hornKey, toText ) {
         var typeOfPattern;
         if ( this.startsWith( hornKey, this.CONST_HORN_CSS_DELIMITER) ) {
             hornKey = hornKey.substring( 1);
@@ -280,7 +280,7 @@ function Horn() {
                 text = window.unescape( isABBRNode ?
                     $(node).attr('title') : $(theContained).text());
                 typedValue = isJSON ? $.evalJSON( text) :
-                    this.coerceValue( text, fullKey, false);
+                    this.convertValue( text, fullKey, false);
                 details = this.setValue( typedValue !== null ?
                     typedValue : text, fullKey);
                 if ( (this.storeBackRefs === true) && (!isJSON) ) {

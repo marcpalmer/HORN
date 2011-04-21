@@ -685,10 +685,10 @@ test(
 
 
 
-module( "TestHorn - Horn.coerceValue()");
+module( "TestHorn - Horn.convertValue()");
 
 test(
-    "coerceValue() - that it returns null if there are no matching patterns.",
+    "convertValue() - that it returns null if there are no matching patterns.",
     function() {
 
         var horn = new Horn();
@@ -697,17 +697,17 @@ test(
         var value = "value";
         var hornKey = "_hornKey";
 
-        ok( horn.coerceValue( value, hornKey, false) === null);
+        ok( horn.convertValue( value, hornKey, false) === null);
     });
 
 test(
-    "coerceValue() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
+    "convertValue() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
         dataTest(
             null,
             null,
             function( data, horn ) {
-                ok( horn.coerceValue( "1", "_hornKey", false) === 1);
+                ok( horn.convertValue( "1", "_hornKey", false) === 1);
             },
             $('<meta name="typeof .*" content="HornIntegerConverter" />'),
             false,
@@ -715,13 +715,13 @@ test(
     });
 
 test(
-    "coerceValue() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
+    "convertValue() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
         dataTest(
             null,
             null,
             function( data, horn ) {
-                ok( horn.coerceValue( "-1", "_hornKey", false) === -1);
+                ok( horn.convertValue( "-1", "_hornKey", false) === -1);
             },
             $('<meta name="typeof .*" content="HornIntegerConverter" />'),
             false,
@@ -729,7 +729,7 @@ test(
     });
 
 test(
-    "coerceValue() - no coercion if no matching regex against the value's hornKey.",
+    "convertValue() - no coercion if no matching regex against the value's hornKey.",
     function() {
         var node = $('<meta name="typeof noMatch" content="HornIntegerConverter" />');
         node.appendTo( $('head'));
@@ -737,20 +737,20 @@ test(
             var horn = new Horn();
             horn.parse();
 
-            ok( horn.coerceValue( "-1", "_hornKey", false) === null);
+            ok( horn.convertValue( "-1", "_hornKey", false) === null);
         } finally {
             node.remove();
         }
     });
 
 test(
-    "coerceValue() - that dates are coerced and parsed correctly.",
+    "convertValue() - that dates are coerced and parsed correctly.",
     function() {
         dataTest(
             null,
             null,
             function( data, horn ) {
-                var coercedValue = horn.coerceValue( "2011-04-01", "_ourdate", false);
+                var coercedValue = horn.convertValue( "2011-04-01", "_ourdate", false);
                 ok( coercedValue.constructor.toString().indexOf( 'Date') > 0);
 
                 ok( coercedValue.getFullYear() === 2011);
@@ -764,18 +764,18 @@ test(
     });
 
 test(
-    "coerceValue() - that boolean values are coerced and parsed correctly.",
+    "convertValue() - that boolean values are coerced and parsed correctly.",
     function() {
         dataTest(
             null,
             null,
             function( data, horn ) {
-                ok( horn.coerceValue( "true",   "_ourtruth", false) === true);
-                ok( horn.coerceValue( "tRuE",   "_ourtruth", false) === true);
-                ok( horn.coerceValue( "TRUE",   "_ourtruth", false) === true);
-                ok( horn.coerceValue( "false",  "_ourtruth", false) === false);
-                ok( horn.coerceValue( "FaLsE",  "_ourtruth", false) === false);
-                ok( horn.coerceValue( "FALSE",  "_ourtruth", false) === false);
+                ok( horn.convertValue( "true",   "_ourtruth", false) === true);
+                ok( horn.convertValue( "tRuE",   "_ourtruth", false) === true);
+                ok( horn.convertValue( "TRUE",   "_ourtruth", false) === true);
+                ok( horn.convertValue( "false",  "_ourtruth", false) === false);
+                ok( horn.convertValue( "FaLsE",  "_ourtruth", false) === false);
+                ok( horn.convertValue( "FALSE",  "_ourtruth", false) === false);
             },
             $('<meta name="typeof .*truth.*" content="HornBooleanConverter" />'),
             false,
