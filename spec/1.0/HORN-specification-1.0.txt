@@ -149,7 +149,7 @@ Next let's add the publication date. However for the sake of usability we may
 be showing a short date to the user, but we still need the full date object
 for our JS code to work with:
 
-<div class="data _book">
+<div class="horn _book">
 	<h1 class="_title">Presentation Zen</h1>
 	<p>
 		Written by <span class="_authors">Garr Reynolds</span> 

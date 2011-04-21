@@ -11,8 +11,8 @@ function Horn() {
         = this.CONST_HORN_CSS_PREFIX.length;
     this.CONST_HORN_CSS_DELIMITER
         = '-';
-    this.CONST_HORN_CSS_DATA
-        = 'data';
+    this.CONST_HORN_CSS_HORN
+        = 'horn';
     this.CONST_HORN_CSS_HORN_JSON
         = 'horn-json';
     this.CONST_META_NAME_TYPEOF
@@ -105,7 +105,7 @@ function Horn() {
             args.converters : {};
 
         this.each(
-            $("." + this.CONST_HORN_CSS_DATA),
+            $("." + this.CONST_HORN_CSS_HORN),
             function( i, n ) {
                 if ( this.getClosestDataParent( n) === null ) {
                     this.visitNodes.call( this, n, '');
@@ -235,7 +235,7 @@ function Horn() {
     this.getClosestDataParent = function( element ) {
         var parent = null;
         this.each( $(element).parents(), function( i, n ) {
-            if ( $(n).hasClass( this.CONST_HORN_CSS_DATA) ) {
+            if ( $(n).hasClass( this.CONST_HORN_CSS_HORN) ) {
                 parent = n;
                 return false;
             }

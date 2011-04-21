@@ -231,7 +231,7 @@ test(
     function() {
         ok( isAttached( $('._key')) === false);
         dataTest( null,
-            $('<div class="data"><span class="value _key">-1</span></div>'),
+            $('<div class="horn"><span class="value _key">-1</span></div>'),
             function( data, horn ) {
                 ok( isAttached( $('._key')));
                 ok( isObject( data));
@@ -247,7 +247,7 @@ test(
     "{valueNodes:X} - Value nodes if storeBackRefs specified.",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _key">-1</span></div>'),
+            $('<div class="horn"><span class="value _key">-1</span></div>'),
             function( data, horn ) {
                 ok( countOwnProps( horn.valueNodes) === 1);
                 ok( horn.valueNodes.hasOwnProperty( 'key'));
@@ -261,7 +261,7 @@ test(
     "{valueNodes:X} - Unconverted String value, check valueNode attributes.",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _key">-1</span></div>'),
+            $('<div class="horn"><span class="value _key">-1</span></div>'),
             function( data, horn ) {
                 var node = horn.valueNodes[ 'key'];
                 ok( node !== undefined);
@@ -280,7 +280,7 @@ test(
     "{valueNodes:X} - 2 Value nodes if two values.",
     function() {
         dataTest( null,
-            $('<div class="data"><div class="_a"><span class="value _key">-1</span></div><div class="_b"><span class="value _key">-1</span></div></div>'),
+            $('<div class="horn"><div class="_a"><span class="value _key">-1</span></div><div class="_b"><span class="value _key">-1</span></div></div>'),
             function( data, horn ) {
                 ok( countOwnProps( horn.valueNodes) === 2);
             },
@@ -571,9 +571,9 @@ test(
     "getClosestDataParent() - three data nodes in a hierarchy, the bottom one yields the correct parent.",
     function() {
         var horn = new Horn();
-        var node1 = $('<div class="' + horn.CONST_HORN_CSS_DATA + '" id="node1" />');
-        var node2 = $('<div class="' + horn.CONST_HORN_CSS_DATA + '" id="node2" />');
-        var node3 = $('<div class="' + horn.CONST_HORN_CSS_DATA + '" id="node3" />');
+        var node1 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node1" />');
+        var node2 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node2" />');
+        var node3 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node3" />');
         node3.appendTo( node2);
         node2.appendTo( node1);
         try {
@@ -589,7 +589,7 @@ test(
     "getClosestDataParent() - returns null if no suitable parent.",
     function() {
         var horn = new Horn();
-        var node1 = $('<div class="' + horn.CONST_HORN_CSS_DATA + '" id="node1" />');
+        var node1 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node1" />');
         try {
             node1.appendTo( $('body'));
 
@@ -603,11 +603,11 @@ test(
     "getClosestDataParent() - works spanning irrelevant nodes.",
     function() {
         var horn = new Horn();
-        var node1 = $('<div class="' + horn.CONST_HORN_CSS_DATA + '" id="node1" />');
+        var node1 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node1" />');
         var node2 = $('<div/>');
         var node3 = $('<div/>');
         var node4 = $('<div/>');
-        var node5 = $('<div class="' + horn.CONST_HORN_CSS_DATA + '" id="node5" />');
+        var node5 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node5" />');
         node5.appendTo( node4);
         node4.appendTo( node3);
         node3.appendTo( node2);
@@ -868,7 +868,7 @@ test(
     "Data Output Tests - _0 - 'one'",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _0">one</span></div>'),
+            $('<div class="horn"><span class="value _0">one</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 1);
@@ -880,7 +880,7 @@ test(
     "Data Output Tests - _1 - 2",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _1">2</span></div>'),
+            $('<div class="horn"><span class="value _1">2</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 2);
@@ -895,7 +895,7 @@ test(
     "Data Output Tests - _2 - true",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _2">true</span></div>'),
+            $('<div class="horn"><span class="value _2">true</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 3);
@@ -910,7 +910,7 @@ test(
     "Data Output Tests - _3-0 - 'three'",
     function() {
         dataTest( null,
-            $('<div class="data _3"><span class="_0">three</span></div>'),
+            $('<div class="horn _3"><span class="_0">three</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -926,7 +926,7 @@ test(
     "Data Output Tests - _3-1 - 4",
     function() {
         dataTest( null,
-            $('<div class="data _3"><span class="_1">4</span></div>'),
+            $('<div class="horn _3"><span class="_1">4</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -945,7 +945,7 @@ test(
     "Data Output Tests - _3-2 - false",
     function() {
         dataTest( null,
-            $('<div class="data _3"><span class="_2">false</span></div>'),
+            $('<div class="horn _3"><span class="_2">false</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -964,7 +964,7 @@ test(
     "Data Output Tests - _3-3-0 - 'five'",
     function() {
         dataTest( null,
-            $('<div class="data _3-3"><span class="_0">five</span></div>'),
+            $('<div class="horn _3-3"><span class="_0">five</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -983,7 +983,7 @@ test(
     "Data Output Tests - _3-3-1 - 6",
     function() {
         dataTest( null,
-            $('<div class="data _3-3"><span class="_1">6</span></div>'),
+            $('<div class="horn _3-3"><span class="_1">6</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -1005,7 +1005,7 @@ test(
     "Data Output Tests - _3-3-2 - true",
     function() {
         dataTest( null,
-            $('<div class="data _3-3"><span class="_2">true</span></div>'),
+            $('<div class="horn _3-3"><span class="_2">true</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -1027,7 +1027,7 @@ test(
     "Data Output Tests - _3-4-k - 'seven'",
     function() {
         dataTest( null,
-            $('<div class="data _3-4"><span class="_k">seven</span></div>'),
+            $('<div class="horn _3-4"><span class="_k">seven</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -1044,7 +1044,7 @@ test(
     "Data Output Tests - _3-4-l - 8",
     function() {
         dataTest( null,
-            $('<div class="data _3-4"><span class="_l">8</span></div>'),
+            $('<div class="horn _3-4"><span class="_l">8</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -1064,7 +1064,7 @@ test(
     "Data Output Tests - _3-4-m - false",
     function() {
         dataTest( null,
-            $('<div class="data _3-4"><span class="_m">false</span></div>'),
+            $('<div class="horn _3-4"><span class="_m">false</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 4);
@@ -1084,7 +1084,7 @@ test(
     "Data Output Tests - _4-f - 'nine'",
     function() {
         dataTest( null,
-            $('<div class="data _4"><span class="_f">nine</span></div>'),
+            $('<div class="horn _4"><span class="_f">nine</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 5);
@@ -1098,7 +1098,7 @@ test(
     "Data Output Tests - _4-g - 10",
     function() {
         dataTest( null,
-            $('<div class="data _4"><span class="_g">10</span></div>'),
+            $('<div class="horn _4"><span class="_g">10</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 5);
@@ -1115,7 +1115,7 @@ test(
     "Data Output Tests - _4-h - true",
     function() {
         dataTest( null,
-            $('<div class="data _4"><span class="_h">true</span></div>'),
+            $('<div class="horn _4"><span class="_h">true</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 5);
@@ -1132,7 +1132,7 @@ test(
     "Data Output Tests - _4-i-1 - 'eleven'",
     function() {
         dataTest( null,
-            $('<div class="data _4-i"><span class="_1">eleven</span></div>'),
+            $('<div class="horn _4-i"><span class="_1">eleven</span></div>'),
             function( data ) {
 
                 ok( isArray( data));
@@ -1150,7 +1150,7 @@ test(
     "Data Output Tests - _4-i-2 - 12",
     function() {
         dataTest( null,
-            $('<div class="data _4-i"><span class="_2">12</span></div>'),
+            $('<div class="horn _4-i"><span class="_2">12</span></div>'),
             function( data ) {
 
                 ok( isArray( data));
@@ -1171,7 +1171,7 @@ test(
     "Data Output Tests - _4-i-3 - false",
     function() {
         dataTest( null,
-            $('<div class="data _4-i"><span class="_3">false</span></div>'),
+            $('<div class="horn _4-i"><span class="_3">false</span></div>'),
             function( data ) {
 
                 ok( isArray( data));
@@ -1192,7 +1192,7 @@ test(
     "Data Output Tests - _4-j-n - 'thirteen'",
     function() {
         dataTest( null,
-            $('<div class="data _4-j"><span class="_n">thirteen</span></div>'),
+            $('<div class="horn _4-j"><span class="_n">thirteen</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 5);
@@ -1208,7 +1208,7 @@ test(
     "Data Output Tests - _4-j-o - 14",
     function() {
         dataTest( null,
-            $('<div class="data _4-j"><span class="_o">14</span></div>'),
+            $('<div class="horn _4-j"><span class="_o">14</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 5);
@@ -1227,7 +1227,7 @@ test(
     "Data Output Tests - _4-j-p - true",
     function() {
         dataTest( null,
-            $('<div class="data _4-j"><span class="_p">true</span></div>'),
+            $('<div class="horn _4-j"><span class="_p">true</span></div>'),
             function( data ) {
                 ok( isArray( data));
                 ok( data.length === 5);
@@ -1246,7 +1246,7 @@ test(
     "Data Output Tests - _a - 'one'",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _a">one</span></div>'),
+            $('<div class="horn"><span class="value _a">one</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( data[ 'a'] === 'one');
@@ -1257,7 +1257,7 @@ test(
     "Data Output Tests - _b - 2",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="_b">2</span></div>'),
+            $('<div class="horn"><span class="_b">2</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( data.b === 2);
@@ -1271,7 +1271,7 @@ test(
     "Data Output Tests - _d-0 - 'three'",
     function() {
         dataTest( null,
-            $('<div class="data _d"><span class="_0">three</span></div>'),
+            $('<div class="horn _d"><span class="_0">three</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isArray( data.d));
@@ -1284,7 +1284,7 @@ test(
     "Data Output Tests - _d-1 - 4",
     function() {
         dataTest( null,
-            $('<div class="data _d"><span class="_1">4</span></div>'),
+            $('<div class="horn _d"><span class="_1">4</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isArray( data.d));
@@ -1300,7 +1300,7 @@ test(
     "Data Output Tests - _d-2 - false",
     function() {
         dataTest( null,
-            $('<div class="data _d"><span class="_2">false</span></div>'),
+            $('<div class="horn _d"><span class="_2">false</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isArray( data.d));
@@ -1316,7 +1316,7 @@ test(
     "Data Output Tests - _d-3-0 - 'five'",
     function() {
         dataTest( null,
-            $('<div class="data _d-3"><span class="_0">five</span></div>'),
+            $('<div class="horn _d-3"><span class="_0">five</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isArray( data.d));
@@ -1331,7 +1331,7 @@ test(
     "Data Output Tests - _d-3-1 - 6",
     function() {
         dataTest( null,
-            $('<div class="data _d-3"><span class="_1">6</span></div>'),
+            $('<div class="horn _d-3"><span class="_1">6</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isArray( data.d));
@@ -1349,7 +1349,7 @@ test(
     "Data Output Tests - _d-3-2 - true",
     function() {
         dataTest( null,
-            $('<div class="data _d-3"><span class="_2">true</span></div>'),
+            $('<div class="horn _d-3"><span class="_2">true</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isArray( data.d));
@@ -1367,7 +1367,7 @@ test(
     "Data Output Tests - _d-4-k - 'seven'",
     function() {
         dataTest( null,
-            $('<div class="data _d-4"><span class="_k">seven</span></div>'),
+            $('<div class="horn _d-4"><span class="_k">seven</span></div>'),
             function( data ) {
                 ok( isObject( data));
 
@@ -1384,7 +1384,7 @@ test(
     "Data Output Tests - _d-4-l - 8",
     function() {
         dataTest( null,
-            $('<div class="data _d-4"><span class="_l">8</span></div>'),
+            $('<div class="horn _d-4"><span class="_l">8</span></div>'),
             function( data ) {
                 ok( isObject( data));
 
@@ -1404,7 +1404,7 @@ test(
     "Data Output Tests - _d-4-m - false",
     function() {
         dataTest( null,
-            $('<div class="data _d-4"><span class="_m">false</span></div>'),
+            $('<div class="horn _d-4"><span class="_m">false</span></div>'),
             function( data ) {
                 ok( isObject( data));
 
@@ -1424,7 +1424,7 @@ test(
     "Data Output Tests - _e-f - 'nine'",
     function() {
         dataTest( null,
-            $('<div class="data _e"><span class="_f">nine</span></div>'),
+            $('<div class="horn _e"><span class="_f">nine</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1436,7 +1436,7 @@ test(
     "Data Output Tests - _e-g - 10",
     function() {
         dataTest( null,
-            $('<div class="data _e"><span class="_g">10</span></div>'),
+            $('<div class="horn _e"><span class="_g">10</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1451,7 +1451,7 @@ test(
     "Data Output Tests - _e-h - true",
     function() {
         dataTest( null,
-            $('<div class="data _e"><span class="_h">true</span></div>'),
+            $('<div class="horn _e"><span class="_h">true</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1466,7 +1466,7 @@ test(
     "Data Output Tests - _e-i-1 - 'eleven'",
     function() {
         dataTest( null,
-            $('<div class="data _e-i"><span class="_1">eleven</span></div>'),
+            $('<div class="horn _e-i"><span class="_1">eleven</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1481,7 +1481,7 @@ test(
     "Data Output Tests - _e-i-2 - 12",
     function() {
         dataTest( null,
-            $('<div class="data _e-i"><span class="_2">12</span></div>'),
+            $('<div class="horn _e-i"><span class="_2">12</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1498,7 +1498,7 @@ test(
     "Data Output Tests - _e-i-3 - false",
     function() {
         dataTest( null,
-            $('<div class="data _e-i"><span class="_3">false</span></div>'),
+            $('<div class="horn _e-i"><span class="_3">false</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1516,7 +1516,7 @@ test(
     "Data Output Tests - _e-j-n - 'thirteen'",
     function() {
         dataTest( null,
-            $('<div class="data _e-i"><span class="_n">thirteen</span></div>'),
+            $('<div class="horn _e-i"><span class="_n">thirteen</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1530,7 +1530,7 @@ test(
     "Data Output Tests - _e-j-o - 14",
     function() {
         dataTest( null,
-            $('<div class="data _e-i"><span class="_o">14</span></div>'),
+            $('<div class="horn _e-i"><span class="_o">14</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1547,7 +1547,7 @@ test(
     "Data Output Tests - _e-j-p - true",
     function() {
         dataTest( null,
-            $('<div class="data _e-i"><span class="_p">true</span></div>'),
+            $('<div class="horn _e-i"><span class="_p">true</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( isObject( data.e));
@@ -1563,7 +1563,7 @@ test(
     "Data Output Tests - that integers can be expressed using hexadecimal notation.",
     function() {
         dataTest( null,
-            $('<div class="data"><span class=" _a">0x10</span></div>'),
+            $('<div class="horn"><span class=" _a">0x10</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( data.a === 16);
@@ -1577,7 +1577,7 @@ test(
     "Data Output Tests - that integers can be expressed using octal notation.",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="_a">0310667130</span></div>'),
+            $('<div class="horn"><span class="_a">0310667130</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( data.a === 52653656);
@@ -1591,7 +1591,7 @@ test(
     "Data Output Tests - Split definition using nested html.",
     function() {
         dataTest( null,
-            $('<div class="data _a"><div class="_b"><div class="_c"><span class="_d">-23</span></div></div></div>'),
+            $('<div class="horn _a"><div class="_b"><div class="_c"><span class="_d">-23</span></div></div></div>'),
             function( data) {
                 ok( data.a.b.c.d === -23);
           },
@@ -1604,7 +1604,7 @@ test(
     "Data Output Tests - Embedded JSON Object with string property stored in object in root context.",
     function() {
         dataTest( null,
-            $('<div class="data _0"><span class="horn-json">{"a": "hello"}</span></div>'),
+            $('<div class="horn _0"><span class="horn-json">{"a": "hello"}</span></div>'),
             function( data) {
                 ok( isArray( data));
                 ok( isObject( data[0]));
@@ -1616,7 +1616,7 @@ test(
     "Data Output Tests - Embedded JSON Object with integer property stored in array root context.",
     function() {
         dataTest( null,
-            $('<div class="data _0"><span class="horn-json">{"a": 1}</span></div>'),
+            $('<div class="horn _0"><span class="horn-json">{"a": 1}</span></div>'),
             function( data) {
                 ok( isArray( data));
                 ok( isObject( data[ 0]));
@@ -1628,7 +1628,7 @@ test(
     "Data Output Tests - Embedded JSON Object with boolean property stored in array root context.",
     function() {
         dataTest( null,
-            $('<div class="data _0"><span class="horn-json">{"a": true}</span></div>'),
+            $('<div class="horn _0"><span class="horn-json">{"a": true}</span></div>'),
             function( data) {
                 ok( isArray( data));
                 ok( isObject( data[ 0]));
@@ -1640,7 +1640,7 @@ test(
     "Data Output Tests - that two properties can exist in the same context.",
     function() {
         dataTest( null,
-            $('<div class="data"><span class="value _a">one</span><span class="value _b">two</span></div>'),
+            $('<div class="horn"><span class="value _a">one</span><span class="value _b">two</span></div>'),
             function( data ) {
                 ok( isObject( data));
                 ok( data[ 'a'] === 'one');
@@ -1658,7 +1658,7 @@ test(
     function() {
         dataTest(
             null,
-            $('<div class="data"><abbr class="_key" title="alternative">value</abbr></div>'),
+            $('<div class="horn"><abbr class="_key" title="alternative">value</abbr></div>'),
             function( data, horn ) {
                 ok( isObject( data));
                 ok( data.key === 'alternative');
@@ -1673,7 +1673,7 @@ test(
     function() {
         dataTest(
             null,
-            $('<div class="data"><abbr class="_key" title="12">value</abbr></div>'),
+            $('<div class="horn"><abbr class="_key" title="12">value</abbr></div>'),
             function( data, horn ) {
                 ok( isObject( data));
                 ok( data.key === 12);
@@ -1689,7 +1689,7 @@ test(
         ok( isAttached( $('._key')) === false);
         dataTest(
             null,
-            $('<div class="data"><abbr class="_key" title="true">value</abbr></div>'),
+            $('<div class="horn"><abbr class="_key" title="true">value</abbr></div>'),
             function( data, horn ) {
                 ok( isAttached( $('._key')));
                 ok( isObject( data));
@@ -1711,7 +1711,7 @@ test(
     function() {
         ok( isAttached( $('._key')) === false);
         dataTest( null,
-            $('<div class="data"><span class="value _key">-1</span></div>'),
+            $('<div class="horn"><span class="value _key">-1</span></div>'),
             function( data, horn ) {
                 ok( isAttached( $('._key')));
                 ok( isObject( data));
