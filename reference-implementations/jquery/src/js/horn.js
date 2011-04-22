@@ -5,21 +5,6 @@
  */
 function Horn() {
 
-    this.CONST_HORN_CSS_PREFIX
-        = '_';
-    this.CONST_HORN_CSS_PREFIX_LENGTH
-        = this.CONST_HORN_CSS_PREFIX.length;
-    this.CONST_HORN_CSS_DELIMITER
-        = '-';
-        this.CONST_HORN_CSS_HORN
-        = 'horn';
-    this.CONST_HORN_CSS_HORN_JSON
-        = 'horn-json';
-    this.CONST_META_NAME_TYPEOF
-        = 'typeof';
-    this.CONST_META_NAME_TYPEOF_LENGTH
-        = this.CONST_META_NAME_TYPEOF.length;
-
     if ( !window.Node ) {
         $.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
             'CDATA_SECTION_NODE', 'ENTITY_REFERENCE_NODE', 'ENTITY_NODE',
@@ -30,9 +15,39 @@ function Horn() {
             });
     }
 
+    this.defaults = {
+        cssPrefix:          '_',
+        cssDelimiter:       '-',
+        cssRootContext:     'horn',
+        cssJSON:            'horn-json',
+        converters: {
+            // name: constructor OR
+            // name: instance
+        },
+        patternInfo: {
+            // name: converter Name
+        }
+    };
+
+    this.opts = $.extend( {}, this.defaults);
+
 
 	// Privileged Functions - public access, can access privates, can't be
     // modified but can be replaced with public flavours
+
+    this.option = function( option ) {
+        switch ( option ) {
+            case "pattern":
+                this.opts.patternInfo[ arguments[ 1]] = {
+                    converterName: arguments[ 2]
+                }
+                break;
+
+            case "converter":
+                this.opts.converters[ arguments[ 1]] = arguments[ 2];
+                break;
+        }
+    };
 
     /*
      * Update DOM with data from the internal model, to update your UI
@@ -45,10 +60,10 @@ function Horn() {
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
-                typeOfPattern = this.firstPattern( i);
+                typeOfPattern = this.getPattern( i);
                 newValue = typeOfPattern !== null ?
                     this.convert( modelValue,
-                        typeOfPattern.contentAttribute, false) :
+                        typeOfPattern.converterName, false) :
                             modelValue.toString();
 
                 if ( n.node.nodeName.toLowerCase() === "abbr" ) {
@@ -70,15 +85,11 @@ function Horn() {
      * - converters
      */
     this.extract = function( args ) {
-        this.cacheMetaElements();
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;
 
-        this.converters = this.definesArgument( args, 'converters') ?
-            args.converters : {};
-
         this.each(
-            $("." + this.CONST_HORN_CSS_HORN),
+            $("." + this.opts.cssRootContext),
             function( i, n ) {
                 if ( this.getClosestDataParent( n) === null ) {
                     this.visitNodes.call( this, n, '');
@@ -89,33 +100,10 @@ function Horn() {
         return this.model;
     };
 
-    this.cacheMetaElements = function() {
-        this.metaInfo = [];
-        this.each( $("meta"), function( i, n ) {
-            var nameTokens;
-            var contentAttribute;
-            var nameAttribute = $(n).attr( "name");
-            if ( nameAttribute !== "" ) {
-                nameTokens = this.toTokens( nameAttribute);
-                contentAttribute = $(n).attr( "content").trim();
-                if ( this.didRemoveProperty(
-                    nameTokens, this.CONST_META_NAME_TYPEOF) &&
-                    (contentAttribute !== "") ) {
-                    this.each( nameTokens, function( i, pattern ) {
-                            if ( !this.patternDefined( pattern) ) {
-                                this.metaInfo[ this.metaInfo.length] = {
-                                    pattern: pattern,
-                                    contentAttribute: contentAttribute};
-                            }
-                        }, this);
-                }
-            }}, this);
-    };
-
     this.patternDefined = function( pattern ) {
         var rv = false;
-        $.each( this.metaInfo, function( i, n ) {
-            if ( n.pattern === pattern ) {
+        $.each( this.opts.patternInfo, function( i, n ) {
+            if ( i === pattern ) {
                 rv = true;
                 return false;
             }});
@@ -123,13 +111,13 @@ function Horn() {
         return rv;
     };
 
-    this.firstPattern = function( key ) {
+    this.getPattern = function( key ) {
         var rv = null;
         $.each(
-            this.metaInfo,
-            function( i, n) {
+            this.opts.patternInfo,
+            function( i, n ) {
                 var cachedPattern = n.rePattern;
-                var re = cachedPattern || new RegExp( n.pattern);
+                var re = cachedPattern || new RegExp( i);
                 if ( cachedPattern === undefined ) { n.rePattern = re; }
                 var m = re.exec( key);
                 if ( m !== null ) {
@@ -147,8 +135,8 @@ function Horn() {
         this.each(
             this.toTokens( $(n).attr( "class")),
             function( i, n ) {
-                if ( this.startsWith( n, this.CONST_HORN_CSS_PREFIX) ) {
-                    key = n.substring( this.CONST_HORN_CSS_PREFIX_LENGTH);
+                if ( this.startsWith( n, this.opts.cssPrefix) ) {
+                    key = n.substring( this.opts.cssPrefix.length); // @todo cache
                     if ( key === '' ) { key = null; }
                     return false;
                 }
@@ -163,7 +151,7 @@ function Horn() {
         var numTokens;
         var subContext;
         if ( typeof key === 'string' ) {
-            key = key.split( this.CONST_HORN_CSS_DELIMITER);
+            key = key.split( this.opts.cssDelimiter);
             if ( key[0] === '' ) { key.shift(); }
             if ( this.model === undefined ) {
                 this.model = !isNaN(   parseInt( key[ 0])) ? [] : {};
@@ -190,13 +178,13 @@ function Horn() {
 
     this.convertValue = function( value, hornKey, toText ) {
         var typeOfPattern;
-        if ( this.startsWith( hornKey, this.CONST_HORN_CSS_DELIMITER) ) {
+        if ( this.startsWith( hornKey, this.opts.cssDelimiter) ) {
             hornKey = hornKey.substring( 1);
         }
-        typeOfPattern = this.firstPattern( hornKey);
+        typeOfPattern = this.getPattern( hornKey);
         if ( typeOfPattern !== null ) {
             return this.convert(
-                value, typeOfPattern.contentAttribute, !toText);
+                value, typeOfPattern.converterName, !toText);
         }
         return null;
     };
@@ -204,7 +192,7 @@ function Horn() {
     this.getClosestDataParent = function( element ) {
         var parent = null;
         this.each( $(element).parents(), function( i, n ) {
-            if ( $(n).hasClass( this.CONST_HORN_CSS_HORN) ) {
+            if ( $(n).hasClass( this.opts.cssRootContext) ) {
                 parent = n;
                 return false;
             }
@@ -223,11 +211,11 @@ function Horn() {
         var details;
         var key = this.extractKey( node);
         var contents = $(node).contents();
-        var isJSON = $(node).hasClass( this.CONST_HORN_CSS_HORN_JSON);
+        var isJSON = $(node).hasClass( this.opts.cssJSON);
         if ( (contents.length === 1) &&
             (isJSON || (this.isAdjustingKey( key))) ) {
             fullKey = this.isAdjustingKey( key) ?
-                (parentKey + this.CONST_HORN_CSS_DELIMITER + key) :
+                (parentKey + this.opts.cssDelimiter + key) :
                 parentKey;
             theContained = contents[0];
             isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
@@ -257,7 +245,7 @@ function Horn() {
     this.visitNodes = function( dataElement, hornKey ) {
         var key = this.extractKey( dataElement);
         hornKey = this.isAdjustingKey( key) ?
-            (hornKey + this.CONST_HORN_CSS_DELIMITER + key) : hornKey;
+            (hornKey + this.opts.cssDelimiter + key) : hornKey;
 
         this.each( $(dataElement).children(), function( i, n ) {
             if ( !this.handleValue( n, hornKey) ) {
@@ -267,11 +255,11 @@ function Horn() {
     };
 
     this.convert = function( value, converterName, fromText ) {
-        var cachedConverter = this.converters[ converterName];
+        var cachedConverter = this.opts.converters[ converterName];
         if ( cachedConverter === undefined ) { return value.toString(); }
         if ( typeof cachedConverter === 'function' ) {
-            cachedConverter = new this.converters[ converterName]();
-            this.converters[ converterName] = cachedConverter;
+            cachedConverter = new this.opts.converters[ converterName]();
+            this.opts.converters[ converterName] = cachedConverter;
         }
         return fromText ? cachedConverter.fromText( value) :
             cachedConverter.toText( value);
@@ -279,7 +267,9 @@ function Horn() {
 }
 
 
-// Prototype functions, anyone may read/write
+// Prototype functions, anyone may read/write - essentially shared across all
+// instances
+
 Horn.prototype.isAdjustingKey = function ( key ) {
     return (key !== null) &&
         (key !== undefined) &&
@@ -315,7 +305,7 @@ Horn.prototype.startsWith = function ( value, stem ) {
 };
 
 Horn.prototype.isAttached = function( ref ) {
-    return ref.parents(':last').is('html');
+    return $(ref).parents(':last').is('html');
 };
 
 Horn.prototype.toTokens = function ( value, delimiter ) {

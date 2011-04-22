@@ -38,54 +38,66 @@ var isArray = function( object ) {
     return true;
 };
 
-var dataTest = function( name, bodyNodes, dataCallback, headNodes, storeBackRefs, passConverters ) {
-    var body = $('body');
-    var head = $('head');
-    if ( bodyNodes != null ) {
-        jQuery.each( bodyNodes, function(i, n) {$(n).appendTo(body);});
-    }
-    if ( headNodes != null ) {
-        jQuery.each( headNodes, function(i, n) {$(n).appendTo(head);});
+/**
+ *
+ *  nodes, passConverters, callback
+ *
+ *  @params args.nodes an array of objects of the following format:
+ *
+ *                               {
+ *                                  target: jQuery node,
+ *                                  nodes:  jQuery nodes
+ *                              }
+ *
+ *
+ *
+ */
+
+var dataTest = function( args ) {
+    if ( args.nodes ) {
+        $.each( args.nodes, function( i, nodeInfo ) {
+            $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target : $('body'));
+        });
     }
     try {
         var horn = new Horn();
-        horn.name = name;
-        var opts = {storeBackRefs: storeBackRefs === true};
-        if ( passConverters ) {
-            opts.converters = {
-                HornIntegerConverter: function () {
+        if ( args.passConverters === true ) {
+            horn.option( 'converter', 'IntegerConverter',
+                function () {
                     this.toText = function( value ) {
                         return value.toString();
                     }
                     this.fromText = function( value ) {
                         return parseInt( value);
                     }
-                },
-                HornBooleanConverter: function () {
+                });
+
+            horn.option( 'converter', 'BooleanConverter',
+                function () {
                     this.toText = function( value ) {
                         return value + "";
                     }
                     this.fromText = function( value ) {
                         return value.toLowerCase() === 'true';
                     }
-                },
-                HornDateConverter: function () {
-                    this.toText = function( value ) {
-                        return $.datepicker.formatDate( "yy-mm-dd", value);
-                    }
-                    this.fromText = function( value ) {
-                        return $.datepicker.parseDate( "yy-mm-dd", value);
-                    }
-                }
-            };
+                });
+
+                horn.option( 'converter', 'DateConverter',
+                function () {
+                        this.toText = function( value ) {
+                            return $.datepicker.formatDate( "yy-mm-dd", value);
+                        }
+                        this.fromText = function( value ) {
+                            return $.datepicker.parseDate( "yy-mm-dd", value);
+                        }
+                    });
         }
-        dataCallback( horn.extract(opts), horn);
+        args.callback( horn);
     } finally {
-        if ( bodyNodes != null ) {
-            jQuery.each( bodyNodes, function(i, n) {$(n).remove();});
-        }
-        if ( headNodes != null ) {
-            jQuery.each( headNodes, function(i, n) {$(n).remove();});
+        if ( args.nodes ) {
+            $.each( args.nodes, function( i, nodeInfo ) {
+                $(nodeInfo.nodes).remove();
+            });
         }
     }
 };

@@ -30,29 +30,30 @@ test(
         var horn = new Horn();
         horn.extract();
 
-        ok( isEmptyArray( horn.metaInfo));
+        ok( isEmptyObject( horn.opts.patternInfo));
     });
 
 test(
     "Horn.patternDefined() - That two identical patterns yield a single pattern and that it is returned correctly.",
     function() {
-        dataTest( null,
-            null,
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", "notices.*can.*", "BooleanConverter");
                 ok( horn.patternDefined( 'notices.*can.*') === true);
-            },
-            $('<meta name="typeof notices.*can.*" content="HornBooleanConverter" /><meta name="typeof notices.*can.*" content="HornBooleanConverter" />'));
+            }
+        });
     });
 
 test(
     "Horn.patternDefined() - Case sensitivity enforced.",
     function() {
-        dataTest( null,
-            null,
-            function( data, horn ) {
-                ok( horn.patternDefined( 'notices.*Can.*') === false);
-            },
-            $('<meta name="typeof notices.*can.*" content="HornBooleanConverter" />'));
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( 'pattern', 'notices.*Can.*', 'BooleanConverter');
+                ok( horn.patternDefined( '') === false);
+            }});
     });
 
 
@@ -61,7 +62,7 @@ test(
 module( "TestHorn - Horn.isAdjustingKey()");
 
 test(
-    "Horn.isAdjustingKey() - horn.isAdjustingKey( null) === false.",
+    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( null) === false.",
     function() {
         var horn = new Horn();
 
@@ -69,7 +70,7 @@ test(
     });
 
 test(
-    "Horn.isAdjustingKey() - horn.isAdjustingKey( undefined) === false.",
+    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( undefined) === false.",
     function() {
         var horn = new Horn();
 
@@ -77,7 +78,7 @@ test(
     });
 
 test(
-    "Horn.isAdjustingKey() - horn.isAdjustingKey( '') === false.",
+    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( '') === false.",
     function() {
         var horn = new Horn();
 
@@ -85,7 +86,7 @@ test(
     });
 
 test(
-    "Horn.isAdjustingKey() - horn.isAdjustingKey( ' ') === false.",
+    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( ' ') === false.",
     function() {
         var horn = new Horn();
 
@@ -93,7 +94,7 @@ test(
     });
 
 test(
-    "Horn.isAdjustingKey() - horn.isAdjustingKey( 'null') === true.",
+    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( 'null') === true.",
     function() {
         var horn = new Horn();
 
@@ -101,7 +102,7 @@ test(
     });
 
 test(
-    "Horn.isAdjustingKey() - horn.isAdjustingKey( 'a') === true.",
+    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( 'a') === true.",
     function() {
         var horn = new Horn();
 
@@ -111,10 +112,10 @@ test(
 
 
 
-module( "TestHorn - Horn.startsWith()");
+module( "TestHorn - Horn.prototype.startsWith()");
 
 test(
-    "String.prototype.startsWith - Sanity check on random string.",
+    "Horn.prototype.startsWith - Sanity check on random string.",
     function() {
         var horn = new Horn();
         var val = "asakmfkdsj klasdjflkdlskfldksajflkdjs f8ds ufoas dfi";
@@ -123,7 +124,7 @@ test(
     });
 
 test(
-    "String.prototype.startsWith - Check reflexivity, ie. s.startsWith( s) === true.",
+    "Horn.prototype.startsWith - Check reflexivity, ie. s.startsWith( s) === true.",
     function() {
         var horn = new Horn();
         var val = "abcdefghijklmnopqrstuvwxyz";
@@ -132,7 +133,7 @@ test(
     });
 
 test(
-    "String.prototype.startsWith - Test regex not supported as expected.",
+    "Horn.prototype.startsWith - Test regex not supported as expected.",
     function() {
         var val = "abcdefghijklmnopqrstuvwxyz";
         var horn = new Horn();
@@ -141,7 +142,7 @@ test(
     });
 
 test(
-    "String.prototype.startsWith - doesn't trim.",
+    "Horn.prototype.startsWith - doesn't trim.",
     function() {
         var val = "  ";
         var horn = new Horn();
@@ -151,10 +152,10 @@ test(
 
 
 
-module( "TestHorn - Horn.toTokens()");
+module( "TestHorn - Horn.prototype.toTokens()");
 
 test(
-    "Horn.toTokens() - check that nothing's adding prototype properties to Object.",
+    "Horn.prototype.toTokens() - check that nothing's adding prototype properties to Object.",
     function() {
         var horn = new Horn();
 
@@ -163,7 +164,7 @@ test(
     });
 
 test(
-    "Horn.toTokens() - single token from a \"test\" string.",
+    "Horn.prototype.toTokens() - single token from a \"test\" string.",
     function() {
         var horn = new Horn();
         var tokens = horn.toTokens("test");
@@ -174,7 +175,7 @@ test(
     });
 
 test(
-    "Horn.toTokens() - single token from a \"test\" string with trimming as of default \" \" delimiter.",
+    "Horn.prototype.toTokens() - single token from a \"test\" string with trimming as of default \" \" delimiter.",
     function() {
         var horn = new Horn();
         var tokens = horn.toTokens("    test     ");
@@ -185,7 +186,7 @@ test(
     });
 
 test(
-    "Horn.toTokens() - three tokens from \"  x    y     z\" with trimming as of default \" \" delimiter.",
+    "Horn.prototype.toTokens() - three tokens from \"  x    y     z\" with trimming as of default \" \" delimiter.",
     function() {
         var horn = new Horn();
         var tokens = horn.toTokens("  x    y     z");
@@ -198,7 +199,7 @@ test(
     });
 
 test(
-    "Horn.toTokens() - three tokens from \"__x____y_____z_____\" with trimming with non default \"_\" delimiter.",
+    "Horn.prototype.toTokens() - three tokens from \"__x____y_____z_____\" with trimming with non default \"_\" delimiter.",
     function() {
         var horn = new Horn();
         var tokens = horn.toTokens("__x____y_____z_____", "_");
@@ -211,7 +212,7 @@ test(
     });
 
 test(
-    "Horn.toTokens() - that regex isn't supported.",
+    "Horn.prototype.toTokens() - that regex isn't supported.",
     function() {
         var horn = new Horn();
         var tokens = horn.toTokens("abc", ".");
@@ -224,45 +225,72 @@ test(
 
 
 
+module( "TestHorn - getPattern");
+
+test(
+    "Horn.getPattern - that it does return defined patterns.",
+    function() {
+        dataTest({
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "DateConverter");
+                ok( horn.opts.patternInfo[ 'key'].converterName === 'DateConverter');
+            }});
+    });
+
+
+
+
 module( "TestHorn - {valueNodes:X}");
 
 test(
     "{valueNodes:X} - No value nodes if no storeBackRefs specified.",
     function() {
-        ok( isAttached( $('._key')) === false);
-        dataTest( null,
-            $('<div class="horn"><span class="value _key">-1</span></div>'),
-            function( data, horn ) {
-                ok( isAttached( $('._key')));
-                ok( isObject( data));
-                ok( data.key === -1);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                target: $('body'),
+                nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key')));
+                ok( isObject( model));
+                ok( model.key === -1);
+
                 ok( horn.valueNodes === undefined);
-            },
-            $('<meta name="typeof key" content="HornIntegerConverter" />'),
-            false,
-            true);
+            }});
     });
 
 test(
     "{valueNodes:X} - Value nodes if storeBackRefs specified.",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _key">-1</span></div>'),
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [{
+                target: $('body'),
+                nodes: $('<div class="horn"><span class="_key">-1</span></div>')
+            }],
+
+            callback: function( horn ) {
+                horn.option( 'pattern', 'key', 'IntegerConverter');
+                horn.extract( {storeBackRefs: true});
                 ok( countOwnProps( horn.valueNodes) === 1);
                 ok( horn.valueNodes.hasOwnProperty( 'key'));
-            },
-            $('<meta name="typeof key" content="HornIntegerConverter" />'),
-            true,
-            true);
+            }
+        });
     });
 
 test(
     "{valueNodes:X} - Unconverted String value, check valueNode attributes.",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _key">-1</span></div>'),
-            function( data, horn ) {
+        dataTest( {
+            nodes: [{
+                target: $('body'),
+                nodes: $('<div class="horn"><span class="_key">-1</span></div>')
+            }],
+            callback: function( horn ) {
+                var model = horn.extract({storeBackRefs: true});
                 var node = horn.valueNodes[ 'key'];
                 ok( node !== undefined);
                 ok( node.hornKey === '-key');
@@ -270,23 +298,26 @@ test(
                 ok( node.value === '-1');
                 ok( $(node.node).text() === node.value);
                 ok( node.context === horn.model);
-                ok( node.context[ node.key] === data.key);
-            },
-            null,
-            true);
+                ok( node.context[ node.key] === model.key);
+            }
+        });
     });
 
 test(
     "{valueNodes:X} - 2 Value nodes if two values.",
     function() {
-        dataTest( null,
-            $('<div class="horn"><div class="_a"><span class="value _key">-1</span></div><div class="_b"><span class="value _key">-1</span></div></div>'),
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [{
+                target: $('body'),
+                nodes: $('<div class="horn"><div class="_a"><span class="_key">-1</span></div><div class="_b"><span class="_key">-1</span></div></div>')
+            }],
+            callback: function( horn ) {
+                horn.option( 'pattern', 'key', 'IntegerConverter');
+                horn.extract({storeBackRefs: true});
                 ok( countOwnProps( horn.valueNodes) === 2);
-            },
-            $('<meta name="typeof key" content="HornIntegerConverter" />'),
-            true,
-            true);
+            }
+        });
     });
 
 
@@ -328,207 +359,13 @@ test(
 
 
 
-module( "TestHorn - Horn.cacheMetaElements()");
+module( "TestHorn - Horn.prototype.extractKey()");
 
 test(
-    "cacheMetaElements() - sanity check that the test environment isn't using any Horn &lt;meta/&gt; element data!",
+    "Horn.prototype.extractKey() - that no key is extracted if no suitable 'class' attribute token exists.",
     function() {
         var horn = new Horn();
-        horn.metaInfo = [];
-        horn.cacheMetaElements();
-
-        ok( (horn.metaInfo.length === 0));
-    });
-
-test(
-    "cacheMetaElements() - sanity check bad &lt;meta/&gt; element inserted into head.",
-    function() {
-        var node = $('<meta name="layout" content="board" id="kill___me___"/>');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 0);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - sanity check good &lt;meta/&gt; element inserted into head.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.*" content="HornBooleanConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 1);
-
-            ok( horn.metaInfo[0].contentAttribute === 'HornBooleanConverter');
-            ok( horn.metaInfo[0].pattern === 'notices.*can.*');
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that the \"content\" attribute is correctly trimmed.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.*" content="      HornBooleanConverter       " />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 1);
-
-            ok( horn.metaInfo[0].pattern === 'notices.*can.*');
-            ok( horn.metaInfo[0].contentAttribute === 'HornBooleanConverter');
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that a \"content\" attribute is required.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.*" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 0);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that a non blank \"content\" attribute is required.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.*" content="" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 0);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that the \'typeof\' attribute specifier is case-sensitive.",
-    function() {
-        var node = $('<meta name="Typeof notices.*can.*" content="HornBooleanConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 0);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that just a \'typeof\' attribute specifier and no other attributes is handled.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.*" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 0);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that \'typeof X X\' only yields a single internal pattern.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.* notices.*can.*" content="HornBooleanConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-            ok( horn.metaInfo.length === 1);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that \'typeof X Y\' yields two internal patterns.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.* people.*can.*" content="HornBooleanConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-            ok( horn.metaInfo.length === 2);
-
-            ok( horn.metaInfo[0].contentAttribute === 'HornBooleanConverter');
-            ok( horn.metaInfo[0].pattern === 'notices.*can.*');
-
-            ok( horn.metaInfo[1].contentAttribute === 'HornBooleanConverter');
-            ok( horn.metaInfo[1].pattern === 'people.*can.*');
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that adding two &lt;meta/&gt; elements with the same attribute values only yields a single internal pattern.",
-    function() {
-        var node1 = $('<meta name="typeof notices.*can.*" content="HornBooleanConverter" />');
-        var node2 = $('<meta name="typeof notices.*can.*" content="HornBooleanConverter" />');
-        node1.appendTo( $('head'));
-        node2.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 1, "This isn't critical as more of an implementation detail but could add proportionally more overhead in large document scenarios than fixing this test.");
-        } finally {
-            node1.remove();
-            node2.remove();
-        }
-    });
-
-test(
-    "cacheMetaElements() - that &lt;meta/&gt; elements that exist in other locations than the head, are handled.",
-    function() {
-        var node = $('<meta name="typeof notices.*can.*" content="HornBooleanConverter" />');
-        node.appendTo( $('body'));
-
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.metaInfo.length === 1);
-        } finally {
-            node.remove();
-        }
-    });
-
-
-
-
-module( "TestHorn - Horn.extractHornKey()");
-
-test(
-    "extractHornKey() - that no key is extracted if no suitable 'class' attribute token exists.",
-    function() {
-        var horn = new Horn();
-        var badPrefix = String.fromCharCode( horn.CONST_HORN_CSS_PREFIX.charCodeAt( 0) + 1);
+        var badPrefix = String.fromCharCode( horn.defaults.cssPrefix.charCodeAt( 0) + 1);
         ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
         var node = $('<div class="' + badPrefix + '" />');
 
@@ -536,28 +373,28 @@ test(
     });
 
 test(
-    "extractKey() - that the code handles the element having no 'class' atribute.",
+    "Horn.prototype.extractKey() - that the code handles the element having no 'class' atribute.",
     function() {
         var horn = new Horn();
         var node = $('<div />');
 
         ok( horn.extractKey( node) === null);
-    });
+    });             0
 
 test(
-    "extractKey() - extracts known good key.",
+    "Horn.prototype.extractKey() - extracts known good key.",
     function() {
         var horn = new Horn();
-        var node = $('<div class="' + horn.CONST_HORN_CSS_PREFIX + 'expected" />');
+        var node = $('<div class="' + horn.defaults.cssPrefix + 'expected" />');
 
         ok( horn.extractKey( node) === 'expected');
     });
 
 test(
-    "extractKey() - extracts the first key from multiple.",
+    "Horn.prototype.extractKey() - extracts the first key from multiple.",
     function() {
         var horn = new Horn();
-        var node = $('<div class="' + horn.CONST_HORN_CSS_PREFIX + 'expected ' + horn.CONST_HORN_CSS_PREFIX + 'unexpected" />');
+        var node = $('<div class="' + horn.defaults.cssPrefix + 'expected ' + horn.defaults.cssPrefix + 'unexpected" />');
 
         ok( horn.extractKey( node) === 'expected');
     });
@@ -571,9 +408,9 @@ test(
     "getClosestDataParent() - three data nodes in a hierarchy, the bottom one yields the correct parent.",
     function() {
         var horn = new Horn();
-        var node1 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node1" />');
-        var node2 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node2" />');
-        var node3 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node3" />');
+        var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
+        var node2 = $('<div class="' + horn.opts.cssRootContext + '" id="node2" />');
+        var node3 = $('<div class="' + horn.opts.cssRootContext + '" id="node3" />');
         node3.appendTo( node2);
         node2.appendTo( node1);
         try {
@@ -589,7 +426,7 @@ test(
     "getClosestDataParent() - returns null if no suitable parent.",
     function() {
         var horn = new Horn();
-        var node1 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node1" />');
+        var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
         try {
             node1.appendTo( $('body'));
 
@@ -603,18 +440,17 @@ test(
     "getClosestDataParent() - works spanning irrelevant nodes.",
     function() {
         var horn = new Horn();
-        var node1 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node1" />');
+        var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
         var node2 = $('<div/>');
         var node3 = $('<div/>');
         var node4 = $('<div/>');
-        var node5 = $('<div class="' + horn.CONST_HORN_CSS_HORN + '" id="node5" />');
+        var node5 = $('<div class="' + horn.opts.cssRootContext + '" id="node5" />');
         node5.appendTo( node4);
         node4.appendTo( node3);
         node3.appendTo( node2);
         node2.appendTo( node1);
         try {
             node1.appendTo( $('body'));
-
             ok( $(horn.getClosestDataParent( node5)).attr( 'id') === "node1");
         } finally {
             node1.remove();
@@ -703,35 +539,31 @@ test(
 test(
     "convertValue() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
-        dataTest(
-            null,
-            null,
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*", "IntegerConverter");
+                var model = horn.extract();
                 ok( horn.convertValue( "1", "_hornKey", false) === 1);
-            },
-            $('<meta name="typeof .*" content="HornIntegerConverter" />'),
-            false,
-            true);
+            }});
     });
 
 test(
     "convertValue() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
-        dataTest(
-            null,
-            null,
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*", "IntegerConverter");
+                var model = horn.extract();
                 ok( horn.convertValue( "-1", "_hornKey", false) === -1);
-            },
-            $('<meta name="typeof .*" content="HornIntegerConverter" />'),
-            false,
-            true);
+            }});
     });
 
 test(
     "convertValue() - no coercion if no matching regex against the value's hornKey.",
     function() {
-        var node = $('<meta name="typeof noMatch" content="HornIntegerConverter" />');
+        var node = $('<meta name="typeof noMatch" content="IntegerConverter" />');
         node.appendTo( $('head'));
         try {
             var horn = new Horn();
@@ -746,40 +578,35 @@ test(
 test(
     "convertValue() - that dates are coerced and parsed correctly.",
     function() {
-        dataTest(
-            null,
-            null,
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*date.*", "DateConverter");
+                var model = horn.extract();
                 var coercedValue = horn.convertValue( "2011-04-01", "_ourdate", false);
                 ok( coercedValue.constructor.toString().indexOf( 'Date') > 0);
 
                 ok( coercedValue.getFullYear() === 2011);
                 ok( coercedValue.getMonth() === 3);
                 ok( coercedValue.getDate() === 1);
-            },
-            $('<meta name="typeof .*date.*" content="HornDateConverter" />'),
-            false,
-            true);
-
+            }});
     });
 
 test(
     "convertValue() - that boolean values are coerced and parsed correctly.",
     function() {
-        dataTest(
-            null,
-            null,
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*truth.*", "BooleanConverter");
+                var model = horn.extract();
                 ok( horn.convertValue( "true",   "_ourtruth", false) === true);
                 ok( horn.convertValue( "tRuE",   "_ourtruth", false) === true);
                 ok( horn.convertValue( "TRUE",   "_ourtruth", false) === true);
                 ok( horn.convertValue( "false",  "_ourtruth", false) === false);
                 ok( horn.convertValue( "FaLsE",  "_ourtruth", false) === false);
                 ok( horn.convertValue( "FALSE",  "_ourtruth", false) === false);
-            },
-            $('<meta name="typeof .*truth.*" content="HornBooleanConverter" />'),
-            false,
-            true);
+            }});
     });
 
 
@@ -854,798 +681,910 @@ module( "TestHorn - JSON output tests");
     }
 */
 
+
+
 test(
     "Data Ouput Tests - no data expected, undefined returned.",
     function() {
-        dataTest( null,
-            $('<div></div>'),
-            function( data ) {
-                ok( data === undefined);
-            });
+        dataTest( {
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model === undefined);
+            }});
     });
 
 test(
     "Data Output Tests - _0 - 'one'",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _0">one</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 1);
-                ok( data[ 0] === 'one');
-            });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 1);
+                ok( model[ 0] === 'one');
+            }});
+
     });
 
 test(
     "Data Output Tests - _1 - 2",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _1">2</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 2);
-                ok( data[ 1] === 2);
-            },
-            $('<meta name="typeof 1" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_1">2</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "1", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 2);
+                ok( model[ 1] === 2);
+            }});
     });
 
 test(
     "Data Output Tests - _2 - true",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _2">true</span></div>'),
-            function( data ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_2">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "2", "BooleanConverter");
+                var data = horn.extract();
                 ok( isArray( data));
                 ok( data.length === 3);
                 ok( data[ 2] === true);
-            },
-            $('<meta name="typeof 2" content="HornBooleanConverter" />'),
-            false,
-            true);
+            }});
     });
 
 test(
     "Data Output Tests - _3-0 - 'three'",
     function() {
-        dataTest( null,
-            $('<div class="horn _3"><span class="_0">three</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _3"><span class="_0">three</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 1);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 1);
 
-                ok( data[ 3][ 0] === 'three');
-            });
+                ok( model[ 3][ 0] === 'three');
+            }});
     });
 
 test(
     "Data Output Tests - _3-1 - 4",
     function() {
-        dataTest( null,
-            $('<div class="horn _3"><span class="_1">4</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3"><span class="_1">4</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-1", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 2);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 2);
 
-                ok( data[ 3][ 1] === 4);
-            },
-            $('<meta name="typeof 3-1" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( model[ 3][ 1] === 4);
+            }});
     });
 
 test(
     "Data Output Tests - _3-2 - false",
     function() {
-        dataTest( null,
-            $('<div class="horn _3"><span class="_2">false</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3"><span class="_2">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-2", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 3);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 3);
 
-                ok( data[ 3][ 2] === false);
-            },
-            $('<meta name="typeof 3-2" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( model[ 3][ 2] === false);
+            }});
     });
 
 test(
     "Data Output Tests - _3-3-0 - 'five'",
     function() {
-        dataTest( null,
-            $('<div class="horn _3-3"><span class="_0">five</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _3-3"><span class="_0">five</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 4);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 4);
 
-                ok( isArray( data[ 3][ 3]));
-                ok( data[ 3][ 3].length === 1);
+                ok( isArray( model[ 3][ 3]));
+                ok( model[ 3][ 3].length === 1);
 
-                ok( data[ 3][ 3][ 0] === 'five');
-            });
+                ok( model[ 3][ 3][ 0] === 'five');
+            }});
     });
 
 test(
     "Data Output Tests - _3-3-1 - 6",
     function() {
-        dataTest( null,
-            $('<div class="horn _3-3"><span class="_1">6</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3-3"><span class="_1">6</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-3-1", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 4);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 4);
 
-                ok( isArray( data[ 3][ 3]));
-                ok( data[ 3][ 3].length === 2);
+                ok( isArray( model[ 3][ 3]));
+                ok( model[ 3][ 3].length === 2);
 
-                ok( data[ 3][ 3][ 1] === 6);
-            },
-            $('<meta name="typeof 3-3-1" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( model[ 3][ 3][ 1] === 6);
+            }});
     });
 
 test(
     "Data Output Tests - _3-3-2 - true",
     function() {
-        dataTest( null,
-            $('<div class="horn _3-3"><span class="_2">true</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3-3"><span class="_2">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-3-2", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 4);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 4);
 
-                ok( isArray( data[ 3][ 3]));
-                ok( data[ 3][ 3].length === 3);
+                ok( isArray( model[ 3][ 3]));
+                ok( model[ 3][ 3].length === 3);
 
-                ok( data[ 3][ 3][ 2] === true);
-            },
-            $('<meta name="typeof 3-3-2" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( model[ 3][ 3][ 2] === true);                
+            }});
     });
 
 test(
     "Data Output Tests - _3-4-k - 'seven'",
     function() {
-        dataTest( null,
-            $('<div class="horn _3-4"><span class="_k">seven</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3-4"><span class="_k">seven</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-3-2", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 5);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 5);
 
-                ok( isObject( data[ 3][ 4]));
-                ok( data[ 3][ 4][ 'k'] === 'seven');
-            });
+                ok( isObject( model[ 3][ 4]));
+                ok( model[ 3][ 4][ 'k'] === 'seven');                
+            }});    
     });
 
 test(
     "Data Output Tests - _3-4-l - 8",
     function() {
-        dataTest( null,
-            $('<div class="horn _3-4"><span class="_l">8</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+         dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3-4"><span class="_l">8</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-4-l", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 5);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 5);
 
-                ok( isObject( data[ 3][ 4]));
-                ok( data[ 3][ 4][ 'l'] === 8);
-            },
-            $('<meta name="typeof 3-4-l" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( isObject( model[ 3][ 4]));
+                ok( model[ 3][ 4][ 'l'] === 8);
+            }});    
     });
 
 test(
     "Data Output Tests - _3-4-m - false",
     function() {
-        dataTest( null,
-            $('<div class="horn _3-4"><span class="_m">false</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 4);
+         dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _3-4"><span class="_m">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "3-4-m", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 4);
 
-                ok( isArray( data[ 3]));
-                ok( data[ 3].length === 5);
+                ok( isArray( model[ 3]));
+                ok( model[ 3].length === 5);
 
-                ok( isObject( data[ 3][ 4]));
-                ok( data[ 3][ 4][ 'm'] === false);
-            },
-            $('<meta name="typeof 3-4-m" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( isObject( model[ 3][ 4]));
+                ok( model[ 3][ 4][ 'm'] === false);
+            }});    
     });
 
 test(
     "Data Output Tests - _4-f - 'nine'",
     function() {
-        dataTest( null,
-            $('<div class="horn _4"><span class="_f">nine</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 5);
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _4"><span class="_f">nine</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isObject( data[ 4]));
-                ok( data[ 4][ 'f'] === 'nine');
-            });
+                ok( isObject( model[ 4]));
+                ok( model[ 4][ 'f'] === 'nine');
+            }});     
     });
 
 test(
     "Data Output Tests - _4-g - 10",
     function() {
-        dataTest( null,
-            $('<div class="horn _4"><span class="_g">10</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 5);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4"><span class="_g">10</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-g", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isObject( data[ 4]));
-                ok( data[ 4][ 'g'] === 10);
-            },
-            $('<meta name="typeof 4-g" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( isObject( model[ 4]));
+                ok( model[ 4][ 'g'] === 10);
+            }});             
     });
 
 test(
     "Data Output Tests - _4-h - true",
     function() {
-        dataTest( null,
-            $('<div class="horn _4"><span class="_h">true</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 5);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4"><span class="_h">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-h", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isObject( data[ 4]));
-                ok( data[ 4][ 'h'] === true);
-            },
-            $('<meta name="typeof 4-h" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( isObject( model[ 4]));
+                ok( model[ 4][ 'h'] === true);
+            }});
     });
 
 test(
     "Data Output Tests - _4-i-1 - 'eleven'",
     function() {
-        dataTest( null,
-            $('<div class="horn _4-i"><span class="_1">eleven</span></div>'),
-            function( data ) {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _4-i"><span class="_1">eleven</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isArray( data));
-                ok( data.length === 5);
+                ok( isObject( model[ 4]));
+                ok( isArray( model[ 4][ 'i']));
+                ok( model[ 4][ 'i'].length === 2);
 
-                ok( isObject( data[ 4]));
-                ok( isArray( data[ 4][ 'i']));
-                ok( data[ 4][ 'i'].length === 2);
-
-                ok( data[ 4][ 'i'][1] === 'eleven');
-            });
+                ok( model[ 4][ 'i'][1] === 'eleven');
+            }});
     });
 
 test(
     "Data Output Tests - _4-i-2 - 12",
     function() {
-        dataTest( null,
-            $('<div class="horn _4-i"><span class="_2">12</span></div>'),
-            function( data ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4-i"><span class="_2">12</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-i-2", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isArray( data));
-                ok( data.length === 5);
+                ok( isObject( model[ 4]));
+                ok( isArray( model[ 4][ 'i']));
+                ok( model[ 4][ 'i'].length === 3);
 
-                ok( isObject( data[ 4]));
-                ok( isArray( data[ 4][ 'i']));
-                ok( data[ 4][ 'i'].length === 3);
-
-                ok( data[ 4][ 'i'][ 2] === 12);
-            },
-            $('<meta name="typeof 4-i-2" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( model[ 4][ 'i'][ 2] === 12);
+            }});
     });
 
 test(
     "Data Output Tests - _4-i-3 - false",
     function() {
-        dataTest( null,
-            $('<div class="horn _4-i"><span class="_3">false</span></div>'),
-            function( data ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4-i"><span class="_3">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-i-3", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isArray( data));
-                ok( data.length === 5);
+                ok( isObject( model[ 4]));
+                ok( isArray( model[ 4][ 'i']));
+                ok( model[ 4][ 'i'].length === 4);
 
-                ok( isObject( data[ 4]));
-                ok( isArray( data[ 4][ 'i']));
-                ok( data[ 4][ 'i'].length === 4);
-
-                ok( data[ 4][ 'i'][ 3] === false);
-            },
-            $('<meta name="typeof 4-i-3" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( model[ 4][ 'i'][ 3] === false);
+            }});
     });
 
 test(
     "Data Output Tests - _4-j-n - 'thirteen'",
     function() {
-        dataTest( null,
-            $('<div class="horn _4-j"><span class="_n">thirteen</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 5);
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _4-j"><span class="_n">thirteen</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isObject( data[ 4]));
-                ok( isObject( data[ 4][ 'j']));
+                ok( isObject( model[ 4]));
+                ok( isObject( model[ 4][ 'j']));
 
-                ok( data[ 4][ 'j'][ 'n'] === 'thirteen');
-            });
+                ok( model[ 4][ 'j'][ 'n'] === 'thirteen');
+            }});
     });
 
 test(
     "Data Output Tests - _4-j-o - 14",
     function() {
-        dataTest( null,
-            $('<div class="horn _4-j"><span class="_o">14</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 5);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4-j"><span class="_o">14</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-j-o", "IntegerConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isObject( data[ 4]));
-                ok( isObject( data[ 4][ 'j']));
+                ok( isObject( model[ 4]));
+                ok( isObject( model[ 4][ 'j']));
 
-                ok( data[ 4][ 'j'][ 'o'] === 14);
-            },
-            $('<meta name="typeof 4-j-o" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( model[ 4][ 'j'][ 'o'] === 14);
+        }});
     });
 
 test(
     "Data Output Tests - _4-j-p - true",
     function() {
-        dataTest( null,
-            $('<div class="horn _4-j"><span class="_p">true</span></div>'),
-            function( data ) {
-                ok( isArray( data));
-                ok( data.length === 5);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4-j"><span class="_p">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-j-p", "BooleanConverter");
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
 
-                ok( isObject( data[ 4]));
-                ok( isObject( data[ 4][ 'j']));
+                ok( isObject( model[ 4]));
+                ok( isObject( model[ 4][ 'j']));
 
-                ok( data[ 4][ 'j'][ 'p'] === true);
-            },
-            $('<meta name="typeof 4-j-p" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( model[ 4][ 'j'][ 'p'] === true);
+        }});
     });
 
 test(
     "Data Output Tests - _a - 'one'",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _a">one</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( data[ 'a'] === 'one');
-            });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_a">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model[ 'a'] === 'one');
+        }});
     });
 
 test(
     "Data Output Tests - _b - 2",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="_b">2</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( data.b === 2);
-            },
-            $('<meta name="typeof b" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_b">2</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "b", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.b === 2);
+        }});
     });
 
 test(
     "Data Output Tests - _d-0 - 'three'",
     function() {
-        dataTest( null,
-            $('<div class="horn _d"><span class="_0">three</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isArray( data.d));
-                ok( data.d.length === 1);
-                ok( data.d[ 0] === 'three');
-            });
+    dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _d"><span class="_0">three</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.d));
+                ok( model.d.length === 1);
+                ok( model.d[ 0] === 'three');
+        }});
     });
 
 test(
     "Data Output Tests - _d-1 - 4",
     function() {
-        dataTest( null,
-            $('<div class="horn _d"><span class="_1">4</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isArray( data.d));
-                ok( data.d.length === 2);
-                ok( data.d[ 1] === 4);
-            },
-            $('<meta name="typeof d-1" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _d"><span class="_1">4</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "d-1", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.d));
+                ok( model.d.length === 2);
+                ok( model.d[ 1] === 4);
+        }});
     });
 
 test(
     "Data Output Tests - _d-2 - false",
     function() {
-        dataTest( null,
-            $('<div class="horn _d"><span class="_2">false</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isArray( data.d));
-                ok( data.d.length === 3);
-                ok( data.d[ 2] === false);
-            },
-            $('<meta name="typeof d-2" content="HornBooleanConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "d-2", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.d));
+                ok( model.d.length === 3);
+                ok( model.d[ 2] === false);
+        }});
     });
 
 test(
     "Data Output Tests - _d-3-0 - 'five'",
     function() {
-        dataTest( null,
-            $('<div class="horn _d-3"><span class="_0">five</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isArray( data.d));
-                ok( data.d.length === 4);
-                ok( isArray( data.d[3]));
-                ok( data.d[3].length === 1);
-                ok( data.d[3][0] === 'five');
-            });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _d-3"><span class="_0">five</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.d));
+                ok( model.d.length === 4);
+                ok( isArray( model.d[3]));
+                ok( model.d[3].length === 1);
+                ok( model.d[3][0] === 'five');
+        }});
     });
 
 test(
     "Data Output Tests - _d-3-1 - 6",
     function() {
-        dataTest( null,
-            $('<div class="horn _d-3"><span class="_1">6</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isArray( data.d));
-                ok( data.d.length === 4);
-                ok( isArray( data.d[3]));
-                ok( data.d[3].length === 2);
-                ok( data.d[3][1] === 6);
-            },
-            $('<meta name="typeof d-3-1" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _d-3"><span class="_1">6</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "d-3-1", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.d));
+                ok( model.d.length === 4);
+                ok( isArray( model.d[3]));
+                ok( model.d[3].length === 2);
+                ok( model.d[3][1] === 6);
+        }});
     });
 
 test(
     "Data Output Tests - _d-3-2 - true",
     function() {
-        dataTest( null,
-            $('<div class="horn _d-3"><span class="_2">true</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isArray( data.d));
-                ok( data.d.length === 4);
-                ok( isArray( data.d[3]));
-                ok( data.d[3].length === 3);
-                ok( data.d[3][2] === true);
-            },
-            $('<meta name="typeof d-3-2" content="HornBooleanConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _d-3"><span class="_2">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "d-3-2", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.d));
+                ok( model.d.length === 4);
+                ok( isArray( model.d[3]));
+                ok( model.d[3].length === 3);
+                ok( model.d[3][2] === true);
+        }});
     });
 
 test(
     "Data Output Tests - _d-4-k - 'seven'",
     function() {
-        dataTest( null,
-            $('<div class="horn _d-4"><span class="_k">seven</span></div>'),
-            function( data ) {
-                ok( isObject( data));
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _d-4"><span class="_k">seven</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
 
-                ok( isArray( data.d));
-                ok( data.d.length === 5);
+                ok( isArray( model.d));
+                ok( model.d.length === 5);
 
-                ok( isObject( data.d[ 4]));
+                ok( isObject( model.d[ 4]));
 
-                ok( data.d[ 4].k === 'seven');
-            });
+                ok( model.d[ 4].k === 'seven');
+        }});
     });
 
 test(
     "Data Output Tests - _d-4-l - 8",
     function() {
-        dataTest( null,
-            $('<div class="horn _d-4"><span class="_l">8</span></div>'),
-            function( data ) {
-                ok( isObject( data));
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _d-4"><span class="_l">8</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "d-4-l", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
 
-                ok( isArray( data.d));
-                ok( data.d.length === 5);
+                ok( isArray( model.d));
+                ok( model.d.length === 5);
 
-                ok( isObject( data.d[ 4]));
+                ok( isObject( model.d[ 4]));
 
-                ok( data.d[ 4].l === 8);
-            },
-            $('<meta name="typeof d-4-l" content="HornIntegerConverter" />'),
-            false,
-            true);
+                ok( model.d[ 4].l === 8);
+        }});
     });
 
 test(
     "Data Output Tests - _d-4-m - false",
     function() {
-        dataTest( null,
-            $('<div class="horn _d-4"><span class="_m">false</span></div>'),
-            function( data ) {
-                ok( isObject( data));
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _d-4"><span class="_m">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "d-4-m", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
 
-                ok( isArray( data.d));
-                ok( data.d.length === 5);
+                ok( isArray( model.d));
+                ok( model.d.length === 5);
 
-                ok( isObject( data.d[ 4]));
+                ok( isObject( model.d[ 4]));
 
-                ok( data.d[ 4].m === false);
-            },
-            $('<meta name="typeof d-4-m" content="HornBooleanConverter" />'),
-            false,
-            true);
+                ok( model.d[ 4].m === false);
+        }});
     });
 
 test(
     "Data Output Tests - _e-f - 'nine'",
     function() {
-        dataTest( null,
-            $('<div class="horn _e"><span class="_f">nine</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( data.e.f === 'nine');
-            });
+        dataTest( {            
+            nodes: [ {
+                nodes:  $('<div class="horn _e"><span class="_f">nine</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( model.e.f === 'nine');
+        }});
     });
 
 test(
     "Data Output Tests - _e-g - 10",
     function() {
-        dataTest( null,
-            $('<div class="horn _e"><span class="_g">10</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( data.e.g === 10);
-            },
-            $('<meta name="typeof e-g" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e"><span class="_g">10</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-g", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( model.e.g === 10);
+        }});
     });
 
 test(
     "Data Output Tests - _e-h - true",
     function() {
-        dataTest( null,
-            $('<div class="horn _e"><span class="_h">true</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( data.e.h === true);
-            },
-            $('<meta name="typeof e-h" content="HornBooleanConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e"><span class="_h">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-h", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( model.e.h === true);
+        }});
     });
 
 test(
     "Data Output Tests - _e-i-1 - 'eleven'",
     function() {
-        dataTest( null,
-            $('<div class="horn _e-i"><span class="_1">eleven</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( isArray( data.e.i));
-                ok( data.e.i.length === 2);
-                ok( data.e.i[ 1] === 'eleven');
-
-            });
+        dataTest( {            
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_1">eleven</span></div>')}
+            ],
+            callback: function( horn ) {                
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isArray( model.e.i));
+                ok( model.e.i.length === 2);
+                ok( model.e.i[ 1] === 'eleven');
+        }});
     });
 
 test(
     "Data Output Tests - _e-i-2 - 12",
     function() {
-        dataTest( null,
-            $('<div class="horn _e-i"><span class="_2">12</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( isArray( data.e.i));
-                ok( data.e.i.length === 3);
-                ok( data.e.i[ 2] === 12);
-            },
-            $('<meta name="typeof e-i-2" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_2">12</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-i-2", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isArray( model.e.i));
+                ok( model.e.i.length === 3);
+                ok( model.e.i[ 2] === 12);
+        }});
     });
 
 test(
     "Data Output Tests - _e-i-3 - false",
     function() {
-        dataTest( null,
-            $('<div class="horn _e-i"><span class="_3">false</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( isArray( data.e.i));
-                ok( data.e.i.length === 4);
-                ok( data.e.i[ 3] === false);
-
-            },
-            $('<meta name="typeof e-i-3" content="HornBooleanConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_3">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-i-3", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isArray( model.e.i));
+                ok( model.e.i.length === 4);
+                ok( model.e.i[ 3] === false);
+        }});
     });
 
 test(
     "Data Output Tests - _e-j-n - 'thirteen'",
     function() {
-        dataTest( null,
-            $('<div class="horn _e-i"><span class="_n">thirteen</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( isObject( data.e.i));
-                ok( data.e.i.n === 'thirteen');
-
-            });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_n">thirteen</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isObject( model.e.i));
+                ok( model.e.i.n === 'thirteen');
+        }});
     });
 
 test(
     "Data Output Tests - _e-j-o - 14",
     function() {
-        dataTest( null,
-            $('<div class="horn _e-i"><span class="_o">14</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( isObject( data.e.i));
-                ok( data.e.i.o === 14);
-
-            },
-            $('<meta name="typeof e-i-o" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_o">14</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-i-o", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isObject( model.e.i));
+                ok( model.e.i.o === 14);
+        }});
     });
 
 test(
     "Data Output Tests - _e-j-p - true",
     function() {
-        dataTest( null,
-            $('<div class="horn _e-i"><span class="_p">true</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( isObject( data.e));
-                ok( isObject( data.e.i));
-                ok( data.e.i.p === true);
-            },
-            $('<meta name="typeof e-i-p" content="HornBooleanConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_p">true</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-i-p", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isObject( model.e.i));
+                ok( model.e.i.p === true);
+        }});
     });
 
 test(
     "Data Output Tests - that integers can be expressed using hexadecimal notation.",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class=" _a">0x10</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( data.a === 16);
-            },
-            $('<meta name="typeof a" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class=" _a">0x10</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "a", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.a === 16);                
+        }});
     });
 
 test(
     "Data Output Tests - that integers can be expressed using octal notation.",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="_a">0310667130</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( data.a === 52653656);
-            },
-            $('<meta name="typeof a" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_a">0310667130</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "a", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.a === 52653656);
+        }});
     });
 
 test(
-    "Data Output Tests - Split definition using nested html.",
+    "Data Output Tests - Split key definition using nested html.",
     function() {
-        dataTest( null,
-            $('<div class="horn _a"><div class="_b"><div class="_c"><span class="_d">-23</span></div></div></div>'),
-            function( data) {
-                ok( data.a.b.c.d === -23);
-          },
-          $('<meta name="typeof a-b-c-d" content="HornIntegerConverter" />'),
-            false,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _a"><div class="_b"><div class="_c"><span class="_d">-23</span></div></div></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "a-b-c-d", "IntegerConverter");
+                var model = horn.extract();
+                ok( model.a.b.c.d === -23);
+        }});
   });
 
 test(
     "Data Output Tests - Embedded JSON Object with string property stored in object in root context.",
     function() {
-        dataTest( null,
-            $('<div class="horn _0"><span class="horn-json">{"a": "hello"}</span></div>'),
-            function( data) {
-                ok( isArray( data));
-                ok( isObject( data[0]));
-                ok( data[ 0].a === 'hello');
-          });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _0"><span class="horn-json">{"a": "hello"}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( isObject( model[0]));
+                ok( model[ 0].a === 'hello');
+        }});
   });
 
 test(
     "Data Output Tests - Embedded JSON Object with integer property stored in array root context.",
     function() {
-        dataTest( null,
-            $('<div class="horn _0"><span class="horn-json">{"a": 1}</span></div>'),
-            function( data) {
-                ok( isArray( data));
-                ok( isObject( data[ 0]));
-                ok( data[ 0].a === 1);
-          });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _0"><span class="horn-json">{"a": 1}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( isObject( model[ 0]));
+                ok( model[ 0].a === 1);
+        }});
   });
 
 test(
     "Data Output Tests - Embedded JSON Object with boolean property stored in array root context.",
     function() {
-        dataTest( null,
-            $('<div class="horn _0"><span class="horn-json">{"a": true}</span></div>'),
-            function( data) {
-                ok( isArray( data));
-                ok( isObject( data[ 0]));
-                ok( data[ 0].a === true);
-          });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _0"><span class="horn-json">{"a": true}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( isObject( model[ 0]));
+                ok( model[ 0].a === true);
+        }});
   });
 
 test(
     "Data Output Tests - that two properties can exist in the same context.",
     function() {
-        dataTest( null,
-            $('<div class="horn"><span class="value _a">one</span><span class="value _b">two</span></div>'),
-            function( data ) {
-                ok( isObject( data));
-                ok( data[ 'a'] === 'one');
-                ok( data[ 'b'] === 'two');
-            });
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_a">one</span><span class="_b">two</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model[ 'a'] === 'one');
+                ok( model[ 'b'] === 'two');
+        }});
     });
 
 
@@ -1656,51 +1595,51 @@ module( "TestHorn - ABBR");
 test(
     "ABBR - ABBR node for value, no type conversion.",
     function() {
-        dataTest(
-            null,
-            $('<div class="horn"><abbr class="_key" title="alternative">value</abbr></div>'),
-            function( data, horn ) {
-                ok( isObject( data));
-                ok( data.key === 'alternative');
-            },
-            null,
-            true,
-            false);
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><abbr class="_key" title="alternative">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'alternative');
+        }});
     });
 
 test(
     "ABBR - ABBR node for value, converted to Integer.",
     function() {
-        dataTest(
-            null,
-            $('<div class="horn"><abbr class="_key" title="12">value</abbr></div>'),
-            function( data, horn ) {
-                ok( isObject( data));
-                ok( data.key === 12);
-            },
-            $('<meta name="typeof key" content="HornIntegerConverter" />'),
-            true,
-            true);
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><abbr class="_key" title="12">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
     });
 
 test(
     "ABBR - ABBR node for value, converted to Boolean, repopulated and checked.",
     function() {
-        ok( isAttached( $('._key')) === false);
-        dataTest(
-            null,
-            $('<div class="horn"><abbr class="_key" title="true">value</abbr></div>'),
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><abbr class="_key" title="true">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                var model = horn.extract({storeBackRefs: true});
                 ok( isAttached( $('._key')));
-                ok( isObject( data));
-                ok( data.key === true);
-                data.key = false;
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
                 horn.populate();
                 ok( $('._key').attr( 'title') === 'false');
-            },
-            $('<meta name="typeof key" content="HornBooleanConverter" />'),
-            true,
-            true);
+        }});
     });
 
 
@@ -1709,28 +1648,19 @@ module( "TestHorn - Population");
 test(
     "Population - integer from horn, extracted, modified in model, repopulated and checked.",
     function() {
-        ok( isAttached( $('._key')) === false);
-        dataTest( null,
-            $('<div class="horn"><span class="value _key">-1</span></div>'),
-            function( data, horn ) {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_key">-1</span></div>'),}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract({storeBackRefs: true});
                 ok( isAttached( $('._key')));
-                ok( isObject( data));
-                ok( data.key === -1);
-                data.key = 13;
+                ok( isObject( model));
+                ok( model.key === -1);
+                model.key = 13;
                 horn.populate();
                 ok( $('._key').text() === '13');
-            },
-            $('<meta name="typeof key" content="HornIntegerConverter" />'),
-            true,
-            true);
+        }});
     });
-
-
-
-
-
-
-
-
-
-
