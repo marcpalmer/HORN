@@ -7,6 +7,22 @@ var makeID = function () {
     return "hi_" + (++maxID);
 };
 
+var isArray = function( object ) {
+    if ( object === undefined ) { return false; }
+    if ( object === null ) { return false; }
+    if ( typeof object !== 'object' ) { return false; }
+    if ( object.constructor.toString().indexOf( 'Array') < 0) { return false; }
+    return true;
+};
+
+var isObject = function( object ) {
+    if ( object === undefined ) { return false; }
+    if ( object === null ) { return false; }
+    if ( typeof object !== 'object' ) { return false; }
+    if ( object.constructor.toString().indexOf( 'Object') < 0) { return false; }
+    return true;
+};
+
 var converterNameForNode = function( node ) {
     node = $(node);
     if ( node.hasClass( 'numberValue') ) {
@@ -72,32 +88,37 @@ var render = function ( object, ind, parent, pk ) {
 
 $(document).ready(function() {
     horn = new Horn();
-    var model = horn.extract({
-        storeBackRefs: true,
-        converters: {
-            IntegerConverter: function () {
-                this.toText = function( value ) { return value.toString(); };
-                this.fromText = function( value ) { return parseInt( value); };
-            },
-            BooleanConverter: function () {
-                this.toText = function( value ) {
-                    return value ? "Yes" : "No";
-                };
-                this.fromText = function( value ) {
-                    return value.toLowerCase() == 'yes';
-                };
-            },
-            DateConverter: function () {
-                this.toText = function( value ) {
-                    return $.datepicker.formatDate( DATE_FORMAT, value);
-                };
-                this.fromText = function( value ) {
-                    return $.datepicker.parseDate( DATE_FORMAT, value);
-                };
-            }
-        }
-    });
 
+    horn.option( 'converter', 'IntegerConverter',
+        function () {
+            this.toText = function( value ) { return value.toString(); };
+            this.fromText = function( value ) { return parseInt( value); };
+        });
+
+    horn.option( 'converter', 'BooleanConverter',
+        function () {
+            this.toText = function( value ) {
+                return value ? "Yes" : "No";
+            };
+            this.fromText = function( value ) {
+                return value.toLowerCase() == 'yes';
+            };
+        });
+
+    horn.option( 'converter', 'DateConverter',
+        function () {
+            this.toText = function( value ) {
+                return $.datepicker.formatDate( DATE_FORMAT, value);
+            };
+            this.fromText = function( value ) {
+                return $.datepicker.parseDate( DATE_FORMAT, value);
+            };
+        });
+
+    horn.option( 'pattern', '.*Date', 'DateConverter');
+    horn.option( 'pattern', '.*pages', 'IntegerConverter');
+
+    var model = horn.extract({ storeBackRefs: true});
     $('#formattedOutput').html( render( model));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
