@@ -175,7 +175,7 @@ up this object to the book in the database during AJAX calls. For this we use
 in inline json mechanism:
 
 <div class="horn _book">
-	<p class="horn-json hidden">{ 'id':384855 }</p>
+	<p class="data-json hidden">{ 'id':384855 }</p>
 	<h1 class="_title">Presentation Zen</h1>
 	<p>
 		Written by <span class="_authors">Garr Reynolds</span> 
@@ -188,7 +188,7 @@ Now this isn't something we necessarily want the user to see, so we may apply
 a "hidden" CSS class to the content (this is not defined as part of the specification).
 
 What this does is tell your HORN parser that the text nodes inside the <p> tag
-with "horn-json" are to be merged with the "current" object. Current object
+with "data-json" are to be merged with the "current" object. Current object
 means the object named by the nearest element with the "horn" class in DOM
 ancestry terms.
 
@@ -232,7 +232,7 @@ property path indicated:
       the value.
    OR  c) Otherwise it will just be added to the current property path.
 
-3. If a DOM element has the horn-json indicator and a property path, the text
+3. If a DOM element has the data-json indicator and a property path, the text
 of the child nodes will be parsed as JSON and merged into the model relative
 to the current property path.
 
@@ -295,7 +295,7 @@ the values or objects:
 
 <div class="horn _books">
 	<div class="_0">
-		<p class="horn-json hidden">{ 'id':384855 }</p>
+		<p class="data-json hidden">{ 'id':384855 }</p>
 		<h1 class="_title">Presentation Zen</h1>
 		<p>
 			Written by <span class="_authors">Garr Reynolds</span> 
@@ -305,7 +305,7 @@ the values or objects:
 	</div>
 
 	<div class="horn _books-1">
-		<p class="horn-json hidden">{ 'id':384855 }</p>
+		<p class="data-json hidden">{ 'id':384855 }</p>
 		<h1 class="_title">Reality Check</h1>
 		<p>
 			Written by <span class="_authors">Guy Kawasaki</span> 
@@ -322,7 +322,7 @@ To nest objects, for example a publisher information object, you simply nest
 DOM nodes and apply property name indicators:
 
 <div class="horn _books-0">
-	<p class="horn-json hidden">{ 'id':384855 }</p>
+	<p class="data-json hidden">{ 'id':384855 }</p>
 	<h1 class="_title">Presentation Zen</h1>
 	<p>
 		Written by <span class="_authors">Garr Reynolds</span> 

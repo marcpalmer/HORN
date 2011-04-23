@@ -19,7 +19,7 @@ function Horn() {
         cssPrefix:          '_',
         cssDelimiter:       '-',
         cssRootContext:     'horn',
-        cssJSON:            'horn-json',
+        cssJSON:            'data-json',
         converters: {
             // name: constructor OR
             // name: instance
@@ -49,9 +49,6 @@ function Horn() {
         }
     };
 
-    /*
-     * Update DOM with data from the internal model, to update your UI
-     */
     this.populate = function() {
         var typeOfPattern;
         var modelValue;
@@ -78,12 +75,6 @@ function Horn() {
         }, this);
     };
 
-    /*
-     * extract the HORN data out of the DOM
-     * Args supplied are a map of options:
-     * - storeBackRefs
-     * - converters
-     */
     this.extract = function( args ) {
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;

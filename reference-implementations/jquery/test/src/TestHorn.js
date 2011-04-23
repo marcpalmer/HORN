@@ -405,7 +405,7 @@ test(
 module( "TestHorn - Horn.getClosestDataParent()");
 
 test(
-    "getClosestDataParent() - three data nodes in a hierarchy, the bottom one yields the correct parent.",
+    "getClosestDataParent() - three horn nodes in a hierarchy, the bottom one yields the correct parent.",
     function() {
         var horn = new Horn();
         var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
@@ -612,7 +612,7 @@ test(
 
 
 
-module( "TestHorn - JSON output tests");
+module( "TestHorn - Model Tests");
 
 /*
                                     'Key' - 'Value'         Structure
@@ -684,7 +684,7 @@ module( "TestHorn - JSON output tests");
 
 
 test(
-    "Data Ouput Tests - no data expected, undefined returned.",
+    "Model Tests - no data expected, undefined returned.",
     function() {
         dataTest( {
             callback: function( horn ) {
@@ -694,7 +694,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _0 - 'one'",
+    "Model Tests - _0 - 'one'",
     function() {
         dataTest( {
             nodes: [ {
@@ -710,7 +710,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _1 - 2",
+    "Model Tests - _1 - 2",
     function() {
         dataTest( {
             passConverters: true,
@@ -727,7 +727,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _2 - true",
+    "Model Tests - _2 - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -744,7 +744,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-0 - 'three'",
+    "Model Tests - _3-0 - 'three'",
     function() {
         dataTest( {
             nodes: [ {
@@ -763,7 +763,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-1 - 4",
+    "Model Tests - _3-1 - 4",
     function() {
         dataTest( {
             passConverters: true,
@@ -784,7 +784,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-2 - false",
+    "Model Tests - _3-2 - false",
     function() {
         dataTest( {
             passConverters: true,
@@ -805,7 +805,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-3-0 - 'five'",
+    "Model Tests - _3-3-0 - 'five'",
     function() {
         dataTest( {
             nodes: [ {
@@ -827,7 +827,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-3-1 - 6",
+    "Model Tests - _3-3-1 - 6",
     function() {
         dataTest( {
             passConverters: true,
@@ -851,7 +851,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-3-2 - true",
+    "Model Tests - _3-3-2 - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -875,7 +875,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-4-k - 'seven'",
+    "Model Tests - _3-4-k - 'seven'",
     function() {
         dataTest( {
             passConverters: true,
@@ -897,7 +897,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-4-l - 8",
+    "Model Tests - _3-4-l - 8",
     function() {
          dataTest( {
             passConverters: true,
@@ -919,7 +919,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _3-4-m - false",
+    "Model Tests - _3-4-m - false",
     function() {
          dataTest( {
             passConverters: true,
@@ -941,7 +941,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-f - 'nine'",
+    "Model Tests - _4-f - 'nine'",
     function() {
         dataTest( {
             nodes: [ {
@@ -958,7 +958,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-g - 10",
+    "Model Tests - _4-g - 10",
     function() {
         dataTest( {
             passConverters: true,
@@ -977,7 +977,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-h - true",
+    "Model Tests - _4-h - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -996,7 +996,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-i-1 - 'eleven'",
+    "Model Tests - _4-i-1 - 'eleven'",
     function() {
         dataTest( {
             nodes: [ {
@@ -1016,7 +1016,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-i-2 - 12",
+    "Model Tests - _4-i-2 - 12",
     function() {
         dataTest( {
             passConverters: true,
@@ -1038,7 +1038,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-i-3 - false",
+    "Model Tests - _4-i-3 - false",
     function() {
         dataTest( {
             passConverters: true,
@@ -1060,7 +1060,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-j-n - 'thirteen'",
+    "Model Tests - _4-j-n - 'thirteen'",
     function() {
         dataTest( {
             nodes: [ {
@@ -1079,7 +1079,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-j-o - 14",
+    "Model Tests - _4-j-o - 14",
     function() {
         dataTest( {
             passConverters: true,
@@ -1100,7 +1100,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _4-j-p - true",
+    "Model Tests - _4-j-p - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -1121,7 +1121,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _a - 'one'",
+    "Model Tests - _a - 'one'",
     function() {
         dataTest( {
             nodes: [ {
@@ -1135,7 +1135,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _b - 2",
+    "Model Tests - _b - 2",
     function() {
         dataTest( {
             passConverters: true,
@@ -1151,7 +1151,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-0 - 'three'",
+    "Model Tests - _d-0 - 'three'",
     function() {
     dataTest( {
             nodes: [ {
@@ -1167,7 +1167,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-1 - 4",
+    "Model Tests - _d-1 - 4",
     function() {
         dataTest( {
             passConverters: true,
@@ -1185,7 +1185,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-2 - false",
+    "Model Tests - _d-2 - false",
     function() {
         dataTest( {
             passConverters: true,
@@ -1203,7 +1203,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-3-0 - 'five'",
+    "Model Tests - _d-3-0 - 'five'",
     function() {
         dataTest( {
             nodes: [ {
@@ -1221,7 +1221,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-3-1 - 6",
+    "Model Tests - _d-3-1 - 6",
     function() {
         dataTest( {
             passConverters: true,
@@ -1241,7 +1241,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-3-2 - true",
+    "Model Tests - _d-3-2 - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -1261,7 +1261,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-4-k - 'seven'",
+    "Model Tests - _d-4-k - 'seven'",
     function() {
         dataTest( {
             nodes: [ {
@@ -1281,7 +1281,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-4-l - 8",
+    "Model Tests - _d-4-l - 8",
     function() {
         dataTest( {
             passConverters: true,
@@ -1303,7 +1303,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _d-4-m - false",
+    "Model Tests - _d-4-m - false",
     function() {
         dataTest( {
             passConverters: true,
@@ -1325,7 +1325,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-f - 'nine'",
+    "Model Tests - _e-f - 'nine'",
     function() {
         dataTest( {            
             nodes: [ {
@@ -1340,7 +1340,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-g - 10",
+    "Model Tests - _e-g - 10",
     function() {
         dataTest( {
             passConverters: true,
@@ -1357,7 +1357,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-h - true",
+    "Model Tests - _e-h - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -1374,7 +1374,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-i-1 - 'eleven'",
+    "Model Tests - _e-i-1 - 'eleven'",
     function() {
         dataTest( {            
             nodes: [ {
@@ -1391,7 +1391,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-i-2 - 12",
+    "Model Tests - _e-i-2 - 12",
     function() {
         dataTest( {
             passConverters: true,
@@ -1410,7 +1410,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-i-3 - false",
+    "Model Tests - _e-i-3 - false",
     function() {
         dataTest( {
             passConverters: true,
@@ -1429,7 +1429,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-j-n - 'thirteen'",
+    "Model Tests - _e-j-n - 'thirteen'",
     function() {
         dataTest( {
             nodes: [ {
@@ -1445,7 +1445,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-j-o - 14",
+    "Model Tests - _e-j-o - 14",
     function() {
         dataTest( {
             passConverters: true,
@@ -1463,7 +1463,7 @@ test(
     });
 
 test(
-    "Data Output Tests - _e-j-p - true",
+    "Model Tests - _e-j-p - true",
     function() {
         dataTest( {
             passConverters: true,
@@ -1481,7 +1481,7 @@ test(
     });
 
 test(
-    "Data Output Tests - that integers can be expressed using hexadecimal notation.",
+    "Model Tests - that integers can be expressed using hexadecimal notation.",
     function() {
         dataTest( {
             passConverters: true,
@@ -1497,7 +1497,7 @@ test(
     });
 
 test(
-    "Data Output Tests - that integers can be expressed using octal notation.",
+    "Model Tests - that integers can be expressed using octal notation.",
     function() {
         dataTest( {
             passConverters: true,
@@ -1513,7 +1513,7 @@ test(
     });
 
 test(
-    "Data Output Tests - Split key definition using nested html.",
+    "Model Tests - Split key definition using nested html.",
     function() {
         dataTest( {
             passConverters: true,
@@ -1528,11 +1528,11 @@ test(
   });
 
 test(
-    "Data Output Tests - Embedded JSON Object with string property stored in object in root context.",
+    "Model Tests - Embedded JSON Object with string property stored in object in root context.",
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn _0"><span class="horn-json">{"a": "hello"}</span></div>')}
+                nodes:  $('<div class="horn _0"><span class="data-json">{"a": "hello"}</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -1543,11 +1543,11 @@ test(
   });
 
 test(
-    "Data Output Tests - Embedded JSON Object with integer property stored in array root context.",
+    "Model Tests - Embedded JSON Object with integer property stored in array root context.",
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn _0"><span class="horn-json">{"a": 1}</span></div>')}
+                nodes:  $('<div class="horn _0"><span class="data-json">{"a": 1}</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -1558,11 +1558,11 @@ test(
   });
 
 test(
-    "Data Output Tests - Embedded JSON Object with boolean property stored in array root context.",
+    "Model Tests - Embedded JSON Object with boolean property stored in array root context.",
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn _0"><span class="horn-json">{"a": true}</span></div>')}
+                nodes:  $('<div class="horn _0"><span class="data-json">{"a": true}</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -1573,7 +1573,7 @@ test(
   });
 
 test(
-    "Data Output Tests - that two properties can exist in the same context.",
+    "Model Tests - that two properties can exist in the same context.",
     function() {
         dataTest( {
             nodes: [ {
@@ -1633,7 +1633,7 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "key", "BooleanConverter");
                 var model = horn.extract({storeBackRefs: true});
-                ok( isAttached( $('._key')));
+                ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
                 ok( model.key === true);
                 model.key = false;
@@ -1656,7 +1656,7 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "key", "IntegerConverter");
                 var model = horn.extract({storeBackRefs: true});
-                ok( isAttached( $('._key')));
+                ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
                 ok( model.key === -1);
                 model.key = 13;
