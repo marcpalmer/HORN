@@ -117,6 +117,7 @@ $(document).ready(function() {
 
     horn.option( 'pattern', '.*Date', 'DateConverter');
     horn.option( 'pattern', '.*pages', 'IntegerConverter');
+    horn.option( 'pattern', '.*price', 'IntegerConverter');
 
     var model = horn.extract({ storeBackRefs: true});
     $('#formattedOutput').html( render( model));
