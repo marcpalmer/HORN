@@ -38,21 +38,6 @@ var isArray = function( object ) {
     return true;
 };
 
-/**
- *
- *  nodes, passConverters, callback
- *
- *  @params args.nodes an array of objects of the following format:
- *
- *                               {
- *                                  target: jQuery node,
- *                                  nodes:  jQuery nodes
- *                              }
- *
- *
- *
- */
-
 var dataTest = function( args ) {
     if ( args.nodes ) {
         $.each( args.nodes, function( i, nodeInfo ) {

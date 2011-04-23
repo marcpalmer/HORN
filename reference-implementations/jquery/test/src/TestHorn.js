@@ -576,23 +576,6 @@ test(
     });
 
 test(
-    "convertValue() - that dates are coerced and parsed correctly.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( "pattern", ".*date.*", "DateConverter");
-                var model = horn.extract();
-                var coercedValue = horn.convertValue( "2011-04-01", "_ourdate", false);
-                ok( coercedValue.constructor.toString().indexOf( 'Date') > 0);
-
-                ok( coercedValue.getFullYear() === 2011);
-                ok( coercedValue.getMonth() === 3);
-                ok( coercedValue.getDate() === 1);
-            }});
-    });
-
-test(
     "convertValue() - that boolean values are coerced and parsed correctly.",
     function() {
         dataTest( {
