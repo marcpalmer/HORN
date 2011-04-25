@@ -1,6 +1,9 @@
 /**
  * A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
  *
+ *  @todo detect horn flavour
+ *  @todo use full [x].y.z[3] syntax in html5 implementation  *
+ *
  * Authors: Chris Denman and Marc Palmer
  */
 function Horn() {
@@ -16,10 +19,19 @@ function Horn() {
     }
 
     this.defaults = {
+        html5:              false,
+
+            // CSS implementation defaults
         cssPrefix:          '_',
         cssDelimiter:       '-',
         cssRootContext:     'horn',
         cssJSON:            'data-json',
+
+            // HTML5 implementation defaults
+        dataNameHorn:       'horn',
+        dataNamePath:       'hornPath',
+        dataNameJSON:       'hornJSON',
+
         converters: {
             // name: constructor OR
             // name: instance
@@ -31,10 +43,37 @@ function Horn() {
 
     this.opts = $.extend( {}, this.defaults);
 
+        // @test
+    this.getDataAttr = function( n, name ) {
+        return $(n).attr( "data-" + name);
+    };
+
+    this.getIndicator = function( args ) {
+        var isHTML5 = this.opts.html5 === true;
+        switch ( args.type ) {
+
+            case 0: // Root context indicator
+                return isHTML5 ?
+                    this.getDataAttr( args.n, "dataNameHorn") :
+                    $(args.n).hasClass( this.opts.cssRootContext);
+            break;
+
+            case 1: // Property Path indicator aka hornKey
+                return isHTML5 ?
+                    this.getDataAttr( args.n, "dataNamePath") :
+                    this.extractKey( args.n);
+            break;
+
+            case 2: // Literal-JSON indicator
+                return isHTML5 ?
+                    this.getDataAttr( args.n, "dataNameJSON") :
+                    $(args.n).hasClass( this.opts.cssJSON);
+            break;
+        }
+    };
 
 	// Privileged Functions - public access, can access privates, can't be
     // modified but can be replaced with public flavours
-
     this.option = function( option ) {
         switch ( option ) {
             case "pattern":
@@ -81,7 +120,7 @@ function Horn() {
 
         this.each( $("." + this.opts.cssRootContext),
             function( i, n ) {
-                this.visitNodes.call( this, n, ''); // @todo don't need a call here, as of .each call
+                this.visitNodes( n, '');
             },
             this);
 
@@ -124,7 +163,7 @@ function Horn() {
             this.toTokens( $(n).attr( "class")),
             function( i, n ) {
                 if ( this.startsWith( n, this.opts.cssPrefix) ) {
-                    key = n.substring( this.opts.cssPrefix.length); // @todo cache
+                    key = n.substring( this.opts.cssPrefix.length);
                     if ( key === '' ) { key = null; }
                     return false;
                 }
@@ -177,18 +216,6 @@ function Horn() {
         return null;
     };
 
-//    this.getClosestDataParent = function( element ) {
-//        var parent = null;
-//        this.each( $(element).parents(), function( i, n ) {
-//            if ( $(n).hasClass( this.opts.cssRootContext) ) { // @abstract
-//                parent = n;
-//                return false;
-//            }
-//        }, this);
-//
-//        return parent;
-//    };
-
     this.handleValue = function( node, parentKey ) {
         var theContained;
         var fullKey;
@@ -197,9 +224,9 @@ function Horn() {
         var isABBRNode;
         var typedValue;
         var details;
-        var key = this.extractKey( node);
+        var key = this.getIndicator({type: 1, n: node});
         var contents = $(node).contents();
-        var isJSON = $(node).hasClass( this.opts.cssJSON);
+        var isJSON = this.getIndicator({type: 2, n: node});
         if ( (contents.length === 1) &&
             (isJSON || (this.isAdjustingKey( key))) ) {
             fullKey = this.isAdjustingKey( key) ?
@@ -231,13 +258,13 @@ function Horn() {
     };
 
     this.visitNodes = function( dataElement, hornKey ) {
-        var key = this.extractKey( dataElement);
+        var key = this.getIndicator({type: 1, n: dataElement});
         hornKey = this.isAdjustingKey( key) ?
             (hornKey + this.opts.cssDelimiter + key) : hornKey;
-
         this.each( $(dataElement).children(), function( i, n ) {
-            if ( !$(n).hasClass( this.opts.cssRootContext) && !this.handleValue( n, hornKey) ) {
-                this.visitNodes.call( this, n, hornKey);
+            if ( !this.getIndicator({type: 0, n: n}) &&
+                !this.handleValue( n, hornKey) ) {
+                this.visitNodes( n, hornKey);
             }
         }, this);
     };
