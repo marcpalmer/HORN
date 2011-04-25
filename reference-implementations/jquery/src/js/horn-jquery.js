@@ -40,7 +40,6 @@ function Horn() {
 
     this.opts = $.extend( {}, this.defaults);
 
-        // @test
     this.getDataAttr = function( n, name ) {
         return $(n).data( this.opts[ name]);
     };

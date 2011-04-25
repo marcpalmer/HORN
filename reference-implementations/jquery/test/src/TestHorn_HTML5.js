@@ -990,3 +990,30 @@ test(
                 ok( model[ 'b'] === 'two');
         }});
     });
+
+
+
+
+module( "TestHorn_HTML5 - getDataAttr()");
+
+test(
+    "getDataAttr() - Returns the attribute value expected.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="testingHTML5DataAttributes" id="testing" />')}
+            ],
+            callback: function( horn ) {
+                ok( horn.isAttached( $('#testing')));
+                ok( horn.getDataAttr( $('#testing'), "dataNameHorn") === 'testingHTML5DataAttributes');
+
+        }});
+    });
+
+test(
+    "getDataAttr() - Returns undefined if no such attribute exists for the node.",
+    function() {
+        var horn = new Horn();
+        ok( !horn.isAttached( $('#testing')));
+        ok( horn.getDataAttr( $('#testing'), "dataNameHorn") === undefined);
+    });
