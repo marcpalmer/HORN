@@ -3,9 +3,10 @@
  *
  *
  *  @todo literal json doesn't need to be in a value now
- *  @todo native property syntax for .data in html5 flavour
  *  @todo use full [x].y.z[3] syntax in html5 implementation
+ *
  *  @todo example - remove global crap via an enclosing object
+ *  @todo stop abbr abuse in html5 land by using another data- attribute
  *
  *  @author Chris Denman
  *  @author Marc Palmer
@@ -13,7 +14,7 @@
 function Horn() {
 
     if ( !window.Node ) {
-        $.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
+        window.$.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
             'CDATA_SECTION_NODE', 'ENTITY_REFERENCE_NODE', 'ENTITY_NODE',
             'PROCESSING_INSTRUCTION_NODE', 'COMMENT_NODE', 'DOCUMENT_NODE',
             'DOCUMENT_TYPE_NODE', 'DOCUMENT_FRAGMENT_NODE', 'NOTATION_NODE'],
@@ -38,33 +39,29 @@ function Horn() {
         patternInfo: {}
     };
 
-    this.opts = $.extend( {}, this.defaults);
+    this.opts = window.$.extend( {}, this.defaults);
 
     this.getDataAttr = function( n, name ) {
-        return $(n).data( this.opts[ name]);
+        return window.$(n).data( this.opts[ name]);
     };
 
-        // @test
     this.getIndicator = function( args ) {
         var isHTML5 = this.opts.html5 === true;
         switch ( args.type ) {
             case this.INDICATOR_ROOT:
                 return isHTML5 ?
                     this.getDataAttr( args.n, "dataNameHorn") :
-                    $(args.n).hasClass( this.opts.cssRootContext);
-            break;
+                    window.$(args.n).hasClass( this.opts.cssRootContext);
 
             case 1: // Property Path indicator aka hornKey
                 return isHTML5 ?
                     this.getDataAttr( args.n, "dataNamePath") :
                     this.extractKey( args.n);
-            break;
 
             case 2: // Literal-JSON indicator
                 return isHTML5 ?
                     this.getDataAttr( args.n, "dataNameJSON") :
-                    $(args.n).hasClass( this.opts.cssJSON);
-            break;
+                    window.$(args.n).hasClass( this.opts.cssJSON);
         }
     };
 
@@ -75,7 +72,7 @@ function Horn() {
             case "pattern":
                 this.opts.patternInfo[ arguments[ 1]] = {
                     converterName: arguments[ 2]
-                }
+                };
                 break;
 
             case "converter":
@@ -100,27 +97,26 @@ function Horn() {
 
                 if ( n.node.nodeName.toLowerCase() === "abbr" ) {
                     n.value = modelValue;
-                    $(n.node).attr('title', newValue);
+                    window.$(n.node).attr('title', newValue);
                 } else {
                     n.value = modelValue;
-                    $(n.node).text( newValue);
+                    window.$(n.node).text( newValue);
                 }
-
             }
         }, this);
     };
 
     this.getRootContextNodes = function() {
         return this.opts.html5 ?
-            $('*[data-' + this.opts.dataNameHorn + ']') :
-            $("." + this.opts.cssRootContext);
+            window.$('*[data-' + this.opts.dataNameHorn + ']') :
+            window.$("." + this.opts.cssRootContext);
     };
 
     this.extract = function( args ) {
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;
         this.opts.html5 =
-            $('*[data-' + this.opts.dataNameHorn + ']').size() > 0;
+            window.$('*[data-' + this.opts.dataNameHorn + ']').size() > 0;
         this.each( this.getRootContextNodes(),
             function( i, n ) { this.visitNodes( n, ''); }, this);
         return this.model;
@@ -128,7 +124,7 @@ function Horn() {
 
     this.patternDefined = function( pattern ) {
         var rv = false;
-        $.each( this.opts.patternInfo, function( i, n ) {
+        window.$.each( this.opts.patternInfo, function( i, n ) {
             if ( i === pattern ) {
                 rv = true;
                 return false;
@@ -139,7 +135,7 @@ function Horn() {
 
     this.getPattern = function( key ) {
         var rv = null;
-        $.each(
+        window.$.each(
             this.opts.patternInfo,
             function( i, n ) {
                 var cachedPattern = n.rePattern;
@@ -159,7 +155,7 @@ function Horn() {
     this.extractKey = function( n ) {
         var key = null;
         this.each(
-            this.toTokens( $(n).attr( "class")),
+            this.toTokens( window.$(n).attr( "class")),
             function( i, n ) {
                 if ( this.startsWith( n, this.opts.cssPrefix) ) {
                     key = n.substring( this.opts.cssPrefix.length);
@@ -224,7 +220,7 @@ function Horn() {
         var typedValue;
         var details;
         var key = this.getIndicator({type: this.INDICATOR_PATH, n: node});
-        var contents = $($(node).contents());
+        var contents = window.$(window.$(node).contents());
         var isJSON = this.getIndicator({type: this.INDICATOR_JSON, n: node});
         if ( (contents.size() === 1) &&
             (isJSON || (this.isAdjustingKey( key))) ) {
@@ -236,8 +232,8 @@ function Horn() {
             isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
             if ( isTextNode || isABBRNode ) {
                 text = window.unescape( isABBRNode ?
-                    $(node).attr('title') : $(theContained).text());
-                typedValue = isJSON ? $.evalJSON( text) :
+                    window.$(node).attr('title') : window.$(theContained).text());
+                typedValue = isJSON ? window.$.evalJSON( text) :
                     this.convertValue( text, fullKey, false);
                 details = this.setValue( typedValue !== null ?
                     typedValue : text, fullKey);
@@ -260,7 +256,7 @@ function Horn() {
         var key = this.getIndicator({type: this.INDICATOR_PATH, n: dataElement});
         hornKey = this.isAdjustingKey( key) ?
             (hornKey + this.opts.cssDelimiter + key) : hornKey;
-        this.each( $(dataElement).children(), function( i, n ) {
+        this.each( window.$(dataElement).children(), function( i, n ) {
             if ( !this.getIndicator({type: this.INDICATOR_ROOT, n: n}) &&
                 !this.handleValue( n, hornKey) ) {
                 this.visitNodes( n, hornKey);
@@ -298,7 +294,7 @@ Horn.prototype.each = function( collection, fn, ctx ) {
     if ( (collection === undefined) || (collection === null) ) {
         return;
     }
-    $.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
+    window.$.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
 };
 
 Horn.prototype.didRemoveProperty = function( object, property ) {
@@ -319,13 +315,13 @@ Horn.prototype.startsWith = function ( value, stem ) {
 };
 
 Horn.prototype.isAttached = function( ref ) {
-    return $(ref).parents(':last').is('html');
+    return window.$(ref).parents(':last').is('html');
 };
 
 Horn.prototype.toTokens = function ( value, delimiter ) {
     var obj = {};
 
-    $.each( value.split( delimiter !== undefined ? delimiter : " "),
+    window.$.each( value.split( delimiter !== undefined ? delimiter : " "),
         function( i, n ) {
             n = n.trim();
             if ( n !== "" ) { obj[ n] = n; }});
@@ -335,7 +331,7 @@ Horn.prototype.toTokens = function ( value, delimiter ) {
 
 Horn.prototype.getIfSingleTextNode = function( element ) {
     var theContained;
-    var contained = $($(element).contents());
+    var contained = window.$(window.$(element).contents());
     if ( contained.size() === 1 ) {
         theContained = contained[ 0];
         if ( theContained.nodeType === window.Node.TEXT_NODE ) {
@@ -346,7 +342,7 @@ Horn.prototype.getIfSingleTextNode = function( element ) {
     return null;
 };
 
-$.each( ['INDICATOR_ROOT','INDICATOR_PATH','INDICATOR_JSON'],
+window.$.each( ['INDICATOR_ROOT','INDICATOR_PATH','INDICATOR_JSON'],
     function( i, n) {
         if ( Horn.prototype[ n.toString()] === undefined ) {
             Horn.prototype[ n.toString()] = i;
