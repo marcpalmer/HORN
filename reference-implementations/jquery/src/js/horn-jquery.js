@@ -1,8 +1,13 @@
 /**
  * A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
  *
- *  @todo detect horn flavour
- *  @todo use full [x].y.z[3] syntax in html5 implementation  *
+ *  @todo detect horn flavour - detect any "data-${dataNameHorn}" elements
+ *  @todo use full [x].y.z[3] syntax in html5 implementation
+ *
+ *
+ *
+ *
+ *
  *
  * Authors: Chris Denman and Marc Palmer
  */
@@ -19,35 +24,29 @@ function Horn() {
     }
 
     this.defaults = {
-        html5:              false,
-
-            // CSS implementation defaults
+            // CSS flavour
         cssPrefix:          '_',
         cssDelimiter:       '-',
         cssRootContext:     'horn',
         cssJSON:            'data-json',
 
-            // HTML5 implementation defaults
+            // HTML5 flavour
         dataNameHorn:       'horn',
         dataNamePath:       'hornPath',
         dataNameJSON:       'hornJSON',
 
-        converters: {
-            // name: constructor OR
-            // name: instance
-        },
-        patternInfo: {
-            // name: converter Name
-        }
+        converters: {},
+        patternInfo: {}
     };
 
     this.opts = $.extend( {}, this.defaults);
 
         // @test
     this.getDataAttr = function( n, name ) {
-        return $(n).attr( "data-" + name);
+        return $(n).attr( "data-" + this.opts[ name]);
     };
 
+        // @test
     this.getIndicator = function( args ) {
         var isHTML5 = this.opts.html5 === true;
         switch ( args.type ) {
@@ -114,16 +113,19 @@ function Horn() {
         }, this);
     };
 
+    this.getRootContextNodes = function() {
+        return this.opts.html5 ?
+            $('*[data-' + this.opts.dataNameHorn + ']') :
+            $("." + this.opts.cssRootContext);
+    };
+
     this.extract = function( args ) {
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;
-
-        this.each( $("." + this.opts.cssRootContext),
-            function( i, n ) {
-                this.visitNodes( n, '');
-            },
-            this);
-
+        this.opts.html5 =
+            $('*[data-' + this.opts.dataNameHorn + ']').size() > 0;
+        this.each( this.getRootContextNodes(),
+            function( i, n ) { this.visitNodes( n, ''); }, this);
         return this.model;
     };
 
