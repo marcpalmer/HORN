@@ -1,12 +1,5 @@
 /**
- * A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
- *
- *
- *  @todo literal json doesn't need to be in a value now
- *  @todo use full [x].y.z[3] syntax in html5 implementation
- *
- *  @todo example - remove global crap via an enclosing object
- *  @todo stop abbr abuse in html5 land by using another data- attribute
+ *  A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
  *
  *  @author Chris Denman
  *  @author Marc Palmer
