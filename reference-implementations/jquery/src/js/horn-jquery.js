@@ -50,8 +50,7 @@ function Horn() {
     this.getIndicator = function( args ) {
         var isHTML5 = this.opts.html5 === true;
         switch ( args.type ) {
-
-            case 0: // Root context indicator
+            case this.INDICATOR_ROOT:
                 return isHTML5 ?
                     this.getDataAttr( args.n, "dataNameHorn") :
                     $(args.n).hasClass( this.opts.cssRootContext);
@@ -226,10 +225,10 @@ function Horn() {
         var isABBRNode;
         var typedValue;
         var details;
-        var key = this.getIndicator({type: 1, n: node});
-        var contents = $(node).contents();
-        var isJSON = this.getIndicator({type: 2, n: node});
-        if ( (contents.length === 1) &&
+        var key = this.getIndicator({type: this.INDICATOR_PATH, n: node});
+        var contents = $($(node).contents());
+        var isJSON = this.getIndicator({type: this.INDICATOR_JSON, n: node});
+        if ( (contents.size() === 1) &&
             (isJSON || (this.isAdjustingKey( key))) ) {
             fullKey = this.isAdjustingKey( key) ?
                 (parentKey + this.opts.cssDelimiter + key) :
@@ -260,11 +259,11 @@ function Horn() {
     };
 
     this.visitNodes = function( dataElement, hornKey ) {
-        var key = this.getIndicator({type: 1, n: dataElement});
+        var key = this.getIndicator({type: this.INDICATOR_PATH, n: dataElement});
         hornKey = this.isAdjustingKey( key) ?
             (hornKey + this.opts.cssDelimiter + key) : hornKey;
         this.each( $(dataElement).children(), function( i, n ) {
-            if ( !this.getIndicator({type: 0, n: n}) &&
+            if ( !this.getIndicator({type: this.INDICATOR_ROOT, n: n}) &&
                 !this.handleValue( n, hornKey) ) {
                 this.visitNodes( n, hornKey);
             }
@@ -337,9 +336,9 @@ Horn.prototype.toTokens = function ( value, delimiter ) {
 };
 
 Horn.prototype.getIfSingleTextNode = function( element ) {
-    var contained = $(element).contents();
     var theContained;
-    if ( contained.length === 1 ) {
+    var contained = $($(element).contents());
+    if ( contained.size() === 1 ) {
         theContained = contained[ 0];
         if ( theContained.nodeType === window.Node.TEXT_NODE ) {
             return window.unescape( theContained.nodeValue);
@@ -348,3 +347,10 @@ Horn.prototype.getIfSingleTextNode = function( element ) {
 
     return null;
 };
+
+$.each( ['INDICATOR_ROOT','INDICATOR_PATH','INDICATOR_JSON'],
+    function( i, n) {
+        if ( Horn.prototype[ n.toString()] === undefined ) {
+            Horn.prototype[ n.toString()] = i;
+        }
+    });
