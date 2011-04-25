@@ -46,12 +46,12 @@ function Horn() {
                     this.getDataAttr( args.n, "dataNameHorn") :
                     window.$(args.n).hasClass( this.opts.cssRootContext);
 
-            case 1: // Property Path indicator aka hornKey
+            case this.INDICATOR_PATH:
                 return isHTML5 ?
                     this.getDataAttr( args.n, "dataNamePath") :
-                    this.extractKey( args.n);
+                    this.extractCSSPropertyPath( args.n);
 
-            case 2: // Literal-JSON indicator
+            case this.INDICATOR_JSON:
                 return isHTML5 ?
                     this.getDataAttr( args.n, "dataNameJSON") :
                     window.$(args.n).hasClass( this.opts.cssJSON);
@@ -126,7 +126,7 @@ function Horn() {
         return rv;
     };
 
-    this.getPattern = function( key ) {
+    this.getPattern = function( path ) {
         var rv = null;
         window.$.each(
             this.opts.patternInfo,
@@ -134,7 +134,7 @@ function Horn() {
                 var cachedPattern = n.rePattern;
                 var re = cachedPattern || new RegExp( i);
                 if ( cachedPattern === undefined ) { n.rePattern = re; }
-                var m = re.exec( key);
+                var m = re.exec( path);
                 if ( m !== null ) {
                     rv = n;
                     return false;
@@ -145,45 +145,45 @@ function Horn() {
         return rv;
     };
 
-    this.extractKey = function( n ) {
-        var key = null;
+    this.extractCSSPropertyPath = function( n ) {
+        var path = null;
         this.each(
             this.toTokens( window.$(n).attr( "class")),
             function( i, n ) {
                 if ( this.startsWith( n, this.opts.cssPrefix) ) {
-                    key = n.substring( this.opts.cssPrefix.length);
-                    if ( key === '' ) { key = null; }
+                    path = n.substring( this.opts.cssPrefix.length);
+                    if ( path === '' ) { path = null; }
                     return false;
                 }
             },
             this);
 
-        return key;
+        return path;
     };
 
-    this.setValue = function( value, key, parentContext ) {
+    this.setValue = function( value, path, parentContext ) {
         var token;
         var numTokens;
         var subContext;
-        if ( typeof key === 'string' ) {
-            key = key.split( this.opts.cssDelimiter);
-            if ( key[0] === '' ) { key.shift(); }
+        if ( typeof path === 'string' ) {
+            path = path.split( this.opts.cssDelimiter);
+            if ( path[0] === '' ) { path.shift(); }
             if ( this.model === undefined ) {
-                this.model = !isNaN(   parseInt( key[ 0])) ? [] : {};
+                this.model = !isNaN(   parseInt( path[ 0])) ? [] : {};
             }
-            return this.setValue( value, key, this.model);
+            return this.setValue( value, path, this.model);
         }
-        numTokens = key.length;
+        numTokens = path.length;
         if ( numTokens > 0 ) {
-            token = key.shift();
+            token = path.shift();
             if ( numTokens > 1 ) {
                 if ( !parentContext.hasOwnProperty( token) ) {
-                    subContext = !isNaN( parseInt( key[ 0])) ? [] : {};
+                    subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
                     parentContext[ token] = subContext;
                 }
                 subContext = parentContext[ token];
 
-                return this.setValue( value, key, subContext);
+                return this.setValue( value, path, subContext);
             } else {
                 parentContext[ token] = value;
                 return {context: parentContext, key: token, value: value};
@@ -191,12 +191,12 @@ function Horn() {
         }
     };
 
-    this.convertValue = function( value, hornKey, toText ) {
+    this.convertValue = function( value, path, toText ) {
         var typeOfPattern;
-        if ( this.startsWith( hornKey, this.opts.cssDelimiter) ) {
-            hornKey = hornKey.substring( 1);
+        if ( this.startsWith( path, this.opts.cssDelimiter) ) {
+            path = path.substring( 1);
         }
-        typeOfPattern = this.getPattern( hornKey);
+        typeOfPattern = this.getPattern( path);
         if ( typeOfPattern !== null ) {
             return this.convert(
                 value, typeOfPattern.converterName, !toText);
@@ -204,22 +204,22 @@ function Horn() {
         return null;
     };
 
-    this.handleValue = function( node, parentKey ) {
+    this.handleValue = function( node, parentPath ) {
         var theContained;
-        var fullKey;
+        var fullPath;
         var text;
         var isTextNode;
         var isABBRNode;
         var typedValue;
         var details;
-        var key = this.getIndicator({type: this.INDICATOR_PATH, n: node});
+        var path = this.getIndicator({type: this.INDICATOR_PATH, n: node});
         var contents = window.$(window.$(node).contents());
         var isJSON = this.getIndicator({type: this.INDICATOR_JSON, n: node});
         if ( (contents.size() === 1) &&
-            (isJSON || (this.isAdjustingKey( key))) ) {
-            fullKey = this.isAdjustingKey( key) ?
-                (parentKey + this.opts.cssDelimiter + key) :
-                parentKey;
+            (isJSON || (this.isAdjustingPath( path))) ) {
+            fullPath = this.isAdjustingPath( path) ?
+                (parentPath + this.opts.cssDelimiter + path) :
+                parentPath;
             theContained = contents[0];
             isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
             isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
@@ -227,16 +227,16 @@ function Horn() {
                 text = window.unescape( isABBRNode ?
                     window.$(node).attr('title') : window.$(theContained).text());
                 typedValue = isJSON ? window.$.evalJSON( text) :
-                    this.convertValue( text, fullKey, false);
+                    this.convertValue( text, fullPath, false);
                 details = this.setValue( typedValue !== null ?
-                    typedValue : text, fullKey);
+                    typedValue : text, fullPath);
                 if ( (this.storeBackRefs === true) && (!isJSON) ) {
                     if ( this.valueNodes === undefined ) {
                         this.valueNodes = {};
                     }
 
-                    this.valueNodes[ fullKey.substring( 1)] = { node: node,
-                        hornKey: fullKey, context: details.context,
+                    this.valueNodes[ fullPath.substring( 1)] = { node: node,
+                        context: details.context,
                         key: details.key, value: details.value};
                 }
                 return true;
@@ -245,14 +245,14 @@ function Horn() {
         return false;
     };
 
-    this.visitNodes = function( dataElement, hornKey ) {
-        var key = this.getIndicator({type: this.INDICATOR_PATH, n: dataElement});
-        hornKey = this.isAdjustingKey( key) ?
-            (hornKey + this.opts.cssDelimiter + key) : hornKey;
+    this.visitNodes = function( dataElement, path ) {
+        var _path = this.getIndicator({type: this.INDICATOR_PATH, n: dataElement});
+        path = this.isAdjustingPath( _path) ?
+            (path + this.opts.cssDelimiter + _path) : path;
         this.each( window.$(dataElement).children(), function( i, n ) {
             if ( !this.getIndicator({type: this.INDICATOR_ROOT, n: n}) &&
-                !this.handleValue( n, hornKey) ) {
-                this.visitNodes( n, hornKey);
+                !this.handleValue( n, path) ) {
+                this.visitNodes( n, path);
             }
         }, this);
     };
@@ -273,10 +273,10 @@ function Horn() {
 // Prototype functions, anyone may read/write - essentially shared across all
 // instances
 
-Horn.prototype.isAdjustingKey = function ( key ) {
-    return (key !== null) &&
-        (key !== undefined) &&
-        (key.toString().trim() !== '');
+Horn.prototype.isAdjustingPath = function ( path ) {
+    return (path !== null) &&
+        (path !== undefined) &&
+        (path.toString().trim() !== '');
 };
 
 Horn.prototype.bind = function( fn, ctx ) {

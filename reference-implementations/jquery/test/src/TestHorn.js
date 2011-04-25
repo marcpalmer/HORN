@@ -70,54 +70,54 @@ test(
 
 
 
-module( "TestHorn - Horn.isAdjustingKey()");
+module( "TestHorn - Horn.isAdjustingPath()");
 
 test(
-    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( null) === false.",
+    "Horn.prototype.isAdjustingPath() - horn.isAdjustingPath( null) === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingKey( null) === false);
+        ok( horn.isAdjustingPath( null) === false);
     });
 
 test(
-    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( undefined) === false.",
+    "Horn.prototype.isAdjustingPath() - horn.isAdjustingPath( undefined) === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingKey( undefined) === false);
+        ok( horn.isAdjustingPath( undefined) === false);
     });
 
 test(
-    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( '') === false.",
+    "Horn.prototype.isAdjustingPath() - horn.isAdjustingPath( '') === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingKey( '') === false);
+        ok( horn.isAdjustingPath( '') === false);
     });
 
 test(
-    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( ' ') === false.",
+    "Horn.prototype.isAdjustingPath() - horn.isAdjustingPath( ' ') === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingKey( ' ') === false);
+        ok( horn.isAdjustingPath( ' ') === false);
     });
 
 test(
-    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( 'null') === true.",
+    "Horn.prototype.isAdjustingPath() - horn.isAdjustingPath( 'null') === true.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingKey( 'null') === true);
+        ok( horn.isAdjustingPath( 'null') === true);
     });
 
 test(
-    "Horn.prototype.isAdjustingKey() - horn.isAdjustingKey( 'a') === true.",
+    "Horn.prototype.isAdjustingPath() - horn.isAdjustingPath( 'a') === true.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingKey( 'a') === true);
+        ok( horn.isAdjustingPath( 'a') === true);
     });
 
 
@@ -304,7 +304,6 @@ test(
                 var model = horn.extract({storeBackRefs: true});
                 var node = horn.valueNodes[ 'key'];
                 ok( node !== undefined);
-                ok( node.hornKey === '-key');
                 ok( node.key === 'key');
                 ok( node.value === '-1');
                 ok( $(node.node).text() === node.value);
@@ -370,44 +369,44 @@ test(
 
 
 
-module( "TestHorn - Horn.prototype.extractKey()");
+module( "TestHorn - Horn.prototype.extractCSSPropertyPath()");
 
 test(
-    "Horn.prototype.extractKey() - that no key is extracted if no suitable 'class' attribute token exists.",
+    "Horn.prototype.extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
     function() {
         var horn = new Horn();
         var badPrefix = String.fromCharCode( horn.defaults.cssPrefix.charCodeAt( 0) + 1);
         ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
         var node = $('<div class="' + badPrefix + '" />');
 
-        ok( horn.extractKey( node) === null);
+        ok( horn.extractCSSPropertyPath( node) === null);
     });
 
 test(
-    "Horn.prototype.extractKey() - that the code handles the element having no 'class' atribute.",
+    "Horn.prototype.extractCSSPropertyPath() - that the code handles the element having no 'class' atribute.",
     function() {
         var horn = new Horn();
         var node = $('<div />');
 
-        ok( horn.extractKey( node) === null);
+        ok( horn.extractCSSPropertyPath( node) === null);
     });             0
 
 test(
-    "Horn.prototype.extractKey() - extracts known good key.",
+    "Horn.prototype.extractCSSPropertyPath() - extracts known good key.",
     function() {
         var horn = new Horn();
         var node = $('<div class="' + horn.defaults.cssPrefix + 'expected" />');
 
-        ok( horn.extractKey( node) === 'expected');
+        ok( horn.extractCSSPropertyPath( node) === 'expected');
     });
 
 test(
-    "Horn.prototype.extractKey() - extracts the first key from multiple.",
+    "Horn.prototype.extractCSSPropertyPath() - extracts the first key from multiple.",
     function() {
         var horn = new Horn();
         var node = $('<div class="' + horn.defaults.cssPrefix + 'expected ' + horn.defaults.cssPrefix + 'unexpected" />');
 
-        ok( horn.extractKey( node) === 'expected');
+        ok( horn.extractCSSPropertyPath( node) === 'expected');
     });
 
 
