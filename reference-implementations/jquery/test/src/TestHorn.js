@@ -402,64 +402,6 @@ test(
 
 
 
-module( "TestHorn - Horn.getClosestDataParent()");
-
-test(
-    "getClosestDataParent() - three horn nodes in a hierarchy, the bottom one yields the correct parent.",
-    function() {
-        var horn = new Horn();
-        var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
-        var node2 = $('<div class="' + horn.opts.cssRootContext + '" id="node2" />');
-        var node3 = $('<div class="' + horn.opts.cssRootContext + '" id="node3" />');
-        node3.appendTo( node2);
-        node2.appendTo( node1);
-        try {
-            node1.appendTo( $('body'));
-
-            ok( $(horn.getClosestDataParent( node3)).attr( 'id') === "node2");
-        } finally {
-            node1.remove();
-        }
-    });
-
-test(
-    "getClosestDataParent() - returns null if no suitable parent.",
-    function() {
-        var horn = new Horn();
-        var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
-        try {
-            node1.appendTo( $('body'));
-
-            ok( horn.getClosestDataParent( node1) === null);
-        } finally {
-            node1.remove();
-        }
-    });
-
-test(
-    "getClosestDataParent() - works spanning irrelevant nodes.",
-    function() {
-        var horn = new Horn();
-        var node1 = $('<div class="' + horn.opts.cssRootContext + '" id="node1" />');
-        var node2 = $('<div/>');
-        var node3 = $('<div/>');
-        var node4 = $('<div/>');
-        var node5 = $('<div class="' + horn.opts.cssRootContext + '" id="node5" />');
-        node5.appendTo( node4);
-        node4.appendTo( node3);
-        node3.appendTo( node2);
-        node2.appendTo( node1);
-        try {
-            node1.appendTo( $('body'));
-            ok( $(horn.getClosestDataParent( node5)).attr( 'id') === "node1");
-        } finally {
-            node1.remove();
-        }
-    });
-
-
-
-
 module( "TestHorn - Horn.getIfSingleTextNode()");
 
 test(
@@ -1646,4 +1588,27 @@ test(
                 horn.populate();
                 ok( $('._key').text() === '13');
         }});
+    });
+
+
+
+
+module( "Nested Contexts");
+
+
+
+test(
+    "Nested Contexts - Simple nested in immediate parent.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _z"><div class="horn"><span class="_b">b</span></div><span class="_a">a</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.z.a === 'a');
+                ok( model.b === 'b');
+                ok( model.z.a.b === undefined);
+                ok( model.z.b === undefined);
+            }});
     });

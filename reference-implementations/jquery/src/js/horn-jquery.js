@@ -79,12 +79,9 @@ function Horn() {
         this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
             args.storeBackRefs;
 
-        this.each(
-            $("." + this.opts.cssRootContext),
+        this.each( $("." + this.opts.cssRootContext),
             function( i, n ) {
-                if ( this.getClosestDataParent( n) === null ) {
-                    this.visitNodes.call( this, n, '');
-                }
+                this.visitNodes.call( this, n, ''); // @todo don't need a call here, as of .each call
             },
             this);
 
@@ -180,17 +177,17 @@ function Horn() {
         return null;
     };
 
-    this.getClosestDataParent = function( element ) {
-        var parent = null;
-        this.each( $(element).parents(), function( i, n ) {
-            if ( $(n).hasClass( this.opts.cssRootContext) ) {
-                parent = n;
-                return false;
-            }
-        }, this);
-
-        return parent;
-    };
+//    this.getClosestDataParent = function( element ) {
+//        var parent = null;
+//        this.each( $(element).parents(), function( i, n ) {
+//            if ( $(n).hasClass( this.opts.cssRootContext) ) { // @abstract
+//                parent = n;
+//                return false;
+//            }
+//        }, this);
+//
+//        return parent;
+//    };
 
     this.handleValue = function( node, parentKey ) {
         var theContained;
@@ -239,7 +236,7 @@ function Horn() {
             (hornKey + this.opts.cssDelimiter + key) : hornKey;
 
         this.each( $(dataElement).children(), function( i, n ) {
-            if ( !this.handleValue( n, hornKey) ) {
+            if ( !$(n).hasClass( this.opts.cssRootContext) && !this.handleValue( n, hornKey) ) {
                 this.visitNodes.call( this, n, hornKey);
             }
         }, this);
