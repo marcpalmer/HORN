@@ -1,15 +1,14 @@
 /**
  * A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
  *
- *  @todo detect horn flavour - detect any "data-${dataNameHorn}" elements
+ *
+ *  @todo literal json doesn't need to be in a value now
+ *  @todo native property syntax for .data in html5 flavour
  *  @todo use full [x].y.z[3] syntax in html5 implementation
+ *  @todo example - remove global crap via an enclosing object
  *
- *
- *
- *
- *
- *
- * Authors: Chris Denman and Marc Palmer
+ *  @author Chris Denman
+ *  @author Marc Palmer
  */
 function Horn() {
 
@@ -43,7 +42,7 @@ function Horn() {
 
         // @test
     this.getDataAttr = function( n, name ) {
-        return $(n).attr( "data-" + this.opts[ name]);
+        return $(n).data( this.opts[ name]);
     };
 
         // @test

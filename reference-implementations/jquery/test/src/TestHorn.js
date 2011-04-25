@@ -19,6 +19,17 @@ test(
         ok( window.Node.NOTATION_NODE === 12);
     });
 
+test(
+    "Horn Miscellany - check that we have the required prototype indicator constants expected.",
+    function() {
+        var horn = new Horn();
+
+        ok( horn.INDICATOR_ROOT === 0);
+        ok( horn.INDICATOR_PATH === 1);
+        ok( horn.INDICATOR_JSON === 2);
+    });
+
+
 
 
 
