@@ -1,13 +1,8 @@
 HORN
 =====
 
-This is a specification for inlining model data into your HTML pages, which
-can be used for the presentation of the view to the site user, as well as
-being parsed out by machines - typically by JavaScript in your page to build
-up the data model for your client code.
+This is a specification for inlining model data into your HTML pages, which can be used for the presentation of the view to the site user, as well as being parsed out by machines - typically by JavaScript in your page to build up the data model for your client code.
 
-This saves duplication of data and AJAX round-trip on first page load, and
-means you have SEO-friendly data in your pages.
+This saves duplication of data and AJAX round-trip on first page load, and means you have SEO-friendly data in your pages.
 
-We'll be updating and releasing the spec soon and a reference implementation
-for JavaScript using jQuery
+Included is a specification for the HORN data-weaving conventions, and a jQuery reference implementation for CSS and HTML5 data-weaving.
