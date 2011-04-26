@@ -26,7 +26,7 @@ function Horn() {
             // HTML5 flavour
         dataNameHorn:       'horn',
         dataNamePath:       'horn-path',
-        dataNameJSON:       'hornJSON',
+        dataNameJSON:       'horn-json',
 
         converters: {},
         patternInfo: {}

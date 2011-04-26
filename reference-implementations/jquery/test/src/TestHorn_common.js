@@ -271,3 +271,217 @@ test(
                 ok( horn.opts.patternInfo[ 'key'].converterName === 'DateConverter');
             }});
     });
+
+
+
+module( "TestHorn - Horn.didRemoveProperty()");
+
+test(
+    "didRemoveProperty() - that we can remove a new object's property X.",
+    function() {
+        var horn = new Horn();
+
+        ok( horn.didRemoveProperty( {"a": "b"}, "a"));
+    });
+
+test(
+    "didRemoveProperty() - that we can't remove a property that doesn't exist.",
+    function() {
+        var horn = new Horn();
+        var propertyName = "ajsdjfklsadjkfljlksadjfkljsdklfjlksadjf";
+        var testObj = {};
+
+        ok( testObj[ propertyName] === undefined);
+        ok( !horn.didRemoveProperty( testObj, propertyName));
+    });
+
+test(
+    "didRemoveProperty() - removal of known property is reported as have being removed and is actually removed.",
+    function() {
+        var testObj = {};
+        ok( testObj.propertyName === undefined);
+
+        var horn = new Horn();
+        testObj.propertyName = "propertyValue";
+
+        ok( horn.didRemoveProperty( testObj, "propertyName") === true);
+        ok( testObj.propertyName === undefined);
+    });
+
+
+
+
+module( "TestHorn - Horn.prototype.extractCSSPropertyPath()");
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
+    function() {
+        var horn = new Horn();
+        var badPrefix = String.fromCharCode( horn.defaults.cssPrefix.charCodeAt( 0) + 1);
+        ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
+        var node = $('<div class="' + badPrefix + '" />');
+
+        ok( horn.extractCSSPropertyPath( node) === null);
+    });
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - that the code handles the element having no 'class' atribute.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div />');
+
+        ok( horn.extractCSSPropertyPath( node) === null);
+    });
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - extracts known good key.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div class="' + horn.defaults.cssPrefix + 'expected" />');
+
+        ok( horn.extractCSSPropertyPath( node) === 'expected');
+    });
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - extracts the first key from multiple.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div class="' + horn.defaults.cssPrefix + 'expected ' + horn.defaults.cssPrefix + 'unexpected" />');
+
+        ok( horn.extractCSSPropertyPath( node) === 'expected');
+    });
+
+
+
+
+module( "TestHorn - Horn.getIfSingleTextNode()");
+
+test(
+    "getIfSingleTextNode() - that an empty '&lt;a/&gt;' element doesn't return anything using this function.",
+    function() {
+        try {
+            var horn = new Horn();
+            var node = $('<a/>');
+            node.appendTo( $('body'));
+
+            ok( horn.getIfSingleTextNode( node) === null);
+        } finally {
+            node.remove();
+        }
+    });
+
+test(
+    "getIfSingleTextNode() - that applied to '&lt;a&gt;123 456&lt;/a&gt;' return the expected value '123 456'.",
+    function() {
+        try {
+            var horn = new Horn();
+            var node = $('<a>123 456</a>');
+            node.appendTo( $('body'));
+
+            ok( horn.getIfSingleTextNode( node) === '123 456');
+        } finally {
+            node.remove();
+        }
+    });
+
+test(
+    "getIfSingleTextNode() - that applied to '&lt;a&gt; 123 456 &lt;/a&gt;' return the expected value ' 123 456 ', nice and bushy like.",
+    function() {
+        try {
+            var horn = new Horn();
+            var node = $('<a> 123 456 </a>');
+            node.appendTo( $('body'));
+
+            ok( horn.getIfSingleTextNode( node) === ' 123 456 ');
+        } finally {
+            node.remove();
+        }
+    });
+
+test(
+    "getIfSingleTextNode() - that when applied to elements with more than 1 child (at least one text node), returns null.",
+    function() {
+        try {
+            var horn = new Horn();
+            var node = $('<a> 123<a>a</a>456 </a>');
+            node.appendTo( $('body'));
+
+            ok( horn.getIfSingleTextNode( node) === null);
+        } finally {
+            node.remove();
+        }
+    });
+
+
+
+
+module( "TestHorn - Horn.convertValue()");
+
+test(
+    "convertValue() - that it returns null if there are no matching patterns.",
+    function() {
+
+        var horn = new Horn();
+        horn.metaInfo = [];
+
+        var value = "value";
+        var hornKey = "_hornKey";
+
+        ok( horn.convertValue( value, hornKey, false) === null);
+    });
+
+test(
+    "convertValue() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*", "IntegerConverter");
+                var model = horn.extract();
+                ok( horn.convertValue( "1", "_hornKey", false) === 1);
+            }});
+    });
+
+test(
+    "convertValue() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*", "IntegerConverter");
+                var model = horn.extract();
+                ok( horn.convertValue( "-1", "_hornKey", false) === -1);
+            }});
+    });
+
+test(
+    "convertValue() - no coercion if no matching regex against the value's hornKey.",
+    function() {
+        var node = $('<meta name="typeof noMatch" content="IntegerConverter" />');
+        node.appendTo( $('head'));
+        try {
+            var horn = new Horn();
+            horn.extract();
+
+            ok( horn.convertValue( "-1", "_hornKey", false) === null);
+        } finally {
+            node.remove();
+        }
+    });
+
+test(
+    "convertValue() - that boolean values are coerced and parsed correctly.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( "pattern", ".*truth.*", "BooleanConverter");
+                var model = horn.extract();
+                ok( horn.convertValue( "true",   "_ourtruth", false) === true);
+                ok( horn.convertValue( "tRuE",   "_ourtruth", false) === true);
+                ok( horn.convertValue( "TRUE",   "_ourtruth", false) === true);
+                ok( horn.convertValue( "false",  "_ourtruth", false) === false);
+                ok( horn.convertValue( "FaLsE",  "_ourtruth", false) === false);
+                ok( horn.convertValue( "FALSE",  "_ourtruth", false) === false);
+            }});
+    });
