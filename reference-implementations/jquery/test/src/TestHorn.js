@@ -32,6 +32,30 @@ test(
 
 
 
+module( "TestHorn - Horn.encodeCSS()");
+
+test(
+    "Horn.encodeCSS() - On null or undefined returns undefined.",
+    function() {
+        var horn = new Horn();
+        ok( horn.encodeCSS( null) === undefined);
+        ok( horn.encodeCSS( undefined) === undefined);
+    });
+
+test(
+    "Horn.encodeCSS() - Sanity check various values.",
+    function() {
+        var horn = new Horn();
+        ok( horn.encodeCSS( 'a') === "_a");
+        ok( horn.encodeCSS( 'a[10]') === "_a-10");
+        ok( horn.encodeCSS( '[10]') === "_10");
+        ok( horn.encodeCSS( '[10][20]') === "_10-20");
+        ok( horn.encodeCSS( 'x[1].y[2].z[3]') === "_x-1-y-2-z-3");
+        ok( horn.encodeCSS( 'x[1][2][3].y[2].z') === "_x-1-2-3-y-2-z");
+    });
+
+
+
 
 module( "TestHorn - Horn.patternDefined()");
 

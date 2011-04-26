@@ -267,6 +267,17 @@ function Horn() {
         return fromText ? cachedConverter.fromText( value) :
             cachedConverter.toText( value);
     };
+
+    this.encodeCSS = function( value ) {
+        var length;
+        var delimiter = this.opts.cssDelimiter;
+        if ( !value ) { return undefined; }
+        value = value.toString().replace( /[\[\].]/g, delimiter).replace( /--/g, delimiter);
+        if ( this.startsWith( value, delimiter) ) { value = value.substring( delimiter.length); }
+        value = this.opts.cssPrefix + value;
+        length = value.length;
+        return value.charAt( length - 1) === delimiter ? value.substring( 0, length - 1): value;
+    }
 }
 
 
