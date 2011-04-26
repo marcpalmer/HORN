@@ -13,13 +13,14 @@ By doing this, you save duplication of data and/or an AJAX round-trip on first
 page load, and you have SEO-friendly data in your pages. The page your user
 sees first is real semantic content.
 
-In a nutshell, by clever use of CSS classes (or HTML5 data for only newer
-browsers) and adding where necessary a few <span> or other tags to your
+Even more importantly, this means that your JS UI code is no longer fragile
+with respect to design-related changes. You don't select nodes to find data,
+you address your model directly.
+
+In a nutshell, by clever use of CSS classes (or HTML5 data attributee for 
+newer browsers) and adding where necessary a few <span> or other tags to your
 markup, you can provide a rich data model to your JS code from your HTML
 content.
-
-This means that your JS UI code is no longer fragile with respect to
-design-related changes.
 
 Overview
 ========
@@ -83,13 +84,16 @@ There are three kinds of indicator in HORN:
 2. Property path indicator
 3. Inline JSON indicator
 
-When you are not using HTML5, you define a CSS class on a DOM element. The
-class name you use defines the object/value name. The only other requirement
-is that some ancestor in the DOM has the "horn" class, to indicate that nodes
-under that should be scanned for data. This saves HORN parsers from scanning
-your entire DOM which might be slow in some browsers on complex pages, and
-tells them which DOM nodes begin new "root level" data objects, rather than
-nested objects.
+Indicators in CSS
+=================
+
+When you are not using HTML5, you must define a CSS class on a DOM element.
+The class name you use defines the object/value name. The only other
+requirement is that some ancestor in the DOM has the "horn" class, to indicate
+that nodes under that should be scanned for data. This saves HORN parsers from
+scanning your entire DOM which might be slow in some browsers on complex
+pages, and tells them which DOM nodes begin new "root level" data objects,
+rather than nested objects.
 
 So, to begin the data definition for a single top-level book object:
 
@@ -102,8 +106,9 @@ this div and its descendent nodes. The underscore prefix indicates to HORN
 that this is the name (minus the underscore) of your object and will be stored
 as the "book" property in the root of your data model.
 
-The rest of the examples in this specification use the CSS class indicators
-until HTML5 is supported in the reference implementation.
+The rest of the examples in this specification use the CSS class indicators,
+but will all work in HTML5 as-is, or can be modified to use HTML5
+data-attributes.
 
 So now we need to add the title and author information:
 
@@ -214,36 +219,12 @@ jQuery reference implementation you will use something like:
 var horn = new Horn()
 var myModel = horn.extract()
 
-The rules: how HORN knows what is a value
-=========================================
 
-HORN parsers apply some simple rules to determine whether or not a tag contains a
-data value and what to do with it:
-
-1. If a DOM element is marked as a HORN context root (has class "horn") and
-has a property path (has class like "_yourpropname"), a new root-level data
-object will be declared.
-
-2. If a DOM element is NOT marked as a HORN context root, and has only a
-property path indicated:
-   AND a) it has only text nodes as children, it will be used to set a property 
-      (according to the path defined) on the "current" object.
-   OR  b) if the tag is an <abbr> tag, the "title" attribute will be used to set
-      the value.
-   OR  c) Otherwise it will just be added to the current property path.
-
-3. If a DOM element has the data-json indicator and a property path, the text
-of the child nodes will be parsed as JSON and merged into the model relative
-to the current property path.
-
-4. If a DOM element has no HORN indicators on it, it is ignored.
-
-
-Property path indicators
+Property path indicators in CSS
 =====================================
 
 For pre-HTML5 applications, the HORN specification uses CSS classes to
-indicate root contexts and property paths. For HTML5 it uses HTML-Data
+indicate root contexts and property paths. For HTML5 it uses data
 attributes.
 
 The constraints on valid characters in CSS classes mean that we have to use a
@@ -281,6 +262,54 @@ property paths relative to the nearest ancestor's calculated path:
 
 You can see here that inner elements have spans defining data properties which
 will be set on books[0].
+
+
+Indicators in HTML5
+===================
+
+As you have seen, indicators for pre-HTML5 apps use special CSS class name
+conventions. The HTML5 equivalents are as follows:
+
+* Root object: data-horn-root="books[3]"
+* Property path: data-horn-path="authors[1].firstName"
+* Inline JSON: data-horn-json="authors[0].metadata"
+
+These attributes all define the property path for the value defined by this
+DOM node, which will be parsed out of the document in the normal way (using
+the rules defined in the next section). 
+
+What is different here from CSS:
+
+1. You can use full JavaScript property dereferencing notations, no
+underscores or other tricks.
+
+2. You only need one of these attributes on any given DOM node, they are not
+additive like the CSS classes can be.
+
+
+The rules: how HORN knows what is a value
+=========================================
+
+HORN parsers apply some simple rules to determine whether or not a tag contains a
+data value and what to do with it:
+
+1. If a DOM element is marked as a HORN context root (has class "horn") and
+has a property path (has class like "_yourpropname"), a new root-level data
+object will be declared.
+
+2. If a DOM element is NOT marked as a HORN context root, and has only a
+property path indicated:
+   AND a) it has only text nodes as children, it will be used to set a property 
+      (according to the path defined) on the "current" object.
+   OR  b) if the tag is an <abbr> tag, the "title" attribute will be used to set
+      the value.
+   OR  c) Otherwise it will just be added to the current property path.
+
+3. If a DOM element has the data-json indicator and a property path, the text
+of the child nodes will be parsed as JSON and merged into the model relative
+to the current property path.
+
+4. If a DOM element has no HORN indicators on it, it is ignored.
 
 
 Complex data: nested objects and arrays
