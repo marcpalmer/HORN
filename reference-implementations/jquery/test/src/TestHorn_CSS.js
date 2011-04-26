@@ -1096,7 +1096,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div class="horn"><abbr class="_key" title="true">value</abbr></div>')}
+                nodes:  $('<div class="horn">baskdfhjdshfds h<abbr class="_key" title="true">value</abbr> akdsjf kljdskf jdskf</div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "key", "BooleanConverter");

@@ -993,6 +993,75 @@ test(
 
 
 
+module( "TestHorn_HTML5 - ABBR");
+
+test(
+    "ABBR - ABBR node for value, no type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true"><abbr data-horn-path="key" title="alternative">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'alternative');
+        }});
+    });
+
+test(
+    "ABBR - ABBR node for value, converted to Integer.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true"><abbr data-horn-path="key" title="12">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
+
+test(
+    "ABBR - ABBR node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true">baskdfhjdshfds h<abbr id="grabMe" data-horn-path="key" title="true">value</abbr> akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                var model = horn.extract({storeBackRefs: true});
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
+                horn.populate();
+                ok( $('#grabMe').attr( 'title') === 'false');
+        }});
+    });
+
+test(
+    "ABBR - ABBR node for value, but with JSON.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true">baskdfhjdshfds h<abbr id="grabMe" data-horn-path="key" data-horn-json="true" title="false">value</abbr> akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract({storeBackRefs: true});
+                ok( isObject( model));
+                ok( model.key === false);
+                model.key = false;
+                horn.populate();
+        }});
+    });
+
+
 
 module( "TestHorn_HTML5 - getDataAttr()");
 
