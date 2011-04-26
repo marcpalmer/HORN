@@ -43,7 +43,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="0">one</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="0">one</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -61,7 +61,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="1">2</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="1">2</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "1", "IntegerConverter");
@@ -79,7 +79,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="2">true</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="2">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "2", "BooleanConverter");
@@ -95,7 +95,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3"><span data-hornPath="0">three</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3"><span data-horn-path="0">three</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -116,7 +116,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3"><span data-hornPath="1">4</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3"><span data-horn-path="1">4</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-1", "IntegerConverter");
@@ -138,7 +138,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3"><span data-hornPath="2">false</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3"><span data-horn-path="2">false</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-2", "BooleanConverter");
@@ -159,7 +159,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3-3"><span data-hornPath="0">five</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3-3"><span data-horn-path="0">five</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -195,7 +195,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3-3"><span data-hornPath="1">6</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3-3"><span data-horn-path="1">6</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-3-1", "IntegerConverter");
@@ -220,7 +220,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3-3"><span data-hornPath="2">true</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3-3"><span data-horn-path="2">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-3-2", "BooleanConverter");
@@ -245,7 +245,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3-4"><span data-hornPath="k">seven</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3-4"><span data-horn-path="k">seven</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-3-2", "BooleanConverter");
@@ -268,7 +268,7 @@ test(
          dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3-4"><span data-hornPath="l">8</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3-4"><span data-horn-path="l">8</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-4-l", "IntegerConverter");
@@ -291,7 +291,7 @@ test(
          dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="3-4"><span data-hornPath="m">false</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="3-4"><span data-horn-path="m">false</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "3-4-m", "BooleanConverter");
@@ -313,7 +313,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4"><span data-hornPath="f">nine</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4"><span data-horn-path="f">nine</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -332,7 +332,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4"><span data-hornPath="g">10</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4"><span data-horn-path="g">10</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "4-g", "IntegerConverter");
@@ -352,7 +352,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4"><span data-hornPath="h">true</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4"><span data-horn-path="h">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "4-h", "BooleanConverter");
@@ -371,7 +371,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4-i"><span data-hornPath="1">eleven</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4-i"><span data-horn-path="1">eleven</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -393,7 +393,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4-i"><span data-hornPath="2">12</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4-i"><span data-horn-path="2">12</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "4-i-2", "IntegerConverter");
@@ -416,7 +416,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4-i"><span data-hornPath="3">false</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4-i"><span data-horn-path="3">false</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "4-i-3", "BooleanConverter");
@@ -438,7 +438,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4-j"><span data-hornPath="n">thirteen</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4-j"><span data-horn-path="n">thirteen</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -459,7 +459,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4-j"><span data-hornPath="o">14</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4-j"><span data-horn-path="o">14</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "4-j-o", "IntegerConverter");
@@ -481,7 +481,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="4-j"><span data-hornPath="p">true</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="4-j"><span data-horn-path="p">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "4-j-p", "BooleanConverter");
@@ -502,7 +502,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="a">one</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="a">one</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -518,7 +518,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="b">2</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="b">2</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "b", "IntegerConverter");
@@ -534,7 +534,7 @@ test(
     function() {
     dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d"><span data-hornPath="0">three</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d"><span data-horn-path="0">three</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -552,7 +552,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d"><span data-hornPath="1">4</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d"><span data-horn-path="1">4</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "d-1", "IntegerConverter");
@@ -571,7 +571,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d"><span data-hornPath="2">false</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d"><span data-horn-path="2">false</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "d-2", "BooleanConverter");
@@ -589,7 +589,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d-3"><span data-hornPath="0">five</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d-3"><span data-horn-path="0">five</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -609,7 +609,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d-3"><span data-hornPath="1">6</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d-3"><span data-horn-path="1">6</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "d-3-1", "IntegerConverter");
@@ -630,7 +630,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d-3"><span data-hornPath="2">true</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d-3"><span data-horn-path="2">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "d-3-2", "BooleanConverter");
@@ -650,7 +650,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d-4"><span data-hornPath="k">seven</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d-4"><span data-horn-path="k">seven</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -672,7 +672,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d-4"><span data-hornPath="l">8</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d-4"><span data-horn-path="l">8</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "d-4-l", "IntegerConverter");
@@ -695,7 +695,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="d-4"><span data-hornPath="m">false</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="d-4"><span data-horn-path="m">false</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "d-4-m", "BooleanConverter");
@@ -717,7 +717,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e"><span data-hornPath="f">nine</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e"><span data-horn-path="f">nine</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -734,7 +734,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e"><span data-hornPath="g">10</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e"><span data-horn-path="g">10</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-g", "IntegerConverter");
@@ -752,7 +752,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e"><span data-hornPath="h">true</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e"><span data-horn-path="h">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-h", "BooleanConverter");
@@ -769,7 +769,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e-i"><span data-hornPath="1">eleven</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e-i"><span data-horn-path="1">eleven</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -788,7 +788,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e-i"><span data-hornPath="2">12</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e-i"><span data-horn-path="2">12</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-2", "IntegerConverter");
@@ -808,7 +808,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e-i"><span data-hornPath="3">false</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e-i"><span data-horn-path="3">false</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-3", "BooleanConverter");
@@ -827,7 +827,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e-i"><span data-hornPath="n">thirteen</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e-i"><span data-horn-path="n">thirteen</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -845,7 +845,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e-i"><span data-hornPath="o">14</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e-i"><span data-horn-path="o">14</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-o", "IntegerConverter");
@@ -864,7 +864,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="e-i"><span data-hornPath="p">true</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="e-i"><span data-horn-path="p">true</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-p", "BooleanConverter");
@@ -883,7 +883,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="a">0x10</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="a">0x10</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "a", "IntegerConverter");
@@ -900,7 +900,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="a">0310667130</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="a">0310667130</span></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "a", "IntegerConverter");
@@ -917,7 +917,7 @@ test(
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="a"><div data-hornPath="b"><div data-hornPath="c"><span data-hornPath="d">-23</span></div></div></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="a"><div data-horn-path="b"><div data-horn-path="c"><span data-horn-path="d">-23</span></div></div></div>')}
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "a-b-c-d", "IntegerConverter");
@@ -932,7 +932,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="0"><span data-hornJSON="true">{"a": "hello"}</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="0"><span data-horn-json="true">{"a": "hello"}</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -948,7 +948,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="0"><span data-hornJSON="true">{"a": 1}</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="0"><span data-horn-json="true">{"a": 1}</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -964,7 +964,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true" data-hornPath="0"><span data-hornJSON="true">{"a": true}</span></div>')}
+                nodes:  $('<div data-horn="true" data-horn-path="0"><span data-horn-json="true">{"a": true}</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();
@@ -980,7 +980,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div data-horn="true"><span data-hornPath="a">one</span><span data-hornPath="b">two</span></div>')}
+                nodes:  $('<div data-horn="true"><span data-horn-path="a">one</span><span data-horn-path="b">two</span></div>')}
             ],
             callback: function( horn ) {
                 var model = horn.extract();

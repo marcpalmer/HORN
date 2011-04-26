@@ -25,7 +25,7 @@ function Horn() {
 
             // HTML5 flavour
         dataNameHorn:       'horn',
-        dataNamePath:       'hornPath',
+        dataNamePath:       'horn-path',
         dataNameJSON:       'hornJSON',
 
         converters: {},
@@ -57,6 +57,24 @@ function Horn() {
                     window.$(args.n).hasClass( this.opts.cssJSON);
         }
     };
+
+    this.getRootContextNodes = function() {
+        return this.opts.html5 ?
+            window.$('*[data-' + this.opts.dataNameHorn + ']') :
+            window.$("." + this.opts.cssRootContext);
+    };
+
+
+    this.extract = function( args ) {
+        this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
+            args.storeBackRefs;
+        this.opts.html5 =
+            window.$('*[data-' + this.opts.dataNameHorn + ']').size() > 0; // @todo change, shouldn't sense, should be informed
+        this.each( this.getRootContextNodes(),
+            function( i, n ) { this.visitNodes( n, ''); }, this);
+        return this.model;
+    };
+
 
 	// Privileged Functions - public access, can access privates, can't be
     // modified but can be replaced with public flavours
@@ -97,22 +115,6 @@ function Horn() {
                 }
             }
         }, this);
-    };
-
-    this.getRootContextNodes = function() {
-        return this.opts.html5 ?
-            window.$('*[data-' + this.opts.dataNameHorn + ']') :
-            window.$("." + this.opts.cssRootContext);
-    };
-
-    this.extract = function( args ) {
-        this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
-            args.storeBackRefs;
-        this.opts.html5 =
-            window.$('*[data-' + this.opts.dataNameHorn + ']').size() > 0;
-        this.each( this.getRootContextNodes(),
-            function( i, n ) { this.visitNodes( n, ''); }, this);
-        return this.model;
     };
 
     this.patternDefined = function( pattern ) {
