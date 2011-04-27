@@ -13,11 +13,20 @@ var data = horn.extract();
 
 This implementation uses HORN CSS classe indicators to support all browsers.
 
-Methods
-=======
+Methods of the Horn class
+=========================
+
+option(optionName, value)
+================
+
+Call this to set options on the HORN parser instance. Valid options are:
+
+* pattern -
+* converter -
+
 
 extract(options)
-==============
+================
 
 The extract method takes an optional map of options to define how you would like
 the parser to operate, and which type converters you wish to use.
@@ -60,8 +69,8 @@ appropriate converter and the value pushed to the screen elements.
 There is currently no tracking of the removal of DOM nodes.
 
 
-Definition Type Conversions
-===========================
+Definition of Type Conversions
+==============================
 
 To assign a named converter to a given property path in your data model, you
 use the <meta> tag in your <head> section:

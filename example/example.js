@@ -1,6 +1,5 @@
 
 
-$(document).ready(function() {
     var bindings = {};
     var maxID = -1;
 
@@ -89,15 +88,15 @@ $(document).ready(function() {
         }
     };
 
-    horn = new Horn();
+//    horn = new Horn();
 
-    horn.option( 'converter', 'IntegerConverter',
+    window.horn.option( 'converter', 'IntegerConverter',
         function () {
             this.toText = function( value ) { return value.toString(); };
             this.fromText = function( value ) { return parseInt( value); };
         });
 
-    horn.option( 'converter', 'BooleanConverter',
+    window.horn.option( 'converter', 'BooleanConverter',
         function () {
             this.toText = function( value ) {
                 return value ? "Yes" : "No";
@@ -107,7 +106,7 @@ $(document).ready(function() {
             };
         });
 
-    horn.option( 'converter', 'DateConverter',
+    window.horn.option( 'converter', 'DateConverter',
         function () {
             this.toText = function( value ) {
                 return $.datepicker.formatDate( DATE_FORMAT, value);
@@ -117,12 +116,12 @@ $(document).ready(function() {
             };
         });
 
-    horn.option( 'pattern', '.*Date', 'DateConverter');
-    horn.option( 'pattern', '.*pages', 'IntegerConverter');
-    horn.option( 'pattern', '.*price', 'IntegerConverter');
+    window.horn.option( 'pattern', '.*Date', 'DateConverter');
+    window.horn.option( 'pattern', '.*pages', 'IntegerConverter');
+    window.horn.option( 'pattern', '.*price', 'IntegerConverter');
 
-    var model = horn.extract({ storeBackRefs: true});
-    $('#formattedOutput').html( render( model));
+$(function() {
+    $('#formattedOutput').html( render( window.horn.getModel() ));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
