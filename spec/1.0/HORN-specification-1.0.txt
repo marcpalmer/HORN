@@ -270,9 +270,33 @@ Indicators in HTML5
 As you have seen, indicators for pre-HTML5 apps use special CSS class name
 conventions. The HTML5 equivalents are as follows:
 
-* Root object: data-horn-root="books[3]"
-* Property path: data-horn-path="authors[1].firstName"
-* Inline JSON: data-horn-json="authors[0].metadata"
+* data-horn - an absolute or relative property path 
+
+* data-horn-json - as data-horn but also indicating that the value is a JSON
+  literal.
+
+Because there are less restrictions on the characters used in a regular HTML
+attribute, we can have fewer constructs by supporting a leading "/" to
+indicate whether a property path indicator is relative or "root" level, and we
+can use regular JavaScript property and array notation:
+
+Define a root level object: 
+
+<div data-horn="/books[3]">
+..
+</div>
+
+Define a relative value: 
+
+<span data-horn="title">The Definitive Guide To Grails</span>
+
+Or a relative inline JSON value:
+
+<span data-horn-json="metadata" class="hidden">{ something: 'here' }</span>
+
+...and finally an absolute JSON value:
+
+<span data-horn-json="/books[3].metadata" class="hidden">{ something: 'here' }</span>
 
 These attributes all define the property path for the value defined by this
 DOM node, which will be parsed out of the document in the normal way (using
@@ -281,7 +305,8 @@ the rules defined in the next section).
 What is different here from CSS:
 
 1. You can use full JavaScript property dereferencing notations, no
-underscores or other tricks.
+underscores or other tricks, and support for leading "/" to indicate
+root-level property indicator.
 
 2. You only need one of these attributes on any given DOM node, they are not
 additive like the CSS classes can be.
