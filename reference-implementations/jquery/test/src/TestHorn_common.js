@@ -1,6 +1,58 @@
 module( "TestHorn - Horn Miscellany");
 
 test(
+    "Features - Test that features have been applied to the prototype.",
+    function() {
+        ok( isObject( Horn.prototype.features));
+        var horn = new Horn();
+        ok( isObject( horn.features));
+    }
+);
+
+test(
+    "Features - Test new Horn instances have features.",
+    function() {
+        var horn = new Horn();
+        ok( isObject( horn.features));
+    }
+);
+
+test(
+    "Features - Test applied feature has INDICATOR_ROOT function.",
+    function() {
+        var horn = new Horn();
+        ok( isFunction( horn.features.INDICATOR_ROOT));
+    }
+);
+
+test(
+    "Features - Test applied feature has INDICATOR_JSON function.",
+    function() {
+        var horn = new Horn();
+        ok( isFunction( horn.features.INDICATOR_JSON));
+    }
+);
+
+test(
+    "Features - Test applied feature has INDICATOR_PATH function.",
+    function() {
+        var horn = new Horn();
+        ok( isFunction( horn.features.INDICATOR_PATH));
+    }
+);
+
+test(
+    "Features - Test applied feature has ROOT_NODES function.",
+    function() {
+        var horn = new Horn();
+        ok( isFunction( horn.features.ROOT_NODES));
+    }
+);
+
+
+
+
+test(
     "Horn Miscellany - check that we have all the required window.Node values expected.",
     function() {
         var horn = new Horn();
@@ -19,40 +71,6 @@ test(
         ok( window.Node.NOTATION_NODE === 12);
     });
 
-test(
-    "Horn Miscellany - check that we have the required prototype indicator constants expected.",
-    function() {
-        var horn = new Horn();
-
-        ok( horn.INDICATOR_ROOT === 0);
-        ok( horn.INDICATOR_PATH === 1);
-        ok( horn.INDICATOR_JSON === 2);
-    });
-
-
-
-
-module( "TestHorn - Horn.encodeCSS()");
-
-test(
-    "Horn.encodeCSS() - On null or undefined returns undefined.",
-    function() {
-        var horn = new Horn();
-        ok( horn.encodeCSS( null) === undefined);
-        ok( horn.encodeCSS( undefined) === undefined);
-    });
-
-test(
-    "Horn.encodeCSS() - Sanity check various values - this relies upon the default horn options.",
-    function() {
-        var horn = new Horn();
-        ok( horn.encodeCSS( 'a') === "_a");
-        ok( horn.encodeCSS( 'a[10]') === "_a-10");
-        ok( horn.encodeCSS( '[10]') === "_10");
-        ok( horn.encodeCSS( '[10][20]') === "_10-20");
-        ok( horn.encodeCSS( 'x[1].y[2].z[3]') === "_x-1-y-2-z-3");
-        ok( horn.encodeCSS( 'x[1][2][3].y[2].z') === "_x-1-2-3-y-2-z");
-    });
 
 
 
@@ -311,45 +329,7 @@ test(
 
 
 
-module( "TestHorn - Horn.prototype.extractCSSPropertyPath()");
 
-test(
-    "Horn.prototype.extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
-    function() {
-        var horn = new Horn();
-        var badPrefix = String.fromCharCode( horn.defaults.cssPrefix.charCodeAt( 0) + 1);
-        ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
-        var node = $('<div class="' + badPrefix + '" />');
-
-        ok( horn.extractCSSPropertyPath( node) === null);
-    });
-
-test(
-    "Horn.prototype.extractCSSPropertyPath() - that the code handles the element having no 'class' atribute.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div />');
-
-        ok( horn.extractCSSPropertyPath( node) === null);
-    });
-
-test(
-    "Horn.prototype.extractCSSPropertyPath() - extracts known good key.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div class="' + horn.defaults.cssPrefix + 'expected" />');
-
-        ok( horn.extractCSSPropertyPath( node) === 'expected');
-    });
-
-test(
-    "Horn.prototype.extractCSSPropertyPath() - extracts the first key from multiple.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div class="' + horn.defaults.cssPrefix + 'expected ' + horn.defaults.cssPrefix + 'unexpected" />');
-
-        ok( horn.extractCSSPropertyPath( node) === 'expected');
-    });
 
 
 

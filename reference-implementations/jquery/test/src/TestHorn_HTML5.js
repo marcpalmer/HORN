@@ -1,38 +1,25 @@
-module( "TestHorn_HTML5 - HTML Detection");
+//module( "TestHorn - Horn.encodeCSS()");
+//
+//test(
+//    "Horn.encodeCSS() - On null or undefined returns undefined.",
+//    function() {
+//        var horn = new Horn();
+//        ok( horn.encodeCSS( null) === undefined);
+//        ok( horn.encodeCSS( undefined) === undefined);
+//    });
+//
+//test(
+//    "Horn.encodeCSS() - Sanity check various values - this relies upon the default horn options.",
+//    function() {
+//        var horn = new Horn();
+//        ok( horn.encodeCSS( 'a') === "_a");
+//        ok( horn.encodeCSS( 'a[10]') === "_a-10");
+//        ok( horn.encodeCSS( '[10]') === "_10");
+//        ok( horn.encodeCSS( '[10][20]') === "_10-20");
+//        ok( horn.encodeCSS( 'x[1].y[2].z[3]') === "_x-1-y-2-z-3");
+//        ok( horn.encodeCSS( 'x[1][2][3].y[2].z') === "_x-1-2-3-y-2-z");
+//    });
 
-test(
-    'HTML Detection - Triggering HTML5 mode using data-horn="true".',
-    function() {
-        dataTest({
-            nodes: [
-                {
-                    nodes: $('<div data-horn="true"></div>')
-                }
-            ],
-            callback: function( horn ) {
-                ok( horn.opts.html5 === undefined);
-                horn.extract();
-                ok( horn.opts.html5 === true);
-            }
-        });
-    });
-
-test(
-    'HTML Detection - Triggering HTML5 mode using data-horn="_".',
-    function() {
-        dataTest({
-            nodes: [
-                {
-                    nodes: $('<div data-horn="_"></div>')
-                }
-            ],
-            callback: function( horn ) {
-                ok( horn.opts.html5 === undefined);
-                horn.extract();
-                ok( horn.opts.html5 === true);
-            }
-        });
-    });
 
 
 
@@ -47,7 +34,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 1);
                 ok( model[ 0] === 'one');
@@ -66,7 +52,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "1", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 2);
                 ok( model[ 1] === 2);
@@ -99,7 +84,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -121,7 +105,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-1", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -143,7 +126,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-2", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -163,7 +145,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -200,7 +181,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-3-1", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -225,7 +205,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-3-2", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -250,7 +229,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-3-2", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -273,7 +251,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-4-l", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -296,7 +273,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "3-4-m", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 4);
 
@@ -317,7 +293,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -337,7 +312,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "4-g", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -357,7 +331,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "4-h", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -375,7 +348,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -398,7 +370,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "4-i-2", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -421,7 +392,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "4-i-3", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -442,7 +412,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -464,7 +433,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "4-j-o", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -486,7 +454,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "4-j-p", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( model.length === 5);
 
@@ -506,7 +473,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( model[ 'a'] === 'one');
         }});
@@ -523,7 +489,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "b", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( model.b === 2);
         }});
@@ -538,7 +503,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isArray( model.d));
                 ok( model.d.length === 1);
@@ -557,7 +521,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "d-1", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isArray( model.d));
                 ok( model.d.length === 2);
@@ -576,7 +539,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "d-2", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isArray( model.d));
                 ok( model.d.length === 3);
@@ -593,7 +555,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isArray( model.d));
                 ok( model.d.length === 4);
@@ -614,7 +575,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "d-3-1", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isArray( model.d));
                 ok( model.d.length === 4);
@@ -635,7 +595,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "d-3-2", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isArray( model.d));
                 ok( model.d.length === 4);
@@ -654,7 +613,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
 
                 ok( isArray( model.d));
@@ -677,7 +635,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "d-4-l", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
 
                 ok( isArray( model.d));
@@ -700,7 +657,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "d-4-m", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
 
                 ok( isArray( model.d));
@@ -721,7 +677,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( model.e.f === 'nine');
@@ -739,7 +694,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "e-g", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( model.e.g === 10);
@@ -757,7 +711,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "e-h", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( model.e.h === true);
@@ -773,7 +726,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isArray( model.e.i));
@@ -793,7 +745,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-2", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isArray( model.e.i));
@@ -813,7 +764,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-3", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isArray( model.e.i));
@@ -831,7 +781,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isObject( model.e.i));
@@ -850,7 +799,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-o", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isObject( model.e.i));
@@ -869,7 +817,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-p", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isObject( model.e.i));
@@ -888,7 +835,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "a", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( model.a === 16);
         }});
@@ -905,7 +851,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "a", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( model.a === 52653656);
         }});
@@ -922,7 +867,6 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "a-b-c-d", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( model.a.b.c.d === -23);
         }});
   });
@@ -936,7 +880,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( isObject( model[0]));
                 ok( model[ 0].a === 'hello');
@@ -952,7 +895,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( isObject( model[ 0]));
                 ok( model[ 0].a === 1);
@@ -968,7 +910,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isArray( model));
                 ok( isObject( model[ 0]));
                 ok( model[ 0].a === true);
@@ -984,7 +925,6 @@ test(
             ],
             callback: function( horn ) {
                 var model = horn.extract();
-                ok( horn.opts.html5 === true);
                 ok( isObject( model));
                 ok( model[ 'a'] === 'one');
                 ok( model[ 'b'] === 'two');
@@ -1035,7 +975,8 @@ test(
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "key", "BooleanConverter");
-                var model = horn.extract({storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
                 ok( isObject( model));
                 ok( model.key === true);
                 model.key = false;
@@ -1053,7 +994,8 @@ test(
                 nodes:  $('<div data-horn="true">baskdfhjdshfds h<abbr id="grabMe" data-horn-path="key" data-horn-json="true" title="false">value</abbr> akdsjf kljdskf jdskf</div>')}
             ],
             callback: function( horn ) {
-                var model = horn.extract({storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
                 ok( isObject( model));
                 ok( model.key === false);
                 model.key = false;
@@ -1074,7 +1016,7 @@ test(
             ],
             callback: function( horn ) {
                 ok( horn.isAttached( $('#testing')));
-                ok( horn.getDataAttr( $('#testing'), "dataNameHorn") === 'testingHTML5DataAttributes');
+                ok( horn.getDataAttr( $('#testing'), "horn") === 'testingHTML5DataAttributes');
 
         }});
     });

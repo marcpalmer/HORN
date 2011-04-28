@@ -17,6 +17,12 @@ var isEmptyObject = function( object ) {
     return true;
 };
 
+var isFunction = function( object ) {
+    if ( object === undefined ) { return false; }
+    if ( object === null ) { return false; }
+    return typeof object === 'function';
+};
+
 var isObject = function( object ) {
     if ( object === undefined ) { return false; }
     if ( object === null ) { return false; }

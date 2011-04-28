@@ -1,3 +1,47 @@
+module( "TestHorn - Horn.features.extractCSSPropertyPath()");
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
+    function() {
+        var horn = new Horn();
+        var badPrefix = String.fromCharCode( horn.features.cssPrefix.charCodeAt( 0) + 1);
+        ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
+        var node = $('<div class="' + badPrefix + '" />');
+
+        ok( horn.features.extractCSSPropertyPath.call( horn, node) === null);
+    });
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - that the code handles the element having no 'class' atribute.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div />');
+
+        ok( horn.features.extractCSSPropertyPath.call( horn, node) === null);
+    });
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - extracts known good key.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div class="' + horn.features.cssPrefix + 'expected" />');
+
+        ok( horn.features.extractCSSPropertyPath.call( horn, node) === 'expected');
+    });
+
+test(
+    "Horn.prototype.extractCSSPropertyPath() - extracts the first key from multiple.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div class="' + horn.features.cssPrefix + 'expected ' +
+            horn.features.cssPrefix + 'unexpected" />');
+
+        ok( horn.features.extractCSSPropertyPath.call( horn, node) === 'expected');
+    });
+
+
+
+
 module( "TestHorn - {valueNodes:X}");
 
 test(
@@ -32,7 +76,8 @@ test(
 
             callback: function( horn ) {
                 horn.option( 'pattern', 'key', 'IntegerConverter');
-                horn.extract( {storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
                 ok( countOwnProps( horn.valueNodes) === 1);
                 ok( horn.valueNodes.hasOwnProperty( 'key'));
             }
@@ -48,7 +93,8 @@ test(
                 nodes: $('<div class="horn"><span class="_key">-1</span></div>')
             }],
             callback: function( horn ) {
-                var model = horn.extract({storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
                 var node = horn.valueNodes[ 'key'];
                 ok( node !== undefined);
                 ok( node.key === 'key');
@@ -71,7 +117,8 @@ test(
             }],
             callback: function( horn ) {
                 horn.option( 'pattern', 'key', 'IntegerConverter');
-                horn.extract({storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                horn.extract();
                 ok( countOwnProps( horn.valueNodes) === 2);
             }
         });
@@ -83,67 +130,67 @@ test(
 module( "TestHorn - Model Tests");
 
 /*
-                                    'Key' - 'Value'         Structure
+                                    'Key' - 'Value'         Structure           Java
     [
-        "one",                      _0 - 'one'              [S
-        2,                          _1 - 2                  [I
-        true,                       _2 - true               [B
+        "one",                      _0 - 'one'              [S                  [0]
+        2,                          _1 - 2                  [I                  [1]
+        true,                       _2 - true               [B                  [2]
         [
-            "three",                _3-0 - 'three'          [[S
-            4,                      _3-1 - 4                [[I
-            false,                  _3-2 - false            [[B
+            "three",                _3-0 - 'three'          [[S                 [3][0]
+            4,                      _3-1 - 4                [[I                 [3][1]
+            false,                  _3-2 - false            [[B                 [3][2]
             [
-                "five",             _3-3-0 - 'five'         [[[S
-                6,                  _3-3-1 - 6              [[[I
-                true],              _3-3-2 - true           [[[B
+                "five",             _3-3-0 - 'five'         [[[S                [3][3][0]
+                6,                  _3-3-1 - 6              [[[I                [3][3][1]
+                true],              _3-3-2 - true           [[[B                [3][3][2]
             {
-                k:  "seven",        _3-4-k - 'seven'        [[{:S
-                l:  8,              _3-4-l - 8              [[{:I
-                m:  false}],        _3-4-m - false          [[{:B
+                k:  "seven",        _3-4-k - 'seven'        [[{:S               [3][4].k
+                l:  8,              _3-4-l - 8              [[{:I               [3][4].l
+                m:  false}],        _3-4-m - false          [[{:B               [3][4].m
         {
-            f:  "nine",             _4-f - 'nine'           [{:S
-            g:  10,                 _4-g - 10               [{:I
-            h:  true,               _4-h - true             [{:B
+            f:  "nine",             _4-f - 'nine'           [{:S                [4].f
+            g:  10,                 _4-g - 10               [{:I                [4].g
+            h:  true,               _4-h - true             [{:B                [4].h
             i:  [
-                "eleven",           _4-i-1 - 'eleven'       [{:[S
-                12,                 _4-i-2 - 12             [{:[I
-                false],             _4-i-3 - false          [{:[B
+                "eleven",           _4-i-0 - 'eleven'       [{:[S               [4].i[0]
+                12,                 _4-i-1 - 12             [{:[I               [4].i[1]
+                false],             _4-i-2 - false          [{:[B               [4].i[2]
             j:  {
-                n:  "thirteen",     _4-j-n - 'thirteen'     [{:{:S
-                o:  14,             _4-j-o - 14             [{:{:I
-                p:  true            _4-j-p - true           [{:{:B
+                n:  "thirteen",     _4-j-n - 'thirteen'     [{:{:S              [4].j.n
+                o:  14,             _4-j-o - 14             [{:{:I              [4].j.o
+                p:  true            _4-j-p - true           [{:{:B              [4].j.p
             }
         }
     ]
 
     {
-        a:  "one",                  _a - 'one'              {:S
-        b:  2,                      _b - 2                  {:2
-        c:  true,                   _c - true               {:B
+        a:  "one",                  _a - 'one'              {:S                 a
+        b:  2,                      _b - 2                  {:2                 b
+        c:  true,                   _c - true               {:B                 c
         d:  [
-                "three",            _d-0 - 'three'          {:[S
-                4,                  _d-1 - 4                {:[I
-                false,              _d-2 - false            {:[B
+                "three",            _d-0 - 'three'          {:[S                d[0]
+                4,                  _d-1 - 4                {:[I                d[1]
+                false,              _d-2 - false            {:[B                d[2]
                 [
-                    "five",         _d-3-0 - 'five'         {:[[S
-                    6,              _d-3-1 - 6              {:[[I
-                    true],          _d-3-2 - true           {:[[B
+                    "five",         _d-3-0 - 'five'         {:[[S               d[3][0]
+                    6,              _d-3-1 - 6              {:[[I               d[3][1]
+                    true],          _d-3-2 - true           {:[[B               d[3][2]
                 {
-                    k:  "seven",    _d-4-k - 'seven'        {:[{:S
-                    l:  8,          _d-4-l - 8              {:[{:I
-                    m:  false}]],   _d-4-m - false          {:[{:B
+                    k:  "seven",    _d-4-k - 'seven'        {:[{:S              d[4].k
+                    l:  8,          _d-4-l - 8              {:[{:I              d[4].l
+                    m:  false}]],   _d-4-m - false          {:[{:B              d[4].m
         e:  {
-                f:  "nine",         _e-f - 'nine'           {:{:S
-                g:  10,             _e-g - 10               {:{:I
-                h:  true,           _e-h - true             {:{:B
+                f:  "nine",         _e-f - 'nine'           {:{:S               e.f
+                g:  10,             _e-g - 10               {:{:I               e.g
+                h:  true,           _e-h - true             {:{:B               e.h
                 i:  [
-                    "eleven",       _e-i-1 - 'eleven'       {:{:[S
-                    12,             _e-i-2 - 12             {:{:[I
-                    false],         _e-i-3 - false          {:{:[B
+                    "eleven",       _e-i-0 - 'eleven'       {:{:[S              e.i[0]
+                    12,             _e-i-1 - 12             {:{:[I              e.i[1]
+                    false],         _e-i-2 - false          {:{:[B              e.i[2]
                 j:  {
-                    n:  "thirteen", _e-j-n - 'thirteen'     {:{:{:S
-                    o:  14,         _e-j-o - 14             {:{:{:I
-                    p:  true        _e-j-p - true           {:{:{:B
+                    n:  "thirteen", _e-j-n - 'thirteen'     {:{:{:S             e.j.n
+                    o:  14,         _e-j-o - 14             {:{:{:I             e.j.o
+                    p:  true        _e-j-p - true           {:{:{:B             e.j.p
                 }
             }
     }
@@ -338,7 +385,7 @@ test(
                 ok( isArray( model[ 3][ 3]));
                 ok( model[ 3][ 3].length === 3);
 
-                ok( model[ 3][ 3][ 2] === true);                
+                ok( model[ 3][ 3][ 2] === true);
             }});
     });
 
@@ -360,8 +407,8 @@ test(
                 ok( model[ 3].length === 5);
 
                 ok( isObject( model[ 3][ 4]));
-                ok( model[ 3][ 4][ 'k'] === 'seven');                
-            }});    
+                ok( model[ 3][ 4][ 'k'] === 'seven');
+            }});
     });
 
 test(
@@ -383,7 +430,7 @@ test(
 
                 ok( isObject( model[ 3][ 4]));
                 ok( model[ 3][ 4][ 'l'] === 8);
-            }});    
+            }});
     });
 
 test(
@@ -405,7 +452,7 @@ test(
 
                 ok( isObject( model[ 3][ 4]));
                 ok( model[ 3][ 4][ 'm'] === false);
-            }});    
+            }});
     });
 
 test(
@@ -422,7 +469,7 @@ test(
 
                 ok( isObject( model[ 4]));
                 ok( model[ 4][ 'f'] === 'nine');
-            }});     
+            }});
     });
 
 test(
@@ -441,7 +488,7 @@ test(
 
                 ok( isObject( model[ 4]));
                 ok( model[ 4][ 'g'] === 10);
-            }});             
+            }});
     });
 
 test(
@@ -464,13 +511,35 @@ test(
     });
 
 test(
-    "Model Tests - _4-i-1 - 'eleven'",
+    "Model Tests - _4-i-0 - 'eleven'",
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn _4-i"><span class="_1">eleven</span></div>')}
+                nodes:  $('<div class="horn _4-i"><span class="_0">eleven</span></div>')}
             ],
             callback: function( horn ) {
+                var model = horn.extract();
+                ok( isArray( model));
+                ok( model.length === 5);
+
+                ok( isObject( model[ 4]));
+                ok( isArray( model[ 4][ 'i']));
+                ok( model[ 4][ 'i'].length === 1);
+
+                ok( model[ 4][ 'i'][0] === 'eleven');
+            }});
+    });
+
+test(
+    "Model Tests - _4-i-1 - 12",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _4-i"><span class="_1">12</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "4-i-1", "IntegerConverter");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -479,20 +548,20 @@ test(
                 ok( isArray( model[ 4][ 'i']));
                 ok( model[ 4][ 'i'].length === 2);
 
-                ok( model[ 4][ 'i'][1] === 'eleven');
+                ok( model[ 4][ 'i'][ 1] === 12);
             }});
     });
 
 test(
-    "Model Tests - _4-i-2 - 12",
+    "Model Tests - _4-i-2 - false",
     function() {
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div class="horn _4-i"><span class="_2">12</span></div>')}
+                nodes:  $('<div class="horn _4-i"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-i-2", "IntegerConverter");
+                horn.option( "pattern", "4-i-2", "BooleanConverter");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -501,29 +570,7 @@ test(
                 ok( isArray( model[ 4][ 'i']));
                 ok( model[ 4][ 'i'].length === 3);
 
-                ok( model[ 4][ 'i'][ 2] === 12);
-            }});
-    });
-
-test(
-    "Model Tests - _4-i-3 - false",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [ {
-                nodes:  $('<div class="horn _4-i"><span class="_3">false</span></div>')}
-            ],
-            callback: function( horn ) {
-                horn.option( "pattern", "4-i-3", "BooleanConverter");
-                var model = horn.extract();
-                ok( isArray( model));
-                ok( model.length === 5);
-
-                ok( isObject( model[ 4]));
-                ok( isArray( model[ 4][ 'i']));
-                ok( model[ 4][ 'i'].length === 4);
-
-                ok( model[ 4][ 'i'][ 3] === false);
+                ok( model[ 4][ 'i'][ 2] === false);
             }});
     });
 
@@ -795,7 +842,7 @@ test(
 test(
     "Model Tests - _e-f - 'nine'",
     function() {
-        dataTest( {            
+        dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e"><span class="_f">nine</span></div>')}
             ],
@@ -842,57 +889,57 @@ test(
     });
 
 test(
-    "Model Tests - _e-i-1 - 'eleven'",
+    "Model Tests - _e-i-0 - 'eleven'",
     function() {
-        dataTest( {            
+        dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn _e-i"><span class="_1">eleven</span></div>')}
+                nodes:  $('<div class="horn _e-i"><span class="_0">eleven</span></div>')}
             ],
-            callback: function( horn ) {                
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isObject( model.e));
+                ok( isArray( model.e.i));
+                ok( model.e.i.length === 1);
+                ok( model.e.i[ 0] === 'eleven');
+        }});
+    });
+
+test(
+    "Model Tests - _e-i-1 - 12",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn _e-i"><span class="_1">12</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "e-i-1", "IntegerConverter");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isArray( model.e.i));
                 ok( model.e.i.length === 2);
-                ok( model.e.i[ 1] === 'eleven');
+                ok( model.e.i[ 1] === 12);
         }});
     });
 
 test(
-    "Model Tests - _e-i-2 - 12",
+    "Model Tests - _e-i-2 - false",
     function() {
         dataTest( {
             passConverters: true,
             nodes: [ {
-                nodes:  $('<div class="horn _e-i"><span class="_2">12</span></div>')}
+                nodes:  $('<div class="horn _e-i"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-i-2", "IntegerConverter");
+                horn.option( "pattern", "e-i-2", "BooleanConverter");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
                 ok( isArray( model.e.i));
                 ok( model.e.i.length === 3);
-                ok( model.e.i[ 2] === 12);
-        }});
-    });
-
-test(
-    "Model Tests - _e-i-3 - false",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [ {
-                nodes:  $('<div class="horn _e-i"><span class="_3">false</span></div>')}
-            ],
-            callback: function( horn ) {
-                horn.option( "pattern", "e-i-3", "BooleanConverter");
-                var model = horn.extract();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isArray( model.e.i));
-                ok( model.e.i.length === 4);
-                ok( model.e.i[ 3] === false);
+                ok( model.e.i[ 2] === false);
         }});
     });
 
@@ -960,7 +1007,7 @@ test(
                 horn.option( "pattern", "a", "IntegerConverter");
                 var model = horn.extract();
                 ok( isObject( model));
-                ok( model.a === 16);                
+                ok( model.a === 16);
         }});
     });
 
@@ -1100,7 +1147,8 @@ test(
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "key", "BooleanConverter");
-                var model = horn.extract({storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
                 ok( model.key === true);
@@ -1123,7 +1171,8 @@ test(
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "key", "IntegerConverter");
-                var model = horn.extract({storeBackRefs: true});
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
                 ok( model.key === -1);

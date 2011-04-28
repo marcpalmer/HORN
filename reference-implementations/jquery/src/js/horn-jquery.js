@@ -17,17 +17,7 @@ function Horn() {
     }
 
     this.defaults = {
-            // CSS flavour
-        cssPrefix:          '_',
-        cssDelimiter:       '-',
-        cssRootContext:     'horn',
-        cssJSON:            'data-json',
-
-            // HTML5 flavour
-        dataNameHorn:       'horn',
-        dataNamePath:       'horn-path',
-        dataNameJSON:       'horn-json',
-
+        storeBackRefs:      false,
         converters: {},
         patternInfo: {}
     };
@@ -35,61 +25,32 @@ function Horn() {
     this.opts = window.$.extend( {}, this.defaults);
 
     this.getDataAttr = function( n, name ) {
-        return window.$(n).data( this.opts[ name]);
+        return window.$(n).data( name);
     };
 
-    this.getIndicator = function( args ) {
-        var isHTML5 = this.opts.html5 === true;
-        switch ( args.type ) {
-            case this.INDICATOR_ROOT:
-                return isHTML5 ?
-                    this.getDataAttr( args.n, "dataNameHorn") :
-                    window.$(args.n).hasClass( this.opts.cssRootContext);
-
-            case this.INDICATOR_PATH:
-                return isHTML5 ?
-                    this.getDataAttr( args.n, "dataNamePath") :
-                    this.extractCSSPropertyPath( args.n);
-
-            case this.INDICATOR_JSON:
-                return isHTML5 ?
-                    this.getDataAttr( args.n, "dataNameJSON") :
-                    window.$(args.n).hasClass( this.opts.cssJSON);
-        }
+    this.getFeature = function( args ) {
+        return this.bind( this.features[ args.type], this)(args);
     };
-
-    this.getRootContextNodes = function() {
-        return this.opts.html5 ?
-            window.$('*[data-' + this.opts.dataNameHorn + ']') :
-            window.$("." + this.opts.cssRootContext);
-    };
-
 
     this.extract = function( args ) {
-        this.storeBackRefs = this.definesArgument( args, 'storeBackRefs') &&
-            args.storeBackRefs;
-        this.opts.html5 =
-            window.$('*[data-' + this.opts.dataNameHorn + ']').size() > 0; // @todo change, shouldn't sense, should be informed
-        this.each( this.getRootContextNodes(),
+        this.each( this.getFeature({type: 'ROOT_NODES'}),
             function( i, n ) { this.visitNodes( n, ''); }, this);
         return this.model;
     };
 
-
-	// Privileged Functions - public access, can access privates, can't be
-    // modified but can be replaced with public flavours
     this.option = function( option ) {
         switch ( option ) {
             case "pattern":
                 this.opts.patternInfo[ arguments[ 1]] = {
-                    converterName: arguments[ 2]
-                };
-                break;
+                    converterName: arguments[ 2] };
+                return;
 
             case "converter":
                 this.opts.converters[ arguments[ 1]] = arguments[ 2];
-                break;
+                return;
         }
+
+        if ( option !== undefined ) { this.opts[ option] = arguments[ 1]; }
     };
 
     this.populate = function() {
@@ -147,28 +108,12 @@ function Horn() {
         return rv;
     };
 
-    this.extractCSSPropertyPath = function( n ) {
-        var path = null;
-        this.each(
-            this.toTokens( window.$(n).attr( "class")),
-            function( i, n ) {
-                if ( this.startsWith( n, this.opts.cssPrefix) ) {
-                    path = n.substring( this.opts.cssPrefix.length);
-                    if ( path === '' ) { path = null; }
-                    return false;
-                }
-            },
-            this);
-
-        return path;
-    };
-
     this.setValue = function( value, path, parentContext ) {
         var token;
         var numTokens;
         var subContext;
         if ( typeof path === 'string' ) {
-            path = path.split( this.opts.cssDelimiter);
+            path = path.split( "-");
             if ( path[0] === '' ) { path.shift(); }
             if ( this.model === undefined ) {
                 this.model = !isNaN(   parseInt( path[ 0])) ? [] : {};
@@ -195,7 +140,7 @@ function Horn() {
 
     this.convertValue = function( value, path, toText ) {
         var typeOfPattern;
-        if ( this.startsWith( path, this.opts.cssDelimiter) ) {
+        if ( this.startsWith( path, '-') ) {
             path = path.substring( 1);
         }
         typeOfPattern = this.getPattern( path);
@@ -214,13 +159,13 @@ function Horn() {
         var isABBRNode;
         var typedValue;
         var details;
-        var path = this.getIndicator({type: this.INDICATOR_PATH, n: node});
+        var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
         var contents = window.$(window.$(node).contents());
-        var isJSON = this.getIndicator({type: this.INDICATOR_JSON, n: node});
+        var isJSON = this.getFeature({type: 'INDICATOR_JSON', n: node});
         if ( (contents.size() === 1) &&
             (isJSON || (this.isAdjustingPath( path))) ) {
             fullPath = this.isAdjustingPath( path) ?
-                (parentPath + this.opts.cssDelimiter + path) :
+                (parentPath + '-' + path) :
                 parentPath;
             theContained = contents[0];
             isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
@@ -232,7 +177,7 @@ function Horn() {
                     this.convertValue( text, fullPath, false);
                 details = this.setValue( typedValue !== null ?
                     typedValue : text, fullPath);
-                if ( (this.storeBackRefs === true) && (!isJSON) ) {
+                if ( (this.opts.storeBackRefs === true) && (!isJSON) ) {
                     if ( this.valueNodes === undefined ) {
                         this.valueNodes = {};
                     }
@@ -248,11 +193,11 @@ function Horn() {
     };
 
     this.visitNodes = function( dataElement, path ) {
-        var _path = this.getIndicator({type: this.INDICATOR_PATH, n: dataElement});
+        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
         path = this.isAdjustingPath( _path) ?
-            (path + this.opts.cssDelimiter + _path) : path;
+            (path + '-' + _path) : path;
         this.each( window.$(dataElement).children(), function( i, n ) {
-            if ( !this.getIndicator({type: this.INDICATOR_ROOT, n: n}) &&
+            if ( !this.getFeature({type: 'INDICATOR_ROOT', n: n}) &&
                 !this.handleValue( n, path) ) {
                 this.visitNodes( n, path);
             }
@@ -269,22 +214,7 @@ function Horn() {
         return fromText ? cachedConverter.fromText( value) :
             cachedConverter.toText( value);
     };
-
-    this.encodeCSS = function( value ) {
-        var length;
-        var delimiter = this.opts.cssDelimiter;
-        if ( !value ) { return undefined; }
-        value = value.toString().replace( /[\[\].]/g, delimiter).replace( /--/g, delimiter);
-        if ( this.startsWith( value, delimiter) ) { value = value.substring( delimiter.length); }
-        value = this.opts.cssPrefix + value;
-        length = value.length;
-        return value.charAt( length - 1) === delimiter ? value.substring( 0, length - 1): value;
-    }
 }
-
-
-// Prototype functions, anyone may read/write - essentially shared across all
-// instances
 
 Horn.prototype.isAdjustingPath = function ( path ) {
     return (path !== null) &&
@@ -326,7 +256,6 @@ Horn.prototype.isAttached = function( ref ) {
 
 Horn.prototype.toTokens = function ( value, delimiter ) {
     var obj = {};
-
     window.$.each( value.split( delimiter !== undefined ? delimiter : " "),
         function( i, n ) {
             n = n.trim();
@@ -347,10 +276,3 @@ Horn.prototype.getIfSingleTextNode = function( element ) {
 
     return null;
 };
-
-window.$.each( ['INDICATOR_ROOT','INDICATOR_PATH','INDICATOR_JSON'],
-    function( i, n) {
-        if ( Horn.prototype[ n.toString()] === undefined ) {
-            Horn.prototype[ n.toString()] = i;
-        }
-    });

@@ -1,4 +1,4 @@
-horn.option( 'converter', 'IntegerConverter',
+window.horn.option( 'converter', 'IntegerConverter',
     function () {
         this.toText = function( value ) {
             return value.toString();
@@ -8,7 +8,7 @@ horn.option( 'converter', 'IntegerConverter',
         }
     });
 
-horn.option( 'converter', 'BooleanConverter',
+window.horn.option( 'converter', 'BooleanConverter',
     function () {
         this.toText = function( value ) {
             return value + "";
