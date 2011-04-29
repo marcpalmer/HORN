@@ -276,3 +276,5 @@ Horn.prototype.getIfSingleTextNode = function( element ) {
 
     return null;
 };
+
+window.horn = new Horn();

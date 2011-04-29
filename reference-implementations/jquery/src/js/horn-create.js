@@ -1,1 +1,0 @@
-window.horn = new Horn();
