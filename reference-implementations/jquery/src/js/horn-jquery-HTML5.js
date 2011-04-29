@@ -1,8 +1,3 @@
-//        if ( this.opts.html5 === undefined ) {
-//            this.opts.html5 =
-//                window.$('*[data-' + this.opts.dataNameHorn + ']').size() > 0;
-//        }
-
 Horn.prototype.features = {
     dataNameHorn:       'horn',
     dataNamePath:       'horn-path',
