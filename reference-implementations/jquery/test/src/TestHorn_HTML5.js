@@ -917,6 +917,97 @@ test(
   });
 
 test(
+    "Model Tests - Embedded JSON Object with two properties.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true" data-horn-path="key"><span data-horn-json="true">{"a": true, "b": false}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model.key));
+                ok( model.key.a === true);
+                ok( model.key.b === false);
+        }});
+  });
+
+test(
+    "Model Tests - Embedded JSON with nested filth.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true" data-horn-path="key"><span data-horn-json="true">{"a": [1], "b": {"c": false}}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model.key));
+                ok( isArray( model.key.a));
+                ok( model.key.a.length === 1);
+                ok( model.key.a[ 0] === 1);
+                ok( isObject( model.key.b));
+                ok( model.key.b.c === false);
+
+        }});
+  });
+
+test(
+    "Model Tests - Embedded JSON and type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true" data-horn-path="key"><span data-horn-json="true">{"a": 1}</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", ".*", "jsonIntegerConverter");
+                ok( horn.opts.patternInfo.hasOwnProperty( '.*') === true);
+                horn.option( "converter", "jsonIntegerConverter", function () {
+                    this.fromJSON = function( value ) { return value + ""; };
+                });
+                var model = horn.extract();
+                ok( horn.opts.patternInfo[ '.*'].converterName === 'jsonIntegerConverter');
+                ok( horn.convertValue( 1, "_key-a", false, true) === "1");
+                ok( isObject( model));
+                ok( isObject( model.key));
+                ok( model.key.a === "1");
+        }});
+  });
+
+test(
+    "Model Tests - Embedded JSON Object with two properties.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true" data-horn-path="key"><span data-horn-json="true">{"a": true, "b": false}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model.key));
+                ok( model.key.a === true);
+                ok( model.key.b === false);
+        }});
+  });
+
+test(
+    "Model Tests - Embedded JSON with nested filth.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true" data-horn-path="key"><span data-horn-json="true">{"a": [1], "b": {"c": false}}</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model.key));
+                ok( isArray( model.key.a));
+                ok( model.key.a.length === 1);
+                ok( model.key.a[ 0] === 1);
+                ok( isObject( model.key.b));
+                ok( model.key.b.c === false);
+
+        }});
+  });
+
+
+test(
     "Model Tests - that two properties can exist in the same context.",
     function() {
         dataTest( {

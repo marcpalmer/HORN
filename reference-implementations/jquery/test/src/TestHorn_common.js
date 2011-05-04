@@ -74,7 +74,6 @@ test(
 
 
 
-
 module( "TestHorn - Horn.patternDefined()");
 
 test(
@@ -93,7 +92,7 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", "notices.*can.*", "BooleanConverter");
-                ok( horn.patternDefined( 'notices.*can.*') === true);
+                ok( horn.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === true);
             }
         });
     });
@@ -105,7 +104,7 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( 'pattern', 'notices.*Can.*', 'BooleanConverter');
-                ok( horn.patternDefined( '') === false);
+                ok( horn.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
             }});
     });
 
@@ -463,5 +462,52 @@ test(
                 ok( horn.convertValue( "false",  "_ourtruth", false) === false);
                 ok( horn.convertValue( "FaLsE",  "_ourtruth", false) === false);
                 ok( horn.convertValue( "FALSE",  "_ourtruth", false) === false);
+            }});
+    });
+
+
+
+module( "TestHorn - Horn.option( ... )");
+
+test(
+    "Horn.option( ... ) - Setting pattern.",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                horn.option( "pattern", "a", "b");
+                ok( horn.opts.patternInfo.hasOwnProperty( 'a') === true);
+                ok ( horn.opts.patternInfo.a.converterName === 'b');
+            }});
+    });
+
+test(
+    "Horn.option( ... ) - Replacing pattern.",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                horn.option( "pattern", "a", "b");
+                horn.option( "pattern", "a", "c");
+                ok ( horn.opts.patternInfo.a.converterName === 'c');
+            }});
+    });
+
+test(
+    "Horn.option( ... ) - Setting converter.",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                horn.option( "converter", "a", "b");
+                ok ( horn.opts.converters.a === 'b');
+            }});
+    });
+
+test(
+    "Horn.option( ... ) - Replacing converter.",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                horn.option( "converter", "a", "b");
+                horn.option( "converter", "a", "c");
+                ok ( horn.opts.converters.a === 'c');
             }});
     });
