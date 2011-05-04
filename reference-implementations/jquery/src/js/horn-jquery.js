@@ -17,9 +17,9 @@ function Horn() {
     }
 
     this.defaults = {
-        storeBackRefs:      false,
-        converters: {},
-        patternInfo: {}
+        storeBackRefs:  false,
+        converters:     {},
+        patternInfo:    {}
     };
 
     this.opts = window.$.extend( {}, this.defaults);
@@ -38,19 +38,18 @@ function Horn() {
         return this.model;
     };
 
-    this.option = function( option ) {
-        switch ( option ) {
+    this.option = function( optionName, arg0, arg1 ) {
+        switch ( optionName ) {
             case "pattern":
-                this.opts.patternInfo[ arguments[ 1]] = {
-                    converterName: arguments[ 2] };
+                this.opts.patternInfo[ arg0] = {
+                    converterName: arg1 };
                 return;
 
             case "converter":
-                this.opts.converters[ arguments[ 1]] = arguments[ 2];
+                this.opts.converters[ arg0] = arg1;
                 return;
         }
-
-        if ( option !== undefined ) { this.opts[ option] = arguments[ 1]; }
+        if ( optionName !== undefined ) { this.opts[ optionName] = arg0; }
     };
 
     this.populate = function() {
@@ -64,7 +63,7 @@ function Horn() {
                 typeOfPattern = this.getPattern( i);
                 newValue = typeOfPattern !== null ?
                     this.convert( modelValue,
-                        typeOfPattern.converterName, false) :
+                        typeOfPattern.converterName, false, false) :
                             modelValue.toString();
 
                 if ( n.node.nodeName.toLowerCase() === "abbr" ) {
@@ -76,17 +75,6 @@ function Horn() {
                 }
             }
         }, this);
-    };
-
-    this.patternDefined = function( pattern ) {
-        var rv = false;
-        window.$.each( this.opts.patternInfo, function( i, n ) {
-            if ( i === pattern ) {
-                rv = true;
-                return false;
-            }});
-
-        return rv;
     };
 
     this.getPattern = function( path ) {
@@ -138,17 +126,23 @@ function Horn() {
         }
     };
 
-    this.convertValue = function( value, path, toText ) {
+    this.traverse = function( value, callback, key ) {
+        var propertyName;
+        if ( typeof value === 'object' ) {
+            this.each( value, function( k, v ) {
+                this.traverse( v, callback, key + '-' + k);
+            }, this);
+        } else { callback( key, value); }
+    };
+
+    this.convertValue = function( value, path, toText, isJSON ) {
         var typeOfPattern;
-        if ( this.startsWith( path, '-') ) {
-            path = path.substring( 1);
-        }
+        isJSON = isJSON === true;
+        if ( this.startsWith( path, '-') ) { path = path.substring( 1); }
         typeOfPattern = this.getPattern( path);
-        if ( typeOfPattern !== null ) {
-            return this.convert(
-                value, typeOfPattern.converterName, !toText);
-        }
-        return null;
+        return (typeOfPattern !== null) ?
+            this.convert( value, typeOfPattern.converterName, !toText, isJSON) :
+            null;
     };
 
     this.handleValue = function( node, parentPath ) {
@@ -158,7 +152,6 @@ function Horn() {
         var isTextNode;
         var isABBRNode;
         var typedValue;
-        var details;
         var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
         var contents = window.$(window.$(node).contents());
         var isJSON = this.getFeature({type: 'INDICATOR_JSON', n: node});
@@ -173,23 +166,41 @@ function Horn() {
             if ( isTextNode || isABBRNode ) {
                 text = window.unescape( isABBRNode ?
                     window.$(node).attr('title') : window.$(theContained).text());
-                typedValue = isJSON ? window.$.evalJSON( text) :
-                    this.convertValue( text, fullPath, false);
-                details = this.setValue( typedValue !== null ?
-                    typedValue : text, fullPath);
-                if ( (this.opts.storeBackRefs === true) && (!isJSON) ) {
-                    if ( this.valueNodes === undefined ) {
-                        this.valueNodes = {};
+                if ( isJSON ) {
+                    typedValue = window.$.evalJSON( text);
+                    if ( typeof typedValue === 'object' ) {
+                        this.traverse( typedValue,
+                            this.bind(
+                                function( key, value ) {
+                                    this.doSetValue( value, fullPath + key, isJSON, node);
+                                }, this), '');
+                    } else {
+                        this.doSetValue( typedValue, fullPath, isJSON, node);
                     }
-
-                    this.valueNodes[ fullPath.substring( 1)] = { node: node,
-                        context: details.context,
-                        key: details.key, value: details.value};
+                } else {
+                    this.doSetValue( text, fullPath, isJSON, node);
                 }
+
                 return true;
             }
         }
         return false;
+    };
+
+    this.doSetValue = function( value, fullPath, isJSON, node ) {
+        var typedValue = this.convertValue( value, fullPath, false, isJSON);
+        var details =  this.setValue( typedValue !== null ?
+            typedValue : value, fullPath);
+
+        if ( (this.opts.storeBackRefs === true) && (!isJSON) ) {
+            if ( this.valueNodes === undefined ) {
+                this.valueNodes = {};
+            }
+
+            this.valueNodes[ fullPath.substring( 1)] = { node: node,
+                context: details.context,
+                key: details.key, value: details.value};
+        }
     };
 
     this.visitNodes = function( dataElement, path ) {
@@ -204,15 +215,23 @@ function Horn() {
         }, this);
     };
 
-    this.convert = function( value, converterName, fromText ) {
+    this.getCacheConverter = function( converterName ) {
         var cachedConverter = this.opts.converters[ converterName];
         if ( cachedConverter === undefined ) { return value.toString(); }
         if ( typeof cachedConverter === 'function' ) {
             cachedConverter = new this.opts.converters[ converterName]();
             this.opts.converters[ converterName] = cachedConverter;
         }
-        return fromText ? cachedConverter.fromText( value) :
-            cachedConverter.toText( value);
+        return cachedConverter;
+    };
+
+    this.convert = function( value, converterName, fromText, isJSON ) {
+        isJSON = isJSON === true;
+        var converter = this.getCacheConverter( converterName);
+        return converter === null ? null :
+            (isJSON ? converter.fromJSON( value) :
+                (fromText ? converter.fromText( value) :
+                    converter.toText( value)));
     };
 }
 
@@ -230,7 +249,7 @@ Horn.prototype.each = function( collection, fn, ctx ) {
     if ( (collection === undefined) || (collection === null) ) {
         return;
     }
-    window.$.each( collection, ctx != undefined ? this.bind( fn, ctx) : fn);
+    window.$.each( collection, ctx ? this.bind( fn, ctx) : fn);
 };
 
 Horn.prototype.didRemoveProperty = function( object, property ) {
