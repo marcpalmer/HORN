@@ -518,6 +518,6 @@ test(
         dataTest( {
             callback: function( horn ) {
                 horn.option( "sausages", "tasty");
-                ok ( horn.opts.converters.sausages === 'tasty');
+                ok ( horn.opts.sausages === 'tasty');
             }});
     });

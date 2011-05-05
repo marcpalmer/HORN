@@ -1022,6 +1022,38 @@ test(
         }});
     });
 
+test(
+    "Model Tests - Embedded JSON with date conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="span-20 prepend-top noticeelement list-events last" data-horn="true" data-horn-path="notices-0" id="1">' +
+                                '<span class="hidden" data-horn-json="true">{"id": 1, "date": "2011-05-04"}</span>' +
+                            '</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( 'converter', 'DateConverter',
+                    function () {
+                        this.fromJSON = function( value ) {
+                            var date = new Date( value);
+                            date.setFullYear( value.substring( 0, 4));
+                            date.setMonth( parseInt( value.substring( 5, 7), 10) - 1);
+                            date.setDate( parseInt( value.substring( 8, 10), 10));
+                            return date;
+                        }
+                    });
+                horn.option( 'pattern', '.*date', 'DateConverter');
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( isArray( model.notices));
+                ok( isObject( model.notices[ 0]));
+                ok( model.notices[ 0].id === 1);
+                ok( model.notices[ 0].date instanceof Date);
+                ok( model.notices[ 0].date.getFullYear() === 2011);
+                ok( model.notices[ 0].date.getMonth() === 04);
+                ok( model.notices[ 0].date.getDate() === 04);
+
+
 
 
 module( "TestHorn_HTML5 - ABBR");
