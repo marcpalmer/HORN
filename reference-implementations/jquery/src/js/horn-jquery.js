@@ -52,26 +52,39 @@ function Horn() {
         if ( optionName !== undefined ) { this.opts[ optionName] = arg0; }
     };
 
-    this.populate = function() {
+    this.contains = function( objects, object ) {
+        var rv = null;
+        this.each( objects, function( i, o ) {
+            if ( rv = $(o)[0] === $(object)[0] ) {
+                return false;
+            }
+        });
+        return rv;
+    };
+
+    this.populate = function( args ) {
         var typeOfPattern;
         var modelValue;
         var newValue;
+        var rootNode = this.definesArgument( args, 'rootNode') ?
+            args.rootNode : undefined;
         var alteredNodes = [];
-
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
-                typeOfPattern = this.getPattern( i);
-                newValue = typeOfPattern !== null ?
-                    this.convert( modelValue,
-                        typeOfPattern.converterName, false, false) :
-                            modelValue.toString();
+                if ( !rootNode || (rootNode && this.contains( $(n.node).parents(), rootNode)) ) {
+                    typeOfPattern = this.getPattern( i);
+                    newValue = typeOfPattern !== null ?
+                        this.convert( modelValue,
+                            typeOfPattern.converterName, false, false) :
+                                modelValue.toString();
 
-                if ( n.node.nodeName.toLowerCase() === "abbr" ) {
-                    window.$(n.node).attr('title', newValue);
-                } else { window.$(n.node).text( newValue); }
-                n.value = modelValue;
-                alteredNodes.push( n.node);
+                    if ( n.node.nodeName.toLowerCase() === "abbr" ) {
+                        window.$(n.node).attr('title', newValue);
+                    } else { window.$(n.node).text( newValue); }
+                    n.value = modelValue;
+                    alteredNodes.push( n.node);
+                }
             }
         }, this);
 
@@ -258,8 +271,7 @@ Horn.prototype.didRemoveProperty = function( object, property ) {
 };
 
 Horn.prototype.definesArgument = function( args, propertyName ) {
-    return (args !== undefined) && (args !== null) &&
-        (args.hasOwnProperty( propertyName));
+    return (args !== undefined) && (args.hasOwnProperty( propertyName));
 };
 
 Horn.prototype.startsWith = function ( value, stem ) {

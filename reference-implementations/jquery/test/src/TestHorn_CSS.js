@@ -1250,6 +1250,37 @@ test(
         }});
     });
 
+test(
+    "Model Tests - Only nodes under rootNode are populated.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div id="root" class="horn"><div id="div0" class="_a">true</div></div><div id="root2" class="horn"><div id="div1" class="_b">false</div></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.isAttached( $('#root')));
+                ok( horn.isAttached( $('#root2')));
+                var alteredNodes;
+                var model;
+                horn.option( "pattern", "a", "BooleanConverter");
+                horn.option( "pattern", "b", "BooleanConverter");
+                horn.option( "storeBackRefs", true);
+                model = horn.extract();
+                ok( isObject( model));
+                ok( model.a === true);
+                ok( model.b === false);
+                model.a = false;
+                model.b = true;
+                alteredNodes = horn.populate( {name: 'test', rootNode: $('#root')});
+                ok( isArray( alteredNodes));
+                ok( alteredNodes.length === 1);
+        }});
+    });
+
+
+
+
 
 module( "TestHorn - ABBR");
 
