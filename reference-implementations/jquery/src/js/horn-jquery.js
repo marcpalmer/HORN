@@ -56,6 +56,7 @@ function Horn() {
         var typeOfPattern;
         var modelValue;
         var newValue;
+        var alteredNodes = [];
 
         this.each( this.valueNodes, function (i, n) {
             modelValue = n.context[ n.key];
@@ -67,14 +68,14 @@ function Horn() {
                             modelValue.toString();
 
                 if ( n.node.nodeName.toLowerCase() === "abbr" ) {
-                    n.value = modelValue;
                     window.$(n.node).attr('title', newValue);
-                } else {
-                    n.value = modelValue;
-                    window.$(n.node).text( newValue);
-                }
+                } else { window.$(n.node).text( newValue); }
+                n.value = modelValue;
+                alteredNodes.push( n.node);
             }
         }, this);
+
+        return alteredNodes;
     };
 
     this.getPattern = function( path ) {
