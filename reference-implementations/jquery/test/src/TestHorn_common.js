@@ -108,6 +108,17 @@ test(
             }});
     });
 
+test(
+    "Horn.patternDefined() - Multiple comma separated patterns suppoerted.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            callback: function( horn ) {
+                horn.option( 'pattern', '        notices.*Can.*        ,         test.*.*      ', 'BooleanConverter');
+                ok( horn.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
+                ok( horn.opts.patternInfo.hasOwnProperty( 'test.*.*') === false);
+            }});
+    });
 
 
 
@@ -204,74 +215,71 @@ test(
 
 
 
-module( "TestHorn - Horn.prototype.toTokens()");
+module( "TestHorn - Horn.prototype.splitEach()");
 
 test(
-    "Horn.prototype.toTokens() - check that nothing's adding prototype properties to Object.",
+    "Horn.prototype.splitEach() - that an empty string doesn't yield a callback.",
     function() {
         var horn = new Horn();
-
-        var count = 0; for (var index in {}) {count++};
-        ok( count === 0, "Something's adding prototype properties to {}, can't continue with tests.");
+        var passed = true;
+        horn.splitEach( "", "", function( token ) { passed = false; });
+        ok( passed);
     });
 
 test(
-    "Horn.prototype.toTokens() - single token from a \"test\" string.",
+    "Horn.prototype.splitEach() - called on a single delimiter doesn't yield a callback.",
     function() {
         var horn = new Horn();
-        var tokens = horn.toTokens("test");
-        var count = 0; for (var index in tokens) {count++};
+        var passed = true;
+        horn.splitEach( " ", " ", function( token ) { passed = false; });
+        ok( passed);
+    });
 
+test(
+    "Horn.prototype.splitEach() - single token from a \"test\" string with trimming as of default \" \" delimiter.",
+    function() {
+        var horn = new Horn();
+        var count = 0;
+        horn.splitEach( "    test     ", " ",
+            function( token ) {
+                count++;
+                ok( token === "test");
+            });
         ok( count === 1);
-        ok( tokens.test === "test");
     });
 
 test(
-    "Horn.prototype.toTokens() - single token from a \"test\" string with trimming as of default \" \" delimiter.",
+    "Horn.prototype.splitEach() - three tokens from \"  x    y     z\" with trimming as of default \" \" delimiter.",
     function() {
         var horn = new Horn();
-        var tokens = horn.toTokens("    test     ");
-        var count = 0; for (var index in tokens) {count++};
-
-        ok( count === 1);
-        ok( tokens.test === "test");
+        var count = 0;
+        var expected = ['x', 'y', 'z'];
+        horn.splitEach( "  x    y     z", " ",
+            function( token ) {
+                ok( expected[ count++] === token);
+            });
     });
 
 test(
-    "Horn.prototype.toTokens() - three tokens from \"  x    y     z\" with trimming as of default \" \" delimiter.",
+    "Horn.prototype.splitEach() - three tokens from \"__x____y_____z_____\" with trimming with non default \"_\" delimiter.",
     function() {
         var horn = new Horn();
-        var tokens = horn.toTokens("  x    y     z");
-        var count = 0; for (var index in tokens) {count++};
-
-        ok( count === 3);
-        ok( tokens.x === "x");
-        ok( tokens.y === "y");
-        ok( tokens.z === "z");
+        var count = 0;
+        var expected = ['x', 'y', 'z'];
+        horn.splitEach( "__x____y_____z_____", "_",
+            function( token ) {
+                ok( expected[ count++] === token);
+            });
     });
 
 test(
-    "Horn.prototype.toTokens() - three tokens from \"__x____y_____z_____\" with trimming with non default \"_\" delimiter.",
+    "Horn.prototype.splitEach() - that regex isn't supported.",
     function() {
         var horn = new Horn();
-        var tokens = horn.toTokens("__x____y_____z_____", "_");
-        var count = 0; for (var index in tokens) {count++};
-
-        ok( count === 3);
-        ok( tokens.x === "x");
-        ok( tokens.y === "y");
-        ok( tokens.z === "z");
-    });
-
-test(
-    "Horn.prototype.toTokens() - that regex isn't supported.",
-    function() {
-        var horn = new Horn();
-        var tokens = horn.toTokens("abc", ".");
-        var count = 0; for (var index in tokens) {count++};
-
-        ok( count === 1);
-        ok( tokens.abc === "abc");
+        horn.splitEach( "abc", ".",
+            function( token ) {
+                ok( token === "abc");
+            });
     });
 
 

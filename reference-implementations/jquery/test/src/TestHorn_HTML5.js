@@ -1139,6 +1139,7 @@ test(
                 alteredNodes = horn.populate( {name: 'test', rootNode: $('#root')});
                 ok( isArray( alteredNodes));
                 ok( alteredNodes.length === 1);
+                ok( $(alteredNodes[ 0]).attr( 'id') === 'div0');
         }});
     });
 

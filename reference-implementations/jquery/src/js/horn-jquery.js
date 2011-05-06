@@ -38,11 +38,19 @@ function Horn() {
         return this.model;
     };
 
+    this.splitEach = function( object, delimiter, callback ) {
+        this.each( object.toString().split( delimiter !== undefined ?
+            delimiter : " "), function( i, token ) {
+                if ( token.trim() !== '' ) { callback.call( this, token); }
+        }, this);
+    };
+
     this.option = function( optionName, arg0, arg1 ) {
         switch ( optionName ) {
             case "pattern":
-                this.opts.patternInfo[ arg0] = {
-                    converterName: arg1 };
+                this.splitEach( arg0, ",", function( token ) {
+                    this.opts.patternInfo[ token] = { converterName: arg1 };
+                });
                 return;
 
             case "converter":
@@ -55,7 +63,7 @@ function Horn() {
     this.contains = function( objects, object ) {
         var rv = null;
         this.each( objects, function( i, o ) {
-            if ( rv = $(o)[0] === $(object)[0] ) {
+            if ( rv = window.$(o)[0] === window.$(object)[0] ) {
                 return false;
             }
         });
@@ -68,11 +76,15 @@ function Horn() {
         var newValue;
         var rootNode = this.definesArgument( args, 'rootNode') ?
             args.rootNode : undefined;
+        var template = this.definesArgument( args, 'template') ?
+            args.template : undefined;
         var alteredNodes = [];
-        this.each( this.valueNodes, function (i, n) {
+        this.each( this.valueNodes, function( i, n ) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
-                if ( !rootNode || (rootNode && this.contains( $(n.node).parents(), rootNode)) ) {
+                if ( !rootNode ||
+                    (rootNode &&
+                        this.contains( window.$(n.node).parents(), rootNode)) ) {
                     typeOfPattern = this.getPattern( i);
                     newValue = typeOfPattern !== null ?
                         this.convert( modelValue,
@@ -131,7 +143,6 @@ function Horn() {
                     parentContext[ token] = subContext;
                 }
                 subContext = parentContext[ token];
-
                 return this.setValue( value, path, subContext);
             } else {
                 parentContext[ token] = value;
@@ -141,7 +152,6 @@ function Horn() {
     };
 
     this.traverse = function( value, callback, key ) {
-        var propertyName;
         if ( typeof value === 'object' ) {
             this.each( value, function( k, v ) {
                 this.traverse( v, callback, key + '-' + k);
@@ -179,14 +189,16 @@ function Horn() {
             isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
             if ( isTextNode || isABBRNode ) {
                 text = window.unescape( isABBRNode ?
-                    window.$(node).attr('title') : window.$(theContained).text());
+                    window.$(node).attr('title') :
+                    window.$(theContained).text());
                 if ( isJSON ) {
                     typedValue = window.$.evalJSON( text);
                     if ( typeof typedValue === 'object' ) {
                         this.traverse( typedValue,
                             this.bind(
                                 function( key, value ) {
-                                    this.doSetValue( value, fullPath + key, isJSON, node);
+                                    this.doSetValue( value, fullPath + key,
+                                        isJSON, node);
                                 }, this), '');
                     } else {
                         this.doSetValue( typedValue, fullPath, isJSON, node);
@@ -207,9 +219,7 @@ function Horn() {
             typedValue : value, fullPath);
 
         if ( (this.opts.storeBackRefs === true) && (!isJSON) ) {
-            if ( this.valueNodes === undefined ) {
-                this.valueNodes = {};
-            }
+            if ( this.valueNodes === undefined ) { this.valueNodes = {}; }
 
             this.valueNodes[ fullPath.substring( 1)] = { node: node,
                 context: details.context,
@@ -250,8 +260,7 @@ function Horn() {
 }
 
 Horn.prototype.isAdjustingPath = function ( path ) {
-    return (path !== null) &&
-        (path !== undefined) &&
+    return (path !== null) && (path !== undefined) &&
         (path.toString().trim() !== '');
 };
 
@@ -260,9 +269,7 @@ Horn.prototype.bind = function( fn, ctx ) {
 };
 
 Horn.prototype.each = function( collection, fn, ctx ) {
-    if ( (collection === undefined) || (collection === null) ) {
-        return;
-    }
+    if ( (collection === undefined) || (collection === null) ) { return; }
     window.$.each( collection, ctx ? this.bind( fn, ctx) : fn);
 };
 
@@ -286,16 +293,6 @@ Horn.prototype.isAttached = function( ref ) {
     return window.$(ref).parents(':last').is('html');
 };
 
-Horn.prototype.toTokens = function ( value, delimiter ) {
-    var obj = {};
-    window.$.each( value.split( delimiter !== undefined ? delimiter : " "),
-        function( i, n ) {
-            n = n.trim();
-            if ( n !== "" ) { obj[ n] = n; }});
-
-    return obj;
-};
-
 Horn.prototype.getIfSingleTextNode = function( element ) {
     var theContained;
     var contained = window.$(window.$(element).contents());
@@ -305,7 +302,6 @@ Horn.prototype.getIfSingleTextNode = function( element ) {
             return window.unescape( theContained.nodeValue);
         }
     }
-
     return null;
 };
 

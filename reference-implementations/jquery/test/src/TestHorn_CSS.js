@@ -29,16 +29,6 @@ test(
         ok( horn.features.extractCSSPropertyPath.call( horn, node) === 'expected');
     });
 
-test(
-    "Horn.prototype.extractCSSPropertyPath() - extracts the first key from multiple.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div class="' + horn.features.cssPrefix + 'expected ' +
-            horn.features.cssPrefix + 'unexpected" />');
-
-        ok( horn.features.extractCSSPropertyPath.call( horn, node) === 'expected');
-    });
-
 
 
 
@@ -1275,6 +1265,7 @@ test(
                 alteredNodes = horn.populate( {name: 'test', rootNode: $('#root')});
                 ok( isArray( alteredNodes));
                 ok( alteredNodes.length === 1);
+                ok( $(alteredNodes[ 0]).attr( 'id') === 'div0');
         }});
     });
 
