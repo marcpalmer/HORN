@@ -1224,6 +1224,31 @@ test(
         }});
     });
 
+test(
+    "Model Tests - Correct nodes returned from populate (none).",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><div id="div0" class="_a">true</div><div id="div1" class="_b">false</div><div id="div2" class="_c">true</div></div>')}
+            ],
+            callback: function( horn ) {
+                var alteredNodes;
+                var model;
+                horn.option( "pattern", "a", "BooleanConverter");
+                horn.option( "pattern", "b", "BooleanConverter");
+                horn.option( "pattern", "c", "BooleanConverter");
+                horn.option( "storeBackRefs", true);
+                model = horn.extract();
+                ok( isObject( model));
+                ok( model.a === true);
+                ok( model.b === false);
+                ok( model.c === true);
+                alteredNodes = horn.populate();
+                ok( isArray( alteredNodes))
+                ok( alteredNodes.length === 0);
+        }});
+    });
 
 
 module( "TestHorn - ABBR");
