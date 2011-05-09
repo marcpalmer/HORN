@@ -6,15 +6,16 @@ Horn.prototype.features = {
 
     extractCSSPropertyPath: function( n ) {
         var path = null;
-        this.splitEach(
+        Horn.prototype.splitEach(
             window.$(n).attr( "class"),
             " ",
             function( token ) {
-                if ( this.startsWith( token, this.features.cssPrefix) ) {
-                    path = token.substring( this.features.cssPrefix.length); // @todo cache length
-                    if ( path === '' ) {
-                        path = null;
-                    }
+                if ( Horn.prototype.startsWith( token,
+                    Horn.prototype.features.cssPrefix) ) {
+                        // @todo cache length
+                    path = token.substring(
+                        Horn.prototype.features.cssPrefix.length);
+                    if ( path === '' ) { path = null; }
                     return false;
                 }
             });
