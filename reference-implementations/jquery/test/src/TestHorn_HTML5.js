@@ -1256,14 +1256,10 @@ test(
                             '    <div data-horn-path="a-b-c"><span data-horn-path="d">value</span></div>' +
                             '</div>' +
                             '<div id="template">' +
-                            '    <div data-horn-path="a-b-c"><span data-horn-path="d"></span></div>' +
+                            '    <div data-horn-path="a-b-c"><span data-horn-path="d" id="xx"></span></div>' +
                             '</div>')}],
-
-                nodes:  $(  '<div id="root" data-horn="true"><div id="div0" data-horn-path="a">true</div></div><div id="root2" data-horn="true"><div id="div1" data-horn-path="b">false</div></div>')}
-
             callback: function( horn ) {
                 var model = horn.extract();
-                alert( model);
                 ok( model.a.b.c.d === 'value');
                 var populatedTemplate = horn.fromTemplate( {
                     id: 'newID',
@@ -1273,7 +1269,7 @@ test(
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
                 try {
-                    ok($( '._d', $('#newID')).text() === 'updatedValue');
+                    ok($( '#xx', $('#newID')).text() === 'updatedValue');
                 } finally {
                     $('#newID').remove();
                 }
