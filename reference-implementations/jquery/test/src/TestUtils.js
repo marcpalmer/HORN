@@ -9,6 +9,10 @@ var countOwnProps = function( object ) {
     return count;
 };
 
+var isJQueryObject = function( object ) {
+    return object instanceof jQuery;
+};
+
 var isEmptyObject = function( object ) {
     var count;
     var index;

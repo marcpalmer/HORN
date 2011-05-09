@@ -965,7 +965,7 @@ test(
                 });
                 var model = horn.extract();
                 ok( horn.opts.patternInfo[ '.*'].converterName === 'jsonIntegerConverter');
-                ok( horn.convertValue( 1, "_key-a", false, true) === "1");
+                ok( horn.patternConvert( 1, "_key-a", false, true) === "1");
                 ok( isObject( model));
                 ok( isObject( model.key));
                 ok( model.key.a === "1");

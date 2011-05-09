@@ -402,10 +402,10 @@ test(
 
 
 
-module( "TestHorn - Horn.convertValue()");
+module( "TestHorn - Horn.patternConvert()");
 
 test(
-    "convertValue() - that it returns null if there are no matching patterns.",
+    "patternConvert() - that it returns null if there are no matching patterns.",
     function() {
 
         var horn = new Horn();
@@ -414,35 +414,35 @@ test(
         var value = "value";
         var hornKey = "_hornKey";
 
-        ok( horn.convertValue( value, hornKey, false) === null);
+        ok( horn.patternConvert( value, hornKey, false) === null);
     });
 
 test(
-    "convertValue() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
+    "patternConvert() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
         dataTest( {
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", ".*", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.convertValue( "1", "_hornKey", false) === 1);
+                ok( horn.patternConvert( "1", "_hornKey", false) === 1);
             }});
     });
 
 test(
-    "convertValue() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
+    "patternConvert() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
     function() {
         dataTest( {
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", ".*", "IntegerConverter");
                 var model = horn.extract();
-                ok( horn.convertValue( "-1", "_hornKey", false) === -1);
+                ok( horn.patternConvert( "-1", "_hornKey", false) === -1);
             }});
     });
 
 test(
-    "convertValue() - no coercion if no matching regex against the value's hornKey.",
+    "patternConvert() - no coercion if no matching regex against the value's hornKey.",
     function() {
         var node = $('<meta name="typeof noMatch" content="IntegerConverter" />');
         node.appendTo( $('head'));
@@ -450,26 +450,26 @@ test(
             var horn = new Horn();
             horn.extract();
 
-            ok( horn.convertValue( "-1", "_hornKey", false) === null);
+            ok( horn.patternConvert( "-1", "_hornKey", false) === null);
         } finally {
             node.remove();
         }
     });
 
 test(
-    "convertValue() - that boolean values are coerced and parsed correctly.",
+    "patternConvert() - that boolean values are coerced and parsed correctly.",
     function() {
         dataTest( {
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", ".*truth.*", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.convertValue( "true",   "_ourtruth", false) === true);
-                ok( horn.convertValue( "tRuE",   "_ourtruth", false) === true);
-                ok( horn.convertValue( "TRUE",   "_ourtruth", false) === true);
-                ok( horn.convertValue( "false",  "_ourtruth", false) === false);
-                ok( horn.convertValue( "FaLsE",  "_ourtruth", false) === false);
-                ok( horn.convertValue( "FALSE",  "_ourtruth", false) === false);
+                ok( horn.patternConvert( "true",   "_ourtruth", false) === true);
+                ok( horn.patternConvert( "tRuE",   "_ourtruth", false) === true);
+                ok( horn.patternConvert( "TRUE",   "_ourtruth", false) === true);
+                ok( horn.patternConvert( "false",  "_ourtruth", false) === false);
+                ok( horn.patternConvert( "FaLsE",  "_ourtruth", false) === false);
+                ok( horn.patternConvert( "FALSE",  "_ourtruth", false) === false);
             }});
     });
 
