@@ -4,6 +4,15 @@
  *  @author Chris Denman
  *  @author Marc Palmer
  */
+if ( !window.Node ) {
+    window.$.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
+        'CDATA_SECTION_NODE', 'ENTITY_REFERENCE_NODE', 'ENTITY_NODE',
+        'PROCESSING_INSTRUCTION_NODE', 'COMMENT_NODE', 'DOCUMENT_NODE',
+        'DOCUMENT_TYPE_NODE', 'DOCUMENT_FRAGMENT_NODE', 'NOTATION_NODE'],
+        function( i, n ) {
+            window.Node[ n] = i + 1;
+        });
+}
 
 Horn.prototype.splitEach = function( object, delimiter, callback ) {
     Horn.prototype.each( object.toString().split( delimiter !== undefined ?
@@ -23,7 +32,7 @@ Horn.prototype.bind = function( fn, ctx ) {
 
 Horn.prototype.each = function( collection, fn, ctx ) {
     if ( (collection === undefined) || (collection === null) ) { return; }
-    window.$.each( collection, ctx ? this.bind( fn, ctx) : fn);
+    window.$.each( collection, ctx ? Horn.prototype.bind( fn, ctx) : fn);
 };
 
 Horn.prototype.didRemoveProperty = function( object, property ) {
@@ -79,17 +88,6 @@ Horn.prototype.traverse = function( value, callback, key ) {
 };
 
 function Horn() {
-
-    if ( !window.Node ) {
-        window.$.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
-            'CDATA_SECTION_NODE', 'ENTITY_REFERENCE_NODE', 'ENTITY_NODE',
-            'PROCESSING_INSTRUCTION_NODE', 'COMMENT_NODE', 'DOCUMENT_NODE',
-            'DOCUMENT_TYPE_NODE', 'DOCUMENT_FRAGMENT_NODE', 'NOTATION_NODE'],
-            function( i, n ) {
-                window.Node[ n] = i + 1;
-            });
-    }
-
     this.defaults = {
         storeBackRefs:  false,
         converters:     {},
@@ -122,7 +120,7 @@ function Horn() {
         // abstract this so sth
     this.visitNodes = function( dataElement, path ) {
         var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
-        path = this.isAdjustingPath( _path) ?
+        path = Horn.prototype.isAdjustingPath( _path) ?
             (path + '-' + _path) : path;
         Horn.prototype.each( window.$(dataElement).children(), function( i, n ) {
             if ( !this.getFeature({type: 'INDICATOR_ROOT', n: n}) &&
@@ -152,27 +150,26 @@ function Horn() {
         var typeOfPattern;
         var modelValue;
         var newValue;
-        var rootNode = this.definesArgument( args, 'rootNode') ?
+        var rootNode = Horn.prototype.definesArgument( args, 'rootNode') ?
             args.rootNode : undefined;
         var alteredNodes = [];
         Horn.prototype.each( this.valueNodes, function( i, n ) {
             modelValue = n.context[ n.key];
             if ( modelValue !== n.value ) {
                 if ( !rootNode ||
-                    (rootNode && this.contains( window.$(n.node).parents(),
-                        rootNode)) ) {
-                    typeOfPattern = this.getPattern( i);
-                    newValue = typeOfPattern !== null ?
-                        this.convert( modelValue,
-                            typeOfPattern.converterName, false, false) :
-                                modelValue.toString();
-
-                    if ( n.node.nodeName.toLowerCase() === "abbr" ) {
-                        window.$(n.node).attr('title', newValue);
-                    } else { window.$(n.node).text( newValue); }
-                    n.value = modelValue;
-                    alteredNodes.push( n.node);
-                }
+                    (rootNode && Horn.prototype.contains(
+                        window.$(n.node).parents(), rootNode)) ) {
+                        typeOfPattern = this.getPattern( i);
+                        newValue = typeOfPattern !== null ?
+                            this.convert( modelValue,
+                                typeOfPattern.converterName, false, false) :
+                                    modelValue.toString();
+                        if ( n.node.nodeName.toLowerCase() === "abbr" ) {
+                            window.$(n.node).attr('title', newValue);
+                        } else { window.$(n.node).text( newValue); }
+                        n.value = modelValue;
+                        alteredNodes.push( n.node);
+                    }
             }
         }, this);
         return alteredNodes;
@@ -225,16 +222,6 @@ function Horn() {
         }
     };
 
-    this.convertValue = function( value, path, toText, isJSON ) {
-        var typeOfPattern;
-        isJSON = isJSON === true;
-        if ( this.startsWith( path, '-') ) { path = path.substring( 1); }
-        typeOfPattern = this.getPattern( path);
-        return (typeOfPattern !== null) ?
-            this.convert( value, typeOfPattern.converterName, !toText, isJSON) :
-            null;
-    };
-
     this.handleValue = function( node, parentPath ) {
         var theContained;
         var fullPath;
@@ -245,32 +232,34 @@ function Horn() {
         var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
         var contents = window.$(window.$(node).contents());
         var isJSON = this.getFeature({type: 'INDICATOR_JSON', n: node});
-        if ( (contents.size() === 1) &&
-            (isJSON || (this.isAdjustingPath( path))) ) {
-            fullPath = this.isAdjustingPath( path) ?
-                (parentPath + '-' + path) :
-                parentPath;
-            theContained = contents[0];
-            isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
-            isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
-            if ( isTextNode || isABBRNode ) {
-                text = window.unescape( isABBRNode ?
-                    window.$(node).attr('title') :
-                    window.$(theContained).text());
-                if ( isJSON ) {
-                    typedValue = window.$.evalJSON( text);
-                    if ( typeof typedValue === 'object' ) {
-                        this.traverse( typedValue,
-                            this.bind(
-                                function( key, value ) {
-                                    this.doSetValue( value, fullPath + key,
-                                        isJSON, node);
-                                }, this), '');
+        if ( contents.size() === 1 ) {
+                fullPath = Horn.prototype.isAdjustingPath( path)
+            if ( isJSON || fullPath ) {
+                fullPath = fullPath ? (parentPath + '-' + path) : parentPath;
+                theContained = contents[0];
+                isTextNode = theContained.nodeType === window.Node.TEXT_NODE;
+                isABBRNode = isTextNode && node.nodeName.toLowerCase() === "abbr";
+                if ( isTextNode || isABBRNode ) {
+                    text = window.unescape( isABBRNode ?
+                        window.$(node).attr('title') :
+                        window.$(theContained).text());
+                    if ( isJSON ) {
+                        typedValue = window.$.evalJSON( text);
+                        if ( typeof typedValue === 'object' ) {
+                            Horn.prototype.traverse( typedValue,
+                                Horn.prototype.bind(
+                                    function( key, value ) {
+                                        this.doSetValue( value, fullPath + key,
+                                            isJSON, node);
+                                    }, this), '');
+                        } else {
+                            this.doSetValue(
+                                typedValue, fullPath, isJSON, node);
+                        }
                     } else {
-                        this.doSetValue( typedValue, fullPath, isJSON, node);
-                    }
-                } else { this.doSetValue( text, fullPath, isJSON, node); }
-                return true;
+                        this.doSetValue( text, fullPath, isJSON, node); }
+                    return true;
+                }
             }
         }
         return false;
@@ -296,6 +285,16 @@ function Horn() {
             this.opts.converters[ converterName] = cachedConverter;
         }
         return cachedConverter;
+    };
+
+    this.convertValue = function( value, path, toText, isJSON ) {
+        var typeOfPattern;
+        isJSON = isJSON === true;
+        if ( Horn.prototype.startsWith( path, '-') ) { path = path.substring( 1); }
+        typeOfPattern = this.getPattern( path);
+        return (typeOfPattern !== null) ?
+            this.convert( value, typeOfPattern.converterName, !toText, isJSON) :
+            null;
     };
 
     this.convert = function( value, converterName, fromText, isJSON ) {
