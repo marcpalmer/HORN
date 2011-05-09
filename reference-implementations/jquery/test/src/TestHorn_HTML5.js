@@ -1240,3 +1240,107 @@ test(
         ok( !horn.isAttached( $('#testing')));
         ok( horn.getDataAttr( $('#testing'), "dataNameHorn") === undefined);
     });
+
+
+
+
+module( "From Template");
+
+test(
+    "From Template - Testing the population of a template with no type conversion nor pattern matching.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div data-horn="true">' +
+                            '    <div data-horn-path="a-b-c"><span data-horn-path="d">value</span></div>' +
+                            '</div>' +
+                            '<div id="template">' +
+                            '    <div data-horn-path="a-b-c"><span data-horn-path="d"></span></div>' +
+                            '</div>')}],
+
+                nodes:  $(  '<div id="root" data-horn="true"><div id="div0" data-horn-path="a">true</div></div><div id="root2" data-horn="true"><div id="div1" data-horn-path="b">false</div></div>')}
+
+            callback: function( horn ) {
+                var model = horn.extract();
+                alert( model);
+                ok( model.a.b.c.d === 'value');
+                var populatedTemplate = horn.fromTemplate( {
+                    id: 'newID',
+                    selector: '#template',
+                    data: { a: { b: { c: { d: 'updatedValue'}}}}});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '._d', $('#newID')).text() === 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
+
+test(
+    "From Template - Testing the population of a template with no type conversion - no matching data a.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div data-horn="true">' +
+                            '    <div data-horn-path="a-b-c"><span data-horn-path="d">value</span></div>' +
+                            '</div>' +
+                            '<div id="template">' +
+                            '    <div data-horn-path="a-b-c"><span data-horn-path="d"></span></div>' +
+                            '</div>')}],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.a.b.c.d === 'value');
+                var populatedTemplate = horn.fromTemplate( {
+                    id: 'newID',
+                    selector: '#template',
+                    data: { f: { b: { c: { d: 'updatedValue'}}}}});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '._d', $('#newID')).text() !== 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
+
+test(
+    "From Template - Testing the population of a template with no type conversion - no matching data b.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div data-horn="true">' +
+                            '    <div id="grabber1" data-horn-path="a-b-c"><span id="grabber2" data-horn-path="d">value</span></div>' +
+                            '</div>' +
+                            '<div id="template">' +
+                            '    <div data-horn-path="a-b-c"><span data-horn-path="d"></span></div>' +
+                            '</div>')}],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.a.b.c.d === 'value');
+                ok( horn.isValueNode( $('#grabber1')[0], '', true) === false);
+                ok( isObject( horn.isValueNode( $('#grabber2')[0], '')));
+                var populatedTemplate = horn.fromTemplate( {
+                    id: 'newID',
+                    selector: '#template',
+                    data: { a: { b: { c: { f: 'updatedValue'}}}}});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '._d', $('#newID')).text() !== 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
