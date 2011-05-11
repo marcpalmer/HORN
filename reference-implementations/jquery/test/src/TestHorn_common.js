@@ -529,3 +529,36 @@ test(
                 ok ( horn.opts.sausages === 'tasty');
             }});
     });
+
+
+
+
+module( "TestHorn - Form Elements");
+
+test(
+    "Form Elements - Testing jQuery Input element getter/setter.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(' <input class=" " type="text" size="60" maxlength="64" id="pfBoardName" name="boardName" value="testValue" />')}
+            ],
+            callback: function( horn ) {
+                ok( $('#pfBoardName').val() === 'testValue');
+                $('#pfBoardName').val( 'newValue');
+                ok( $('#pfBoardName').val() === 'newValue');
+        }});
+    });
+
+test(
+    "Form Elements - Testing jQuery TextArea element getter/setter.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(' <textarea class="span-10 text-field email-list" id="addresses" name="addresses" >testValue</textarea>')}
+            ],
+            callback: function( horn ) {
+                ok( $('#addresses').val() === 'testValue');
+                $('#addresses').val( 'newValue');
+                ok( $('#addresses').val() === 'newValue');
+        }});
+    });

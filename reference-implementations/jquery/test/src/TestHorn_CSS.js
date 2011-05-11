@@ -1471,3 +1471,313 @@ test(
                 ok( !isAttached( $('#newID')));
             }});
     });
+
+   module( "TestHorn - ABBR");
+
+test(
+    "ABBR - ABBR node for value, no type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><abbr class="_key" title="alternative">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'alternative');
+        }});
+    });
+
+test(
+    "ABBR - ABBR node for value, converted to Integer.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><abbr class="_key" title="12">value</abbr></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
+
+test(
+    "ABBR - ABBR node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn">baskdfhjdshfds h<abbr class="_key" title="true">value</abbr> akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key')));
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
+                horn.populate();
+                ok( $('._key').attr( 'title') === 'false');
+        }});
+    });
+
+
+module( "TestHorn - Population");
+
+test(
+    "Population - integer from horn, extracted, modified in model, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_key">-1</span></div>'),}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key')));
+                ok( isObject( model));
+                ok( model.key === -1);
+                model.key = 13;
+                horn.populate();
+                ok( $('._key').text() === '13');
+        }});
+    });
+
+
+
+
+module( "Nested Contexts");
+
+test(
+    "Nested Contexts - Simple nested in immediate parent.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _z"><div class="horn"><span class="_b">b</span></div><span class="_a">a</span></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.z.a === 'a');
+                ok( model.b === 'b');
+                ok( model.z.a.b === undefined);
+                ok( model.z.b === undefined);
+            }});
+    });
+
+
+
+
+module( "From Template");
+
+test(
+    "From Template - Testing the population of a template with no type conversion nor pattern matching.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn">' +
+                            '    <div class="_a-b-c"><span class="_d">value</span></div>' +
+                            '</div>' +
+                            '<div id="template">' +
+                            '    <div class="_a-b-c"><span class="_d"></span></div>' +
+                            '</div>')}],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.a.b.c.d === 'value');
+                var populatedTemplate = horn.fromTemplate( {
+                    id: 'newID',
+                    selector: '#template',
+                    data: { a: { b: { c: { d: 'updatedValue'}}}}});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '._d', $('#newID')).text() === 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
+
+test(
+    "From Template - Testing the population of a template with no type conversion - no matching data a.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn">' +
+                            '    <div class="_a-b-c"><span class="_d">value</span></div>' +
+                            '</div>' +
+                            '<div id="template">' +
+                            '    <div class="_a-b-c"><span class="_d"></span></div>' +
+                            '</div>')}],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.a.b.c.d === 'value');
+                var populatedTemplate = horn.fromTemplate( {
+                    id: 'newID',
+                    selector: '#template',
+                    data: { f: { b: { c: { d: 'updatedValue'}}}}});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '._d', $('#newID')).text() !== 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
+
+test(
+    "From Template - Testing the population of a template with no type conversion - no matching data b.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn">' +
+                            '    <div id="grabber1" class="_a-b-c"><span id="grabber2" class="_d">value</span></div>' +
+                            '</div>' +
+                            '<div id="template">' +
+                            '    <div class="_a-b-c"><span class="_d"></span></div>' +
+                            '</div>')}],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( model.a.b.c.d === 'value');
+                ok( horn.isValueNode( $('#grabber1')[0], '', true) === false);
+                ok( isObject( horn.isValueNode( $('#grabber2')[0], '')));
+                var populatedTemplate = horn.fromTemplate( {
+                    id: 'newID',
+                    selector: '#template',
+                    data: { a: { b: { c: { f: 'updatedValue'}}}}});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '._d', $('#newID')).text() !== 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
+
+
+
+
+module( "TestHorn - INPUT");
+
+test(
+    "INPUT - INPUT node for value, no type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><input class="_key" value="testValue"/></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'testValue');
+        }});
+    });
+
+test(
+    "INPUT - INPUT node for value, converted to Integer.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><input class="_key" value="12"/></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
+
+test(
+    "INPUT - INPUT node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn">baskdfhjdshfds h<input class="_key" value="true"/>akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key')));
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
+                horn.populate();
+                ok( $('._key').val() === 'false');
+        }});
+    });
+
+
+
+
+module( "TestHorn - TEXTAREA");
+
+test(
+    "TEXTAREA - TEXTAREA node for value, no type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><textarea class="_key">testValue</textarea></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'testValue');
+        }});
+    });
+
+test(
+    "TEXTAREA - TEXTAREA node for value, converted to Integer.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn"><textarea class="_key">12</textarea></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
+
+test(
+    "TEXTAREA - TEXTAREA node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div class="horn">baskdfhjdshfds h<textarea class="_key" >true</textarea>akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key')));
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
+                horn.populate();
+                ok( $('._key').val() === 'false');
+        }});
+    });

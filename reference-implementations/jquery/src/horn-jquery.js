@@ -63,16 +63,19 @@ function Horn() {
     };
 
     this.fromTemplate = function( args ) {
-        var clonedTemplate = window.$(args.selector).clone();
-        clonedTemplate.removeAttr( "id");
-        if ( args.id ) { clonedTemplate.attr( "id", args.id); }
+        var template = Horn.prototype.definesArgument( args, 'rootNode', undefined);
+        if ( !template ) {
+            template = window.$(args.selector).clone();
+            template.removeAttr( "id");
+            if ( args.id ) { template.attr( "id", args.id); }
+        }
         var data = args.data;
-        this.visitNodes( clonedTemplate, '',
+        this.visitNodes( template, '',
             Horn.prototype.bind(
             function( n, path ) {
                 return this.populateTemplateValue( n, path, data);
             }, this));
-        return clonedTemplate;
+        return template;
     };
 
     this.getFeature = function( args ) {
@@ -183,6 +186,8 @@ function Horn() {
         var text;
         var isTextNode;
         var isABBRNode;
+        var nodeName;
+        var isFormElementNode;
         var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
         var contents = window.$(window.$(node).contents());
         var isJSON = this.getFeature({type: 'INDICATOR_JSON', n: node});
@@ -193,15 +198,20 @@ function Horn() {
             if ( !isEmptyNode ) { theContained = contents[0]; }
             if ( isJSON || fullPath ) {
                 fullPath = fullPath ? (parentPath + '-' + path) : parentPath;
-                isABBRNode = node.nodeName.toLowerCase() === "abbr";
-                isTextNode = !isABBRNode && (isEmptyNode ||
-                    (theContained.nodeType === window.Node.TEXT_NODE));
-                if ( isTextNode || isABBRNode ) {
-                    text = window.unescape( isABBRNode ?
-                        window.$(node).attr('title') :
-                        (isEmptyNode ? '' : window.$(theContained).text()));
+                nodeName = node.nodeName.toLowerCase();
+                isFormElementNode =
+                    (nodeName === 'input') || (nodeName === 'textarea');
+                isABBRNode = !isFormElementNode && (nodeName.toLowerCase() === "abbr");
+                isTextNode = !isABBRNode && (isEmptyNode || (theContained.nodeType === window.Node.TEXT_NODE));
+                if ( isFormElementNode || isTextNode || isABBRNode ) {
+                    text =
+                        window.unescape( isFormElementNode ? window.$(node).val() : (isABBRNode ?
+                            window.$(node).attr('title') :
+                            ((isEmptyNode ?
+                                '' :
+                                window.$(theContained).text()))));
                     return { isJSON: isJSON,
-                        isTextNode: isTextNode,
+                        isTextNode: isTextNode, isFormElementNode: isFormElementNode,
                         isABBRNode: isABBRNode, node: node, text: text,
                         path: fullPath};
                 }
@@ -358,9 +368,13 @@ Horn.prototype.traverse = function( value, callback, key ) {
 };
 
 Horn.prototype.setNodeValue = function( args ) {
-    if ( args.node.nodeName.toLowerCase() === "abbr" ) {
-        window.$(args.node).attr('title', args.value);
-    } else { window.$(args.node).text( args.value); }
+    var nodeName = args.node.nodeName.toLowerCase();
+    var jNode = window.$(args.node);
+    if ( (nodeName === "input") || (nodeName === 'textarea') ) {
+        jNode.val( args.value);
+    } else if ( nodeName === "abbr" ) {
+        jNode.attr('title', args.value);
+    } else { jNode.text( args.value); }
 };
 
 window.horn = new Horn();

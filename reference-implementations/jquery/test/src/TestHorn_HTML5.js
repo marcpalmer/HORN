@@ -1340,3 +1340,112 @@ test(
                 ok( !isAttached( $('#newID')));
             }});
     });
+
+
+
+
+module( "TestHorn - INPUT");
+
+test(
+    "INPUT - INPUT node for value, no type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true"><input data-horn-path="key" value="testValue"/></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'testValue');
+        }});
+    });
+
+test(
+    "INPUT - INPUT node for value, converted to Integer.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true"><input data-horn-path="key" value="12"/></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
+
+test(
+    "INPUT - INPUT node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true">baskdfhjdshfds h<input data-horn-path="key" id="grabMe" value="true"/>akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
+                horn.populate();
+                ok( $('#grabMe').val() === 'false');
+        }});
+    });
+
+
+
+
+module( "TestHorn - TEXTAREA");
+
+test(
+    "TEXTAREA - TEXTAREA node for value, no type conversion.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="true"><textarea data-horn-path="key">testValue</textarea></div>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 'testValue');
+        }});
+    });
+
+test(
+    "TEXTAREA - TEXTAREA node for value, converted to Integer.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true"><textarea data-horn-path="key">12</textarea></div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "IntegerConverter");
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
+
+test(
+    "TEXTAREA - TEXTAREA node for value, converted to Boolean, repopulated and checked.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $('<div data-horn="true">baskdfhjdshfds h<textarea data-horn-path="key" id="grabMe">true</textarea>akdsjf kljdskf jdskf</div>')}
+            ],
+            callback: function( horn ) {
+                horn.option( "pattern", "key", "BooleanConverter");
+                horn.option( "storeBackRefs", true);
+                var model = horn.extract();
+                ok( isObject( model));
+                ok( model.key === true);
+                model.key = false;
+                horn.populate();
+                ok( $('#grabMe').val() === 'false');
+        }});
+    });
