@@ -76,8 +76,7 @@ function Horn() {
     };
 
     this.getFeature = function( args ) {
-        return Horn.prototype.bind(
-            Horn.prototype.features[ args.type], this)(args); // @todo bind every call here, replace
+        return Horn.prototype.features[ args.type].call( this, args);
     };
 
     this.populateTemplateValue = function( node, path, data ) {
