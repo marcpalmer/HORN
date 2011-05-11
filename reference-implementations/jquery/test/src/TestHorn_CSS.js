@@ -35,7 +35,7 @@ test(
 module( "TestHorn - {valueNodes:X}");
 
 test(
-    "{valueNodes:X} - No value nodes if no storeBackRefs specified.",
+    "{valueNodes:X} - No value nodes if storeBackRefs specified as false.",
     function() {
         dataTest( {
             passConverters: true,
@@ -45,6 +45,7 @@ test(
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "key", "IntegerConverter");
+                horn.option( "storeBackRefs", "false");
                 var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));

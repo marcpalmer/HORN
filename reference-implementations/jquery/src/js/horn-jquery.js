@@ -6,24 +6,24 @@
  */
 function Horn() {
     this.defaults = {
-        storeBackRefs:  false,
+        storeBackRefs:  true,
         converters:     {},
         patternInfo:    {}
     };
 
     this.opts = window.$.extend( {}, this.defaults);
 
-    this.getFeature = function( args ) {
-        return Horn.prototype.bind( Horn.prototype.features[ args.type], this)(args); // @todo bind every call here, replace
-    };
-
     this.extract = function( args ) {
         var _this = this;
-        Horn.prototype.each( this.getFeature({type: 'ROOT_NODES'}),
+        var rootNodes =
+            Horn.prototype.definesArgument( args, 'selector') ?
+                window.$(args.selector) :
+                this.getFeature({type: 'ROOT_NODES'});
+        Horn.prototype.each( rootNodes,
             function( i, n ) { this.visitNodes( n, '',
                 function( n, path ) {
-
-                    var isRoot = _this.getFeature({type: 'INDICATOR_ROOT', n: n});
+                    var isRoot =
+                        _this.getFeature( {type: 'INDICATOR_ROOT', n: n});
                     if ( isRoot ) { return false; }
                     var valueData = _this.isValueNode( n, path);
                     if ( !valueData ) { return true; }
@@ -34,6 +34,52 @@ function Horn() {
         return this.model;
     };
 
+    this.populate = function( args ) {
+        var typeOfPattern;
+        var modelValue;
+        var newValue;
+        var rootNode = Horn.prototype.definesArgument( args, 'rootNode') ?
+            args.rootNode : undefined;
+        var alteredNodes = [];
+        Horn.prototype.each( this.valueNodes, function( i, n ) {
+            modelValue = n.context[ n.key];
+            if ( modelValue !== n.value ) {
+                if ( !rootNode ||
+                    (rootNode && Horn.prototype.contains(
+                        window.$(n.node).parents(), rootNode)) ) {
+                        typeOfPattern = this.getPattern( i);
+                        newValue = typeOfPattern !== null ?
+                            this.convert( modelValue,
+                                typeOfPattern.converterName, false, false) :
+                                    modelValue.toString();
+                        Horn.prototype.setNodeValue(
+                            {node: n.node, value: newValue});
+                        n.value = modelValue;
+                        alteredNodes.push( n.node);
+                    }
+            }
+        }, this);
+        return alteredNodes;
+    };
+
+    this.fromTemplate = function( args ) {
+        var clonedTemplate = window.$(args.selector).clone();
+        clonedTemplate.removeAttr( "id");
+        if ( args.id ) { clonedTemplate.attr( "id", args.id); }
+        var data = args.data;
+        this.visitNodes( clonedTemplate, '',
+            Horn.prototype.bind(
+            function( n, path ) {
+                return this.populateTemplateValue( n, path, data);
+            }, this));
+        return clonedTemplate;
+    };
+
+    this.getFeature = function( args ) {
+        return Horn.prototype.bind(
+            Horn.prototype.features[ args.type], this)(args); // @todo bind every call here, replace
+    };
+
     this.populateTemplateValue = function( node, path, data ) {
         var key;
         var regexp;
@@ -42,37 +88,22 @@ function Horn() {
             if ( valueData.isJSON  ) { return false; }
             key = this.getFeature({type: 'INDICATOR_PATH', n: node});
             if ( Horn.prototype.isAdjustingPath( key) ) {
-                path = (path + '-' + key); } // @todo note key combining here
+                path = (path + '-' + key); }
             Horn.prototype.traverse( data,
                 Horn.prototype.bind( function( k, v ) {
                     regexp = new RegExp( k.replace( '*', '.*'));
                     if ( regexp.test( path) ) {
                         var typeOfPattern = this.getPattern( k);
-                        Horn.prototype.setNodeValue( {node: node, value: typeOfPattern !== null ?
-                            this.convert( v, typeOfPattern.converterName,
-                                false, false) : v.toString()});
+                        Horn.prototype.setNodeValue(
+                            {node: node, value: typeOfPattern !== null ?
+                                this.convert( v, typeOfPattern.converterName,
+                                    false, false) : v.toString()});
                     }
                 }, this)
             );
             return false;
         }
         return true;
-    };
-
-    this.fromTemplate = function( args ) {
-        var clonedTemplate = window.$(args.selector).clone();
-        clonedTemplate.removeAttr( "id");
-        if ( args.id ) { clonedTemplate.attr( "id", args.id); }
-        var data = args.data;
-
-        // clone, strip id and walk the template
-        this.visitNodes( clonedTemplate, '',
-            Horn.prototype.bind(
-            function( n, path ) {
-                return this.populateTemplateValue( n, path, data);
-            }, this));
-
-        return clonedTemplate;
     };
 
     this.visitNodes = function( dataElement, path, fn ) {
@@ -100,33 +131,6 @@ function Horn() {
                 return;
         }
         if ( optionName !== undefined ) { this.opts[ optionName] = arg0; }
-    };
-
-    this.populate = function( args ) {
-        var typeOfPattern;
-        var modelValue;
-        var newValue;
-        var rootNode = Horn.prototype.definesArgument( args, 'rootNode') ?
-            args.rootNode : undefined;
-        var alteredNodes = [];
-        Horn.prototype.each( this.valueNodes, function( i, n ) {
-            modelValue = n.context[ n.key];
-            if ( modelValue !== n.value ) {
-                if ( !rootNode ||
-                    (rootNode && Horn.prototype.contains(
-                        window.$(n.node).parents(), rootNode)) ) {
-                        typeOfPattern = this.getPattern( i);
-                        newValue = typeOfPattern !== null ?
-                            this.convert( modelValue,
-                                typeOfPattern.converterName, false, false) :
-                                    modelValue.toString();
-                        Horn.prototype.setNodeValue( {node: n.node, value: newValue});
-                        n.value = modelValue;
-                        alteredNodes.push( n.node);
-                    }
-            }
-        }, this);
-        return alteredNodes;
     };
 
     this.getPattern = function( path ) {
@@ -187,9 +191,7 @@ function Horn() {
         var fullPath = Horn.prototype.isAdjustingPath( path);
         var isEmptyNode = contentsSize === 0;
         if ( (contentsSize === 1) || (isEmptyNode && !isJSON))  {
-            if ( !isEmptyNode ) {
-                theContained = contents[0];
-            }
+            if ( !isEmptyNode ) { theContained = contents[0]; }
             if ( isJSON || fullPath ) {
                 fullPath = fullPath ? (parentPath + '-' + path) : parentPath;
                 isABBRNode = node.nodeName.toLowerCase() === "abbr";
@@ -239,6 +241,7 @@ function Horn() {
         }
     };
 
+    // @todo test
     this.getCacheConverter = function( converterName ) {
         var cachedConverter = this.opts.converters[ converterName];
         if ( cachedConverter === undefined ) { return null; }
@@ -260,7 +263,7 @@ function Horn() {
             null;
     };
 
-    // @todo just pass in method name here?
+    // @todo would be nice to just pass the converterName here, we can work out once in a SC ancestor and just pass down perhaps?
     this.convert = function( value, converterName, fromText, isJSON ) {
         isJSON = isJSON === true;
         var converter = this.getCacheConverter( converterName);
@@ -271,12 +274,12 @@ function Horn() {
 }
 
 if ( !window.Node ) {
-    window.$.each( ['ELEMENT_NODE', 'ATTRIBUTE_NODE', 'TEXT_NODE',
-        'CDATA_SECTION_NODE', 'ENTITY_REFERENCE_NODE', 'ENTITY_NODE',
-        'PROCESSING_INSTRUCTION_NODE', 'COMMENT_NODE', 'DOCUMENT_NODE',
-        'DOCUMENT_TYPE_NODE', 'DOCUMENT_FRAGMENT_NODE', 'NOTATION_NODE'],
+    window.$.each( ['ELEMENT', 'ATTRIBUTE', 'TEXT',
+        'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
+        'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
+        'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
         function( i, n ) {
-            window.Node[ n] = i + 1;
+            window.Node[ n + '_NODE'] = i + 1;
         });
 }
 
@@ -349,7 +352,8 @@ Horn.prototype.contains = function( objects, object ) {
 Horn.prototype.traverse = function( value, callback, key ) {
     if ( typeof value === 'object' ) {
         Horn.prototype.each( value, function( k, v ) {
-            Horn.prototype.traverse( v, callback, key ? (key + '-' + k) : ("-" + k));
+            Horn.prototype.traverse( v, callback,
+                key ? (key + '-' + k) : ("-" + k));
         });
     } else { callback( key, value); }
 };
@@ -359,6 +363,5 @@ Horn.prototype.setNodeValue = function( args ) {
         window.$(args.node).attr('title', args.value);
     } else { window.$(args.node).text( args.value); }
 };
-
 
 window.horn = new Horn();
