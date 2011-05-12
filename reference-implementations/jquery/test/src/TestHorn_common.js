@@ -562,3 +562,14 @@ test(
                 ok( $('#addresses').val() === 'newValue');
         }});
     });
+
+
+module( "TestHorn - jQuery");
+
+test(
+    "jQuery - Sanity Testing typeof and instanceof.",
+    function() {
+        var node = $('<div></div>');
+        ok( node instanceof jQuery );
+        ok( typeof node === 'object' );
+    });

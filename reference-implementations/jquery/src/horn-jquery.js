@@ -110,17 +110,6 @@ function Horn() {
         return true;
     };
 
-    this.visitNodes = function( dataElement, path, fn ) {
-        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
-        if ( Horn.prototype.isAdjustingPath( _path) ) {
-            path = (path + '-' + _path); }
-        Horn.prototype.each(
-            window.$(dataElement).children(),
-            function( i, n ) {
-                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
-            this);
-    };
-
     this.getModel = function() {
         return this.model;
     };
@@ -286,17 +275,27 @@ function Horn() {
         return converter[
             isJSON ? 'fromJSON' : fromText ? 'fromText' : 'toText']( value);
     };
+
+    this.visitNodes = function( dataElement, path, fn ) {
+        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
+        if ( Horn.prototype.isAdjustingPath( _path) ) {
+            path = (path + '-' + _path); }
+        Horn.prototype.each(
+            window.$(dataElement).children(),
+            function( i, n ) {
+                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
+            this);
+    };
 }
 
-if ( !window.Node ) {
-    window.$.each( ['ELEMENT', 'ATTRIBUTE', 'TEXT',
-        'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
-        'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
-        'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
-        function( i, n ) {
-            window.Node[ n + '_NODE'] = i + 1;
+Horn.prototype.traverse = function( value, callback, key ) {
+    if ( !(value instanceof jQuery) && (typeof value === 'object') ) {
+        Horn.prototype.each( value, function( k, v ) {
+            Horn.prototype.traverse( v, callback,
+                key ? (key + '-' + k) : ("-" + k));
         });
-}
+    } else { callback( key, value); }
+};
 
 Horn.prototype.splitEach = function( object, delimiter, callback ) {
     Horn.prototype.each( object.toString().split( delimiter !== undefined ?
@@ -364,15 +363,6 @@ Horn.prototype.contains = function( objects, object ) {
     return rv;
 };
 
-Horn.prototype.traverse = function( value, callback, key ) {
-    if ( typeof value === 'object' ) {
-        Horn.prototype.each( value, function( k, v ) {
-            Horn.prototype.traverse( v, callback,
-                key ? (key + '-' + k) : ("-" + k));
-        });
-    } else { callback( key, value); }
-};
-
 Horn.prototype.setNodeValue = function( args ) {
     var nodeName = args.node.nodeName.toLowerCase();
     var jNode = window.$(args.node);
@@ -382,5 +372,16 @@ Horn.prototype.setNodeValue = function( args ) {
         jNode.attr('title', args.value);
     } else { jNode.text( args.value); }
 };
+
+
+if ( !window.Node ) {
+    window.$.each( ['ELEMENT', 'ATTRIBUTE', 'TEXT',
+        'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
+        'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
+        'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
+        function( i, n ) {
+            window.Node[ n + '_NODE'] = i + 1;
+        });
+}
 
 window.horn = new Horn();
