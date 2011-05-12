@@ -1781,3 +1781,66 @@ test(
                 ok( $('._key').val() === 'false');
         }});
     });
+
+
+
+
+module( "TestHorn - fromTemplate");
+
+test(
+    "fromTemplate - Realword case of populating html template from a given data structure - rootNode passed.",
+    function() {
+        dataTest( {
+            passConverters: true,
+            nodes: [ {
+                nodes:  $(  '<div id="newNotice" class="boardtype_events hidden" title="ui.events.label.addNewEvent">' +
+                            '    <label for="title" class="main">What*</label>' +
+                            '    <input class="_title " type="text" size="60" maxlength="100" tabindex="0" id="title"  name="title" value="" />' +
+                            '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="title"></label><label class="hint position-for-crossfade" for="title">A summary of the event e.g. &quot;Birthday party&quot; </label></div>' +
+                            '    <label for="place" class="main">Where</label>' +
+                            '    <input class="_place " type="text" size="60" maxlength="64" id="place"  name="place" value="" />' +
+                            '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="place"></label><label class="hint position-for-crossfade" for="place">Give a location e.g. &quot;The village hall&quot;</label></div>' +
+                            '    <label for="date" class="main">When*</label>' +
+                            '    <input class="span-5 read-only _date " type="text"   readonly="true" id="date"  name="date" value="" />' +
+                            '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="date"></label><label class="hint position-for-crossfade" for="date">The date of the event</label></div>' +
+                            '    <label for="time" class="main">Time</label>' +
+                            '    <input class="_time " type="text" size="60" maxlength="64" id="time"  name="time" value="" />' +
+                            '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="time"></label><label class="hint position-for-crossfade" for="time">Example: &quot;7pm&quot; or &quot;any time after 3pm&quot;</label></div>' +
+                            '    <label for="description" class="main">More details</label>' +
+                            '    <textarea rows="3" class="_description" id="description" name="description" ></textarea>' +
+                            '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="description"></label><label class="hint position-for-crossfade" for="description">Add any extra information you like</label></div>' +
+                            '    <label for="contact" class="main">Contact </label>' +
+                            '    <input class=" " type="text" size="60" maxlength="64" cclass="_contact" id="contact"  name="contact" value="" />' +
+                            '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="contact"></label><label class="hint position-for-crossfade" for="contact">Who should people contact and how?</label></div>' +
+                            '    <div class="button-newnotice-area">' +
+                            '        <button class="nlButton saveButton ui-corner-all button-dialog positive">Save this event</button>' +
+                            '        or' +
+                            '        <a class="nlAnchor cancelButton cancelLink" title="Press this to cancel and close the form">Cancel</a>' +
+                            '    </div>' +
+                            '    <a class="terms" target="_terms" href="http://info.test.noticelocal.com/blurb/terms">By clicking Save you agree to our terms of use</a>' +
+                            '</div>'
+                            )}
+            ],
+            callback: function( horn ) {
+                var date = new Date();
+                ok( horn.isAttached( $('.terms')));
+                var notice = {
+                    contact:        'contact',
+                    date:           date,
+                    description:    'moredetails',
+                    id:             1,
+                    place:          'where',
+                    time:           'time',
+                    title:          'what'};
+                horn.fromTemplate( {rootNode: $('#newNotice'), data: notice});
+        }});
+        ok( !horn.isAttached( $('.terms')));
+        ok( $('._title').val( 'what'));
+        ok( $('._place').val( 'where'));
+        ok( $('._time').val( 'time'));
+        ok( $('._description').val( 'moredetails'));
+        ok( $('._contact').val( 'contact'));
+        ok( $('._date').val() === undefined);
+    });
+
+

@@ -5,20 +5,22 @@ Horn.prototype.features = {
     cssJSON:            'data-json',
 
     extractCSSPropertyPath: function( n ) {
+        var cssPrefixLength = Horn.prototype.features.cssPrefix.length;
+        var classAttr = window.$(n).attr( "class");
         var path = null;
-        Horn.prototype.splitEach(
-            window.$(n).attr( "class"),
-            " ",
-            function( token ) {
-                if ( Horn.prototype.startsWith( token,
-                    Horn.prototype.features.cssPrefix) ) {
-                        // @todo cache length
-                    path = token.substring(
-                        Horn.prototype.features.cssPrefix.length);
-                    if ( path === '' ) { path = null; }
-                    return false;
-                }
-            });
+        if ( classAttr ) {
+            Horn.prototype.splitEach(
+                classAttr,
+                " ",
+                function( token ) {
+                    if ( Horn.prototype.startsWith( token,
+                        Horn.prototype.features.cssPrefix) ) {
+                        path = token.substring( cssPrefixLength);
+                        if ( path === '' ) { path = null; }
+                        return false;
+                    }
+                });
+        }
 
         return path;
     },
