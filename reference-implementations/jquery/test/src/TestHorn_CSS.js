@@ -1788,8 +1788,9 @@ test(
 module( "TestHorn - fromTemplate");
 
 test(
-    "fromTemplate - Realword case of populating html template from a given data structure - rootNode passed.",
+    "fromTemplate - Real word case of populating html template from a given data structure - rootNode passed.",
     function() {
+        ok( !horn.isAttached( $('.terms')));
         dataTest( {
             passConverters: true,
             nodes: [ {
@@ -1810,7 +1811,7 @@ test(
                             '    <textarea rows="3" class="_description" id="description" name="description" ></textarea>' +
                             '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="description"></label><label class="hint position-for-crossfade" for="description">Add any extra information you like</label></div>' +
                             '    <label for="contact" class="main">Contact </label>' +
-                            '    <input class=" " type="text" size="60" maxlength="64" cclass="_contact" id="contact"  name="contact" value="" />' +
+                            '    <input type="text" size="60" maxlength="64" class="_contact" id="contact"  name="contact" value="" />' +
                             '    <div class="fieldtext"><label class="errorDetail position-for-crossfade hidden" for="contact"></label><label class="hint position-for-crossfade" for="contact">Who should people contact and how?</label></div>' +
                             '    <div class="button-newnotice-area">' +
                             '        <button class="nlButton saveButton ui-corner-all button-dialog positive">Save this event</button>' +
@@ -1824,6 +1825,11 @@ test(
             callback: function( horn ) {
                 var date = new Date();
                 ok( horn.isAttached( $('.terms')));
+                ok( $('._title').val() === '');
+                ok( $('._place').val() === '');
+                ok( $('._time').val() === '');
+                ok( $('._description').val() === '');
+                ok( $('._contact').val() === '');
                 var notice = {
                     contact:        'contact',
                     date:           date,
@@ -1833,14 +1839,14 @@ test(
                     time:           'time',
                     title:          'what'};
                 horn.fromTemplate( {rootNode: $('#newNotice'), data: notice});
+                ok( $('._title').val() === 'what');
+                ok( $('._place').val() === 'where');
+                ok( $('._time').val() === 'time');
+                ok( $('._description').val() === 'moredetails');
+                ok( $('._contact').val() === 'contact');
         }});
         ok( !horn.isAttached( $('.terms')));
-        ok( $('._title').val( 'what'));
-        ok( $('._place').val( 'where'));
-        ok( $('._time').val( 'time'));
-        ok( $('._description').val( 'moredetails'));
-        ok( $('._contact').val( 'contact'));
-        ok( $('._date').val() === undefined);
+
     });
 
 

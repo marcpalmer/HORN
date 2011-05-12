@@ -63,8 +63,10 @@ function Horn() {
     };
 
     this.fromTemplate = function( args ) {
-        var template = Horn.prototype.definesArgument( args, 'rootNode', undefined);
-        if ( !template ) {
+        var template;
+        if ( Horn.prototype.definesArgument( args, 'rootNode', undefined) ) {
+            template = args.rootNode;
+        } else {
             template = window.$(args.selector).clone();
             template.removeAttr( "id");
             if ( args.id ) { template.attr( "id", args.id); }
@@ -96,8 +98,8 @@ function Horn() {
                     regexp = new RegExp( k.replace( '*', '.*'));
                     if ( regexp.test( path) ) {
                         var typeOfPattern = this.getPattern( k);
-                        Horn.prototype.setNodeValue(
-                            {node: node, value: typeOfPattern !== null ?
+                        Horn.prototype.setNodeValue({ node: node,
+                            value: typeOfPattern !== null ?
                                 this.convert( v, typeOfPattern.converterName,
                                     false, false) : v.toString()});
                     }
@@ -117,6 +119,10 @@ function Horn() {
             function( i, n ) {
                 if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
             this);
+    };
+
+    this.getModel = function() {
+        return this.model;
     };
 
     this.option = function( optionName, arg0, arg1 ) {
@@ -229,13 +235,13 @@ function Horn() {
                     Horn.prototype.bind(
                         function( key, value ) {
                             this.addValueNode( value, args.path + key,
-                                args.isJSON, args.node);
+                                true, args.node);
                         }, this), '');
             } else {
-                this.addValueNode( jsonData, args.path, args.isJSON, args.node);
+                this.addValueNode( jsonData, args.path, true, args.node);
             }
         } else {
-            this.addValueNode( args.text, args.path, args.isJSON, args.node); }
+            this.addValueNode( args.text, args.path, false, args.node); }
     };
 
     this.addValueNode = function( value, fullPath, isJSON, node ) {
@@ -272,7 +278,7 @@ function Horn() {
             null;
     };
 
-    // @todo would be nice to just pass the converterName here, we can work out once in a SC ancestor and just pass down perhaps?
+    // @todo just pass converterName
     this.convert = function( value, converterName, fromText, isJSON ) {
         isJSON = isJSON === true;
         var converter = this.getCacheConverter( converterName);
