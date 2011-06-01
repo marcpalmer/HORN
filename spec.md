@@ -336,6 +336,10 @@ to the current property path.
 
 4. If a DOM element has no HORN indicators on it, it is ignored.
 
+---
+title: HORN 1.0 Specification
+layout: default
+---
 
 Complex data: nested objects and arrays
 =======================================
