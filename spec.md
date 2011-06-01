@@ -23,7 +23,7 @@ with respect to design-related changes. You don't select nodes to find data,
 you address your model directly.
 
 In a nutshell, by clever use of CSS classes (or HTML5 data attributee for 
-newer browsers) and adding where necessary a few <span> or other tags to your
+newer browsers) and adding where necessary a few &lt;span&gt; or other tags to your
 markup, you can provide a rich data model to your JS code from your HTML
 content.
 
@@ -142,8 +142,9 @@ search engines. When your JS code changes it later, it can feed straight back
 into the DOM nodes.
 
 Now let's say we want to show the genre, but internally this genre is
-represented by a code or unique id - we use the HTML <abbr> tag:
+represented by a code or unique id - we use the HTML &lt;abbr&gt; tag:
 
+{% highlight html %}
 <div class="horn _book">
 	<h1 class="_title">Presentation Zen</h1>
 	<p>
@@ -151,6 +152,7 @@ represented by a code or unique id - we use the HTML <abbr> tag:
 		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>.
 	</p>
 </div>
+{% endhighlight %}
 
 This is declaring that while the display value of the genre is "Business", the
 value to put into "book.genre" is "GENRE_BUSINESS".
@@ -171,7 +173,7 @@ for our JS code to work with:
 Here, you will typically want the parser implementation to convert the date
 string into a native JavaScript date. This is not something covered by the
 HORN specification itself, but the HORN 1.0 reference implementation allows
-you to do this using meta tags in the <head> section of your page:
+you to do this using meta tags in the &lt;head&gt; section of your page:
 
 <meta name="typeof book.*date" content="DateConverter"/>
 
@@ -197,7 +199,7 @@ in inline json mechanism:
 Now this isn't something we necessarily want the user to see, so we may apply
 a "hidden" CSS class to the content (this is not defined as part of the specification).
 
-What this does is tell your HORN parser that the text nodes inside the <p> tag
+What this does is tell your HORN parser that the text nodes inside the &lt;p&gt; tag
 with "data-json" are to be merged with the "current" object. Current object
 means the object named by the nearest element with the "horn" class in DOM
 ancestry terms.
@@ -331,7 +333,7 @@ object will be declared.
 property path indicated:
    AND a) it has only text nodes as children, it will be used to set a property 
       (according to the path defined) on the "current" object.
-   OR  b) if the tag is an <abbr> tag, the "title" attribute will be used to set
+   OR  b) if the tag is an &lt;abbr&gt; tag, the "title" attribute will be used to set
       the value.
    OR  c) Otherwise it will just be added to the current property path.
 
