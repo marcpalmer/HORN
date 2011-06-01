@@ -1,3 +1,8 @@
+---
+title: HORN 1.0 Specification
+layout: default
+---
+
 HORN - HTML Object RepresentatioN Specification 1.0                                                                     
 ===================================================                          
                                                                              
@@ -336,10 +341,6 @@ to the current property path.
 
 4. If a DOM element has no HORN indicators on it, it is ignored.
 
----
-title: HORN 1.0 Specification
-layout: default
----
 
 Complex data: nested objects and arrays
 =======================================
