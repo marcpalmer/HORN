@@ -102,9 +102,9 @@ rather than nested objects.
 
 So, to begin the data definition for a single top-level book object:
 
-<div class="horn _book">
-  ...
-</div>
+    <div class="horn _book">
+      ...
+    </div>
 
 This HTML indicates that data for the "book" object will be defined within
 this div and its descendent nodes. The underscore prefix indicates to HORN
@@ -117,10 +117,10 @@ data-attributes.
 
 So now we need to add the title and author information:
 
-<div class="horn _book">
-	<h1 class="_title">Presentation Zen</h1>
-	<p>by <span class="_authors">Garr Reynolds</span>.</p>
-</div>
+    <div class="horn _book">
+    	<h1 class="_title">Presentation Zen</h1>
+    	<p>by <span class="_authors">Garr Reynolds</span>.</p>
+    </div>
 
 The first CSS class on the div is "horn". This tells HORN that you are
 starting a new root level object definition as mentioned in the previous
