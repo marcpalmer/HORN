@@ -959,13 +959,13 @@ test(
             ],
             callback: function( horn ) {
                 horn.option( "pattern", ".*", "jsonIntegerConverter");
-                ok( horn.opts.patternInfo.hasOwnProperty( '.*') === true);
+                ok( horn.state.opts.patternInfo.hasOwnProperty( '.*') === true);
                 horn.option( "converter", "jsonIntegerConverter", function () {
                     this.fromJSON = function( value ) { return value + ""; };
                 });
                 var model = horn.extract();
-                ok( horn.opts.patternInfo[ '.*'].converterName === 'jsonIntegerConverter');
-                ok( horn.patternConvert( 1, "_key-a", false, true) === "1");
+                ok( horn.state.opts.patternInfo[ '.*'].converterName === 'jsonIntegerConverter');
+                ok( horn.patternConvert( 1, "_key-a", 'fromJSON') === "1");
                 ok( isObject( model));
                 ok( isObject( model.key));
                 ok( model.key.a === "1");
@@ -1048,7 +1048,7 @@ test(
                 ok( isArray( model.notices));
                 ok( isObject( model.notices[ 0]));
                 ok( model.notices[ 0].id === 1);
-                ok( model.notices[ 0].date instanceof Date);
+                ok( model.notices[ 0].date.constructor.toString().indexOf( 'Date') >= 0);
                 ok( model.notices[ 0].date.getFullYear() === 2011);
                 ok( model.notices[ 0].date.getMonth() === 04);
                 ok( model.notices[ 0].date.getDate() === 04);
@@ -1078,7 +1078,7 @@ test(
                 model.a = false;
                 model.b = false;
                 model.c = false;
-                alteredNodes = horn.populate();
+                alteredNodes = horn.render();
                 ok( isArray( alteredNodes))
                 ok( alteredNodes.length === 2);
 
@@ -1108,7 +1108,7 @@ test(
                 ok( model.a === true);
                 ok( model.b === false);
                 ok( model.c === true);
-                alteredNodes = horn.populate();
+                alteredNodes = horn.render();
                 ok( isArray( alteredNodes))
                 ok( alteredNodes.length === 0);
         }});
@@ -1136,7 +1136,7 @@ test(
                 ok( model.b === false);
                 model.a = false;
                 model.b = true;
-                alteredNodes = horn.populate( {name: 'test', rootNode: $('#root')});
+                alteredNodes = horn.render( {name: 'test', rootNode: $('#root')});
                 ok( isArray( alteredNodes));
                 ok( alteredNodes.length === 1);
                 ok( $(alteredNodes[ 0]).attr( 'id') === 'div0');
@@ -1192,7 +1192,7 @@ test(
                 ok( isObject( model));
                 ok( model.key === true);
                 model.key = false;
-                horn.populate();
+                horn.render();
                 ok( $('#grabMe').attr( 'title') === 'false');
         }});
     });
@@ -1211,7 +1211,7 @@ test(
                 ok( isObject( model));
                 ok( model.key === false);
                 model.key = false;
-                horn.populate();
+                horn.render();
         }});
     });
 
@@ -1261,10 +1261,10 @@ test(
             callback: function( horn ) {
                 var model = horn.extract();
                 ok( model.a.b.c.d === 'value');
-                var populatedTemplate = horn.fromTemplate( {
+                model.a.b.c.d = 'updatedValue';
+                var populatedTemplate = horn.newFromTemplate( {
                     id: 'newID',
-                    selector: '#template',
-                    data: { a: { b: { c: { d: 'updatedValue'}}}}});
+                    selector: '#template'}).template;
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1292,10 +1292,10 @@ test(
             callback: function( horn ) {
                 var model = horn.extract();
                 ok( model.a.b.c.d === 'value');
-                var populatedTemplate = horn.fromTemplate( {
+                model.a.b.c.e = 'updatedValue';
+                var populatedTemplate = horn.newFromTemplate( {
                     id: 'newID',
-                    selector: '#template',
-                    data: { f: { b: { c: { d: 'updatedValue'}}}}});
+                    selector: '#template'}).template;
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1323,12 +1323,12 @@ test(
             callback: function( horn ) {
                 var model = horn.extract();
                 ok( model.a.b.c.d === 'value');
-                ok( horn.isValueNode( $('#grabber1')[0], '', true) === false);
-                ok( isObject( horn.isValueNode( $('#grabber2')[0], '')));
-                var populatedTemplate = horn.fromTemplate( {
+                ok( horn.getComponentData( $('#grabber1')[0], '', true) === false);
+                ok( isObject( horn.getComponentData( $('#grabber2')[0], '')));
+                model.a.b.c.f = 'updatedValue';
+                var populatedTemplate = horn.newFromTemplate( {
                     id: 'newID',
-                    selector: '#template',
-                    data: { a: { b: { c: { f: 'updatedValue'}}}}});
+                    selector: '#template'}).template;
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1390,7 +1390,7 @@ test(
                 ok( isObject( model));
                 ok( model.key === true);
                 model.key = false;
-                horn.populate();
+                horn.render();
                 ok( $('#grabMe').val() === 'false');
         }});
     });
@@ -1445,7 +1445,7 @@ test(
                 ok( isObject( model));
                 ok( model.key === true);
                 model.key = false;
-                horn.populate();
+                horn.render();
                 ok( $('#grabMe').val() === 'false');
         }});
     });

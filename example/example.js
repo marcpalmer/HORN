@@ -130,5 +130,5 @@ $(function() {
         binding.parent[ binding.pk] = val;
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
-    $('a.populateButton').click( function( event ) { horn.populate(); event.stopPropagation(); });
+    $('a.populateButton').click( function( event ) { horn.render(); event.stopPropagation(); });
 });

@@ -1,3 +1,31 @@
+module( "TestHorn - copyByDest");
+
+test(
+    "copyInto - That a test property isn't copied inappropriately..",
+    function() {
+        var dest = {};
+        var src = {a:1};
+        var horn = new Horn();
+        horn.copyInto( {src: src, dest: dest});
+        ok( !dest.hasOwnProperty( 'a'));
+    }
+);
+
+test(
+    "copyInto - That properties existing in the destination are copied from the source if existing and not undefined.",
+    function() {
+        var dest = {a:2};
+        var src = {a:1};
+        var horn = new Horn();
+        horn.copyInto( {src: src, dest: dest});
+        ok( dest.hasOwnProperty( 'a'));
+        ok( dest.a === 1);
+    }
+);
+
+
+
+
 module( "TestHorn - Horn Miscellany");
 
 test(
@@ -55,8 +83,6 @@ test(
 test(
     "Horn Miscellany - check that we have all the required window.Node values expected.",
     function() {
-        var horn = new Horn();
-
         ok( window.Node.ELEMENT_NODE === 1);
         ok( window.Node.ATTRIBUTE_NODE === 2);
         ok( window.Node.TEXT_NODE === 3);
@@ -82,7 +108,7 @@ test(
         var horn = new Horn();
         horn.extract();
 
-        ok( isEmptyObject( horn.opts.patternInfo));
+        ok( isEmptyObject( horn.state.opts.patternInfo));
     });
 
 test(
@@ -92,7 +118,7 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", "notices.*can.*", "BooleanConverter");
-                ok( horn.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === true);
+                ok( horn.state.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === true);
             }
         });
     });
@@ -104,7 +130,7 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( 'pattern', 'notices.*Can.*', 'BooleanConverter');
-                ok( horn.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
+                ok( horn.state.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
             }});
     });
 
@@ -115,8 +141,8 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( 'pattern', '        notices.*Can.*        ,         test.*.*      ', 'BooleanConverter');
-                ok( horn.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
-                ok( horn.opts.patternInfo.hasOwnProperty( 'test.*.*') === false);
+                ok( horn.state.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
+                ok( horn.state.opts.patternInfo.hasOwnProperty( 'test.*.*') === false);
             }});
     });
 
@@ -293,7 +319,7 @@ test(
         dataTest({
             callback: function( horn ) {
                 horn.option( "pattern", "key", "DateConverter");
-                ok( horn.opts.patternInfo[ 'key'].converterName === 'DateConverter');
+                ok( horn.state.opts.patternInfo.key.converterName === 'DateConverter');
             }});
     });
 
@@ -346,9 +372,11 @@ module( "TestHorn - Horn.getIfSingleTextNode()");
 test(
     "getIfSingleTextNode() - that an empty '&lt;a/&gt;' element doesn't return anything using this function.",
     function() {
+        var horn;
+        var node;
         try {
-            var horn = new Horn();
-            var node = $('<a/>');
+            horn = new Horn();
+            node = $('<a/>');
             node.appendTo( $('body'));
 
             ok( horn.getIfSingleTextNode( node) === null);
@@ -360,9 +388,11 @@ test(
 test(
     "getIfSingleTextNode() - that applied to '&lt;a&gt;123 456&lt;/a&gt;' return the expected value '123 456'.",
     function() {
+        var horn;
+        var node;
         try {
-            var horn = new Horn();
-            var node = $('<a>123 456</a>');
+            horn = new Horn();
+            node = $('<a>123 456</a>');
             node.appendTo( $('body'));
 
             ok( horn.getIfSingleTextNode( node) === '123 456');
@@ -374,9 +404,11 @@ test(
 test(
     "getIfSingleTextNode() - that applied to '&lt;a&gt; 123 456 &lt;/a&gt;' return the expected value ' 123 456 ', nice and bushy like.",
     function() {
+        var horn;
+        var node;
         try {
-            var horn = new Horn();
-            var node = $('<a> 123 456 </a>');
+            horn = new Horn();
+            node = $('<a> 123 456 </a>');
             node.appendTo( $('body'));
 
             ok( horn.getIfSingleTextNode( node) === ' 123 456 ');
@@ -388,9 +420,11 @@ test(
 test(
     "getIfSingleTextNode() - that when applied to elements with more than 1 child (at least one text node), returns null.",
     function() {
+        var horn;
+        var node;
         try {
-            var horn = new Horn();
-            var node = $('<a> 123<a>a</a>456 </a>');
+            horn = new Horn();
+            node = $('<a> 123<a>a</a>456 </a>');
             node.appendTo( $('body'));
 
             ok( horn.getIfSingleTextNode( node) === null);
@@ -414,7 +448,7 @@ test(
         var value = "value";
         var hornKey = "_hornKey";
 
-        ok( horn.patternConvert( value, hornKey, false) === null);
+        ok( horn.patternConvert( value, hornKey, "fromText") === null);
     });
 
 test(
@@ -424,8 +458,8 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", ".*", "IntegerConverter");
-                var model = horn.extract();
-                ok( horn.patternConvert( "1", "_hornKey", false) === 1);
+                horn.extract();
+                ok( horn.patternConvert( "1", "_hornKey", "fromText") === 1);
             }});
     });
 
@@ -436,8 +470,8 @@ test(
             passConverters: true,
             callback: function( horn ) {
                 horn.option( "pattern", ".*", "IntegerConverter");
-                var model = horn.extract();
-                ok( horn.patternConvert( "-1", "_hornKey", false) === -1);
+                horn.extract();
+                ok( horn.patternConvert( "-1", "_hornKey", "fromText") === -1);
             }});
     });
 
@@ -450,7 +484,7 @@ test(
             var horn = new Horn();
             horn.extract();
 
-            ok( horn.patternConvert( "-1", "_hornKey", false) === null);
+            ok( horn.patternConvert( "-1", "_hornKey", "fromText") === null);
         } finally {
             node.remove();
         }
@@ -464,12 +498,12 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", ".*truth.*", "BooleanConverter");
                 var model = horn.extract();
-                ok( horn.patternConvert( "true",   "_ourtruth", false) === true);
-                ok( horn.patternConvert( "tRuE",   "_ourtruth", false) === true);
-                ok( horn.patternConvert( "TRUE",   "_ourtruth", false) === true);
-                ok( horn.patternConvert( "false",  "_ourtruth", false) === false);
-                ok( horn.patternConvert( "FaLsE",  "_ourtruth", false) === false);
-                ok( horn.patternConvert( "FALSE",  "_ourtruth", false) === false);
+                ok( horn.patternConvert( "true",   "_ourtruth", "fromText") === true);
+                ok( horn.patternConvert( "tRuE",   "_ourtruth", "fromText") === true);
+                ok( horn.patternConvert( "TRUE",   "_ourtruth", "fromText") === true);
+                ok( horn.patternConvert( "false",  "_ourtruth", "fromText") === false);
+                ok( horn.patternConvert( "FaLsE",  "_ourtruth", "fromText") === false);
+                ok( horn.patternConvert( "FALSE",  "_ourtruth", "fromText") === false);
             }});
     });
 
@@ -483,8 +517,8 @@ test(
         dataTest( {
             callback: function( horn ) {
                 horn.option( "pattern", "a", "b");
-                ok( horn.opts.patternInfo.hasOwnProperty( 'a') === true);
-                ok ( horn.opts.patternInfo.a.converterName === 'b');
+                ok( horn.state.opts.patternInfo.hasOwnProperty( 'a') === true);
+                ok ( horn.state.opts.patternInfo.a.converterName === 'b');
             }});
     });
 
@@ -495,7 +529,7 @@ test(
             callback: function( horn ) {
                 horn.option( "pattern", "a", "b");
                 horn.option( "pattern", "a", "c");
-                ok ( horn.opts.patternInfo.a.converterName === 'c');
+                ok ( horn.state.opts.patternInfo.a.converterName === 'c');
             }});
     });
 
@@ -505,7 +539,7 @@ test(
         dataTest( {
             callback: function( horn ) {
                 horn.option( "converter", "a", "b");
-                ok ( horn.opts.converters.a === 'b');
+                ok ( horn.state.opts.converters.a === 'b');
             }});
     });
 
@@ -516,7 +550,7 @@ test(
             callback: function( horn ) {
                 horn.option( "converter", "a", "b");
                 horn.option( "converter", "a", "c");
-                ok ( horn.opts.converters.a === 'c');
+                ok ( horn.state.opts.converters.a === 'c');
             }});
     });
 
@@ -526,7 +560,7 @@ test(
         dataTest( {
             callback: function( horn ) {
                 horn.option( "sausages", "tasty");
-                ok ( horn.opts.sausages === 'tasty');
+                ok ( horn.state.opts.sausages === 'tasty');
             }});
     });
 
@@ -572,4 +606,33 @@ test(
         var node = $('<div></div>');
         ok( node instanceof jQuery );
         ok( typeof node === 'object' );
+    });
+
+
+
+
+module( "TestHorn - Testing that horn.option( 'defaultModel') works as expected.");
+
+test(
+    "Model Tests - defaultModel option - real world example.",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                var model = {
+                    notices: [],
+                    newNotice: { title: 'testTitle' }
+                };
+                horn.option( "defaultModel", model);
+                horn.extract();
+                var extractedModel = horn.getModel();
+                ok( extractedModel === model);
+
+                ok( isObject( extractedModel));
+                ok( isArray( extractedModel.notices));
+                ok( extractedModel.notices.length === 0);
+                ok( isObject( extractedModel.newNotice));
+                ok( countOwnProps( extractedModel) === 2);
+                ok( countOwnProps( extractedModel.newNotice) === 1);
+                ok( extractedModel.newNotice.title === 'testTitle');
+            }});
     });
