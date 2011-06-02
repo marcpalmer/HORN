@@ -12,7 +12,7 @@ re-population for full data round trip in your UI.
 
 ## Authors / Contact
 
-[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)
+[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
 [Marc Palmer](http://github.com/marcpalmer) (marc@anyware.co.uk)
 
 ## Documentation
