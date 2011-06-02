@@ -117,7 +117,7 @@ as the "book" property in the root of your data model.
 
 The rest of the examples in this specification use the CSS class indicators,
 but will all work in HTML5 as-is, or can be modified to use [HTML5
-data-attributes][#indicators_in_html5].
+data-attributes][horn-specification.html#indicators_in_html5].
 
 So now we need to add the title and author information:
 
@@ -132,7 +132,7 @@ The first CSS class on the div is "horn". This tells HORN that you are
 starting a new root level object definition as mentioned in the previous
 example, and "_book" tells it the name of this object is "book".
 
-By using _title and _authors as classes, we are indicating HORN properties
+By using \_title and \_authors as classes, we are indicating HORN properties
 "book.title" and "book.authors" - because they are in DOM nodes that are
 descendants of the div with "horn" class. This is all you need to do to
 indicate that the text inside the DOM node is a HORN value.
@@ -348,7 +348,7 @@ HORN parsers apply some simple rules to determine whether or not a tag contains 
 data value and what to do with it:
 
 1. If a DOM element is marked as a HORN context root (has class "horn") and
-has a property path (has class like "_yourpropname"), a new root-level data
+has a property path (has class like "\_yourpropname"), a new root-level data
 object will be declared.
 2. If a DOM element is NOT marked as a HORN context root, and has only a
 property path indicated:
