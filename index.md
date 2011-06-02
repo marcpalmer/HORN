@@ -40,7 +40,7 @@ You can download this project in either
 [tar][http://github.com/marcpalmer/HORN/tarball/maste] formats.
 
 You can also clone the project with [Git][http://git-scm.com] by running:
-```
+```bash
 $ git clone git://github.com/marcpalmer/HORN
 ```
 
