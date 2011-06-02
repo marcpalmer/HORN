@@ -26,18 +26,19 @@ client (typically JavaScript) code.
 There is a jQuery based reference implementation of the parser with DOM-node
 re-population for full data round trip in your UI.
 
-## Authors / Contact [Chris Denman][http://github.com/wangjammer7]
-(cjd@anyware.co.uk) [Marc Palmer][http://github.com/marcpalmer]
-(marc@anyware.co.uk)
+## Authors / Contact
+
+[Chris Denman][http://github.com/wangjammer7] (cjd@anyware.co.uk)
+[Marc Palmer][http://github.com/marcpalmer] (marc@anyware.co.uk)
 
 ## Documentation
+
 [HORN Specification][horn-specification.html]
 [Usage example][https://github.com/marcpalmer/HORN/tree/master/example]
 
 ## Download
-You can download this project in either
-[zip][http://github.com/marcpalmer/HORN/zipball/master] or
-[tar][http://github.com/marcpalmer/HORN/tarball/maste] formats.
+
+You can download this project in either [zip][http://github.com/marcpalmer/HORN/zipball/master] or [tar][http://github.com/marcpalmer/HORN/tarball/maste] formats.
 
 You can also clone the project with [Git][http://git-scm.com] by running:
 <pre>
