@@ -104,11 +104,11 @@ rather than nested objects.
 
 So, to begin the data definition for a single top-level book object:
 
-{% highlight html %}
+```html
 <div class="horn _book">
   ...
 </div>
-{% endhighlight %}
+```
 
 This HTML indicates that data for the "book" object will be defined within
 this div and its descendent nodes. The underscore prefix indicates to HORN
@@ -117,16 +117,16 @@ as the "book" property in the root of your data model.
 
 The rest of the examples in this specification use the CSS class indicators,
 but will all work in HTML5 as-is, or can be modified to use [HTML5
-data-attributes][horn-specification.html#indicators_in_html5].
+data-attributes][http://horn.io/horn-specification.html#indicators_in_html5].
 
 So now we need to add the title and author information:
 
-{% highlight html %}
+```html
 <div class="horn _book">
     <h1 class="_title">Presentation Zen</h1>
     <p>by <span class="_authors">Garr Reynolds</span>.</p>
 </div>
-{% endhighlight %}
+```
 
 The first CSS class on the div is "horn". This tells HORN that you are
 starting a new root level object definition as mentioned in the previous
@@ -140,9 +140,9 @@ indicate that the text inside the DOM node is a HORN value.
 After applying the reference JavaScript implementation of HORN we would end up
 with the equivalent of this data object accessible to our code:
 
-{% highlight javascript %}
+```javascript
 { 'book': { 'title':'Presentation Zen', 'authors':'Garr Reynolds' } }
-{% endhighlight %}
+```
 
 Of course the most important part here is that this is also immediately
 displayed to the user even without JS code loaded or running, and indexable by
@@ -152,7 +152,7 @@ into the DOM nodes.
 Now let's say we want to show the genre, but internally this genre is
 represented by a code or unique id - we use the HTML &lt;abbr&gt; tag:
 
-{% highlight html %}
+```html
 <div class="horn _book">
     <h1 class="_title">Presentation Zen</h1>
     <p>
@@ -160,7 +160,7 @@ represented by a code or unique id - we use the HTML &lt;abbr&gt; tag:
         in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>.
     </p>
 </div>
-{% endhighlight %}
+```
 
 This is declaring that while the display value of the genre is "Business", the
 value to put into "book.genre" is "GENRE_BUSINESS".
@@ -169,7 +169,7 @@ Next let's add the publication date. However for the sake of usability we may
 be showing a short date to the user, but we still need the full date object
 for our JS code to work with:
 
-{% highlight html %}
+```html
 <div class="horn _book">
     <h1 class="_title">Presentation Zen</h1>
     <p>
@@ -178,16 +178,16 @@ for our JS code to work with:
         published <abbr class="_publishDate" title="10/02/2011">10 Feb</abbr>.
     </p>
 </div>
-{% endhighlight %}
+```
 
 Here, you will typically want the parser implementation to convert the date
 string into a native JavaScript date. This is not something covered by the
 HORN specification itself, but the HORN 1.0 reference implementation allows
 you to do this using meta tags in the &lt;head&gt; section of your page:
 
-{% highlight html %}
+```html
 <meta name="typeof book.*date" content="DateConverter"/>
-{% endhighlight %}
+```
 
 This declares that any property path ending with "date" will be parsed as a
 Date, using a JS class to perform the conversion using toText()/fromText()
@@ -198,7 +198,7 @@ Now we might also need to add some unique id information so that we can tally
 up this object to the book in the database during AJAX calls. For this we use
 in inline json mechanism:
 
-{% highlight html %}
+```html
 <div class="horn _book">
     <p class="data-json hidden">{ 'id':384855 }</p>
     <h1 class="_title">Presentation Zen</h1>
@@ -208,7 +208,7 @@ in inline json mechanism:
         published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
     </p>
 </div>
-{% endhighlight %}
+```
 
 Now this isn't something we necessarily want the user to see, so we may apply
 a "hidden" CSS class to the content (this is not defined as part of the specification).
@@ -224,7 +224,7 @@ assumed your JSON data is in the native JSON type that you require.
 So with all the above, we'd end up with a data model the equivalent of this
 JSON data model:
 
-{% highlight javascript %}
+```javascript
 { 
    'book': { 
         'title': 'Presentation Zen', 
@@ -234,15 +234,15 @@ JSON data model:
         'id': 384855
     } 
 }
-{% endhighlight %}
+```
 
 How you access this is up to the parser implementation you use, but for the
 jQuery reference implementation you will use something like:
 
-{% highlight javascript %}
+```javascript
 var horn = new Horn();
 var myModel = horn.extract();
-{% endhighlight %}
+```
 
 ### Property path indicators in CSS
 
@@ -270,7 +270,7 @@ property, including array indexes:
 These show absolute property paths. In most common usage however you will use
 property paths relative to the nearest ancestor's calculated path:
 
-{% highlight html %}
+```html
 <div class="horn _books">
     <div class="_0">
         <span class="_title">XML Complete</span><br/>
@@ -284,7 +284,7 @@ property paths relative to the nearest ancestor's calculated path:
         </ol>
     </div>
 </div>
-{% endhighlight %}
+```
 
 You can see here that inner elements have spans defining data properties which
 will be set on books[0].
@@ -306,29 +306,29 @@ can use regular JavaScript property and array notation:
 
 Define a root level object: 
 
-{% highlight html %}
+```html
 <div data-horn="/books[3]">
 ..
 </div>
-{% endhighlight %}
+```
 
 Define a relative value: 
 
-{% highlight html %}
+```html
 <span data-horn="title">The Definitive Guide To Grails</span>
-{% endhighlight %}
+```
 
 Or a relative inline JSON value:
 
-{% highlight html %}
+```html
 <span data-horn-json="metadata" class="hidden">{ something: 'here' }</span>
-{% endhighlight %}
+```
 
 ...and finally an absolute JSON value:
 
-{% highlight html %}
+```html
 <span data-horn-json="/books[3].metadata" class="hidden">{ something: 'here' }</span>
-{% endhighlight %}
+```
 
 These attributes all define the property path for the value defined by this
 DOM node, which will be parsed out of the document in the normal way (using
@@ -371,7 +371,7 @@ path include a numeric identifier that is the array index. HORN
 implementations treat this as an array index and create a JS array to contain
 the values or objects:
 
-{% highlight html %}
+```html
 <div class="horn _books">
     <div class="_0">
         <p class="data-json hidden">{ 'id':384855 }</p>
@@ -393,7 +393,7 @@ the values or objects:
         </p>
     </div>
 </div>
-{% endhighlight %}
+```
 
 The above defines a "books" property in the model that will be an array with
 two elements, 0 and 1.
@@ -401,7 +401,7 @@ two elements, 0 and 1.
 To nest objects, for example a publisher information object, you simply nest
 DOM nodes and apply property name indicators:
 
-{% highlight html %}
+```html
 <div class="horn _books-0">
     <p class="data-json hidden">{ 'id':384855 }</p>
     <h1 class="_title">Presentation Zen</h1>
@@ -414,7 +414,7 @@ DOM nodes and apply property name indicators:
         <h2 class="_name">New Riders</h2>
     </div>
 </div>
-{% endhighlight %}
+```
 
 This defines "books[0].publisher.name" as "New Riders".
 

@@ -20,7 +20,7 @@ layout: default
     </div>
 
     <p>The HORN specification describes a way to weave your model data into HTML mark such that it can be used for both the presentation and data model in your client (typically JavaScript) code.
-        There is a jQuery based reference implementation of the parser with DOM-node re-population for full data round trip in your UI.</p>
+       There is a jQuery based reference implementation of the parser with DOM-node re-population for full data round trip in your UI.</p>
     <h2>Authors / Contact</h2>
 <p>[Chris Denman][http://github.com/wangjammer7] (cjd@anyware.co.uk)
 <br/>[Marc Palmer][http://github.com/marcpalmer] (marc@anyware.co.uk)
