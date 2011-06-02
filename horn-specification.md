@@ -116,8 +116,7 @@ that this is the name (minus the underscore) of your object and will be stored
 as the "book" property in the root of your data model.
 
 The rest of the examples in this specification use the CSS class indicators,
-but will all work in HTML5 as-is, or can be modified to use [HTML5
-data-attributes][http://horn.io/horn-specification.html#indicators_in_html5].
+but will all work in HTML5 as-is, or can be modified to use <a href="#indicators_in_html5">HTML 5 Data Attributes</a>.
 
 So now we need to add the title and author information:
 
