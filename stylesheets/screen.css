@@ -5,10 +5,6 @@ font-family: Helvetica, Arial, FreeSans, san-serif;
 font-size: 12pt;
 color: #000000;
 }
-#container {
-margin: 0 auto;
-width: 700px;
-}
 h1 { font-size: 1.45em; color: #000000; margin-bottom: 3px; }
 h1.big { font-size: 3em; }
 h1 .small { font-size: 0.4em; }
@@ -17,7 +13,7 @@ h2 { font-size: 1.3em; color: #000000; }
 h3 { color: #44444; }
 .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
 .download { float: right; }
-pre { background: #eee; padding: 15px;}
+pre, code { background: #eee; padding: 15px;}
 hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
 .footer { text-align:center; padding-top:30px; font-style: italic; }
 table { margin-left: 40px; border: 1px solid black; }
