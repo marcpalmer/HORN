@@ -12,7 +12,7 @@ layout: default
         <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
     </div>
 
-    <h1><a href="http://github.com/marcpalmer/HORN">HORN</a><br/>
+    <h1 class="big"><a href="http://github.com/marcpalmer/HORN">HORN</a><br/>
       <span class="small">by <a href="http://github.com/marcpalmer">Marc Palmer</a> and <a href="http://github.com/wangjammer7">Chris Denman</a></span></h1>
 
     <div class="description">
@@ -22,11 +22,11 @@ layout: default
     <p>The HORN specification describes a way to weave your model data into HTML mark such that it can be used for both the presentation and data model in your client (typically JavaScript) code.
         There is a jQuery based reference implementation of the parser with DOM-node re-population for full data round trip in your UI.</p>
     <h2>Authors / Contact</h2>
-<p>Chris Denman (cjd@anyware.co.uk)
-<br/>Marc Palmer (marc@anyware.co.uk)
+<p>[Chris Denman][http://github.com/wangjammer7] (cjd@anyware.co.uk)
+<br/>[Marc Palmer][http://github.com/marcpalmer] (marc@anyware.co.uk)
 </p>
     <h2>Documentation</h2>
-    <a href="horn-specification.html">Usage example</a><br/>
+    <a href="horn-specification.html">HORN Specification</a><br/>
     <a href="https://github.com/marcpalmer/HORN/tree/master/example">Usage example</a>
 
     <h2>Download</h2>

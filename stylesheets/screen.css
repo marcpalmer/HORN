@@ -10,6 +10,7 @@ margin: 0 auto;
 width: 700px;
 }
 h1 { font-size: 1.45em; color: #000000; margin-bottom: 3px; }
+h1 .big { font-size: 3em; }
 h1 .small { font-size: 0.4em; }
 h1 a { text-decoration: none }
 h2 { font-size: 1.3em; color: #000000; }
