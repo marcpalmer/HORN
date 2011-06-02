@@ -32,7 +32,7 @@ function Horn() {
      *  <p>
      *  Data is extracted from the DOM either by locating all Horn 'root nodes'
      *  and then traversing them for data. Alternatively, the DOM nodes to
-     *  traverse specified by either, a jQuery selector or list of elements.
+     *  traverse can be specified by either a jQuery selector or list of elements.
      *  <p>
      *  If multiple elements with the same effective property path are encountered
      *  <p>
