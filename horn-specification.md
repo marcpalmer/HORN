@@ -27,6 +27,11 @@ newer browsers) and adding where necessary a few &lt;span&gt; or other tags to y
 markup, you can provide a rich data model to your JS code from your HTML
 content.
 
+*NOTE:* This specification only sets out how to embed your data in the HTML,
+and is completely independent of any parser implementation that may extract
+this data for use in client applications. There is a JavaScript reference
+implementation provided for use in real sites.
+
 ## Overview
 
 The basic premise of this specification is to use microformat-like techniques
