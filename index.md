@@ -19,26 +19,30 @@ layout: default
       HORN - HTML Object RepresentatioN
     </div>
 
-    <p>The HORN specification describes a way to weave your model data into HTML mark such that it can be used for both the presentation and data model in your client (typically JavaScript) code.
-       There is a jQuery based reference implementation of the parser with DOM-node re-population for full data round trip in your UI.</p>
-    <h2>Authors / Contact</h2>
-<p>[Chris Denman][http://github.com/wangjammer7] (cjd@anyware.co.uk)
-<br/>[Marc Palmer][http://github.com/marcpalmer] (marc@anyware.co.uk)
-</p>
-    <h2>Documentation</h2>
-    <a href="horn-specification.html">HORN Specification</a><br/>
-    <a href="https://github.com/marcpalmer/HORN/tree/master/example">Usage example</a>
+The HORN specification describes a way to weave your model data into HTML mark
+such that it can be used for both the presentation and data model in your
+client (typically JavaScript) code.
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/marcpalmer/HORN/zipball/master">zip</a> or
-      <a href="http://github.com/marcpalmer/HORN/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/marcpalmer/HORN</pre>
-    </p>
+There is a jQuery based reference implementation of the parser with DOM-node
+re-population for full data round trip in your UI.
+
+## Authors / Contact [Chris Denman][http://github.com/wangjammer7]
+(cjd@anyware.co.uk) [Marc Palmer][http://github.com/marcpalmer]
+(marc@anyware.co.uk)
+
+## Documentation
+[HORN Specification][horn-specification.html]
+[Usage example][https://github.com/marcpalmer/HORN/tree/master/example]
+
+## Download
+You can download this project in either
+[zip][http://github.com/marcpalmer/HORN/zipball/master] or
+[tar][http://github.com/marcpalmer/HORN/tarball/maste] formats.
+
+You can also clone the project with [Git][http://git-scm.com] by running:
+```
+$ git clone git://github.com/marcpalmer/HORN
+```
 
     <div class="footer">
       get the source code on GitHub : <a href="http://github.com/marcpalmer/HORN">marcpalmer/HORN</a>
