@@ -286,7 +286,7 @@ property paths relative to the nearest ancestor's calculated path:
 {% endhighlight %}
 
 You can see here that inner elements have spans defining data properties which
-will be set on books\[0\].
+will be set on books\[0].
 
 ## Indicators in HTML5
 
@@ -415,7 +415,7 @@ DOM nodes and apply property name indicators:
 </div>
 {% endhighlight %}
 
-This defines "books[0].publisher.name" as "New Riders".
+This defines "books\[0].publisher.name" as "New Riders".
 
 [microformats]: http://microformats.org/
 [examples]: https://github.com/marcpalmer/HORN/tree/master/example

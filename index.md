@@ -3,8 +3,8 @@ title: HORN Specification and Reference Implementations
 layout: home
 ---
 
-The HORN specification describes a way to weave your model data into HTML mark
-such that it can be used for both the presentation and data model in your
+The HORN specification describes a way to weave your model data into HTML markup
+such that it can be used for _both_ the presentation and data model in your
 client (typically JavaScript) code.
 
 There is a jQuery based reference implementation of the parser with DOM-node
@@ -12,7 +12,7 @@ re-population for full data round trip in your UI.
 
 ## Authors / Contact
 
-[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
+[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)
 [Marc Palmer](http://github.com/marcpalmer) (marc@anyware.co.uk)
 
 ## Documentation
