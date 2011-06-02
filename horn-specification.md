@@ -22,7 +22,7 @@ Even more importantly, this means that your JS UI code is no longer fragile
 with respect to design-related changes. You don't select nodes to find data,
 you address your model directly.
 
-In a nutshell, by clever use of CSS classes (or HTML5 data attributee for 
+In a nutshell, by clever use of CSS classes (or HTML5 data attributes for 
 newer browsers) and adding where necessary a few &lt;span&gt; or other tags to your
 markup, you can provide a rich data model to your JS code from your HTML
 content.
@@ -34,7 +34,7 @@ implementation provided for use in real sites.
 
 ## Overview
 
-The basic premise of this specification is to use microformat-like techniques
+The basic premise of this specification is to use [microformat][microformats]-like techniques
 to embed data in your HTML output that will be used by your scripting code
 (JavaScript).
 
@@ -62,8 +62,8 @@ information it needs, the data goes back to where it originally came from.
 Different data types can be parsed out of the HTML as required, with
 declarative support for this in the reference implementation.
 
-See the "examples" folder for a working example using the jQuery reference
-implementation.
+See the ["example" folder][examples] for a working example using the [jQuery reference
+implementation][refimpl].
 
 ## Weaving data into your content
 
@@ -88,13 +88,13 @@ on your application's preference for browser support.
 
 There are three kinds of indicator in HORN:
 
-1. Root object indicator
-2. Property path indicator
-3. Inline JSON indicator
+1. Root object indicator - tells HORN the base property path to apply to data in descendent DOM nodes 
+2. Property path indicator - tells HORN the property path to use for the data in the DOM node
+3. Inline JSON indicator - tells HORN that the data is actually to be parsed from an inline JSON object
 
 ## Indicators in CSS
 
-When you are not using HTML5, you must define a CSS class on a DOM element.
+When you are not using HTML5, you define your indicators as CSS classes on a DOM element.
 The class name you use defines the object/value name. The only other
 requirement is that some ancestor in the DOM has the "horn" class, to indicate
 that nodes under that should be scanned for data. This saves HORN parsers from
@@ -116,15 +116,15 @@ that this is the name (minus the underscore) of your object and will be stored
 as the "book" property in the root of your data model.
 
 The rest of the examples in this specification use the CSS class indicators,
-but will all work in HTML5 as-is, or can be modified to use HTML5
-data-attributes.
+but will all work in HTML5 as-is, or can be modified to use [HTML5
+data-attributes][#indicators_in_html5].
 
 So now we need to add the title and author information:
 
 {% highlight html %}
 <div class="horn _book">
-	<h1 class="_title">Presentation Zen</h1>
-	<p>by <span class="_authors">Garr Reynolds</span>.</p>
+    <h1 class="_title">Presentation Zen</h1>
+    <p>by <span class="_authors">Garr Reynolds</span>.</p>
 </div>
 {% endhighlight %}
 
@@ -154,11 +154,11 @@ represented by a code or unique id - we use the HTML &lt;abbr&gt; tag:
 
 {% highlight html %}
 <div class="horn _book">
-	<h1 class="_title">Presentation Zen</h1>
-	<p>
-		by <span class="_authors">Garr Reynolds</span> 
-		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>.
-	</p>
+    <h1 class="_title">Presentation Zen</h1>
+    <p>
+        by <span class="_authors">Garr Reynolds</span> 
+        in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>.
+    </p>
 </div>
 {% endhighlight %}
 
@@ -171,12 +171,12 @@ for our JS code to work with:
 
 {% highlight html %}
 <div class="horn _book">
-	<h1 class="_title">Presentation Zen</h1>
-	<p>
-		Written by <span class="_authors">Garr Reynolds</span> 
-		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
-		published <abbr class="_publishDate" title="10/02/2011">10 Feb</abbr>.
-	</p>
+    <h1 class="_title">Presentation Zen</h1>
+    <p>
+        Written by <span class="_authors">Garr Reynolds</span> 
+        in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+        published <abbr class="_publishDate" title="10/02/2011">10 Feb</abbr>.
+    </p>
 </div>
 {% endhighlight %}
 
@@ -200,13 +200,13 @@ in inline json mechanism:
 
 {% highlight html %}
 <div class="horn _book">
-	<p class="data-json hidden">{ 'id':384855 }</p>
-	<h1 class="_title">Presentation Zen</h1>
-	<p>
-		Written by <span class="_authors">Garr Reynolds</span> 
-		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
-		published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
-	</p>
+    <p class="data-json hidden">{ 'id':384855 }</p>
+    <h1 class="_title">Presentation Zen</h1>
+    <p>
+        Written by <span class="_authors">Garr Reynolds</span> 
+        in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+        published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+    </p>
 </div>
 {% endhighlight %}
 
@@ -227,12 +227,12 @@ JSON data model:
 {% highlight javascript %}
 { 
    'book': { 
-		'title': 'Presentation Zen', 
-		'authors': 'Garr Reynolds',
-		'genre': 'GENRE_BUSINESS',
-		'publishDate': new Date(234857489357),
-		'id': 384855
-	} 
+        'title': 'Presentation Zen', 
+        'authors': 'Garr Reynolds',
+        'genre': 'GENRE_BUSINESS',
+        'publishDate': new Date(234857489357),
+        'id': 384855
+    } 
 }
 {% endhighlight %}
 
@@ -272,17 +272,17 @@ property paths relative to the nearest ancestor's calculated path:
 
 {% highlight html %}
 <div class="horn _books">
-	<div class="_0">
-	    <span class="_title">XML Complete</span><br/>
-	    by <span class="_author">by Steven Holzner</span><br/>
-	    <ol>
-	        <li>Publisher: <span class="_publisher">McGraw-Hill</span></li>
-	        <li>ISBN: <span class="_isbn">0-079-13702-4</span></li>
-	        <li>Pages: <span class="_pages">600</span></li>
-	        <li>Price: $<span class="_price">44.95</span></li>
-	        <li>Publication Date: <span class="_pubDate">01 December 1997</span></li>
-	    </ol>
-	</div>
+    <div class="_0">
+        <span class="_title">XML Complete</span><br/>
+        by <span class="_author">by Steven Holzner</span><br/>
+        <ol>
+            <li>Publisher: <span class="_publisher">McGraw-Hill</span></li>
+            <li>ISBN: <span class="_isbn">0-079-13702-4</span></li>
+            <li>Pages: <span class="_pages">600</span></li>
+            <li>Price: $<span class="_price">44.95</span></li>
+            <li>Publication Date: <span class="_pubDate">01 December 1997</span></li>
+        </ol>
+    </div>
 </div>
 {% endhighlight %}
 
@@ -373,25 +373,25 @@ the values or objects:
 
 {% highlight html %}
 <div class="horn _books">
-	<div class="_0">
-		<p class="data-json hidden">{ 'id':384855 }</p>
-		<h1 class="_title">Presentation Zen</h1>
-		<p>
-			Written by <span class="_authors">Garr Reynolds</span> 
-			in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
-			published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
-		</p>
-	</div>
+    <div class="_0">
+        <p class="data-json hidden">{ 'id':384855 }</p>
+        <h1 class="_title">Presentation Zen</h1>
+        <p>
+            Written by <span class="_authors">Garr Reynolds</span> 
+            in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+            published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+        </p>
+    </div>
 
-	<div class="horn _books-1">
-		<p class="data-json hidden">{ 'id':384855 }</p>
-		<h1 class="_title">Reality Check</h1>
-		<p>
-			Written by <span class="_authors">Guy Kawasaki</span> 
-			in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
-			published <abbr class="_publishDate" title="13/10/2010">last year</abbr>.
-		</p>
-	</div>
+    <div class="horn _books-1">
+        <p class="data-json hidden">{ 'id':384855 }</p>
+        <h1 class="_title">Reality Check</h1>
+        <p>
+            Written by <span class="_authors">Guy Kawasaki</span> 
+            in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+            published <abbr class="_publishDate" title="13/10/2010">last year</abbr>.
+        </p>
+    </div>
 </div>
 {% endhighlight %}
 
@@ -403,17 +403,21 @@ DOM nodes and apply property name indicators:
 
 {% highlight html %}
 <div class="horn _books-0">
-	<p class="data-json hidden">{ 'id':384855 }</p>
-	<h1 class="_title">Presentation Zen</h1>
-	<p>
-		Written by <span class="_authors">Garr Reynolds</span> 
-		in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
-		published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
-	</p>
-	<div class="_publisher">
-		<h2 class="_name">New Riders</h2>
-	</div>
+    <p class="data-json hidden">{ 'id':384855 }</p>
+    <h1 class="_title">Presentation Zen</h1>
+    <p>
+        Written by <span class="_authors">Garr Reynolds</span> 
+        in genre <abbr class="_genre" title="GENRE_BUSINESS">Business</abbr>
+        published <abbr class="_publishDate" title="10/02/2011">last month</abbr>.
+    </p>
+    <div class="_publisher">
+        <h2 class="_name">New Riders</h2>
+    </div>
 </div>
 {% endhighlight %}
 
 This defines "books[0].publisher.name" as "New Riders".
+
+[microformats]: http://microformats.org/
+[examples]: https://github.com/marcpalmer/HORN/tree/master/example
+[refimpl]: https://github.com/marcpalmer/HORN/tree/master/reference-implementations

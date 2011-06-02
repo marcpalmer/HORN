@@ -25,6 +25,9 @@ layout: default
 <p>Chris Denman (cjd@anyware.co.uk)
 <br/>Marc Palmer (marc@anyware.co.uk)
 </p>
+    <h2>Documentation</h2>
+    <a href="horn-specification.html">Usage example</a><br/>
+    <a href="https://github.com/marcpalmer/HORN/tree/master/example">Usage example</a>
 
     <h2>Download</h2>
     <p>
