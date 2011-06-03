@@ -1,5 +1,8 @@
 #!/bin/sh
 
+git checkout master
+git pull origin master
+git checkout gh-pages
 git archive --format zip -o horn-master.zip master
 rm -Rf horn
 mkdir horn
