@@ -8,4 +8,5 @@ unzip ../horn-master.zip
 cd ..
 rm horn-master.zip
 git add horn
-jekyll
+jekyll --server
+
