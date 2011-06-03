@@ -182,7 +182,7 @@ for our JS code to work with:
 Here, you will typically want the parser implementation to convert the date
 string into a native JavaScript date. This is not something covered by the
 HORN specification itself, but the [HORN 1.0 reference implementation allows
-you to do this](/reference-implementations/jquery/manual.html#converters).
+you to do this](/horn/reference-implementations/jquery/manual.html#converters).
 
 Now we might also need to add some unique id information so that we can tally
 up this object to the book in the database during AJAX calls. For this we use
@@ -207,9 +207,6 @@ What this does is tell your HORN parser that the text nodes inside the &lt;p&gt;
 with "data-json" are to be merged with the "current" object. Current object
 means the object named by the nearest element with the "horn" class in DOM
 ancestry terms.
-
-Note that JSON data is not subject to the type conversions declared, it is
-assumed your JSON data is in the native JSON type that you require.
 
 So with all the above, we'd end up with a data model the equivalent of this
 JSON data model:
