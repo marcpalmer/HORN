@@ -13,12 +13,14 @@ h2 { font-size: 1.3em; color: #000000; }
 h3 { color: #44444; }
 .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
 .download { float: right; }
-pre, code { background: #eee; padding: 15px;}
+pre { background: #eee; padding: 15px;}
+code { background: #eee; }
 hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
 .footer { text-align:center; padding-top:30px; font-style: italic; }
-table { margin-left: 40px; border: 1px solid black; }
-tr { padding: 2px; }
-td { padding: 8px; border-bottom: 1px solid silver }
+table { margin-left: auto; margin-right: auto; border: 1px solid black; }
+tr { padding: 0;}
+th { border-bottom: 1px solid #888 }
+td { padding: 8px;  border-bottom: 1px solid #eee }
 .site { width: 800px; }
 ol { margin-left: 40px; }
 ul { margin-left: 40px; }

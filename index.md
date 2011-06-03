@@ -17,7 +17,7 @@ re-population for full data round trip in your UI.
 
 ## Documentation
 
-[HORN Specification](horn-specification.html)  
+[HORN Specification 1.0](horn-specification.html)  
 [Usage example](https://github.com/marcpalmer/HORN/tree/master/example)
 
 ## Download

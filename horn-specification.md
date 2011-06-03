@@ -235,8 +235,8 @@ JSON data model:
 }
 {% endhighlight %}
 
-How you access this is up to the parser implementation you use, but for the
-jQuery reference implementation you will use something like:
+How you access this is up to the parser implementation you use, but for
+example the jQuery reference implementation you will use something like:
 
 {% highlight javascript %}
 var horn = new Horn();
