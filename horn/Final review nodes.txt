@@ -1,0 +1,11 @@
+
+* Eliminate horn-jquery-extract, incorporate this into the end of horn-jquery.js
+
+* Remove javadoc style comments, replace with whatever people tend to use for JS
+
+* Document which are public methods and which are internal functions, perhaps namespace them i.e. handleTemplateValue
+
+* What are "components"?
+
+* Rename HORN.render ===> HORN.updateDOM()
+
