@@ -1,6 +1,11 @@
 /**
  *  A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
  *
+ *
+ *  - Defaults for no converters present
+ *  - change tests so that we implement a regex based converter construct
+ *
+ *
  *  @author Chris Denman
  *  @author Marc Palmer
  */
@@ -8,10 +13,7 @@ function Horn() {
 
     this.reset = function() {
         this.state = {
-            opts: window.$.extend( {}, {
-                storeBackRefs:  true,
-                converters:     {},
-                patternInfo:    {}})
+            opts: window.$.extend( {}, {storeBackRefs:  true})
         };
     };
 
@@ -53,22 +55,27 @@ function Horn() {
             args.rootNodes : (this.definesArgument( args, 'selector') ?
                 window.$(args.selector) :
                 this.getFeature({type: 'ROOT_NODES'}));
-
         this.setDefaultModel();
-
         this.each( rootNodes,
             function( i, n ) { this.visitNodes( n, '',
                 function( n, path ) {
                     var isRoot =
                         _this.getFeature( {type: 'INDICATOR_ROOT', n: n});
-                    if ( isRoot ) { return false; }
+                    if ( _this.isDefinedNotNull( isRoot) === true ) {
+                        return false; }
                     var componentData = _this.getComponentData( n, path);
-                    if ( !componentData ) { return true; }
-                    if ( !componentData.isJSON ) {
-                        _this.addComponent( componentData);
-                    } else {
-                        _this.addJSONComponents( componentData);
+                    if ( _this.isDefinedNotNull( componentData) === false) {
+                        return true; }
+                    if ( componentData.isJSON === false ) {
+                        componentData.value = _this.convert( {
+                            value: componentData.text,
+                            path:  componentData.path,
+                            type:  'fromText', // dom > model
+                            node:  componentData.node
+                        });
                     }
+                    _this[componentData.isJSON === true ? 'addJSONComponents' :
+                        'addComponent']( componentData);
                     return false;
                 }
             ); }, this);
@@ -76,39 +83,36 @@ function Horn() {
     };
 
     this.newFromTemplate = function( args ) {
-        var nodeData;
         var template;
         var components = [];
-        if ( this.definesArgument( args, 'template', undefined) ) {
-            template = args.template
+        if ( this.definesArgument( args, 'template') === true ) {
+            template = args.template;
         } else {
             template = window.$(args.selector).clone();
             template.removeAttr( "id");
         }
-        if ( args.id ) { template.attr( "id", args.id); }
+
+        if ( this.definesArgument( args, 'id') === true ) {
+            template.attr( "id", args.id);
+        }
+
         this.setDefaultModel();
         this.visitNodes( template, args.path ? args.path : '', this.bind(
             function( n, path ) {
                 return this.handleTemplateValue( n, path, components);
             }, this));
 
-        this.addComponents( {components: components});
+        this.addComponents({components: components});
 
-            // @todo we may want to remove this and bring the hiding of empty valued components
-        nodeData = [];
-        this.each( components, function( i, n ) {
-            nodeData.push({text: n.text, node: n.node});
-        }, this);
-
-        return {template: template, nodeData: nodeData};
+        return template;
     };
 
     this.handleTemplateValue = function( node, path, components ) {
         var componentData = this.getComponentData( node, path);
         var key = this.getFeature({type: 'INDICATOR_PATH', n: node});
-        if ( this.isAdjustingPath( key) ) {
+        if ( this.isAdjustingPath( key) === true ) {
             componentData.path = (path + '-' + key); }
-        if ( componentData ) {
+        if ( this.isDefinedNotNull( componentData) === true ) {
             if ( !componentData.isJSON  ) { components.push( componentData); }
             return false;
         }
@@ -122,20 +126,24 @@ function Horn() {
                 this.each( args.components, function( i, componentData ) {
                     var textValue;
                     if ( k === componentData.path ) {
-                        textValue = this.patternConvert(
-                            v, componentData.path, 'toText');
-                        if ( !textValue ) { textValue = v.toString(); }
-                        textValue = textValue.trim();
+                        textValue = this.convert( {
+                            value: v,
+                            path:  k,
+                            type:  'toText', // model -> dom
+                            node:  componentData.node
+                        });
+                        if ( (textValue === undefined) && this.isDefinedNotNull( v)) {
+                            textValue = v.toString(); // @todo perhaps we need better default conversion here
+                        }
                         componentData.text = textValue;
-                        this.setNodeValue( {node: componentData.node,
+                        this.setDOMNodeValue( {node: componentData.node,
                             value: componentData.text});
                         this.addComponent({
+                            node: componentData.node,
                             context: context,
                             key: propName,
                             value: v,
-                            path: componentData.path,
-                            text: textValue,
-                            node: componentData.node});
+                            path: componentData.path});
                     }
                 }, this);
             }, this));
@@ -148,24 +156,15 @@ function Horn() {
     };
 
     this.addComponent = function( args ) {
-        var details;
         var culledPath = args.path.substring( 1);
-        if ( args.hasOwnProperty( 'value') ) {
-            details = {context: args.context, key: args.key, value: args.value};
-        } else {
-            var typedValue = this.patternConvert(
-                args.text, args.path, args.isJSON ? 'fromJSON' : 'fromText');
-            details = this.setValue( typedValue !== null ?
-                typedValue : args.text, args.path);
-        }
-
+        var details = {context: args.context, key: args.key, value: args.value};
         if ( (this.state.opts.storeBackRefs === true) && (!args.isJSON) ) {
             if ( this.state.components === undefined ) {
                 this.state.components = {}; }
             this.state.components[ culledPath] = { node: args.node,
-                context: details.context,
-                key: details.key, value: details.value};
+                context: details.context, key: details.key, value: details.value};
         }
+        return details;
     };
 
     /**
@@ -182,34 +181,29 @@ function Horn() {
      *      nodes under this node will be updated.
      */
     this.render = function( args ) {
-        var rootNode = this.definesArgument( args, 'rootNode') ?
-            args.rootNode : undefined;
-        var alteredNodes = [];
         this.each( this.state.components, function( i, n ) {
-            this.renderComponent( {rootNode: rootNode,
-                valueNode: n, path: i, alteredNodes: alteredNodes});
+            this.renderComponent( {rootNode: this.definesArgument(
+                args, 'rootNode') ? args.rootNode : undefined,
+                    component: n, path: i});
         }, this);
-        return alteredNodes;
     };
 
     this.renderComponent = function( args ) {
-
-        var typeOfPattern;
         var rootNode = args.rootNode;
-        var valueNode = args.valueNode;
-        var modelValue = valueNode.context[ valueNode.key];
-        if ( modelValue !== valueNode.value ) {
+        var component = args.component;
+        var modelValue = component.context[ component.key];
+        var textValue;
+        if ( modelValue !== component.value ) {
             if ( !rootNode || (rootNode && this.contains(
-                window.$(valueNode.node).parents(), rootNode)) ) {
-                typeOfPattern = this.getPattern( args.path);
-                this.setNodeValue(
-                    {   node: valueNode.node,
-                        value: typeOfPattern !== null ?
-                            this.convert( modelValue,
-                                typeOfPattern.converterName, "toText") :
-                                modelValue.toString()});
-                valueNode.value = modelValue;
-                args.alteredNodes.push( valueNode.node);
+                window.$(component.node).parents(), rootNode)) ) {
+                textValue = this.convert( {
+                    value: modelValue,
+                    path:  args.path,
+                    type:  'toText', // model > dom
+                    node: component.node
+                });
+                this.setDOMNodeValue( {node: component.node, value: textValue});
+                component.value = modelValue;
             }
         }
     };
@@ -218,38 +212,9 @@ function Horn() {
         return this.state.model;
     };
 
-    this.option = function( optionName, arg0, arg1 ) {
-        var _this = this;
-        switch ( optionName ) {
-            case "pattern":
-                this.splitEach( arg0, ",", function( token ) {
-                    _this.state.opts.patternInfo[ token] =
-                        { converterName: arg1 };
-                });
-                return;
-
-            case "converter":
-                _this.state.opts.converters[ arg0] = arg1;
-                return;
-        }
-        if ( optionName !== undefined ) { this.state.opts[ optionName] = arg0; }
-    };
-
-    this.getPattern = function( path ) {
-        var rv = null;
-        window.$.each(
-            this.state.opts.patternInfo,
-            function( i, n ) {
-                var cachedPattern = n.rePattern;
-                var re = cachedPattern || new RegExp( i);
-                if ( cachedPattern === undefined ) { n.rePattern = re; }
-                if ( re.exec( path) !== null ) {
-                    rv = n;
-                    return false;
-                }
-            }
-        );
-        return rv;
+    this.option = function( optionName, arg0 ) {
+        if ( this.isDefinedNotNull( optionName) ) {
+            this.state.opts[ optionName] = arg0; }
     };
 
     // @todo this is only called presently fromn add component, we recurse the
@@ -306,8 +271,9 @@ function Horn() {
                     (nodeName.toLowerCase() === "abbr");
                 cd.isTextNode = !cd.isABBRNode && (isEmptyNode ||
                     (theContained.nodeType === window.Node.TEXT_NODE));
+
                 if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
-                    cd.text = this.getNodeValue( {node: node});
+                    cd.text = this.getDOMNodeValue( {node: node});
                     return cd;
                 }
             }
@@ -321,43 +287,22 @@ function Horn() {
         if ( typeof jsonData === 'object' ) {
             this.traverse( jsonData,
                 this.bind(
-                    function( key, value ) {
-                        args.path = rootPath + key;
-                        args.text = value;
+                    function( k, v ) {
+                        args.value = this.convert( {
+                            value: v,
+                            path:  rootPath + k,
+                            type:  'fromJSON', // json > model
+                            node:  args.node});
                         this.addComponent( args);
                     }, this), '');
         } else {
-            args.text = jsonData;
+            args.value = this.convert( {
+                value: jsonData,
+                path:  rootPath,
+                type:  'fromJSON', // json > model
+                node:  args.node});
             this.addComponent( args);
         }
-    };
-
-    this.getCacheConverter = function( converterName ) {
-        var cachedConverter = this.state.opts.converters[ converterName];
-        if ( cachedConverter === undefined ) { return null; }
-        if ( typeof cachedConverter === 'function' ) {
-            cachedConverter = new this.state.opts.converters[ converterName]();
-            this.state.opts.converters[ converterName] = cachedConverter;
-        }
-        return cachedConverter;
-    };
-
-    this.patternConvert = function( value, path, functionName ) {
-        var typeOfPattern;
-        if ( this.startsWith( path, '-') ) {
-            path = path.substring( 1); }
-        typeOfPattern = this.getPattern( path);
-        return (typeOfPattern !== null) ?
-            this.convert( value, typeOfPattern.converterName, functionName) :
-            null;
-    };
-
-    this.convert = function( value, converterName, functionName ) {
-        var fn;
-        var converter = this.getCacheConverter( converterName);
-        if ( converter === undefined ) { return null; }
-        fn = converter[ functionName];
-        return fn ? fn( value) : null;
     };
 
     this.visitNodes = function( dataElement, path, fn ) {
@@ -370,6 +315,12 @@ function Horn() {
                 if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
             this);
     };
+
+    this.convert = function ( args ) {
+        var converter = this.state.opts.converter;
+        return ( this.isDefinedNotNull( converter) === true ) ?
+            converter.call( this, args) : undefined;
+    };
 }
 
 Horn.prototype.getFeature = function( args ) {
@@ -379,7 +330,7 @@ Horn.prototype.getFeature = function( args ) {
 Horn.prototype.traverse = function( value, callback, key, context, propName ) {
     if (!(value instanceof jQuery) &&
         ((value instanceof Object) || (value instanceof Array)) &&
-        !(value.constructor.toString().indexOf( 'Date') >= 0) ) { // @todo special date handling here for non recursing into model values
+        (value.constructor.toString().indexOf( 'Date') < 0) ) { // @todo special date handling here for non recursing into model values
         this.each( value, function( k, v ) {
             this.traverse(
                 v, callback, key ? (key + '-' + k) : ("-" + k), value, k);
@@ -399,6 +350,15 @@ Horn.prototype.isAdjustingPath = function ( path ) {
         (path !== undefined) && (path.toString().trim() !== '');
 };
 
+Horn.prototype.definesArgument = function( args, propertyName ) {
+    return (args !== undefined) && (args.hasOwnProperty( propertyName)) &&
+        this.isDefinedNotNull( args[ propertyName]);
+};
+
+Horn.prototype.isDefinedNotNull = function( ref ) {
+    return (ref !== undefined) && (ref !== null);
+};
+
 Horn.prototype.bind = function( fn, ctx ) {
     return function() { return fn.apply(ctx, arguments); };
 };
@@ -410,10 +370,6 @@ Horn.prototype.each = function( collection, fn, ctx ) {
 
 Horn.prototype.didRemoveProperty = function( object, property ) {
     return object.hasOwnProperty( property) && delete object[ property];
-};
-
-Horn.prototype.definesArgument = function( args, propertyName ) {
-    return (args !== undefined) && (args.hasOwnProperty( propertyName));
 };
 
 Horn.prototype.startsWith = function ( value, stem ) {
@@ -475,16 +431,16 @@ Horn.prototype.copyInto = function( args ) {
     return args.dest;
 };
 
-Horn.prototype.getNodeValue = function( args ) {
+Horn.prototype.getDOMNodeValue = function( args ) {
     var nodeName = args.node.nodeName.toLowerCase();
     var jNode = window.$(args.node);
     return window.unescape(
         ((nodeName === "input") || (nodeName === 'textarea')) ?
             jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
             jNode.text()));
-}
+};
 
-Horn.prototype.setNodeValue = function( args ) {
+Horn.prototype.setDOMNodeValue = function( args ) {
     var nodeName = args.node.nodeName.toLowerCase();
     var jNode = window.$(args.node);
     if ( (nodeName === "input") || (nodeName === 'textarea') ) {
@@ -496,10 +452,11 @@ Horn.prototype.setNodeValue = function( args ) {
 
 
 if ( !window.Node ) {
-    window.$.each( ['ELEMENT', 'ATTRIBUTE', 'TEXT',
-        'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
-        'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
-        'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
+    window.$.each( [
+        'ELEMENT', 'ATTRIBUTE', 'TEXT',
+            'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
+            'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
+            'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
         function( i, n ) {
             window.Node[ n + '_NODE'] = i + 1;
         });
