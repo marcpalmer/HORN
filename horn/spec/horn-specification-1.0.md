@@ -181,17 +181,8 @@ for our JS code to work with:
 
 Here, you will typically want the parser implementation to convert the date
 string into a native JavaScript date. This is not something covered by the
-HORN specification itself, but the HORN 1.0 reference implementation allows
-you to do this using meta tags in the &lt;head&gt; section of your page:
-
-{% highlight html %}
-<meta name="typeof book.*date" content="DateConverter"/>
-{% endhighlight %}
-
-This declares that any property path ending with "date" will be parsed as a
-Date, using a JS class to perform the conversion using toText()/fromText()
-methods. This lets you build up your model with native JavaScript types so
-that it isn't just an object with string property values.
+HORN specification itself, but the [HORN 1.0 reference implementation allows
+you to do this](/reference-implementations/jquery/manual.html#converters).
 
 Now we might also need to add some unique id information so that we can tally
 up this object to the book in the database during AJAX calls. For this we use
