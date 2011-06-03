@@ -1,6 +1,6 @@
 ---
 title: HORN jQuery 1.0 Reference Implementation
-layout: main
+layout: default
 ---
 
 HORN 1.0 jQuery Reference implementation
@@ -76,7 +76,7 @@ There is currently no tracking of the removal of DOM nodes.
 ## Definition of Type Conversions
 
 To assign a named converter to a given property path in your data model, you
-use the \<meta> tag in your \<head> section:
+use the &lt;meta&gt; tag in your &lt;head&gt; section:
 
 {% highlight html %}
 <meta name="typeof .*Date" content="DateConverter" />
