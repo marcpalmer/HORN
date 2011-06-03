@@ -5,7 +5,19 @@
 
 * Document which are public methods and which are internal functions, perhaps namespace them i.e. handleTemplateValue
 
-* What are "components"?
+* Rename "components" to bindings --- binding of UI element to model.
 
-* Rename HORN.render ===> HORN.updateDOM()
+* Rename render ===> updateDOM()
 
+* Either stop traverse() hitting values that should not be propagated to DOM,
+  or add new modelValueFilter function option, default to excluding jQuery &
+  Date
+
+Public API is just:
+
+extract()
+updateDOM()
+newFromTemplate()
+getModel()
+option()
+reset()

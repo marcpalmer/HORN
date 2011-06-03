@@ -82,6 +82,17 @@ function Horn() {
         return this.state.model;
     };
 
+    /**
+     * Create a new UI element by cloning an existing template that is marked up
+     * with HORN indicators, and populate the DOM nodes with data from the specified 
+     * property path.
+     *
+     * The args parameter supports the following arguments:
+     *
+     * template - A jQuery object representing the DOM template to clone
+     * id - The new "id" attribute value for the cloned DOM node 
+     * path - The property path within the model, to use to populate this DOM node and its descendents
+     */
     this.newFromTemplate = function( args ) {
         var template;
         var components = [];
