@@ -48,7 +48,6 @@ var isArray = function( object ) {
     return true;
 };
 
-
 var setPatternConverter = function( horn, converterName, pattern ) {
     if ( converterName === 'IntegerConverter' ) {
         horn.option( "converter", function( args ) {

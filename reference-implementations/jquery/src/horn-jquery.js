@@ -4,7 +4,7 @@
  *  @author Chris Denman
  *  @author Marc Palmer
  */
-function Horn() {
+window.Horn = function() {
     var state;
 
     var setDefaultModel = function() {

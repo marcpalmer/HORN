@@ -1,7 +1,7 @@
 module( "TestHorn - copyByDest");
 
 test(
-    "copyInto - That a test property isn't copied inappropriately..",
+    "copyInto - That a test property isn't copied inappropriately.",
     function() {
         var dest = {};
         var src = {a:1};

@@ -1,5 +1,3 @@
-
-
     var bindings = {};
     var maxID = -1;
 
@@ -88,47 +86,45 @@
         }
     };
 
-//    horn = new Horn();
+    hornConverter.addConverter( {
+        name: "BooleanConverter",
+        converter: function( args ) {
+            return args.type === 'fromText' ?
+                value.toLowerCase() === 'yes' :
+                (args.value === true ? "Yes" : "No");
+        }});
 
-    window.horn.option( 'converter', 'IntegerConverter',
-        function () {
-            this.toText = function( value ) { return value.toString(); };
-            this.fromText = function( value ) { return parseInt( value); };
-        });
+    hornConverter.addConverter( {
+        name: "DateConverter",
+        converter: function( args ) {
+            return args.type === 'fromText' ?
+                $.datepicker.parseDate( DATE_FORMAT, args.value) :
+                ($.datepicker.formatDate( DATE_FORMAT, args.value));
+    }});
 
-    window.horn.option( 'converter', 'BooleanConverter',
-        function () {
-            this.toText = function( value ) {
-                return value ? "Yes" : "No";
-            };
-            this.fromText = function( value ) {
-                return value.toLowerCase() == 'yes';
-            };
-        });
-
-    window.horn.option( 'converter', 'DateConverter',
-        function () {
-            this.toText = function( value ) {
-                return $.datepicker.formatDate( DATE_FORMAT, value);
-            };
-            this.fromText = function( value ) {
-                return $.datepicker.parseDate( DATE_FORMAT, value);
-            };
-        });
-
-    window.horn.option( 'pattern', '.*Date', 'DateConverter');
-    window.horn.option( 'pattern', '.*pages', 'IntegerConverter');
-    window.horn.option( 'pattern', '.*price', 'IntegerConverter');
+    hornConverter.addPattern( { pattern: '.*Date', converterName: 'DateConverter'});
+    hornConverter.addPattern( { pattern: '.*pages', converterName: 'IntegerConverter'});
+    hornConverter.addPattern( { pattern: '.*price', converterName: 'IntegerConverter'});
 
 $(function() {
-    $('#formattedOutput').html( render( window.horn.getModel() ));
+    horn.extract();
+    $('#formattedOutput').html( render( horn.getModel() ));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
         var converterName = converterNameForNode(obj);
-        var val = horn.convert( obj.val(), converterName, true);
-        binding.parent[ binding.pk] = val;
+        var converter;
+        if ( !converterName ) {
+            binding.parent[ binding.pk] = obj.val();
+        } else {
+            converter = hornConverter.getConverter({name: converterName});
+            convertedValue = converter( {type: 'fromText', value: obj.val()});
+            binding.parent[ binding.pk] = convertedValue;
+        }
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
-    $('a.populateButton').click( function( event ) { horn.render(); event.stopPropagation(); });
+    $('a.refreshButton').click( function( event ) {
+        horn.render();
+        event.stopPropagation();
+    });
 });
