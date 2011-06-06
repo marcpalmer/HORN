@@ -127,6 +127,7 @@ window.Horn = function() {
 
     var addJSONComponents = this.bind(
         function( args ) {
+            var defaults = {type:  'fromJSON', node:  args.node};
             var addJSONHelper = this.bind( function( args ) {
                 var oldValue = args.value;
                 args.value = convert( args);
@@ -135,24 +136,17 @@ window.Horn = function() {
                 }
                 addComponent( args);
             }, this);
-
             var jsonData = $.evalJSON( args.text);
             var rootPath = args.path;
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
                     this.bind( function( k, v ) {
-                        addJSONHelper( {
-                            value: v,
-                            path:  rootPath + k,
-                            type:  'fromJSON',
-                            node:  args.node});
+                        addJSONHelper( $.extend( defaults,
+                            {value: v, path:  rootPath + k}));
                     }, this), '');
             } else {
-                addJSONHelper( {
-                    value: jsonData,
-                    path:  rootPath,
-                    type:  'fromJSON',
-                    node:  args.node});
+                addJSONHelper( $.extend( defaults,
+                    {value: jsonData, path:  rootPath}));
             }
         }, this);
 
@@ -447,8 +441,7 @@ Horn.prototype = {
     },
 
     isAdjustingPath: function ( path ) {
-        return (path !== null) &&
-            (path !== undefined) && (path.toString().trim() !== '');
+        return this.isDefinedNotNull( path) && (path.toString().trim() !== '');
     },
 
     isAttached: function( ref ) { return $(ref).parents(':last').is('html'); },
@@ -481,30 +474,23 @@ Horn.prototype = {
 
     startsWith: function ( value, stem ) {
         return  (stem.length > 0) &&
-                ((value = value.match( "^" + stem)) !== null) &&
+            ((value = value.match( "^" + stem)) !== null) &&
                 (value.toString() === stem);
     },
 
     traverse: function( value, callback, key, context, propName ) {
-        if (!(value instanceof jQuery) &&
-            ((value instanceof Object) || (value instanceof Array)) &&
-            (value.constructor.toString().indexOf( 'Date') < 0) ) {
-            this.each( value, function( k, v ) {
-                this.traverse(
-                    v, callback, key ? (key + '-' + k) : ("-" + k), value, k);
+        if ( (value instanceof Object) || (value instanceof Array) ) {
+            this.each( value, function( k, v ) { this.traverse( v, callback,
+                key ? (key + '-' + k) : ("-" + k), value, k);
             }, this);
         } else { callback( key, value, context, propName); }
     },
 
     visitNodes: function( dataElement, path, fn ) {
         var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
-        if ( this.isAdjustingPath( _path) ) {
-            path = (path + '-' + _path); }
-        this.each(
-            window.$(dataElement).children(),
-            function( i, n ) {
-                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
-            this);
+        if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
+        this.each( window.$(dataElement).children(), function( i, n ) {
+            if ( fn( n, path) ) { this.visitNodes( n, path, fn); }}, this);
     }
 };
 
