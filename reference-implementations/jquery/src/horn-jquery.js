@@ -5,195 +5,197 @@
  *  @author Marc Palmer
  */
 function Horn() {
+    $.extend(
+        this, {
+            reset: function() {
+                this.state = {
+                    opts: $.extend( {}, {storeBackRefs:  true})
+                };
+            },
 
-    this.reset = function() {
-        this.state = {
-            opts: $.extend( {}, {storeBackRefs:  true})
-        };
-    };
+            setDefaultModel: function() {
+                if ( (this.state.model === undefined) &&
+                    (this.state.opts.hasOwnProperty( 'defaultModel')) ) {
+                        this.state.model = this.state.opts.defaultModel;
+                }
+            },
+
+            removeComponents: function( args ) {
+                this.each( this.state.components, function( i, n ) {
+                    if ( this.startsWith( i, args.stem ) ) { delete this.state.components[ i]; }
+                }, this);
+            },
+
+            /**
+             *  Extract HORN data from the DOM and build a data model from it.
+             *  <p>
+             *  After extraction the model can be retrieved using horn.getModel(),
+             *  this function also returns the model.
+             *  <p>
+             *  Data is extracted from the DOM either by locating all Horn 'root nodes'
+             *  and then traversing them for data. Alternatively, the DOM nodes to
+             *  traverse can be specified by either a jQuery selector or list of elements.
+             *  <p>
+             *  If multiple elements with the same effective property path are encountered
+             *  <p>
+             *
+             *
+             *  @param args.selector    optional jQuery selector used to select the
+             *      nodes to extract a Horn data model from, overrides default
+             *      mechanism when supplied
+             *  @param args.rootNodes   optional object of nodes that can be traversed
+             *      using <code>jQuery.each( ... )</code> use to extract a Horn data
+             *      model from, overrides default mechanism when supplied.
+             *
+             *  @todo think about repeat calls to extract with no arguments
+             */
+            extract: function( args ) {
+                var _this = this;
+                var rootNodes = this.definesArgument( args, 'rootNodes') ?
+                    args.rootNodes : (this.definesArgument( args, 'selector') ?
+                        $(args.selector) :
+                        this.getFeature({type: 'ROOT_NODES'}));
+                this.setDefaultModel();
+                this.each( rootNodes,
+                    function( i, n ) { this.visitNodes( n, '',
+                        function( n, path ) {
+                            if ( _this.getFeature( {type: 'INDICATOR_ROOT', n: n}) === true ) {
+                                return false; }
+                            var componentData = _this.getComponentData( n, path);
+                            if ( componentData === false ) {
+                                return true; }
+                            if ( componentData.isJSON === false ) {
+                                componentData.value = _this.convert( {
+                                    value: componentData.text,
+                                    path:  componentData.path,
+                                    type:  'fromText', // dom > model
+                                    node:  componentData.node
+                                });
+                                if ( _this.isDefinedNotNull( componentData.value) === false ) {
+                                    componentData.value = componentData.text;
+                                }
+                            }
+                            _this[componentData.isJSON === true ? 'addJSONComponents' :
+                                'addComponent']( componentData);
+                            return false;
+                        }
+                    ); }, this);
+                return this.state.model;
+            },
+
+            addComponent: function( args ) {
+                var details;
+                var culledPath = args.path.substring( 1);
+                var rv;
+                if ( args.setModel !== false ) {
+                    details = this.setValue(  args.value, args.path);
+                }
+                if ( (this.state.opts.storeBackRefs === true) && (!args.isJSON) ) {
+                    if ( this.isDefinedNotNull( details) === true ) {
+                        args.context = details.context;
+                        args.key = details.key;
+                    }
+                    if ( this.state.components === undefined ) {
+                        this.state.components = {}; }
+                    rv = {node: args.node, value: args.value};
+                    if ( this.isDefinedNotNull( args.context) === true ) {
+                        rv.context = args.context;
+                        rv.key = args.key;
+                    }
+                    this.state.components[ culledPath] = rv;
+                }
+            },
+
+            /**
+             *  Refresh the DOM nodes with the current model values.
+             *  <p>
+             *  Only DOM nodes that produced data on a previous call to
+             *  <code>horn.extract( ... )</code> will be considered for updating.
+             *  <p>
+             *  <strong>Important: </strong>In addition, only DOM nodes that were
+             *  extracted whilst the <strong>storeBackRefs</strong> option was set will
+             *  be considered for updating.
+             *
+             *  @param args.rootNode   optional DOM node such that if supplied, only
+             *      nodes under this node will be updated.
+             */
+            render: function( args ) {
+                this.each( this.state.components, function( i, n ) {
+                    this.renderComponent( {rootNode: this.definesArgument(
+                        args, 'rootNode') ? args.rootNode : undefined,
+                            component: n, path: i});
+                }, this);
+            },
+
+            getModel: function() {
+                return this.state.model;
+            },
+
+            option: function( optionName, arg0 ) {
+                if ( this.isDefinedNotNull( optionName) ) {
+                    this.state.opts[ optionName] = arg0; }
+            },
+
+            getModelReference: function( args ) {
+                var rv;
+                var tokens = this.pathToTokens( args);
+                var length = tokens.length;
+                if ( length > 0 ) {
+                    rv = {ref: this.state.model, key: tokens[ length - 1]};
+                    tokens.length = tokens.length - 1;
+                    this.each( tokens, function( i, n ) {
+                        if ( this.isDefinedNotNull( rv.ref) ) {
+                            if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
+                        } else { return false; }
+                    }, this);
+                    if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
+                }
+
+                return rv;
+            },
+
+            // @todo this is only called presently fromn add component, we recurse the
+            // property path tree and this tree seperately, we should join up
+            // adjust path
+            setValue: function( value, path, parentContext ) {
+                var token;
+                var numTokens;
+                var subContext;
+                if ( typeof path === 'string' ) {
+                    path = this.pathToTokens( {path: path});
+                    if ( this.state.model === undefined ) {
+                        this.state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
+                    }
+                    parentContext = this.state.model;
+                }
+                numTokens = path.length;
+                if ( numTokens > 0 ) {
+                    token = path.shift();
+                    if ( numTokens > 1 ) {
+                        if ( !parentContext.hasOwnProperty( token) ) {
+                            subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
+                            parentContext[ token] = subContext;
+                        }
+                        subContext = parentContext[ token];
+                        return this.setValue( value, path, subContext);
+                    } else {
+                        parentContext[ token] = value;
+                        return {context: parentContext, key: token, value: value};
+                    }
+                }
+            },
+
+            convert: function ( args ) {
+                var converter = this.state.opts.converter;
+                if ( this.startsWith( args.path, "-") ) {
+                    args.path = args.path.substring( 1); // @todo move this somewhere else
+                }
+                return ( this.isDefinedNotNull( converter) === true ) ?
+                    converter.call( this, args) : undefined;
+            }
+    });
 
     this.reset();
-
-    this.setDefaultModel = function() {
-        if ( (this.state.model === undefined) &&
-            (this.state.opts.hasOwnProperty( 'defaultModel')) ) {
-                this.state.model = this.state.opts.defaultModel;
-        }
-    };
-
-    /**
-     *  Extract HORN data from the DOM and build a data model from it.
-     *  <p>
-     *  After extraction the model can be retrieved using horn.getModel(),
-     *  this function also returns the model.
-     *  <p>
-     *  Data is extracted from the DOM either by locating all Horn 'root nodes'
-     *  and then traversing them for data. Alternatively, the DOM nodes to
-     *  traverse can be specified by either a jQuery selector or list of elements.
-     *  <p>
-     *  If multiple elements with the same effective property path are encountered
-     *  <p>
-     *
-     *
-     *  @param args.selector    optional jQuery selector used to select the
-     *      nodes to extract a Horn data model from, overrides default
-     *      mechanism when supplied
-     *  @param args.rootNodes   optional object of nodes that can be traversed
-     *      using <code>jQuery.each( ... )</code> use to extract a Horn data
-     *      model from, overrides default mechanism when supplied.
-     *
-     *  @todo think about repeat calls to extract with no arguments
-     */
-    this.extract = function( args ) {
-        var _this = this;
-        var rootNodes = this.definesArgument( args, 'rootNodes') ?
-            args.rootNodes : (this.definesArgument( args, 'selector') ?
-                $(args.selector) :
-                this.getFeature({type: 'ROOT_NODES'}));
-        this.setDefaultModel();
-        this.each( rootNodes,
-            function( i, n ) { this.visitNodes( n, '',
-                function( n, path ) {
-                    if ( _this.getFeature( {type: 'INDICATOR_ROOT', n: n}) === true ) {
-                        return false; }
-                    var componentData = _this.getComponentData( n, path);
-                    if ( componentData === false ) {
-                        return true; }
-                    if ( componentData.isJSON === false ) {
-                        componentData.value = _this.convert( {
-                            value: componentData.text,
-                            path:  componentData.path,
-                            type:  'fromText', // dom > model
-                            node:  componentData.node
-                        });
-                        if ( _this.isDefinedNotNull( componentData.value) === false ) {
-                            componentData.value = componentData.text;
-                        }
-                    }
-                    _this[componentData.isJSON === true ? 'addJSONComponents' :
-                        'addComponent']( componentData);
-                    return false;
-                }
-            ); }, this);
-        return this.state.model;
-    };
-
-    this.removeComponents = function( args ) {
-        this.each( this.state.components, function( i, n ) {
-            if ( this.startsWith( i, args.stem ) ) { delete this.state.components[ i]; }
-        }, this);
-    };
-
-    this.addComponent = function( args ) {
-        var details;
-        var culledPath = args.path.substring( 1);
-        var rv;
-        if ( args.setModel !== false ) {
-            details = this.setValue(  args.value, args.path);
-        }
-        if ( (this.state.opts.storeBackRefs === true) && (!args.isJSON) ) {
-            if ( this.isDefinedNotNull( details) === true ) {
-                args.context = details.context;
-                args.key = details.key;
-            }
-            if ( this.state.components === undefined ) {
-                this.state.components = {}; }
-            rv = {node: args.node, value: args.value};
-            if ( this.isDefinedNotNull( args.context) === true ) {
-                rv.context = args.context;
-                rv.key = args.key;
-            }
-            this.state.components[ culledPath] = rv;
-        }
-    };
-
-    /**
-     *  Refresh the DOM nodes with the current model values.
-     *  <p>
-     *  Only DOM nodes that produced data on a previous call to
-     *  <code>horn.extract( ... )</code> will be considered for updating.
-     *  <p>
-     *  <strong>Important: </strong>In addition, only DOM nodes that were
-     *  extracted whilst the <strong>storeBackRefs</strong> option was set will
-     *  be considered for updating.
-     *
-     *  @param args.rootNode   optional DOM node such that if supplied, only
-     *      nodes under this node will be updated.
-     */
-    this.render = function( args ) {
-        this.each( this.state.components, function( i, n ) {
-            this.renderComponent( {rootNode: this.definesArgument(
-                args, 'rootNode') ? args.rootNode : undefined,
-                    component: n, path: i});
-        }, this);
-    };
-
-    this.getModel = function() {
-        return this.state.model;
-    };
-
-    this.option = function( optionName, arg0 ) {
-        if ( this.isDefinedNotNull( optionName) ) {
-            this.state.opts[ optionName] = arg0; }
-    };
-
-    this.getModelReference = function( args ) {
-        var rv;
-        var tokens = this.pathToTokens( args);
-        var length = tokens.length;
-        if ( length > 0 ) {
-            rv = {ref: this.state.model, key: tokens[ length - 1]};
-            tokens.length = tokens.length - 1;
-            this.each( tokens, function( i, n ) {
-                if ( this.isDefinedNotNull( rv.ref) ) {
-                    if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
-                } else { return false; }
-            }, this);
-            if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
-        }
-
-        return rv;
-    };
-
-    // @todo this is only called presently fromn add component, we recurse the
-    // property path tree and this tree seperately, we should join up
-    // adjust path
-    this.setValue = function( value, path, parentContext ) {
-        var token;
-        var numTokens;
-        var subContext;
-        if ( typeof path === 'string' ) {
-            path = this.pathToTokens( {path: path});
-            if ( this.state.model === undefined ) {
-                this.state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
-            }
-            parentContext = this.state.model;
-        }
-        numTokens = path.length;
-        if ( numTokens > 0 ) {
-            token = path.shift();
-            if ( numTokens > 1 ) {
-                if ( !parentContext.hasOwnProperty( token) ) {
-                    subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
-                    parentContext[ token] = subContext;
-                }
-                subContext = parentContext[ token];
-                return this.setValue( value, path, subContext);
-            } else {
-                parentContext[ token] = value;
-                return {context: parentContext, key: token, value: value};
-            }
-        }
-    };
-
-    this.convert = function ( args ) {
-        var converter = this.state.opts.converter;
-        if ( this.startsWith( args.path, "-") ) {
-            args.path = args.path.substring( 1); // @todo move this somewhere else
-        }
-        return ( this.isDefinedNotNull( converter) === true ) ?
-            converter.call( this, args) : undefined;
-    };
 }
 
 Horn.prototype = {
