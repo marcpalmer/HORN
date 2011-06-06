@@ -38,7 +38,7 @@ var isObject = function( object ) {
 var isEmptyArray = function( object ) {
     if ( !isArray( object) ) { return false; }
     return object.length === 0;
-}
+};
 
 var isArray = function( object ) {
     if ( object === undefined ) { return false; }
@@ -48,6 +48,29 @@ var isArray = function( object ) {
     return true;
 };
 
+var setPatternConverter = function( horn, converterName, pattern ) {
+    if ( converterName === 'IntegerConverter' ) {
+        horn.option( "converter", function( args ) {
+            if ( pattern.match( args.path) ) {
+                return args.type === 'fromText' ? parseInt( args.value) :
+                    args.value.toString();
+            }
+        });
+    } else if ( converterName === 'BooleanConverter' ) {
+        horn.option( "converter", function( args ) {
+            if ( pattern.match( args.path) ) {
+                return args.type === 'fromText' ? (args.value.toLowerCase() === 'true') : (args.value + "");
+            }
+        });
+    } else if ( converterName === 'DateConverter' ) {
+        horn.option( "converter", function( args ) {
+            if ( pattern.match( args.path) ) {
+                return args.type === 'fromText' ? $.datepicker.parseDate( "yy-mm-dd", value) : $.datepicker.formatDate( "yy-mm-dd", value);
+            }
+        });
+    }
+};
+
 var dataTest = function( args ) {
     if ( args.nodes ) {
         $.each( args.nodes, function( i, nodeInfo ) {
@@ -55,39 +78,7 @@ var dataTest = function( args ) {
         });
     }
     try {
-        var horn = new Horn();
-        if ( args.passConverters === true ) {
-            horn.option( 'converter', 'IntegerConverter',
-                function () {
-                    this.toText = function( value ) {
-                        return value.toString();
-                    }
-                    this.fromText = function( value ) {
-                        return parseInt( value);
-                    }
-                });
-
-            horn.option( 'converter', 'BooleanConverter',
-                function () {
-                    this.toText = function( value ) {
-                        return value + "";
-                    }
-                    this.fromText = function( value ) {
-                        return value.toLowerCase() === 'true';
-                    }
-                });
-
-                horn.option( 'converter', 'DateConverter',
-                function () {
-                        this.toText = function( value ) {
-                            return $.datepicker.formatDate( "yy-mm-dd", value);
-                        }
-                        this.fromText = function( value ) {
-                            return $.datepicker.parseDate( "yy-mm-dd", value);
-                        }
-                    });
-        }
-        args.callback( horn);
+        args.callback( new Horn());
     } finally {
         if ( args.nodes ) {
             $.each( args.nodes, function( i, nodeInfo ) {

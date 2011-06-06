@@ -1,3 +1,32 @@
+module( "TestHorn - hornConverters");
+
+test(
+    "hornConverters - .",
+    function() {
+        dataTest( {
+            nodes: [ {
+                target: $('body'),
+                nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
+            ],
+            callback: function( horn ) {
+                var hornConverter = new HornPatternConverter({horn: horn});
+                hornConverter.addPattern( {pattern: "key", converterName: "IntegerConverter"});
+                hornConverter.addConverter( {name: "IntegerConverter", converter: function( args ) {
+                    return args.type === 'fromText' ? parseInt( args.value) : args.value + "";
+                }});
+                horn.option( "storeBackRefs", "false");
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key')));
+                ok( isObject( model));
+                ok( model.key === -1);
+            }});
+
+    }
+);
+
+
+
+
 module( "TestHorn - Horn.features.extractCSSPropertyPath()");
 
 test(
@@ -35,106 +64,24 @@ test(
 module( "TestHorn - {components:X}");
 
 test(
-    "{components:X} - No value nodes if storeBackRefs specified as false.",
+    "{components:X} - No components if storeBackRefs specified as false.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 target: $('body'),
                 nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "key");
                 horn.option( "storeBackRefs", "false");
+
                 var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
                 ok( model.key === -1);
-
-                ok( horn.state.components === undefined);
             }});
     });
 
-test(
-    "{components:X} - Value nodes if storeBackRefs specified.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [{
-                target: $('body'),
-                nodes: $('<div class="horn"><span class="_key">-1</span></div>')
-            }],
-
-            callback: function( horn ) {
-                horn.option( 'pattern', 'key', 'IntegerConverter');
-                horn.option( "storeBackRefs", true);
-                var model = horn.extract();
-                ok( countOwnProps( horn.state.components) === 1);
-                ok( horn.state.components.hasOwnProperty( 'key'));
-            }
-        });
-    });
-
-test(
-    "{components:X} - Unconverted String value, check component attributes.",
-    function() {
-        dataTest( {
-            nodes: [{
-                target: $('body'),
-                nodes: $('<div class="horn"><span class="_key">-1</span></div>')
-            }],
-            callback: function( horn ) {
-                horn.option( "storeBackRefs", true);
-                horn.name = 'test';
-                var model = horn.extract();
-                var node = horn.state.components[ 'key'];
-                ok( node !== undefined);
-                ok( node.key === 'key');
-                ok( node.value === '-1');
-                ok( $(node.node).text() === node.value);
-                ok( node.context === horn.getModel());
-                ok( node.context[ node.key] === model.key);
-            }
-        });
-    });
-
-test(
-    "{components:X} - 2 Component nodes if two values.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [{
-                target: $('body'),
-                nodes: $('<div class="horn"><div class="_a"><span class="_key">-1</span></div><div class="_b"><span class="_key">-1</span></div></div>')
-            }],
-            callback: function( horn ) {
-                horn.option( 'pattern', 'key', 'IntegerConverter');
-                horn.option( "storeBackRefs", true);
-                horn.extract();
-                ok( countOwnProps( horn.state.components) === 2);
-            }
-        });
-    });
-
-test(
-    "{components:X} - Component and model node if storeBackRefs specified even though no value.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [{
-                target: $('body'),
-                nodes: $('<div class="horn"><span class="_key"></span></div>')
-            }],
-
-            callback: function( horn ) {
-                horn.option( "storeBackRefs", true);
-                var model = horn.extract();
-                ok( horn.state.components.hasOwnProperty( 'key'));
-                ok( model.hasOwnProperty( 'key'));
-                ok( model.key === '');
-            }
-        });
-    });
 
 
 
@@ -239,12 +186,11 @@ test(
     "Model Tests - _1 - 2",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_1">2</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "1");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 2);
@@ -256,12 +202,11 @@ test(
     "Model Tests - _2 - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_2">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "2");
                 var data = horn.extract();
                 ok( isArray( data));
                 ok( data.length === 3);
@@ -292,12 +237,11 @@ test(
     "Model Tests - _3-1 - 4",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3"><span class="_1">4</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "3-1");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -313,12 +257,11 @@ test(
     "Model Tests - _3-2 - false",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "3-2");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -356,12 +299,11 @@ test(
     "Model Tests - _3-3-1 - 6",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3-3"><span class="_1">6</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-3-1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "3-3-1");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -380,12 +322,11 @@ test(
     "Model Tests - _3-3-2 - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3-3"><span class="_2">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-3-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "3-3-2");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -404,12 +345,11 @@ test(
     "Model Tests - _3-4-k - 'seven'",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3-4"><span class="_k">seven</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-3-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "3-3-2");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -426,12 +366,11 @@ test(
     "Model Tests - _3-4-l - 8",
     function() {
          dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3-4"><span class="_l">8</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-4-l", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "3-4-l");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -448,12 +387,11 @@ test(
     "Model Tests - _3-4-m - false",
     function() {
          dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _3-4"><span class="_m">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "3-4-m", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "3-4-m");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -487,12 +425,11 @@ test(
     "Model Tests - _4-g - 10",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _4"><span class="_g">10</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-g", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "4-g");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -506,12 +443,11 @@ test(
     "Model Tests - _4-h - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _4"><span class="_h">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-h", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "4-h");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -545,12 +481,11 @@ test(
     "Model Tests - _4-i-1 - 12",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _4-i"><span class="_1">12</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-i-1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "4-i-1");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -567,12 +502,11 @@ test(
     "Model Tests - _4-i-2 - false",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _4-i"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-i-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "4-i-2");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -608,12 +542,11 @@ test(
     "Model Tests - _4-j-o - 14",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _4-j"><span class="_o">14</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-j-o", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "4-j-o");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -629,12 +562,11 @@ test(
     "Model Tests - _4-j-p - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _4-j"><span class="_p">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "4-j-p", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "4-j-p");
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -664,12 +596,11 @@ test(
     "Model Tests - _b - 2",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_b">2</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "b", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "b");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( model.b === 2);
@@ -696,12 +627,11 @@ test(
     "Model Tests - _d-1 - 4",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_1">4</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "d-1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "d-1");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -714,12 +644,11 @@ test(
     "Model Tests - _d-2 - false",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "d-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "d-2");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -750,12 +679,11 @@ test(
     "Model Tests - _d-3-1 - 6",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _d-3"><span class="_1">6</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "d-3-1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "d-3-1");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -770,12 +698,11 @@ test(
     "Model Tests - _d-3-2 - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _d-3"><span class="_2">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "d-3-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "d-3-2");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -810,12 +737,11 @@ test(
     "Model Tests - _d-4-l - 8",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _d-4"><span class="_l">8</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "d-4-l", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "d-4-l");
                 var model = horn.extract();
                 ok( isObject( model));
 
@@ -832,12 +758,11 @@ test(
     "Model Tests - _d-4-m - false",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _d-4"><span class="_m">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "d-4-m", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "d-4-m");
                 var model = horn.extract();
                 ok( isObject( model));
 
@@ -869,12 +794,11 @@ test(
     "Model Tests - _e-g - 10",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _e"><span class="_g">10</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-g", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "e-g");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -886,12 +810,11 @@ test(
     "Model Tests - _e-h - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _e"><span class="_h">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-h", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "e-h");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -920,12 +843,11 @@ test(
     "Model Tests - _e-i-1 - 12",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_1">12</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-i-1", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "e-i-1");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -939,12 +861,11 @@ test(
     "Model Tests - _e-i-2 - false",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-i-2", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "e-i-2");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -974,12 +895,11 @@ test(
     "Model Tests - _e-j-o - 14",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_o">14</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-i-o", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "e-i-o");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -992,12 +912,11 @@ test(
     "Model Tests - _e-j-p - true",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_p">true</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "e-i-p", "BooleanConverter");
+                setPatternConverter( horn, "BooleanConverter", "e-i-p");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -1010,12 +929,11 @@ test(
     "Model Tests - that integers can be expressed using hexadecimal notation.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class=" _a">0x10</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "a", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( model.a === 16);
@@ -1026,12 +944,11 @@ test(
     "Model Tests - that integers can be expressed using octal notation.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_a">0310667130</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "a", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( model.a === 52653656);
@@ -1042,12 +959,11 @@ test(
     "Model Tests - Split key definition using nested html.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn _a"><div class="_b"><div class="_c"><span class="_d">-23</span></div></div></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "a-b-c-d", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "a-b-c-d");
                 var model = horn.extract();
                 ok( model.a.b.c.d === -23);
         }});
@@ -1064,6 +980,7 @@ test(
                 var model = horn.extract();
                 ok( isArray( model));
                 ok( isObject( model[0]));
+                ok( model[ 0].hasOwnProperty( 'a'));
                 ok( model[ 0].a === 'hello');
         }});
   });
@@ -1140,14 +1057,8 @@ test(
                 nodes:  $('<div class="horn _key"><span class="data-json">{"a": 1}</span></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", ".*", "jsonIntegerConverter");
-                ok( horn.state.opts.patternInfo.hasOwnProperty( '.*') === true);
-                horn.option( "converter", "jsonIntegerConverter", function () {
-                    this.fromJSON = function( value ) { return value + ""; };
-                });
+                setPatternConverter( horn, "IntegerConverter", "key-a");
                 var model = horn.extract();
-                ok( horn.state.opts.patternInfo[ '.*'].converterName === 'jsonIntegerConverter');
-                ok( horn.patternConvert( 1, "_key-a", "fromJSON") === "1");
                 ok( isObject( model));
                 ok( isObject( model.key));
                 ok( model.key.a === "1");
@@ -1169,124 +1080,28 @@ test(
         }});
     });
 
-test(
-    "Model Tests - Embedded JSON with date conversion.",
-    function() {
-        dataTest( {
-            nodes: [ {
-                nodes:  $(  '<div class="span-20 prepend-top noticeelement horn list-events last _notices-0" id="1">' +
-                                '<span class="hidden data-json">{"id": 1, "date": "2011-05-04"}</span>' +
-                            '</div>')}
-            ],
-            callback: function( horn ) {
-                horn.option( 'converter', 'DateConverter',
-                    function () {
-                        this.fromJSON = function( value ) {
-                            var date = new Date( value);
-                            date.setFullYear( value.substring( 0, 4));
-                            date.setMonth( parseInt( value.substring( 5, 7), 10) - 1);
-                            date.setDate( parseInt( value.substring( 8, 10), 10));
-                            return date;
-                        }
-                    });
-                horn.option( 'pattern', '.*date', 'DateConverter');
-                var model = horn.extract();
-                ok( isObject( model));
-                ok( isArray( model.notices));
-                ok( isObject( model.notices[ 0]));
-                ok( model.notices[ 0].id === 1);
-                ok( model.notices[ 0].date.constructor.toString().indexOf( 'Date') >= 0);
-                ok( model.notices[ 0].date.getFullYear() === 2011);
-                ok( model.notices[ 0].date.getMonth() === 04);
-                ok( model.notices[ 0].date.getDate() === 04);
-        }});
-    });
 
-test(
-    "Model Tests - Correct nodes returned from populate.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [ {
-                nodes:  $('<div class="horn"><div id="div0" class="_a">true</div><div id="div1" class="_b">false</div><div id="div2" class="_c">true</div></div>')}
-            ],
-            callback: function( horn ) {
-                var alteredNodes;
-                var model;
-                horn.option( "pattern", "a", "BooleanConverter");
-                horn.option( "pattern", "b", "BooleanConverter");
-                horn.option( "pattern", "c", "BooleanConverter");
-                horn.option( "storeBackRefs", true);
-                model = horn.extract();
-                ok( isObject( model));
-                ok( model.a === true);
-                ok( model.b === false);
-                ok( model.c === true);
-                model.a = false;
-                model.b = false;
-                model.c = false;
-                alteredNodes = horn.render();
-                ok( isArray( alteredNodes))
-                ok( alteredNodes.length === 2);
 
-                ok( $(alteredNodes[ 0]).attr( 'id') === "div0");
-                ok( $(alteredNodes[ 1]).attr( 'id') === "div2");
-
-        }});
-    });
-
-test(
-    "Model Tests - Correct nodes returned from populate (none).",
-    function() {
-        dataTest( {
-            passConverters: true,
-            nodes: [ {
-                nodes:  $('<div class="horn"><div id="div0" class="_a">true</div><div id="div1" class="_b">false</div><div id="div2" class="_c">true</div></div>')}
-            ],
-            callback: function( horn ) {
-                var alteredNodes;
-                var model;
-                horn.option( "pattern", "a", "BooleanConverter");
-                horn.option( "pattern", "b", "BooleanConverter");
-                horn.option( "pattern", "c", "BooleanConverter");
-                horn.option( "storeBackRefs", true);
-                model = horn.extract();
-                ok( isObject( model));
-                ok( model.a === true);
-                ok( model.b === false);
-                ok( model.c === true);
-                alteredNodes = horn.render();
-                ok( isArray( alteredNodes))
-                ok( alteredNodes.length === 0);
-        }});
-    });
 
 test(
     "Model Tests - Only nodes under rootNode are populated.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div id="root" class="horn"><div id="div0" class="_a">true</div></div><div id="root2" class="horn"><div id="div1" class="_b">false</div></div>')}
             ],
             callback: function( horn ) {
+                var model;
                 ok( horn.isAttached( $('#root')));
                 ok( horn.isAttached( $('#root2')));
-                var alteredNodes;
-                var model;
-                horn.option( "pattern", "a", "BooleanConverter");
-                horn.option( "pattern", "b", "BooleanConverter");
-                horn.option( "storeBackRefs", true);
+                setPatternConverter( horn, "BooleanConverter", "a|b");
+
                 model = horn.extract();
                 ok( isObject( model));
                 ok( model.a === true);
                 ok( model.b === false);
                 model.a = false;
                 model.b = true;
-                alteredNodes = horn.render( {name: 'test', rootNode: $('#root')});
-                ok( isArray( alteredNodes));
-                ok( alteredNodes.length === 1);
-                ok( $(alteredNodes[ 0]).attr( 'id') === 'div0');
         }});
     });
 
@@ -1314,12 +1129,11 @@ test(
     "ABBR - ABBR node for value, converted to Integer.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><abbr class="_key" title="12">value</abbr></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( model.key === 12);
@@ -1330,14 +1144,14 @@ test(
     "ABBR - ABBR node for value, converted to Boolean, repopulated and checked.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn">baskdfhjdshfds h<abbr class="_key" title="true">value</abbr> akdsjf kljdskf jdskf</div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "BooleanConverter");
-                horn.option( "storeBackRefs", true);
-                var model = horn.extract();
+                var model;
+                setPatternConverter( horn, "BooleanConverter", "key");
+
+                model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
                 ok( model.key === true);
@@ -1354,13 +1168,12 @@ test(
     "Population - integer from horn, extracted, modified in model, repopulated and checked.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_key">-1</span></div>'),}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "IntegerConverter");
-                horn.option( "storeBackRefs", true);
+                setPatternConverter( horn, "IntegerConverter", "key");
+
                 var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
@@ -1401,13 +1214,12 @@ test(
     "Population - integer from horn, extracted, modified in model, repopulated and checked.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_key">-1</span></div>'),}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "IntegerConverter");
-                horn.option( "storeBackRefs", true);
+                setPatternConverter( horn, "IntegerConverter", "key");
+
                 var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
@@ -1441,12 +1253,11 @@ test(
     "INPUT - INPUT node for value, converted to Integer.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><input class="_key" value="12"/></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( model.key === 12);
@@ -1457,13 +1268,12 @@ test(
     "INPUT - INPUT node for value, converted to Boolean, repopulated and checked.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn">baskdfhjdshfds h<input class="_key" value="true"/>akdsjf kljdskf jdskf</div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "BooleanConverter");
-                horn.option( "storeBackRefs", true);
+                setPatternConverter( horn, "BooleanConverter", "key");
+
                 var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
@@ -1497,12 +1307,11 @@ test(
     "TEXTAREA - TEXTAREA node for value, converted to Integer.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn"><textarea class="_key">12</textarea></div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "IntegerConverter");
+                setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.extract();
                 ok( isObject( model));
                 ok( model.key === 12);
@@ -1513,13 +1322,12 @@ test(
     "TEXTAREA - TEXTAREA node for value, converted to Boolean, repopulated and checked.",
     function() {
         dataTest( {
-            passConverters: true,
             nodes: [ {
                 nodes:  $('<div class="horn">baskdfhjdshfds h<textarea class="_key" >true</textarea>akdsjf kljdskf jdskf</div>')}
             ],
             callback: function( horn ) {
-                horn.option( "pattern", "key", "BooleanConverter");
-                horn.option( "storeBackRefs", true);
+                setPatternConverter( horn, "BooleanConverter", "key");
+
                 var model = horn.extract();
                 ok( horn.isAttached( $('._key')));
                 ok( isObject( model));
@@ -1549,13 +1357,13 @@ test(
                             '    <div class="_a-b-c"><span class="_d"></span></div>' +
                             '</div>')}],
             callback: function( horn ) {
+                horn.name = 'test';
                 var model = horn.extract();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
-                horn.option( "storeBackRefs", true);
                 var populatedTemplate = horn.newFromTemplate( {
                     id: 'newID',
-                    selector: '#template'}).template;
+                    selector: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1586,7 +1394,7 @@ test(
                 var populatedTemplate = horn.newFromTemplate( {
                     id: 'newID',
                     selector: '#template',
-                    data: { f: { b: { c: { d: 'updatedValue'}}}}}).template;
+                    data: { f: { b: { c: { d: 'updatedValue'}}}}});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1619,12 +1427,12 @@ test(
                 var populatedTemplate = horn.newFromTemplate( {
                     id: 'newID',
                     selector: '#template',
-                    data: { a: { b: { c: { f: 'updatedValue'}}}}}).template;
+                    data: { a: { b: { c: { f: 'updatedValue'}}}}});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
                 try {
-                    ok($( '._d', $('#newID')).text() !== 'updatedValue');
+                    ok($( '._d', $('#newID')).text() !== 'upda  tedValue');
                 } finally {
                     $('#newID').remove();
                 }
@@ -1697,41 +1505,3 @@ test(
         ok( !horn.isAttached( $('.terms')));
 
     });
-
-
-
-
-module( "TestHorn - removeComponents");
-
-test(
-    "removeComponents - That all components are removed correctly by stem.",
-    function() {
-          dataTest( {
-            nodes: [ {
-                nodes:  $(  '<div class="horn">' +
-                            '    <div class="_record"><span class="_a">aValue</span><span class="_b">bValue</span><span class="_c">cValue</span></div>' +
-                            '</div>')}],
-            callback: function( horn ) {
-                var model = horn.extract();
-                ok( countOwnProps( horn.state.components) === 3);
-                horn.removeComponents( {stem: 'record'})
-                ok( countOwnProps( horn.state.components) === 0);
-            }});
-    }
-);
-
-test(
-    "removeComponents - That no components are removed if their stems don't match.",
-    function() {
-          dataTest( {
-            nodes: [ {
-                nodes:  $(  '<div class="horn">' +
-                            '    <div class="_record"><span class="_a">aValue</span><span class="_b">bValue</span><span class="_c">cValue</span></div>' +
-                            '</div>')}],
-            callback: function( horn ) {
-                var model = horn.extract();
-                horn.removeComponents( {stem: 'x'})
-                ok( countOwnProps( horn.state.components) === 3);
-            }});
-    }
-);
