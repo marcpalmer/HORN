@@ -1,7 +1,7 @@
 module( "TestHorn - copyByDest");
 
 test(
-    "copyInto - That a test property isn't copied inappropriately..",
+    "copyInto - That a test property isn't copied inappropriately.",
     function() {
         var dest = {};
         var src = {a:1};
@@ -97,54 +97,6 @@ test(
         ok( window.Node.NOTATION_NODE === 12);
     });
 
-
-
-
-module( "TestHorn - Horn.patternDefined()");
-
-test(
-    "Horn.patternDefined() - No patterns with no content.",
-    function() {
-        var horn = new Horn();
-        horn.extract();
-
-        ok( isEmptyObject( horn.state.opts.patternInfo));
-    });
-
-test(
-    "Horn.patternDefined() - That two identical patterns yield a single pattern and that it is returned correctly.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( "pattern", "notices.*can.*", "BooleanConverter");
-                ok( horn.state.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === true);
-            }
-        });
-    });
-
-test(
-    "Horn.patternDefined() - Case sensitivity enforced.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( 'pattern', 'notices.*Can.*', 'BooleanConverter');
-                ok( horn.state.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
-            }});
-    });
-
-test(
-    "Horn.patternDefined() - Multiple comma separated patterns suppoerted.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( 'pattern', '        notices.*Can.*        ,         test.*.*      ', 'BooleanConverter');
-                ok( horn.state.opts.patternInfo.hasOwnProperty( 'notices.*can.*') === false);
-                ok( horn.state.opts.patternInfo.hasOwnProperty( 'test.*.*') === false);
-            }});
-    });
 
 
 
@@ -311,20 +263,6 @@ test(
 
 
 
-module( "TestHorn - getPattern");
-
-test(
-    "Horn.getPattern - that it does return defined patterns.",
-    function() {
-        dataTest({
-            callback: function( horn ) {
-                horn.option( "pattern", "key", "DateConverter");
-                ok( horn.state.opts.patternInfo.key.converterName === 'DateConverter');
-            }});
-    });
-
-
-
 module( "TestHorn - Horn.didRemoveProperty()");
 
 test(
@@ -431,137 +369,6 @@ test(
         } finally {
             node.remove();
         }
-    });
-
-
-
-
-module( "TestHorn - Horn.patternConvert()");
-
-test(
-    "patternConvert() - that it returns null if there are no matching patterns.",
-    function() {
-
-        var horn = new Horn();
-        horn.metaInfo = [];
-
-        var value = "value";
-        var hornKey = "_hornKey";
-
-        ok( horn.patternConvert( value, hornKey, "fromText") === null);
-    });
-
-test(
-    "patternConvert() - that coercing to Integers of non-json-supplied values with a match all regex pattern works as expected.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( "pattern", ".*", "IntegerConverter");
-                horn.extract();
-                ok( horn.patternConvert( "1", "_hornKey", "fromText") === 1);
-            }});
-    });
-
-test(
-    "patternConvert() - that coercing to (negative) Integers of non-json-supplied values with a match all regex pattern works as expected.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( "pattern", ".*", "IntegerConverter");
-                horn.extract();
-                ok( horn.patternConvert( "-1", "_hornKey", "fromText") === -1);
-            }});
-    });
-
-test(
-    "patternConvert() - no coercion if no matching regex against the value's hornKey.",
-    function() {
-        var node = $('<meta name="typeof noMatch" content="IntegerConverter" />');
-        node.appendTo( $('head'));
-        try {
-            var horn = new Horn();
-            horn.extract();
-
-            ok( horn.patternConvert( "-1", "_hornKey", "fromText") === null);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "patternConvert() - that boolean values are coerced and parsed correctly.",
-    function() {
-        dataTest( {
-            passConverters: true,
-            callback: function( horn ) {
-                horn.option( "pattern", ".*truth.*", "BooleanConverter");
-                var model = horn.extract();
-                ok( horn.patternConvert( "true",   "_ourtruth", "fromText") === true);
-                ok( horn.patternConvert( "tRuE",   "_ourtruth", "fromText") === true);
-                ok( horn.patternConvert( "TRUE",   "_ourtruth", "fromText") === true);
-                ok( horn.patternConvert( "false",  "_ourtruth", "fromText") === false);
-                ok( horn.patternConvert( "FaLsE",  "_ourtruth", "fromText") === false);
-                ok( horn.patternConvert( "FALSE",  "_ourtruth", "fromText") === false);
-            }});
-    });
-
-
-
-module( "TestHorn - Horn.option( ... )");
-
-test(
-    "Horn.option( ... ) - Setting pattern.",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                horn.option( "pattern", "a", "b");
-                ok( horn.state.opts.patternInfo.hasOwnProperty( 'a') === true);
-                ok ( horn.state.opts.patternInfo.a.converterName === 'b');
-            }});
-    });
-
-test(
-    "Horn.option( ... ) - Replacing pattern.",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                horn.option( "pattern", "a", "b");
-                horn.option( "pattern", "a", "c");
-                ok ( horn.state.opts.patternInfo.a.converterName === 'c');
-            }});
-    });
-
-test(
-    "Horn.option( ... ) - Setting converter.",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                horn.option( "converter", "a", "b");
-                ok ( horn.state.opts.converters.a === 'b');
-            }});
-    });
-
-test(
-    "Horn.option( ... ) - Replacing converter.",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                horn.option( "converter", "a", "b");
-                horn.option( "converter", "a", "c");
-                ok ( horn.state.opts.converters.a === 'c');
-            }});
-    });
-
-test(
-    "Horn.option( ... ) - Setting arbitrary property.",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                horn.option( "sausages", "tasty");
-                ok ( horn.state.opts.sausages === 'tasty');
-            }});
     });
 
 
