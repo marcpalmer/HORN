@@ -239,19 +239,21 @@ attributes.
 
 The constraints on valid characters in CSS classes mean that we have to use a
 slightly awkward syntax to provide identifiable classes that can act as
-property paths.
+property paths. 
 
-The pattern is that all HORN property path classes begin with an underscore
-and then the first object name. Underscores are used to separate each nested
-property, including array indexes:
+Path indicators always start with an *underscore* but any nested property
+access is expressed using a *minus* instead of a period. Array element
+indexing is performed the same way, omitting the square braces and just using
+the index number as a property. This works well because Javascript treats
+arrays as objects.
 
 <table>
     <tr><th>Property path</th><th>CSS class</th></tr>
     <tr><td>book</td><td>_book</td></tr>
-    <tr><td>book.title</td><td>_book_title</td></tr>
-    <tr><td>books[0]</td><td>_books_0</td></tr>
-    <tr><td>books[0].title</td><td>_books_0_title</td></tr>
-    <tr><td>books[3].authors[2].name.firstName</td><td>_books_3_authors_2_name_firstName</td></tr>
+    <tr><td>book.title</td><td>_book-title</td></tr>
+    <tr><td>books[0]</td><td>_books-0</td></tr>
+    <tr><td>books[0].title</td><td>_books-0-title</td></tr>
+    <tr><td>books[3].authors[2].name.firstName</td><td>_books-3-authors-2-name-firstName</td></tr>
 </table>
 
 These show absolute property paths. In most common usage however you will use
