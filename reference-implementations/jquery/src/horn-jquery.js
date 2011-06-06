@@ -63,7 +63,7 @@ function Horn() {
     var convert = this.bind( function ( args ) {
         var converter = state.opts.converter;
         if ( this.startsWith( args.path, "-") ) {
-            args.path = args.path.substring( 1); // @todo move this somewhere else
+            args.path = args.path.substring( 1);
         }
         return ( this.isDefinedNotNull( converter) === true ) ?
             converter.call( this, args) : undefined;
@@ -107,7 +107,8 @@ function Horn() {
                         type:  'toText',
                         node:  newArgs.node
                     });
-                    if ( (textValue === undefined) && this.isDefinedNotNull( modelValue)) {
+                    if ( (textValue === undefined) &&
+                        this.isDefinedNotNull( modelValue)) {
                         textValue = modelValue + "";
                     }
                     newArgs.text = textValue;
@@ -184,32 +185,33 @@ function Horn() {
 
             removeComponents: function( args ) {
                 this.each( state.components, function( i, n ) {
-                    if ( this.startsWith( i, args.stem ) ) { delete state.components[ i]; }
-                }, this);
+                    if ( this.startsWith( i, args.stem ) ) {
+                        delete state.components[ i]; } }, this);
             },
 
             /**
              *  Extract HORN data from the DOM and build a data model from it.
              *  <p>
-             *  After extraction the model can be retrieved using horn.getModel(),
+             *  After extraction the model can be retrieved using
+             *  horn.getModel(),
              *  this function also returns the model.
              *  <p>
-             *  Data is extracted from the DOM either by locating all Horn 'root nodes'
-             *  and then traversing them for data. Alternatively, the DOM nodes to
-             *  traverse can be specified by either a jQuery selector or list of elements.
+             *  Data is extracted from the DOM either by locating all Horn
+             *  'root nodes' and then traversing them for data. Alternatively,
+             *  the DOM nodes to traverse can be specified by either a jQuery
+             *  selector or list of elements.
              *  <p>
-             *  If multiple elements with the same effective property path are encountered
+             *  If multiple elements with the same effective property path are
+             *  encountered, the final such one takes effect.
              *  <p>
              *
-             *
-             *  @param args.selector    optional jQuery selector used to select the
-             *      nodes to extract a Horn data model from, overrides default
-             *      mechanism when supplied
-             *  @param args.rootNodes   optional object of nodes that can be traversed
-             *      using <code>jQuery.each( ... )</code> use to extract a Horn data
-             *      model from, overrides default mechanism when supplied.
-             *
-             *  @todo think about repeat calls to extract with no arguments
+             *  @param args.selector    optional jQuery selector used to select
+             *      the nodes to extract a Horn data model from, overrides
+             *      default mechanism when supplied
+             *  @param args.rootNodes   optional object of nodes that can be
+             *      traversed using <code>jQuery.each( ... )</code> use to
+             *      extract a Horn data model from, overrides default mechanism
+             *      when supplied.
              */
             extract: function( args ) {
                 var _this = this;
@@ -221,8 +223,8 @@ function Horn() {
                 this.each( rootNodes,
                     function( i, n ) { this.visitNodes( n, '',
                         function( n, path ) {
-                            if ( _this.getFeature( {type: 'INDICATOR_ROOT', n: n}) === true ) {
-                                return false; }
+                            if ( _this.getFeature( {type: 'INDICATOR_ROOT',
+                                n: n}) === true ) { return false; }
                             var componentData = _this.getComponentData( n, path);
                             if ( componentData === false ) {
                                 return true; }
@@ -233,13 +235,14 @@ function Horn() {
                                     type:  'fromText',
                                     node:  componentData.node
                                 });
-                                if ( _this.isDefinedNotNull( componentData.value) === false ) {
+                                if ( _this.isDefinedNotNull(
+                                    componentData.value) === false ) {
                                     componentData.value = componentData.text;
                                 }
                                 addComponent( componentData);
                             } else {
                                 addJSONComponents( componentData);
-                            };
+                            }
                             return false;
                         }
                     ); }, this);
@@ -247,15 +250,16 @@ function Horn() {
             },
 
             /**
-             * Create a new UI element by cloning an existing template that is marked up
-             * with HORN indicators, and populate the DOM nodes with data from the specified
-             * property path.
+             * Create a new UI element by cloning an existing template that is
+             * marked up with HORN indicators, and populate the DOM nodes with
+             * data from the specified property path.
              *
              * The args parameter supports the following arguments:
              *
              * template - A jQuery object representing the DOM template to clone
              * id - The new "id" attribute value for the cloned DOM node
-             * path - The property path within the model, to use to populate this DOM node and its descendents
+             * path - The property path within the model, to use to populate
+             * this DOM node and its descendents
              */
             newFromTemplate: function( args ) {
                 var template;
@@ -272,8 +276,8 @@ function Horn() {
                 }
 
                 setDefaultModel();
-                this.visitNodes( template, args.path ? args.path : '', this.bind(
-                    function( n, path ) {
+                this.visitNodes( template, args.path ? args.path : '',
+                    this.bind( function( n, path ) {
                         return this.handleTemplateValue( n, path, components);
                     }, this));
 
@@ -286,14 +290,15 @@ function Horn() {
              *  Refresh the DOM nodes with the current model values.
              *  <p>
              *  Only DOM nodes that produced data on a previous call to
-             *  <code>horn.extract( ... )</code> will be considered for updating.
+             *  <code>horn.extract( ... )</code> will be considered for
+             *  updating.
              *  <p>
-             *  <strong>Important: </strong>In addition, only DOM nodes that were
-             *  extracted whilst the <strong>storeBackRefs</strong> option was set will
-             *  be considered for updating.
+             *  <strong>Important: </strong>In addition, only DOM nodes that
+             *  were extracted whilst the <strong>storeBackRefs</strong> option
+             *  was set will be considered for updating.
              *
-             *  @param args.rootNode   optional DOM node such that if supplied, only
-             *      nodes under this node will be updated.
+             *  @param args.rootNode   optional DOM node such that if supplied,
+             *      only nodes under this node will be updated.
              */
             render: function( args ) {
                 this.each( state.components, function( i, n ) {
@@ -317,21 +322,58 @@ function Horn() {
 }
 
 Horn.prototype = {
-    handleTemplateValue: function( node, path, components ) {
-        var key;
-        var componentData = this.getComponentData( node, path);
-        if ( componentData !== false ) {
-            key = this.getFeature({type: 'INDICATOR_PATH', n: node});
-            if ( this.isAdjustingPath( key) === true ) {
-            componentData.path = (path + '-' + key); }
-            if ( !componentData.isJSON  ) {
-            components.push( componentData); }
-            return false;
-        }
-        return true;
+    bind: function( fn, ctx ) {
+        return function() { return fn.apply(ctx, arguments); };
     },
 
-    getComponentData: function( node, parentPath ) { // @todo remove parentPath here, is odd
+    contains: function( objects, object ) {
+        var rv = null;
+        this.each( objects, function( i, o ) {
+            rv = $(o)[0] === $(object)[0];
+            if ( rv ) { return false; }
+        });
+        return rv;
+    },
+
+    /**
+     *  Copies properties from source into destination.
+     *  <p>
+     *  Does not copy 'undefined' valued properties.
+     *  <p>
+     *  Takes args.dest's property names as candidate names to copy from
+     *  args.src unless an alternative source of property names is supplied
+     *  (args.props).
+     *
+     *  @param args.src     the source from which to copy property values
+     *  @param args.dest    the destination into which to copy the property
+     *      values
+     *  @param args.props   an alternative source for the definition of copyable
+     *      property names
+     */
+    copyInto: function( args ) {
+        var val;
+        this.each( args.props ? args.props : args.dest, function( i, n ) {
+            if ( args.src.hasOwnProperty( i) ) {
+                val = args.src[ i];
+                if ( val !== undefined ) { args.dest[ i] = val; }
+            } }, this);
+    },
+
+    definesArgument: function( args, propertyName ) {
+        return (args !== undefined) && (args.hasOwnProperty( propertyName)) &&
+            this.isDefinedNotNull( args[ propertyName]);
+    },
+
+    didRemoveProperty: function( object, property ) {
+        return object.hasOwnProperty( property) && delete object[ property];
+    },
+
+    each: function( collection, fn, ctx ) {
+        if ( (collection === undefined) || (collection === null) ) { return; }
+        $.each( collection, ctx ? this.bind( fn, ctx) : fn);
+    },
+
+    getComponentData: function( node, parentPath ) {
         var theContained;
         var nodeName;
         var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
@@ -363,83 +405,19 @@ Horn.prototype = {
         return false;
     },
 
-    visitNodes: function( dataElement, path, fn ) {
-        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
-        if ( this.isAdjustingPath( _path) ) {
-            path = (path + '-' + _path); }
-        this.each(
-            window.$(dataElement).children(),
-            function( i, n ) {
-                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
-            this);
-    },
+    getDataAttr: function( n, name ) { return $(n).data( name); },
 
-    pathToTokens: function( args ) {
-        return (this.startsWith( args.path, "-") ?
-            args.path.substring( 1) : args.path).split( "-");
+    getDOMNodeValue: function( args ) {
+        var nodeName = args.node.nodeName.toLowerCase();
+        var jNode = $(args.node);
+        return unescape(
+            ((nodeName === "input") || (nodeName === 'textarea')) ?
+                jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
+                jNode.text()));
     },
 
     getFeature: function( args ) {
         return this.features[ args.type].call( this, args);
-    },
-
-    traverse: function( value, callback, key, context, propName ) {
-        if (!(value instanceof jQuery) &&
-            ((value instanceof Object) || (value instanceof Array)) &&
-            (value.constructor.toString().indexOf( 'Date') < 0) ) { // @todo special date handling here for non recursing into model values
-            this.each( value, function( k, v ) {
-                this.traverse(
-                    v, callback, key ? (key + '-' + k) : ("-" + k), value, k);
-            }, this);
-        } else { callback( key, value, context, propName); }
-    },
-
-    splitEach: function( object, delimiter, callback ) {
-        this.each( object.toString().split( delimiter !== undefined ?
-            delimiter : " "), function( i, token ) {
-                if ( token.trim() !== '' ) { callback( token); }
-        });
-    },
-
-    isAdjustingPath: function ( path ) {
-        return (path !== null) &&
-            (path !== undefined) && (path.toString().trim() !== '');
-    },
-
-    definesArgument: function( args, propertyName ) {
-        return (args !== undefined) && (args.hasOwnProperty( propertyName)) &&
-            this.isDefinedNotNull( args[ propertyName]);
-    },
-
-    isDefinedNotNull: function( ref ) {
-        return (ref !== undefined) && (ref !== null);
-    },
-
-    bind: function( fn, ctx ) {
-        return function() { return fn.apply(ctx, arguments); };
-    },
-
-    each: function( collection, fn, ctx ) {
-        if ( (collection === undefined) || (collection === null) ) { return; }
-        $.each( collection, ctx ? this.bind( fn, ctx) : fn);
-    },
-
-    didRemoveProperty: function( object, property ) {
-        return object.hasOwnProperty( property) && delete object[ property];
-    },
-
-    startsWith: function ( value, stem ) {
-        return  (stem.length > 0) &&
-                ((value = value.match( "^" + stem)) !== null) &&
-                (value.toString() === stem);
-    },
-
-    isAttached: function( ref ) {
-        return $(ref).parents(':last').is('html');
-    },
-
-    getDataAttr: function( n, name ) {
-        return $(n).data( name);
     },
 
     getIfSingleTextNode: function( element ) {
@@ -454,43 +432,34 @@ Horn.prototype = {
         return null;
     },
 
-    contains: function( objects, object ) {
-        var rv = null;
-        this.each( objects, function( i, o ) {
-            rv = $(o)[0] === $(object)[0];
-            if ( rv ) { return false; }
-        });
-        return rv;
+    handleTemplateValue: function( node, path, components ) {
+        var key;
+        var componentData = this.getComponentData( node, path);
+        if ( componentData !== false ) {
+            key = this.getFeature({type: 'INDICATOR_PATH', n: node});
+            if ( this.isAdjustingPath( key) === true ) {
+            componentData.path = (path + '-' + key); }
+            if ( !componentData.isJSON  ) {
+            components.push( componentData); }
+            return false;
+        }
+        return true;
     },
 
-    /**
-     *  Copies properties from source into destination.
-     *  <p>
-     *  Does not copy 'undefined' valued properties.
-     *  <p>
-     *  Takes args.dest's property names as candidate names to copy from args.src
-     *  unless an alternative source of property names is supplied (args.props).
-     *
-     *  @param args.src     the source from which to copy property values
-     *  @param args.dest    the destination into which to copy the property values
-     *  @param args.props   an alternative source for the definition of copyable property names
-     */
-    copyInto: function( args ) {
-        var val;
-        this.each( args.props ? args.props : args.dest, function( i, n ) {
-            if ( args.src.hasOwnProperty( i) ) {
-                val = args.src[ i];
-                if ( val !== undefined ) { args.dest[ i] = val; }
-            } }, this);
+    isAdjustingPath: function ( path ) {
+        return (path !== null) &&
+            (path !== undefined) && (path.toString().trim() !== '');
     },
 
-    getDOMNodeValue: function( args ) {
-        var nodeName = args.node.nodeName.toLowerCase();
-        var jNode = $(args.node);
-        return unescape(
-            ((nodeName === "input") || (nodeName === 'textarea')) ?
-                jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
-                jNode.text()));
+    isAttached: function( ref ) { return $(ref).parents(':last').is('html'); },
+
+    isDefinedNotNull: function( ref ) {
+        return (ref !== undefined) && (ref !== null);
+    },
+
+    pathToTokens: function( args ) {
+        return (this.startsWith( args.path, "-") ?
+            args.path.substring( 1) : args.path).split( "-");
     },
 
     setDOMNodeValue: function( args ) {
@@ -501,6 +470,41 @@ Horn.prototype = {
         } else if ( nodeName === "abbr" ) {
             jNode.attr('title', args.value);
         } else { jNode.text( args.value); }
+    },
+
+    splitEach: function( object, delimiter, callback ) {
+        this.each( object.toString().split( delimiter !== undefined ?
+            delimiter : " "), function( i, token ) {
+                if ( token.trim() !== '' ) { callback( token); }
+        });
+    },
+
+    startsWith: function ( value, stem ) {
+        return  (stem.length > 0) &&
+                ((value = value.match( "^" + stem)) !== null) &&
+                (value.toString() === stem);
+    },
+
+    traverse: function( value, callback, key, context, propName ) {
+        if (!(value instanceof jQuery) &&
+            ((value instanceof Object) || (value instanceof Array)) &&
+            (value.constructor.toString().indexOf( 'Date') < 0) ) {
+            this.each( value, function( k, v ) {
+                this.traverse(
+                    v, callback, key ? (key + '-' + k) : ("-" + k), value, k);
+            }, this);
+        } else { callback( key, value, context, propName); }
+    },
+
+    visitNodes: function( dataElement, path, fn ) {
+        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
+        if ( this.isAdjustingPath( _path) ) {
+            path = (path + '-' + _path); }
+        this.each(
+            window.$(dataElement).children(),
+            function( i, n ) {
+                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
+            this);
     }
 };
 
