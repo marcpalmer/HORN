@@ -7,20 +7,20 @@ The HORN specification describes a way to weave your model data into HTML markup
 such that it can be used for _both_ the presentation and data model in your
 client (typically JavaScript) code.
 
+Using special CSS classes or HTML5 attributes you indicate which parts of your
+DOM are to be used as data.
+
 There is a jQuery based reference implementation of the parser with DOM-node
 re-population for full data round trip in your UI.
-
-## Authors / Contact
-
-[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
-[Marc Palmer](http://github.com/marcpalmer) (marc@anyware.co.uk)
 
 ## Documentation
 
 [HORN Specification 1.0](horn/spec/horn-specification-1.0.html)  
 [Demo](horn/example/example.html)  
-[View tests for jQuery reference implementation (pages with CSS indicators)](horn/reference-implementations/jquery/test/test.html)  
-[View tests for jQuery reference implementation (usage with HTML5)](horn/reference-implementations/jquery/test/test_html5.html)  
+
+## Reference Implementations
+
+Based on jQuery: [Download](https://github.com/marcpalmer/HORN/tree/master/reference-implementations/jquery) | [Test reports (for CSS indicators)](horn/reference-implementations/jquery/test/test.html) | [Test reports (for HTML5 indicators)](horn/reference-implementations/jquery/test/test_html5.html)  
 
 ## Download
 
@@ -30,4 +30,9 @@ You can also clone the project with Git by running:
 {% highlight bash %}
 $ git clone git://github.com/marcpalmer/HORN
 {% endhighlight %}
+
+## Authors / Contact
+
+[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
+[Marc Palmer](http://github.com/marcpalmer) (marc@anyware.co.uk)
 
