@@ -8,7 +8,7 @@ function Horn() {
 
     this.reset = function() {
         this.state = {
-            opts: window.$.extend( {}, {storeBackRefs:  true})
+            opts: $.extend( {}, {storeBackRefs:  true})
         };
     };
 
@@ -48,7 +48,7 @@ function Horn() {
         var _this = this;
         var rootNodes = this.definesArgument( args, 'rootNodes') ?
             args.rootNodes : (this.definesArgument( args, 'selector') ?
-                window.$(args.selector) :
+                $(args.selector) :
                 this.getFeature({type: 'ROOT_NODES'}));
         this.setDefaultModel();
         this.each( rootNodes,
@@ -76,88 +76,6 @@ function Horn() {
                 }
             ); }, this);
         return this.state.model;
-    };
-
-    /**
-     * Create a new UI element by cloning an existing template that is marked up
-     * with HORN indicators, and populate the DOM nodes with data from the specified 
-     * property path.
-     *
-     * The args parameter supports the following arguments:
-     *
-     * template - A jQuery object representing the DOM template to clone
-     * id - The new "id" attribute value for the cloned DOM node 
-     * path - The property path within the model, to use to populate this DOM node and its descendents
-     */
-    this.newFromTemplate = function( args ) {
-        var template;
-        var components = [];
-        if ( this.definesArgument( args, 'template') === true ) {
-            template = args.template;
-        } else {
-            template = window.$(args.selector).clone();
-            template.removeAttr( "id");
-        }
-
-        if ( this.definesArgument( args, 'id') === true ) {
-            template.attr( "id", args.id);
-        }
-
-        this.setDefaultModel();
-        this.visitNodes( template, args.path ? args.path : '', this.bind(
-            function( n, path ) {
-                return this.handleTemplateValue( n, path, components);
-            }, this));
-
-        this.addComponents({components: components});
-
-        return template;
-    };
-
-    this.handleTemplateValue = function( node, path, components ) {
-        var key;
-        var componentData = this.getComponentData( node, path);
-        if ( componentData !== false ) {
-            key = this.getFeature({type: 'INDICATOR_PATH', n: node});
-            if ( this.isAdjustingPath( key) === true ) {
-            componentData.path = (path + '-' + key); }
-            if ( !componentData.isJSON  ) {
-            components.push( componentData); }
-            return false;
-        }
-        return true;
-    };
-
-    this.addComponents = function( args ) {
-        this.each(
-            args.components,
-            function( i, newArgs ) {
-                var modelValue;
-                var textValue;
-                var ref = this.getModelReference( newArgs);
-                if ( this.isDefinedNotNull( ref) === true )  {
-                    modelValue = ref.ref[ ref.key];
-                    textValue = this.convert( {
-                        value: modelValue,
-                        path:  newArgs.path,
-                        type:  'toText', // model -> dom
-                        node:  newArgs.node
-                    });
-                    if ( (textValue === undefined) && this.isDefinedNotNull( modelValue)) {
-                        textValue = modelValue.toString(); // @todo perhaps we need better default conversion here can call toString on all?
-                    }
-                    newArgs.text = textValue;
-                    this.setDOMNodeValue( {node: newArgs.node,
-                        value: newArgs.text});
-                    this.addComponent({
-                        setModel: false,
-                        node: newArgs.node,
-                        context: ref.ref,
-                        key: ref.key,
-                        value: modelValue,
-                        path: newArgs.path});
-                }
-            }, this);
     };
 
     this.removeComponents = function( args ) {
@@ -208,26 +126,6 @@ function Horn() {
                 args, 'rootNode') ? args.rootNode : undefined,
                     component: n, path: i});
         }, this);
-    };
-
-    this.renderComponent = function( args ) {
-        var rootNode = args.rootNode;
-        var component = args.component;
-        var modelValue = component.context[ component.key];
-        var textValue;
-        if ( modelValue !== component.value ) {
-            if ( !rootNode || (rootNode && this.contains(
-                window.$(component.node).parents(), rootNode)) ) {
-                textValue = this.convert( {
-                    value: modelValue,
-                    path:  args.path,
-                    type:  'toText', // model > dom
-                    node: component.node
-                });
-                this.setDOMNodeValue( {node: component.node, value: textValue});
-                component.value = modelValue;
-            }
-        }
     };
 
     this.getModel = function() {
@@ -288,40 +186,122 @@ function Horn() {
         }
     };
 
-    this.getComponentData = function( node, parentPath ) { // @todo remove parentPath here, is odd
-        var theContained;
-        var nodeName;
-        var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
-        var contents = window.$(window.$(node).contents());
-        var cd = {
-            isJSON: this.getFeature({type: 'INDICATOR_JSON', n: node}),
-            path: this.isAdjustingPath( path),
-            node: node};
-        var contentsSize = contents.size();
-        var isEmptyNode = contentsSize === 0;
-        if ( (contentsSize === 1) || (isEmptyNode && !cd.isJSON))  {
-            if ( !isEmptyNode ) { theContained = contents[0]; }
-            if ( cd.isJSON || cd.path ) { // @todo check the logic wrt json here, does this contradict --
-                cd.path = cd.path ? (parentPath + '-' + path) : parentPath;
-                nodeName = node.nodeName.toLowerCase();
-                cd.isFormElementNode =
-                    (nodeName === 'input') || (nodeName === 'textarea');
-                cd.isABBRNode = !cd.isFormElementNode &&
-                    (nodeName.toLowerCase() === "abbr");
-                cd.isTextNode = !cd.isABBRNode && (isEmptyNode ||
-                    (theContained.nodeType === window.Node.TEXT_NODE));
+    this.convert = function ( args ) {
+        var converter = this.state.opts.converter;
+        if ( this.startsWith( args.path, "-") ) {
+            args.path = args.path.substring( 1); // @todo move this somewhere else
+        }
+        return ( this.isDefinedNotNull( converter) === true ) ?
+            converter.call( this, args) : undefined;
+    };
+}
 
-                if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
-                    cd.text = this.getDOMNodeValue( {node: node});
-                    return cd;
+Horn.prototype = {
+
+ /**
+     * Create a new UI element by cloning an existing template that is marked up
+     * with HORN indicators, and populate the DOM nodes with data from the specified
+     * property path.
+     *
+     * The args parameter supports the following arguments:
+     *
+     * template - A jQuery object representing the DOM template to clone
+     * id - The new "id" attribute value for the cloned DOM node
+     * path - The property path within the model, to use to populate this DOM node and its descendents
+     */
+    newFromTemplate: function( args ) {
+        var template;
+        var components = [];
+        if ( this.definesArgument( args, 'template') === true ) {
+            template = args.template;
+        } else {
+            template = $(args.selector).clone();
+            template.removeAttr( "id");
+        }
+
+        if ( this.definesArgument( args, 'id') === true ) {
+            template.attr( "id", args.id);
+        }
+
+        this.setDefaultModel();
+        this.visitNodes( template, args.path ? args.path : '', this.bind(
+            function( n, path ) {
+                return this.handleTemplateValue( n, path, components);
+            }, this));
+
+        this.addComponents({components: components});
+
+        return template;
+    },
+
+    handleTemplateValue: function( node, path, components ) {
+        var key;
+        var componentData = this.getComponentData( node, path);
+        if ( componentData !== false ) {
+            key = this.getFeature({type: 'INDICATOR_PATH', n: node});
+            if ( this.isAdjustingPath( key) === true ) {
+            componentData.path = (path + '-' + key); }
+            if ( !componentData.isJSON  ) {
+            components.push( componentData); }
+            return false;
+        }
+        return true;
+    },
+
+    addComponents: function( args ) {
+        this.each(
+            args.components,
+            function( i, newArgs ) {
+                var modelValue;
+                var textValue;
+                var ref = this.getModelReference( newArgs);
+                if ( this.isDefinedNotNull( ref) === true )  {
+                    modelValue = ref.ref[ ref.key];
+                    textValue = this.convert( {
+                        value: modelValue,
+                        path:  newArgs.path,
+                        type:  'toText', // model -> dom
+                        node:  newArgs.node
+                    });
+                    if ( (textValue === undefined) && this.isDefinedNotNull( modelValue)) {
+                        textValue = modelValue.toString(); // @todo perhaps we need better default conversion here can call toString on all?
+                    }
+                    newArgs.text = textValue;
+                    this.setDOMNodeValue( {node: newArgs.node,
+                        value: newArgs.text});
+                    this.addComponent({
+                        setModel: false,
+                        node: newArgs.node,
+                        context: ref.ref,
+                        key: ref.key,
+                        value: modelValue,
+                        path: newArgs.path});
                 }
+            }, this);
+    },
+
+    renderComponent: function( args ) {
+        var rootNode = args.rootNode;
+        var component = args.component;
+        var modelValue = component.context[ component.key];
+        var textValue;
+        if ( modelValue !== component.value ) {
+            if ( !rootNode || (rootNode && this.contains(
+                $(component.node).parents(), rootNode)) ) {
+                textValue = this.convert( {
+                    value: modelValue,
+                    path:  args.path,
+                    type:  'toText', // model > dom
+                    node: component.node
+                });
+                this.setDOMNodeValue( {node: component.node, value: textValue});
+                component.value = modelValue;
             }
         }
-        return false;
-    };
+    },
 
-    this.addJSONComponents = function( args ) {
-        var jsonData = window.$.evalJSON( args.text);
+     addJSONComponents: function( args ) {
+        var jsonData = $.evalJSON( args.text);
         var rootPath = args.path;
         if ( typeof jsonData === 'object' ) { // @todo traverse and no traverse here needs sorting
             this.traverse( jsonData,
@@ -350,9 +330,41 @@ function Horn() {
             }
             this.addComponent( cArgs);
         }
-    };
+    },
 
-    this.visitNodes = function( dataElement, path, fn ) {
+    getComponentData: function( node, parentPath ) { // @todo remove parentPath here, is odd
+        var theContained;
+        var nodeName;
+        var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
+        var contents = $($(node).contents());
+        var cd = {
+            isJSON: this.getFeature({type: 'INDICATOR_JSON', n: node}),
+            path: this.isAdjustingPath( path),
+            node: node};
+        var contentsSize = contents.size();
+        var isEmptyNode = contentsSize === 0;
+        if ( (contentsSize === 1) || (isEmptyNode && !cd.isJSON))  {
+            if ( !isEmptyNode ) { theContained = contents[0]; }
+            if ( cd.isJSON || cd.path ) { // @todo check the logic wrt json here, does this contradict --
+                cd.path = cd.path ? (parentPath + '-' + path) : parentPath;
+                nodeName = node.nodeName.toLowerCase();
+                cd.isFormElementNode =
+                    (nodeName === 'input') || (nodeName === 'textarea');
+                cd.isABBRNode = !cd.isFormElementNode &&
+                    (nodeName.toLowerCase() === "abbr");
+                cd.isTextNode = !cd.isABBRNode && (isEmptyNode ||
+                    (theContained.nodeType === Node.TEXT_NODE));
+
+                if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
+                    cd.text = this.getDOMNodeValue( {node: node});
+                    return cd;
+                }
+            }
+        }
+        return false;
+    },
+
+    visitNodes: function( dataElement, path, fn ) {
         var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
         if ( this.isAdjustingPath( _path) ) {
             path = (path + '-' + _path); }
@@ -361,21 +373,10 @@ function Horn() {
             function( i, n ) {
                 if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
             this);
-    };
+    },
 
-    this.convert = function ( args ) {
-        var converter = this.state.opts.converter;
-        if ( this.startsWith( args.path, "-") ) {
-            args.path = args.path.substring( 1); // @todo move this somewhere else
-        }
-        return ( this.isDefinedNotNull( converter) === true ) ?
-            converter.call( this, args) : undefined;
-    };
-}
-
-Horn.prototype = {
     pathToTokens: function( args ) {
-        return (args.path.charAt( 0) === '-' ?
+        return (this.startsWith( args.path, "-") ?
             args.path.substring( 1) : args.path).split( "-");
     },
 
@@ -422,7 +423,7 @@ Horn.prototype = {
     // @todo add last/first indicator on the callback, if optional arg only
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }
-        window.$.each( collection, ctx ? this.bind( fn, ctx) : fn);
+        $.each( collection, ctx ? this.bind( fn, ctx) : fn);
     },
 
     didRemoveProperty: function( object, property ) {
@@ -438,20 +439,20 @@ Horn.prototype = {
     },
 
     isAttached: function( ref ) {
-        return window.$(ref).parents(':last').is('html');
+        return $(ref).parents(':last').is('html');
     },
 
     getDataAttr: function( n, name ) {
-        return window.$(n).data( name);
+        return $(n).data( name);
     },
 
     getIfSingleTextNode: function( element ) {
         var theContained;
-        var contained = window.$(window.$(element).contents());
+        var contained = $($(element).contents());
         if ( contained.size() === 1 ) {
             theContained = contained[ 0];
-            if ( theContained.nodeType === window.Node.TEXT_NODE ) {
-                return window.unescape( theContained.nodeValue);
+            if ( theContained.nodeType === Node.TEXT_NODE ) {
+                return unescape( theContained.nodeValue);
             }
         }
         return null;
@@ -460,7 +461,7 @@ Horn.prototype = {
     contains: function( objects, object ) {
         var rv = null;
         this.each( objects, function( i, o ) {
-            rv = window.$(o)[0] === window.$(object)[0];
+            rv = $(o)[0] === $(object)[0];
             if ( rv ) { return false; }
         });
         return rv;
@@ -485,13 +486,12 @@ Horn.prototype = {
                 val = args.src[ i];
                 if ( val !== undefined ) { args.dest[ i] = val; }
             } }, this);
-        return args.dest;
     },
 
     getDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
-        var jNode = window.$(args.node);
-        return window.unescape(
+        var jNode = $(args.node);
+        return unescape(
             ((nodeName === "input") || (nodeName === 'textarea')) ?
                 jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
                 jNode.text()));
@@ -499,7 +499,7 @@ Horn.prototype = {
 
     setDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
-        var jNode = window.$(args.node);
+        var jNode = $(args.node);
         if ( (nodeName === "input") || (nodeName === 'textarea') ) {
             jNode.val( args.value);
         } else if ( nodeName === "abbr" ) {
@@ -508,15 +508,15 @@ Horn.prototype = {
     }
 };
 
-if ( !window.Node ) {
-    window.$.each( [
+if ( !Node ) {
+    $.each( [
         'ELEMENT', 'ATTRIBUTE', 'TEXT',
             'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
             'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
             'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
         function( i, n ) {
-            window.Node[ n + '_NODE'] = i + 1;
+            Node[ n + '_NODE'] = i + 1;
         });
 }
 
-window.horn = new Horn();
+horn = new Horn();
