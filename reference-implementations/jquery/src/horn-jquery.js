@@ -5,19 +5,17 @@
  *  @author Marc Palmer
  */
 function Horn() {
+    var setDefaultModel = this.bind( function() {
+        if ( (this.state.model === undefined) &&
+            (this.state.opts.hasOwnProperty( 'defaultModel')) ) {
+                this.state.model = this.state.opts.defaultModel;
+        }
+    }, this);
+
     $.extend(
         this, {
             reset: function() {
-                this.state = {
-                    opts: $.extend( {}, {storeBackRefs:  true})
-                };
-            },
-
-            setDefaultModel: function() {
-                if ( (this.state.model === undefined) &&
-                    (this.state.opts.hasOwnProperty( 'defaultModel')) ) {
-                        this.state.model = this.state.opts.defaultModel;
-                }
+                this.state = { opts: $.extend( {}, {storeBackRefs:  true})};
             },
 
             removeComponents: function( args ) {
@@ -55,7 +53,7 @@ function Horn() {
                     args.rootNodes : (this.definesArgument( args, 'selector') ?
                         $(args.selector) :
                         this.getFeature({type: 'ROOT_NODES'}));
-                this.setDefaultModel();
+                setDefaultModel();
                 this.each( rootNodes,
                     function( i, n ) { this.visitNodes( n, '',
                         function( n, path ) {
@@ -68,7 +66,7 @@ function Horn() {
                                 componentData.value = _this.convert( {
                                     value: componentData.text,
                                     path:  componentData.path,
-                                    type:  'fromText', // dom > model
+                                    type:  'fromText',
                                     node:  componentData.node
                                 });
                                 if ( _this.isDefinedNotNull( componentData.value) === false ) {
@@ -81,6 +79,42 @@ function Horn() {
                         }
                     ); }, this);
                 return this.state.model;
+            },
+
+            /**
+             * Create a new UI element by cloning an existing template that is marked up
+             * with HORN indicators, and populate the DOM nodes with data from the specified
+             * property path.
+             *
+             * The args parameter supports the following arguments:
+             *
+             * template - A jQuery object representing the DOM template to clone
+             * id - The new "id" attribute value for the cloned DOM node
+             * path - The property path within the model, to use to populate this DOM node and its descendents
+             */
+            newFromTemplate: function( args ) {
+                var template;
+                var components = [];
+                if ( this.definesArgument( args, 'template') === true ) {
+                    template = args.template;
+                } else {
+                    template = $(args.selector).clone();
+                    template.removeAttr( "id");
+                }
+
+                if ( this.definesArgument( args, 'id') === true ) {
+                    template.attr( "id", args.id);
+                }
+
+                setDefaultModel();
+                this.visitNodes( template, args.path ? args.path : '', this.bind(
+                    function( n, path ) {
+                        return this.handleTemplateValue( n, path, components);
+                    }, this));
+
+                this.addComponents({components: components});
+
+                return template;
             },
 
             addComponent: function( args ) {
@@ -154,9 +188,6 @@ function Horn() {
                 return rv;
             },
 
-            // @todo this is only called presently fromn add component, we recurse the
-            // property path tree and this tree seperately, we should join up
-            // adjust path
             setValue: function( value, path, parentContext ) {
                 var token;
                 var numTokens;
@@ -200,41 +231,7 @@ function Horn() {
 
 Horn.prototype = {
 
- /**
-     * Create a new UI element by cloning an existing template that is marked up
-     * with HORN indicators, and populate the DOM nodes with data from the specified
-     * property path.
-     *
-     * The args parameter supports the following arguments:
-     *
-     * template - A jQuery object representing the DOM template to clone
-     * id - The new "id" attribute value for the cloned DOM node
-     * path - The property path within the model, to use to populate this DOM node and its descendents
-     */
-    newFromTemplate: function( args ) {
-        var template;
-        var components = [];
-        if ( this.definesArgument( args, 'template') === true ) {
-            template = args.template;
-        } else {
-            template = $(args.selector).clone();
-            template.removeAttr( "id");
-        }
 
-        if ( this.definesArgument( args, 'id') === true ) {
-            template.attr( "id", args.id);
-        }
-
-        this.setDefaultModel();
-        this.visitNodes( template, args.path ? args.path : '', this.bind(
-            function( n, path ) {
-                return this.handleTemplateValue( n, path, components);
-            }, this));
-
-        this.addComponents({components: components});
-
-        return template;
-    },
 
     handleTemplateValue: function( node, path, components ) {
         var key;
@@ -262,11 +259,11 @@ Horn.prototype = {
                     textValue = this.convert( {
                         value: modelValue,
                         path:  newArgs.path,
-                        type:  'toText', // model -> dom
+                        type:  'toText',
                         node:  newArgs.node
                     });
                     if ( (textValue === undefined) && this.isDefinedNotNull( modelValue)) {
-                        textValue = modelValue.toString(); // @todo perhaps we need better default conversion here can call toString on all?
+                        textValue = modelValue + "";
                     }
                     newArgs.text = textValue;
                     this.setDOMNodeValue( {node: newArgs.node,
@@ -293,7 +290,7 @@ Horn.prototype = {
                 textValue = this.convert( {
                     value: modelValue,
                     path:  args.path,
-                    type:  'toText', // model > dom
+                    type:  'toText',
                     node: component.node
                 });
                 this.setDOMNodeValue( {node: component.node, value: textValue});
@@ -303,34 +300,32 @@ Horn.prototype = {
     },
 
      addJSONComponents: function( args ) {
+        var addJSONHelper = this.bind( function( args ) {
+            var oldValue = args.value;
+            args.value = this.convert( args);
+            if ( this.isDefinedNotNull( args.value) === false ) {
+                args.value = oldValue;
+            }
+            this.addComponent( args);
+        }, this);
+
         var jsonData = $.evalJSON( args.text);
         var rootPath = args.path;
-        if ( typeof jsonData === 'object' ) { // @todo traverse and no traverse here needs sorting
+        if ( typeof jsonData === 'object' ) {
             this.traverse( jsonData,
-                this.bind(
-                    function( k, v ) {
-                        var cArgs = { // node, value, path,      context, key
-                            value: v,
-                            path:  rootPath + k,
-                            type:  'fromJSON', // json > model
-                            node:  args.node};
-                        cArgs.value = this.convert( cArgs);
-                        if ( this.isDefinedNotNull( cArgs.value) === false ) {
-                            cArgs.value = v;
-                        }
-                        this.addComponent( cArgs);
-                    }, this), '');
+                this.bind( function( k, v ) {
+                    addJSONHelper( {
+                        value: v,
+                        path:  rootPath + k,
+                        type:  'fromJSON',
+                        node:  args.node});
+                }, this), '');
         } else {
-            var cArgs = {
+            addJSONHelper( {
                 value: jsonData,
                 path:  rootPath,
-                type:  'fromJSON', // json > model
-                node:  args.node};
-            cArgs.value = this.convert( cArgs);
-            if ( this.isDefinedNotNull( cArgs.value) === false ) {
-                cArgs.value = jsonData;
-            }
-            this.addComponent( cArgs);
+                type:  'fromJSON',
+                node:  args.node});
         }
     },
 
@@ -347,7 +342,7 @@ Horn.prototype = {
         var isEmptyNode = contentsSize === 0;
         if ( (contentsSize === 1) || (isEmptyNode && !cd.isJSON))  {
             if ( !isEmptyNode ) { theContained = contents[0]; }
-            if ( cd.isJSON || cd.path ) { // @todo check the logic wrt json here, does this contradict --
+            if ( cd.isJSON || cd.path ) {
                 cd.path = cd.path ? (parentPath + '-' + path) : parentPath;
                 nodeName = node.nodeName.toLowerCase();
                 cd.isFormElementNode =
@@ -422,7 +417,6 @@ Horn.prototype = {
         return function() { return fn.apply(ctx, arguments); };
     },
 
-    // @todo add last/first indicator on the callback, if optional arg only
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }
         $.each( collection, ctx ? this.bind( fn, ctx) : fn);
@@ -433,8 +427,6 @@ Horn.prototype = {
     },
 
     startsWith: function ( value, stem ) {
-        value = value.toString();
-        stem = stem.toString();
         return  (stem.length > 0) &&
                 ((value = value.match( "^" + stem)) !== null) &&
                 (value.toString() === stem);
