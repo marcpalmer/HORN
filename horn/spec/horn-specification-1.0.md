@@ -407,6 +407,12 @@ DOM nodes and apply property name indicators:
 
 This defines "books\[0].publisher.name" as "New Riders".
 
+## Authors / Contact
+
+[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
+[Marc Palmer](http://github.com/marcpalmer) (marc@anyware.co.uk)
+
+
 [microformats]: http://microformats.org/
 [examples]: https://github.com/marcpalmer/HORN/tree/master/example
 [refimpl]: https://github.com/marcpalmer/HORN/tree/master/reference-implementations
