@@ -7,10 +7,171 @@
 function Horn() {
     var state;
 
-    var setDefaultModel = this.bind( function() {
+    var setDefaultModel = function() {
         if ( (state.model === undefined) &&
             (state.opts.hasOwnProperty( 'defaultModel')) ) {
-                state.model = state.opts.defaultModel;
+            state.model = state.opts.defaultModel;
+        }
+    };
+
+    var getModelReference = this.bind( function( args ) {
+        var rv;
+        var tokens = this.pathToTokens( args);
+        var length = tokens.length;
+        if ( length > 0 ) {
+            rv = {ref: state.model, key: tokens[ length - 1]};
+            tokens.length = tokens.length - 1;
+            this.each( tokens, function( i, n ) {
+                if ( this.isDefinedNotNull( rv.ref) ) {
+                    if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
+                } else { return false; }
+            }, this);
+            if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
+        }
+
+        return rv;
+    }, this);
+
+    var setValue = this.bind( function( value, path, parentContext ) {
+        var token;
+        var numTokens;
+        var subContext;
+        if ( typeof path === 'string' ) {
+            path = this.pathToTokens( {path: path});
+            if ( state.model === undefined ) {
+                state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
+            }
+            parentContext = state.model;
+        }
+        numTokens = path.length;
+        if ( numTokens > 0 ) {
+            token = path.shift();
+            if ( numTokens > 1 ) {
+                if ( !parentContext.hasOwnProperty( token) ) {
+                    subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
+                    parentContext[ token] = subContext;
+                }
+                subContext = parentContext[ token];
+                return setValue( value, path, subContext);
+            } else {
+                parentContext[ token] = value;
+                return {context: parentContext, key: token, value: value};
+            }
+        }
+    }, this);
+
+    var convert = this.bind( function ( args ) {
+        var converter = state.opts.converter;
+        if ( this.startsWith( args.path, "-") ) {
+            args.path = args.path.substring( 1); // @todo move this somewhere else
+        }
+        return ( this.isDefinedNotNull( converter) === true ) ?
+            converter.call( this, args) : undefined;
+    }, this);
+
+    var addComponent = this.bind( function( args ) {
+        var details;
+        var culledPath = args.path.substring( 1);
+        var rv;
+        if ( args.setModel !== false ) {
+            details = setValue(  args.value, args.path);
+        }
+        if ( (state.opts.storeBackRefs === true) && (!args.isJSON) ) {
+            if ( this.isDefinedNotNull( details) === true ) {
+                args.context = details.context;
+                args.key = details.key;
+            }
+            if ( state.components === undefined ) {
+                state.components = {}; }
+            rv = {node: args.node, value: args.value};
+            if ( this.isDefinedNotNull( args.context) === true ) {
+                rv.context = args.context;
+                rv.key = args.key;
+            }
+            state.components[ culledPath] = rv;
+        }
+    }, this);
+
+    var addComponents = this.bind( function( args ) {
+        this.each(
+            args.components,
+            function( i, newArgs ) {
+                var modelValue;
+                var textValue;
+                var ref = getModelReference( newArgs);
+                if ( this.isDefinedNotNull( ref) === true )  {
+                    modelValue = ref.ref[ ref.key];
+                    textValue = convert( {
+                        value: modelValue,
+                        path:  newArgs.path,
+                        type:  'toText',
+                        node:  newArgs.node
+                    });
+                    if ( (textValue === undefined) && this.isDefinedNotNull( modelValue)) {
+                        textValue = modelValue + "";
+                    }
+                    newArgs.text = textValue;
+                    this.setDOMNodeValue( {node: newArgs.node,
+                        value: newArgs.text});
+                    addComponent({
+                        setModel: false,
+                        node: newArgs.node,
+                        context: ref.ref,
+                        key: ref.key,
+                        value: modelValue,
+                        path: newArgs.path});
+                }
+            }, this);
+    }, this);
+
+    var addJSONComponents = this.bind(
+        function( args ) {
+            var addJSONHelper = this.bind( function( args ) {
+                var oldValue = args.value;
+                args.value = convert( args);
+                if ( this.isDefinedNotNull( args.value) === false ) {
+                    args.value = oldValue;
+                }
+                addComponent( args);
+            }, this);
+
+            var jsonData = $.evalJSON( args.text);
+            var rootPath = args.path;
+            if ( typeof jsonData === 'object' ) {
+                this.traverse( jsonData,
+                    this.bind( function( k, v ) {
+                        addJSONHelper( {
+                            value: v,
+                            path:  rootPath + k,
+                            type:  'fromJSON',
+                            node:  args.node});
+                    }, this), '');
+            } else {
+                addJSONHelper( {
+                    value: jsonData,
+                    path:  rootPath,
+                    type:  'fromJSON',
+                    node:  args.node});
+            }
+        }, this);
+
+    var renderComponent = this.bind( function( args ) {
+        var rootNode = args.rootNode;
+        var component = args.component;
+        var modelValue = component.context[ component.key];
+        var textValue;
+        if ( modelValue !== component.value ) {
+            if ( !rootNode || (rootNode && this.contains(
+                $(component.node).parents(), rootNode)) ) {
+                textValue = convert( {
+                    value: modelValue,
+                    path:  args.path,
+                    type:  'toText',
+                    node: component.node
+                });
+                this.setDOMNodeValue( {node: component.node, value: textValue});
+                component.value = modelValue;
+            }
         }
     }, this);
 
@@ -66,7 +227,7 @@ function Horn() {
                             if ( componentData === false ) {
                                 return true; }
                             if ( componentData.isJSON === false ) {
-                                componentData.value = _this.convert( {
+                                componentData.value = convert( {
                                     value: componentData.text,
                                     path:  componentData.path,
                                     type:  'fromText',
@@ -75,9 +236,10 @@ function Horn() {
                                 if ( _this.isDefinedNotNull( componentData.value) === false ) {
                                     componentData.value = componentData.text;
                                 }
-                            }
-                            _this[componentData.isJSON === true ? 'addJSONComponents' :
-                                'addComponent']( componentData);
+                                addComponent( componentData);
+                            } else {
+                                addJSONComponents( componentData);
+                            };
                             return false;
                         }
                     ); }, this);
@@ -115,32 +277,9 @@ function Horn() {
                         return this.handleTemplateValue( n, path, components);
                     }, this));
 
-                this.addComponents({components: components});
+                addComponents({components: components});
 
                 return template;
-            },
-
-            addComponent: function( args ) {
-                var details;
-                var culledPath = args.path.substring( 1);
-                var rv;
-                if ( args.setModel !== false ) {
-                    details = this.setValue(  args.value, args.path);
-                }
-                if ( (state.opts.storeBackRefs === true) && (!args.isJSON) ) {
-                    if ( this.isDefinedNotNull( details) === true ) {
-                        args.context = details.context;
-                        args.key = details.key;
-                    }
-                    if ( state.components === undefined ) {
-                        state.components = {}; }
-                    rv = {node: args.node, value: args.value};
-                    if ( this.isDefinedNotNull( args.context) === true ) {
-                        rv.context = args.context;
-                        rv.key = args.key;
-                    }
-                    state.components[ culledPath] = rv;
-                }
             },
 
             /**
@@ -158,7 +297,7 @@ function Horn() {
              */
             render: function( args ) {
                 this.each( state.components, function( i, n ) {
-                    this.renderComponent( {rootNode: this.definesArgument(
+                    renderComponent( {rootNode: this.definesArgument(
                         args, 'rootNode') ? args.rootNode : undefined,
                             component: n, path: i});
                 }, this);
@@ -171,61 +310,6 @@ function Horn() {
             option: function( optionName, arg0 ) {
                 if ( this.isDefinedNotNull( optionName) ) {
                     state.opts[ optionName] = arg0; }
-            },
-
-            getModelReference: function( args ) {
-                var rv;
-                var tokens = this.pathToTokens( args);
-                var length = tokens.length;
-                if ( length > 0 ) {
-                    rv = {ref: state.model, key: tokens[ length - 1]};
-                    tokens.length = tokens.length - 1;
-                    this.each( tokens, function( i, n ) {
-                        if ( this.isDefinedNotNull( rv.ref) ) {
-                            if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
-                        } else { return false; }
-                    }, this);
-                    if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
-                }
-
-                return rv;
-            },
-
-            setValue: function( value, path, parentContext ) {
-                var token;
-                var numTokens;
-                var subContext;
-                if ( typeof path === 'string' ) {
-                    path = this.pathToTokens( {path: path});
-                    if ( state.model === undefined ) {
-                        state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
-                    }
-                    parentContext = state.model;
-                }
-                numTokens = path.length;
-                if ( numTokens > 0 ) {
-                    token = path.shift();
-                    if ( numTokens > 1 ) {
-                        if ( !parentContext.hasOwnProperty( token) ) {
-                            subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
-                            parentContext[ token] = subContext;
-                        }
-                        subContext = parentContext[ token];
-                        return this.setValue( value, path, subContext);
-                    } else {
-                        parentContext[ token] = value;
-                        return {context: parentContext, key: token, value: value};
-                    }
-                }
-            },
-
-            convert: function ( args ) {
-                var converter = state.opts.converter;
-                if ( this.startsWith( args.path, "-") ) {
-                    args.path = args.path.substring( 1); // @todo move this somewhere else
-                }
-                return ( this.isDefinedNotNull( converter) === true ) ?
-                    converter.call( this, args) : undefined;
             }
     });
 
@@ -233,9 +317,6 @@ function Horn() {
 }
 
 Horn.prototype = {
-
-
-
     handleTemplateValue: function( node, path, components ) {
         var key;
         var componentData = this.getComponentData( node, path);
@@ -248,88 +329,6 @@ Horn.prototype = {
             return false;
         }
         return true;
-    },
-
-    addComponents: function( args ) {
-        this.each(
-            args.components,
-            function( i, newArgs ) {
-                var modelValue;
-                var textValue;
-                var ref = this.getModelReference( newArgs);
-                if ( this.isDefinedNotNull( ref) === true )  {
-                    modelValue = ref.ref[ ref.key];
-                    textValue = this.convert( {
-                        value: modelValue,
-                        path:  newArgs.path,
-                        type:  'toText',
-                        node:  newArgs.node
-                    });
-                    if ( (textValue === undefined) && this.isDefinedNotNull( modelValue)) {
-                        textValue = modelValue + "";
-                    }
-                    newArgs.text = textValue;
-                    this.setDOMNodeValue( {node: newArgs.node,
-                        value: newArgs.text});
-                    this.addComponent({
-                        setModel: false,
-                        node: newArgs.node,
-                        context: ref.ref,
-                        key: ref.key,
-                        value: modelValue,
-                        path: newArgs.path});
-                }
-            }, this);
-    },
-
-    renderComponent: function( args ) {
-        var rootNode = args.rootNode;
-        var component = args.component;
-        var modelValue = component.context[ component.key];
-        var textValue;
-        if ( modelValue !== component.value ) {
-            if ( !rootNode || (rootNode && this.contains(
-                $(component.node).parents(), rootNode)) ) {
-                textValue = this.convert( {
-                    value: modelValue,
-                    path:  args.path,
-                    type:  'toText',
-                    node: component.node
-                });
-                this.setDOMNodeValue( {node: component.node, value: textValue});
-                component.value = modelValue;
-            }
-        }
-    },
-
-     addJSONComponents: function( args ) {
-        var addJSONHelper = this.bind( function( args ) {
-            var oldValue = args.value;
-            args.value = this.convert( args);
-            if ( this.isDefinedNotNull( args.value) === false ) {
-                args.value = oldValue;
-            }
-            this.addComponent( args);
-        }, this);
-
-        var jsonData = $.evalJSON( args.text);
-        var rootPath = args.path;
-        if ( typeof jsonData === 'object' ) {
-            this.traverse( jsonData,
-                this.bind( function( k, v ) {
-                    addJSONHelper( {
-                        value: v,
-                        path:  rootPath + k,
-                        type:  'fromJSON',
-                        node:  args.node});
-                }, this), '');
-        } else {
-            addJSONHelper( {
-                value: jsonData,
-                path:  rootPath,
-                type:  'fromJSON',
-                node:  args.node});
-        }
     },
 
     getComponentData: function( node, parentPath ) { // @todo remove parentPath here, is odd
