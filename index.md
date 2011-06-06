@@ -20,7 +20,7 @@ re-population for full data round trip in your UI.
 [HORN Specification 1.0](horn/spec/horn-specification-1.0.html)  
 [Demo](horn/example/example.html)  
 [View tests for jQuery reference implementation (pages with CSS indicators)](horn/reference-implementations/jquery/test/test.html)  
-[View tests for jQuery reference implementation (usage with HTML5)](horn/reference-implementations/jquery/test/testAll_frames.html)  
+[View tests for jQuery reference implementation (usage with HTML5)](horn/reference-implementations/jquery/test/test_html5.html)  
 
 ## Download
 
