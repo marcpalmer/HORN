@@ -374,21 +374,6 @@ test(
 
 
 
-module( "TestHorn - Horn.option( ... )");
-
-test(
-    "Horn.option( ... ) - Setting arbitrary property.",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                horn.option( "sausages", "tasty");
-                ok ( horn.state.opts.sausages === 'tasty');
-            }});
-    });
-
-
-
-
 module( "TestHorn - Form Elements");
 
 test(

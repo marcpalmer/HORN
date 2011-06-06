@@ -5,22 +5,25 @@
  *  @author Marc Palmer
  */
 function Horn() {
+    var state;
+
     var setDefaultModel = this.bind( function() {
-        if ( (this.state.model === undefined) &&
-            (this.state.opts.hasOwnProperty( 'defaultModel')) ) {
-                this.state.model = this.state.opts.defaultModel;
+        if ( (state.model === undefined) &&
+            (state.opts.hasOwnProperty( 'defaultModel')) ) {
+                state.model = state.opts.defaultModel;
         }
     }, this);
 
     $.extend(
         this, {
             reset: function() {
-                this.state = { opts: $.extend( {}, {storeBackRefs:  true})};
+                state = { opts: $.extend( {}, {model: undefined,
+                    storeBackRefs:  true})};
             },
 
             removeComponents: function( args ) {
-                this.each( this.state.components, function( i, n ) {
-                    if ( this.startsWith( i, args.stem ) ) { delete this.state.components[ i]; }
+                this.each( state.components, function( i, n ) {
+                    if ( this.startsWith( i, args.stem ) ) { delete state.components[ i]; }
                 }, this);
             },
 
@@ -78,7 +81,7 @@ function Horn() {
                             return false;
                         }
                     ); }, this);
-                return this.state.model;
+                return state.model;
             },
 
             /**
@@ -124,19 +127,19 @@ function Horn() {
                 if ( args.setModel !== false ) {
                     details = this.setValue(  args.value, args.path);
                 }
-                if ( (this.state.opts.storeBackRefs === true) && (!args.isJSON) ) {
+                if ( (state.opts.storeBackRefs === true) && (!args.isJSON) ) {
                     if ( this.isDefinedNotNull( details) === true ) {
                         args.context = details.context;
                         args.key = details.key;
                     }
-                    if ( this.state.components === undefined ) {
-                        this.state.components = {}; }
+                    if ( state.components === undefined ) {
+                        state.components = {}; }
                     rv = {node: args.node, value: args.value};
                     if ( this.isDefinedNotNull( args.context) === true ) {
                         rv.context = args.context;
                         rv.key = args.key;
                     }
-                    this.state.components[ culledPath] = rv;
+                    state.components[ culledPath] = rv;
                 }
             },
 
@@ -154,7 +157,7 @@ function Horn() {
              *      nodes under this node will be updated.
              */
             render: function( args ) {
-                this.each( this.state.components, function( i, n ) {
+                this.each( state.components, function( i, n ) {
                     this.renderComponent( {rootNode: this.definesArgument(
                         args, 'rootNode') ? args.rootNode : undefined,
                             component: n, path: i});
@@ -162,12 +165,12 @@ function Horn() {
             },
 
             getModel: function() {
-                return this.state.model;
+                return state.model;
             },
 
             option: function( optionName, arg0 ) {
                 if ( this.isDefinedNotNull( optionName) ) {
-                    this.state.opts[ optionName] = arg0; }
+                    state.opts[ optionName] = arg0; }
             },
 
             getModelReference: function( args ) {
@@ -175,7 +178,7 @@ function Horn() {
                 var tokens = this.pathToTokens( args);
                 var length = tokens.length;
                 if ( length > 0 ) {
-                    rv = {ref: this.state.model, key: tokens[ length - 1]};
+                    rv = {ref: state.model, key: tokens[ length - 1]};
                     tokens.length = tokens.length - 1;
                     this.each( tokens, function( i, n ) {
                         if ( this.isDefinedNotNull( rv.ref) ) {
@@ -194,10 +197,10 @@ function Horn() {
                 var subContext;
                 if ( typeof path === 'string' ) {
                     path = this.pathToTokens( {path: path});
-                    if ( this.state.model === undefined ) {
-                        this.state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
+                    if ( state.model === undefined ) {
+                        state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
                     }
-                    parentContext = this.state.model;
+                    parentContext = state.model;
                 }
                 numTokens = path.length;
                 if ( numTokens > 0 ) {
@@ -217,7 +220,7 @@ function Horn() {
             },
 
             convert: function ( args ) {
-                var converter = this.state.opts.converter;
+                var converter = state.opts.converter;
                 if ( this.startsWith( args.path, "-") ) {
                     args.path = args.path.substring( 1); // @todo move this somewhere else
                 }
