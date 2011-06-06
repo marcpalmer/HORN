@@ -4,7 +4,7 @@ Horn.prototype.features = {
     dataNameJSON:       'horn-json',
 
     INDICATOR_ROOT: function( args ) {
-        return Horn.prototype.getDataAttr( args.n, this.features.dataNameHorn);
+        return Horn.prototype.getDataAttr( args.n, this.features.dataNameHorn) === 'true';
     },
 
     INDICATOR_PATH: function( args ) {
@@ -12,7 +12,7 @@ Horn.prototype.features = {
     },
 
     INDICATOR_JSON: function( args ) {
-        return Horn.prototype.getDataAttr( args.n, this.features.dataNameJSON);
+        return Horn.prototype.getDataAttr( args.n, this.features.dataNameJSON) === true;
     },
 
     ROOT_NODES: function( args ) {
