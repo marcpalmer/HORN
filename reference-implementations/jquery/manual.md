@@ -8,82 +8,113 @@ HORN 1.0 jQuery Reference implementation
 
 The jQuery reference implementation provides you with tools to parse HORN data
 from your DOM and repopulate DOM nodes using that data, along with support for
-type transformations when moving data between model and DOM.
+type transformations when moving data between model and DOM, and cloning DOM
+templates and populating them with data.
 
 The horn-jquery.js file defines the Horn class which you instantiate and call
-methods on:
+methods on. By default a single instance is created and automatically parses
+your data.
+
+You need to include a second JS file depending on whether you want to use CSS
+or HTML5 indicators:
+
+horn-jquery-CSS.js 
+
+or
+
+horn-jquery-HTML5.js 
+
+The data will be parsed out and accessible via:
+{% highlight javascript %}
+var yourModel = horn.getModel();
+{% endhighlight }
+
+By default HORN will parse the data and bind to the DOM elements so that you
+can update the content of DOM nodes when you change your model data so that
+the user sees changes. If your UI is read-only then you can set the readOnly
+option before the code runs to extract the data. Simply add this code to the \<head> section of your page after including the horn jquery JS file:
+    
+{% highlight javascript %}
+horn.option('readOnly', true);
+{% endhighlight }
+    
+## Methods of the Horn class
+
+### load(args) and bind(args)
+The load and bind methods pull the data out of your DOM and into the model.
+
+You do not need to call either of these methods if you are using the default
+single-instance Horn. If you create new explicit Horn instances, you will need
+to call one of these as appropriate.
+
+The only difference between the two is that load() does not bind the data to
+the DOM nodes, so you cannot later call updateDOM(). The bind() call maintains
+a link to all the DOM nodes that stored the data, so that you can update their
+display values when the model changes.
+
+The methods take a single object parameter with two optional arguments:
+
+* rootNodes - A list of jQuery nodes that are to be scanned for data
+* selector - a jQuery selector string to choose the correct root nodes for scanning
+
+Neither of these arguments is necessary, as by default the CSS/HTML5
+implementations will determine which are the relevant nodes to scan. In some
+applications however you may wish to control this if you encounter performance
+problems or have niche requirements.
+
+Example:
 
 {% highlight javascript %}
-var horn = new Horn();
-var data = horn.extract();
-{% endhighlight %}
+var secondHorn = new Horn();
+secondHorn.bind('#data-area');
+{% endhighlight }
 
-This implementation uses HORN CSS classe indicators to support all browsers.
+You can call load/bind as many times as you like, and the data extracted will
+be merged into the existing model, unless you call reset() before.
 
-## Methods of the Horn class
+The return value of load() and bind() is your data model object.
+
+### updateDOM(args)
+
+Call this method to update your DOM with the data that is currently in your model.
+
+This will look at the HORN-marked up nodes and resolve them to the data in the
+model, and update their text or values as appropriate.
+
+There is a single optional argument you can pass in the args object:
+
+* rootNode - The jQuery object representing the DOM node to update. Used to
+  limit the scope of DOM traversal if performance is an issue.
+
+The return value is a list of DOM nodes that were affected by the update. You
+may for example wish to highlight the nodes that were updated as the result of
+a user action.
+
+### unbind(propertyPath)
+
+This method allows you to remove bindings from the model to DOM elements for a
+given property path within the model. 
+
+For example if a user deletes an entry in your UI, you will want to remove the
+bindings for it so that Horn does not keep references to invalid DOM nodes.
+
+Example:
+
+{% highlight javascript %}
+publisherDOMNode.remove();
+horn.unbind('books[3].publishers[1]');
+horn.getModel().books[3].publishers.splice(1, 1);
+{% endhighlight }
 
 ### option(optionName, value)
 
 Call this to set options on the HORN parser instance. Valid options are:
 
-* pattern -
-* converter -
+* readOnly -
+* converters -
 
+### reset()
 
-###extract(options)
-
-The extract method takes an optional map of options to define how you would like
-the parser to operate, and which type converters you wish to use.
-
-The return value of the extract() function is the root of your data model.
-
-Available options include:
-
-* storeBackRefs - set this to true if you need to re-populate the UI from the
-  horn model.
-* converters - a map of type names to objects implementing toText and fromText
-  functions (see below)
-
-To define a custom type converter you can do the following:
-
-{% highlight javascript %}
-var data = horn.extract({
-	storeBackRefs:true,
-	converters: {
-		date: function() {
-		    this.toText = function( value, key, pattern ) { ... };
-		    this.fromText = function( value, key, pattern ) { ... };
-		}
-	}
-});
-{% endhighlight %}
-
-These functions are called on demand - toText to go from model to DOM, and
-fromText to go from DOM to model.
-
-By default if no converter is found (see defining type conversions) a one to
-one mapping of the string value is used.
-
-### populate()
-
-When .populate() is called, any values that have been changed in the model
-returned by horn are extracted, converted using .toText() and the
-appropriate converter and the value pushed to the screen elements.
-
-There is currently no tracking of the removal of DOM nodes.
-
+This method will reset the Horn internal model and state, ready for re-parsing.
 
 ## Definition of Type Conversions
-
-To assign a named converter to a given property path in your data model, you
-use the &lt;meta&gt; tag in your &lt;head&gt; section:
-
-{% highlight html %}
-<meta name="typeof .*Date" content="DateConverter" />
-<meta name="typeof .*pages" content="IntegerConverter" />
-{% endhighlight %}
-
-This uses regex patterns to tell the HORN parser to match any property path
-ending in "Date" or "pages" to use the appropriate converter.
-
-The converter must be defined in the call to extract() as detailed earlier.
