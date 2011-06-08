@@ -1,0 +1,30 @@
+body {
+margin-top: 1.0em;
+background-color: #ffffff;
+font-family: Helvetica, Arial, FreeSans, san-serif;
+font-size: 12pt;
+color: #000000;
+}
+h1 { font-size: 1.45em; color: #000000; margin-bottom: 3px; }
+h1.big { font-size: 3em; }
+#header .logo h1 { padding-left: 110px; float: left; }
+#header .logo img { top: -20px; }
+#header .logo.boring { left: 0px; }
+h1 .small { font-size: 0.4em; }
+h1 a { text-decoration: none }
+h2 { font-size: 1.3em; color: #000000; }
+h3 { color: #44444; }
+.description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+.download { float: right; }
+pre { background: #eee; padding: 15px;}
+code { background: #eee; }
+hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+.footer { text-align:center; padding-top:30px; font-style: italic; }
+table { margin-left: auto; margin-right: auto; border: 1px solid black; }
+tr { padding: 0;}
+th { border-bottom: 1px solid #888 }
+td { padding: 8px;  border-bottom: 1px solid #eee }
+.site { width: 800px; }
+ol { margin-left: 40px; }
+ul { margin-left: 40px; }
+img.diagram { margin: 10px auto 10px auto; display: block; }
