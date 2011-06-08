@@ -38,7 +38,7 @@ $ git clone git://github.com/marcpalmer/HORN
 
 ## Contributors / Contact
 
-jQuery Reference Implementation: [Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
-Specification: [Marc Palmer](http://github.com/marcpalmer) ([Contact](http://www.anyware.co.uk/marc) [Twitter](http://twitter.com/wangjammer5))  
+jQuery Reference Implementation: [Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk | [Twitter](http://twitter.com/wangjammer7))  
+Specification: [Marc Palmer](http://github.com/marcpalmer) ([Contact](http://www.anyware.co.uk/marc) | [Twitter](http://twitter.com/wangjammer5))  
 Logo: [Patricia Furtado](http://patriciafurtado.net) ([Twitter](http://twitter.com/patriciafurtado))
 
