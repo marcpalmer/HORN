@@ -33,35 +33,6 @@ test(
 
 
 
-module( "TestHorn - hornConverters");
-
-test(
-    "hornConverters - .",
-    function() {
-        dataTest( {
-            nodes: [ {
-                target: $('body'),
-                nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
-            ],
-            callback: function( horn ) {
-                var hornConverter = new HornPatternConverter({horn: horn});
-                hornConverter.addPattern( {pattern: "key", converterName: "IntegerConverter"});
-                hornConverter.addConverter( {name: "IntegerConverter", converter: function( args ) {
-                    return args.type === 'fromText' ? parseInt( args.value) : args.value + "";
-                }});
-                horn.option( "storeBackRefs", "false");
-                var model = horn.extract();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
-                ok( model.key === -1);
-            }});
-
-    }
-);
-
-
-
-
 module( "TestHorn - extractCSSPropertyPath()");
 
 test(
@@ -1139,7 +1110,8 @@ test(
                 model.a = false;
                 model.b = true;
                 horn.render( {rootNode: $('#root')});
-                ok( false);
+                ok( $('#div0').text() === 'false');
+                ok( $('#div1').text() === 'false');
         }});
     });
 
