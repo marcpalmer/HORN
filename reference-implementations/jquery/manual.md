@@ -32,7 +32,7 @@ var yourModel = horn.model();
 By default HORN will parse the data and bind to the DOM elements so that you
 can update the content of DOM nodes when you change your model data so that
 the user sees changes. If your UI is read-only then you can set the readOnly
-option before the code runs to extract the data. Simply add this code to the \<head> section of your page after including the horn jquery JS file:
+option before the code runs to extract the data. Simply add this code to the &lt;head&gt; section of your page after including the horn jquery JS file:
     
 {% highlight javascript %}
 horn.option('readOnly', true);
