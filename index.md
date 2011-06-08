@@ -10,8 +10,13 @@ client (typically JavaScript) code.
 Using special CSS classes or HTML5 attributes you indicate which parts of your
 DOM are to be used as data.
 
+This *decouples your JavaScript code* from the structure of the DOM - you deal
+with the model instead. It does not however force you to use an MVC pattern or
+anything like that. The specification details only how you weave data into HTML.
+
 There is a jQuery based reference implementation of the parser with DOM-node
-re-population for full data round trip in your UI.
+re-population for full data round trip in your UI, without enforcing a
+specific MVC approach.
 
 ## Documentation
 
