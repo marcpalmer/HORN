@@ -222,8 +222,6 @@ Horn = function() {
              * Reset all internal state: the model, and opt
              * <p>
              * Doesn't alter the prototype at all (so stuff added from css / html5) flavours remain.
-             * <p>
-             * The html5 / css impls are NOT stateful currently.
              */
             reset: function() {
                 state = { opts: $.extend( {}, {model: undefined,
@@ -517,17 +515,6 @@ Horn.prototype = {
             if ( fn( n, path) ) { this.visitNodes( n, path, fn); }}, this);
     }
 };
-
-if ( !Node ) {
-    $.each( [
-        'ELEMENT', 'ATTRIBUTE', 'TEXT',
-            'CDATA_SECTION', 'ENTITY_REFERENCE', 'ENTITY',
-            'PROCESSING_INSTRUCTION', 'COMMENT', 'DOCUMENT',
-            'DOCUMENT_TYPE', 'DOCUMENT_FRAGMENT', 'NOTATION'],
-        function( i, n ) {
-            Node[ n + '_NODE'] = i + 1;
-        });
-}
 
 $(function() {
     horn = new Horn();
