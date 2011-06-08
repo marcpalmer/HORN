@@ -1,0 +1,1139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+
+
+<html lang="en">
+    <head>
+        <meta name="description" content="d"/>
+        <meta name="keywords" content="dD,NoticeLocal,notices,notice boards"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+        <title>dD - NoticeLocal</title>
+
+
+        <meta name="layout" content="board"/>
+
+
+        <script
+            src="/noticelocal/plugins/jquery-1.5.2/js/jquery/jquery-1.5.2.min.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+
+
+        <link
+            href="/noticelocal/images/favicon.ico?_debugResources=y&n=1306637816991"
+            rel="shortcut icon"/>
+        <link
+            href="/noticelocal/plugins/blueprint-1.0.2/css/blueprint/screen.css?_debugResources=y&n=1306637816991"
+            type="text/css" rel="stylesheet" media="screen, projection"/>
+        <!--[if lt IE 8]>
+        <link
+            href="/noticelocal/plugins/blueprint-1.0.2/css/blueprint/ie.css?_debugResources=y&n=1306637816991"
+            type="text/css" rel="stylesheet" media="screen,projection"/><![endif]-->
+
+        <link
+            href="/noticelocal/jquery-ui/css/NoticeLocal/jquery-ui-1.8.1.custom.css?_debugResources=y&n=1306637816991"
+            type="text/css" rel="stylesheet" media="screen, projector"/>
+
+
+        <link
+            href="/noticelocal/css/noticelocal.css?_debugResources=y&n=1306637816991"
+            type="text/css" rel="stylesheet" media="screen, projector"/>
+        <link href="/noticelocal/css/site.css?_debugResources=y&n=1306637816991"
+              type="text/css" rel="stylesheet" media="screen, projector"/>
+
+
+        <link href="/noticelocal/css/flags.css?_debugResources=y&n=1306637816991"
+              type="text/css" rel="stylesheet" media="screen, projector"/>
+
+
+    </head>
+<body>
+    <div id="shareBoardDialog" class="offscreen wizard notice-dialog">
+        <div id="shareBoard-intro" class="wizard-page">
+            <h3>Tell other people about this &quot;dD&quot; notice board so that
+                they can post and read notices.</h3>
+
+
+            <a class="nlAnchor wizard-nav button-topboard ui-corner-all"
+               href="#shareBoard-email"
+               title="ui.action.share.board.by.email.context">Send an E-mail</a>
+
+
+            <a class="nlAnchor button-topboard ui-corner-all"
+               id="share-board-twitter-button"
+               title="ui.action.share.board.by.twitter.context">Post a tweet on
+                Twitter</a>
+
+            <a class="nlAnchor button-topboard ui-corner-all"
+               id="share-board-paperfactory-button"
+               title="Create a PDF you can print">Print a flyer</a>
+        </div>
+
+
+        <div id="shareBoard-email" class="wizard-page">
+            <div><a class="nlAnchor wizard-nav" href="#shareBoard-intro"
+                    title="Go back">«Back</a>
+
+            </div>
+
+
+            <label for="addresses" class="main">Email addresses*</label>
+            <textarea class="span-10 text-field email-list" id="addresses"
+                      name="addresses"></textarea>
+
+            <div class="fieldtext"><label
+                class="errorDetail position-for-crossfade hidden"
+                for="addresses"></label><label class="hint position-for-crossfade"
+                                               for="addresses">List the email
+                addresses separated by commas or one per line</label></div>
+
+
+            <label for="message" class="main">Message</label>
+
+            <textarea class="span-10 text-field share-message" id="message"
+                      name="message"></textarea>
+
+            <div class="fieldtext"><label
+                class="errorDetail position-for-crossfade hidden"
+                for="message"></label><label class="hint position-for-crossfade"
+                                             for="message">You can supply a
+                personalized message if you like</label></div>
+
+
+            <button id="share-board-email-button"
+                    class="nlButton saveButton ui-corner-all button-topboard positive">
+                Tell your friends
+            </button>
+        </div>
+
+
+        <div id="shareBoard-twitter" class="wizard-page">
+            <div><a class="nlAnchor wizard-nav" href="#shareBoard-intro"
+                    title="Go back">«Back</a></div>
+
+            <p>ui.share.board.twitter.intro</p>
+            <button id="share-board-twitter-button"
+                    class="nlButton saveButton ui-corner-all button-topboard positive">
+                Tweet!
+            </button>
+        </div>
+        <div id="shareBoard-paperFactory" class="wizard-page">
+            <div><a class="nlAnchor wizard-nav" href="#shareBoard-intro"
+                    title="Go back">«Back</a>
+            </div>
+
+
+            <label for="pfBoardName" class="main">Board Name</label>
+            <input class=" " type="text" size="60" maxlength="64" id="pfBoardName"
+                   value="dD" name="boardName" value=""/>
+
+            <div class="fieldtext"><label
+                class="errorDetail position-for-crossfade hidden"
+                for="boardName"></label><label class="hint position-for-crossfade"
+                                               for="boardName"></label></div>
+
+
+            <label for="pfDescription" class="main">Description</label>
+            <input class=" " type="text" size="60" maxlength="64" id="pfDescription"
+                   value="d" name="description" value=""/>
+
+            <div class="fieldtext"><label
+                class="errorDetail position-for-crossfade hidden"
+                for="description"></label><label class="hint position-for-crossfade"
+                                                 for="description"></label></div>
+
+
+            <label for="pfTitle" class="main">Title</label>
+            <input class=" " type="text" size="60" maxlength="64" id="pfTitle"
+                   value="Check out our online notice board" name="title" value=""/>
+
+            <div class="fieldtext"><label
+                class="errorDetail position-for-crossfade hidden"
+                for="title"></label><label class="hint position-for-crossfade"
+                                           for="title"></label></div>
+
+
+            <button id="share-board-pf-generate-button"
+                    class="nlButton saveButton ui-corner-all button-topboard positive"
+                    title="ui.share.form.pf.generate.context">Choose template
+            </button>
+        </div>
+
+        <div>
+            <a class="nlAnchor cancelButton ui-corner-all cancelLink"
+               title="Close this window">Close</a>
+
+        </div>
+    </div>
+
+
+    <div id="ajaxErrorDialog"
+         class="ui-corner-all notice-message messageContainer hidden">
+        <!-- CMS content from [embed/errors/board-ajax-error] --><p>
+        Unfortunately, we couldn&#39;t reach the NoticeLocal servers. You may have a
+        temporary problem with your Internet connection.</p>
+
+        <p>
+            We&#39;re sorry for the annoyance - please try again and let us know if
+            the problem persists.</p>
+
+
+        <div class="button-newnotice-area">
+            <button
+                class="nlButton cancelButton ui-corner-all button-dialog positive"
+                title="OK's all there is sorry">OK
+            </button>
+        </div>
+    </div>
+
+    <div class="container boardtype_events">
+
+
+    <div class="logo span-4 prepend-1">
+
+        <p class="board-location"><img class="countryIcon countryGBR"
+                                       title="United Kingdom"></p>
+        <a href="/noticelocal/" class="nlAnchor anchorButtonBinding"
+           title="Press to return to the homepage"><img
+            src="/noticelocal/images/logo_small.png?_debugResources=y&amp;n=1306637816991"
+            width="154" height="44" alt="NoticeLocal"/></a>
+    </div>
+
+
+    <div class="topnav span-18 last">
+        <div class="float-right">
+
+            <a class="nlAnchor editBoardBinding ui-corner-bl button button-topnav"
+               title="Edit your board's settings">Settings</a><a
+            class="nlAnchor shareBoardBinding  button button-topnav"
+            title="Tell people about this board">Share</a><a
+            class="nlAnchor  button button-topnav " id="logoutButton"
+            href="/noticelocal/ddddddw/logout?boardAreaURLAlias=events"
+            title="Log out of noticelocal.com">Log Out</a><a
+            href="http://info.test.noticelocal.com/help"
+            class="nlAnchor  ui-corner-br button button-topnav button-topnav-last"
+            id="helpButton" title="Confused? Seek help here">Help</a>
+
+        </div>
+    </div>
+
+    <div class="span-24 container">
+        <div class="span-23 push-1 last prepend-top">
+            <h1>dD</h1>
+
+            <p class="board-description">d</p>
+        </div>
+    </div>
+
+
+    <div class="span-24 last notice_message hidden ui-corner-all messageContainer"
+         id="messageContainer">
+
+    </div>
+
+    <div id="menu" class="span-24 clear last">
+
+        <div class="menuitem ui-corner-tl ui-corner-tr tab-events active">
+            <a href="/noticelocal/ddddddw/events">Events</a>
+        </div>
+
+        <div class="menuitem ui-corner-tl ui-corner-tr tab-people ">
+            <a href="/noticelocal/ddddddw/people/page/new">People</a>
+
+        </div>
+
+        <div class="menuitem ui-corner-tl ui-corner-tr tab-offered ">
+            <a href="/noticelocal/ddddddw/offered">Offered</a>
+        </div>
+
+        <div class="menuitem ui-corner-tl ui-corner-tr tab-wanted ">
+            <a href="/noticelocal/ddddddw/wanted">Wanted</a>
+        </div>
+
+        <div class="menuitem ui-corner-tl ui-corner-tr tab-externalContent ">
+
+            <a href="/noticelocal/ddddddw/externalContent">External Content</a>
+        </div>
+
+    </div>
+
+
+    <div class="notice_stage span-24 ui-corner-tr ui-corner-bl ui-corner-br last">
+    <div class="span-11 prepend-1 prepend-top">
+        <h2><span id="pageTitle"></span></h2>
+    </div>
+
+
+    <div class="span-11 prepend-top last" id="buttonStrip">
+        <div id="buttonContainer"></div>
+    </div>
+
+
+    <div class="span-22 last prepend-top container notice_message hidden"
+         id="noNotices">
+    </div>
+
+
+    <div id="noCurrentNotices" class="hidden">
+
+        <!-- CMS content from [embed/notices/events/no-notices] --><h2>Get
+        started!</h2>
+
+        <p>There's nothing coming up soon. Click <a
+            class="nlAnchor newNoticeBinding" title="Press to add a new event">Add
+            An Event</a> to add your own.</p>
+
+
+    </div>
+
+    <div id="noArchivedNotices" class="hidden">
+        <!-- CMS content from [embed/notices/events/no-archived-notices] --><p>At
+        the moment there are no events visible in the archive. You will only see
+        events here if you are the board owner, or if you created the event.</p>
+
+    </div>
+
+
+    <!-- we duplicate this here as of bean-fields / grails 1.2 problems -->
+
+
+    <div class="span-24 last prepend-top container" id="notices">
+        <div class="span-22 push-1 last groupcontainer event container">
+            <div class="span-2 prepend-top">
+                <div class="event-date">
+                    <p class="weekday">Sun</p>
+
+                    <h2 class="day">29</h2>
+
+                    <p class="month">May</p>
+                </div>
+            </div>
+
+            <div class="span-20 last container">
+                <div class="noticegroup">
+                    <div class="span-20 prepend-top noticeelement list-events last horn _notices-0"
+                         id="9">
+
+
+                        <a name="9"></a>
+                        <span class="hidden data-json">{"id": 9, "date": "2011-05-29"}</span>
+
+
+                        <div class="span-10">
+                            <h3 class="title _title">d</h3>
+
+                            <p class="description hidden _description"></p>
+
+                            <div>
+
+
+                                <div class="notice_controls invisible">
+                                    <p><span class="edit-notice"><a class="nlAnchor editButton"
+                                                                    title="Press to edit this event">Edit</a> | </span>
+
+                                        <span class="archive-notice"><a
+                                            class="nlAnchor archiveButton"
+                                            title="Press to archive this event">Archive</a> | </span>
+
+
+                                        <span class="added-date-label">Added </span><span
+                                            class="added-date">moments ago</span>
+                                        <span class="added-by-you">by you</span>
+
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="span-4">
+                            <p class="when-where">
+                                <span class="place hidden _place"></span>
+                                <span class="date">on 29 May,</span>
+                                <span class="time hidden _time"></span>
+                            </p>
+                        </div>
+
+                        <div class="span-4 prepend-1 email">
+                            <p>
+                                <span class="label hidden">Contact <br/></span>
+                                <span class="contact hidden _contact"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="span-20 prepend-top noticeelement list-events last horn _notices-1"
+                         id="8">
+
+                        <a name="8"></a>
+                        <span class="hidden data-json">{"id": 8, "date": "2011-05-29"}</span>
+
+
+                        <div class="span-10">
+                            <h3 class="title _title">d</h3>
+
+                            <p class="description hidden _description"></p>
+
+                            <div>
+
+
+                                <div class="notice_controls invisible">
+
+                                    <p><span class="edit-notice"><a class="nlAnchor editButton"
+                                                                    title="Press to edit this event">Edit</a> | </span>
+                                        <span class="archive-notice"><a
+                                            class="nlAnchor archiveButton"
+                                            title="Press to archive this event">Archive</a> | </span>
+
+
+                                        <span class="added-date-label">Added </span><span
+                                            class="added-date">moments ago</span>
+                                        <span class="added-by-you">by you</span>
+
+
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="span-4">
+                            <p class="when-where">
+                                <span class="place hidden _place"></span>
+                                <span class="date">on 29 May,</span>
+
+                                <span class="time hidden _time"></span>
+                            </p>
+                        </div>
+
+                        <div class="span-4 prepend-1 email">
+                            <p>
+                                <span class="label hidden">Contact <br/></span>
+                                <span class="contact hidden _contact"></span>
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="span-20 prepend-top noticeelement list-events last horn _notices-2"
+                         id="7">
+
+                        <a name="7"></a>
+                        <span class="hidden data-json">{"id": 7, "date": "2011-05-29"}</span>
+
+
+                        <div class="span-10">
+                            <h3 class="title _title">d</h3>
+
+                            <p class="description hidden _description"></p>
+
+                            <div>
+
+
+                                <div class="notice_controls invisible">
+                                    <p><span class="edit-notice"><a class="nlAnchor editButton"
+                                                                    title="Press to edit this event">Edit</a> | </span>
+                                        <span class="archive-notice"><a
+                                            class="nlAnchor archiveButton"
+                                            title="Press to archive this event">Archive</a> | </span>
+
+
+                                        <span class="added-date-label">Added </span><span
+                                            class="added-date">3 minutes ago</span>
+
+                                        <span class="added-by-you">by you</span>
+
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="span-4">
+                            <p class="when-where">
+                                <span class="place hidden _place"></span>
+
+                                <span class="date">on 29 May,</span>
+                                <span class="time hidden _time"></span>
+                            </p>
+                        </div>
+
+                        <div class="span-4 prepend-1 email">
+                            <p>
+                                <span class="label hidden">Contact <br/></span>
+
+                                <span class="contact hidden _contact"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="span-20 prepend-top noticeelement list-events last horn _notices-3"
+                         id="6">
+
+                        <a name="6"></a>
+                        <span class="hidden data-json">{"id": 6, "date": "2011-05-29"}</span>
+
+
+                        <div class="span-10">
+
+                            <h3 class="title _title">f</h3>
+
+                            <p class="description _description">f</p>
+
+                            <div>
+
+
+                                <div class="notice_controls invisible">
+                                    <p><span class="edit-notice"><a class="nlAnchor editButton"
+                                                                    title="Press to edit this event">Edit</a> | </span>
+                                        <span class="archive-notice"><a
+                                            class="nlAnchor archiveButton"
+                                            title="Press to archive this event">Archive</a> | </span>
+
+
+                                        <span class="added-date-label">Added </span><span
+                                            class="added-date">5 minutes ago</span>
+                                        <span class="added-by-you">by you</span>
+
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="span-4">
+
+                            <p class="when-where">
+                                <span class="place hidden _place"></span>
+                                <span class="date">on 29 May,</span>
+                                <span class="time _time">ff</span>
+                            </p>
+                        </div>
+
+                        <div class="span-4 prepend-1 email">
+
+                            <p>
+                                <span class="label hidden">Contact <br/></span>
+                                <span class="contact hidden _contact"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="span-20 prepend-top noticeelement list-events last horn _notices-4"
+                         id="5">
+
+                        <a name="5"></a>
+
+                        <span class="hidden data-json">{"id": 5, "date": "2011-05-29"}</span>
+
+
+                        <div class="span-10">
+                            <h3 class="title _title">what</h3>
+
+                            <p class="description _description">more</p>
+
+                            <div>
+
+
+                                <div class="notice_controls invisible">
+                                    <p><span class="edit-notice"><a class="nlAnchor editButton"
+                                                                    title="Press to edit this event">Edit</a> | </span>
+
+                                        <span class="archive-notice"><a
+                                            class="nlAnchor archiveButton"
+                                            title="Press to archive this event">Archive</a> | </span>
+
+
+                                        <span class="added-date-label">Added </span><span
+                                            class="added-date">8 minutes ago</span>
+                                        <span class="added-by-you">by you</span>
+
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="span-4">
+                            <p class="when-where">
+                                <span class="place _place">where</span>
+                                <span class="date">on 29 May,</span>
+                                <span class="time _time">time</span>
+                            </p>
+
+                        </div>
+
+                        <div class="span-4 prepend-1 email">
+                            <p>
+                                <span class="label ">Contact <br/></span>
+                                <span class="contact _contact">contact</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="board-button hidden">
+        <button id="newNoticeButton"
+                class="nlButton newNoticeBinding ui-corner-all button button-topboard"
+                title="Press to add a new event">Add An Event
+        </button>
+    </div>
+
+
+    <div class="board-button hidden">
+        <button id="viewCurrentButton"
+                class="nlButton viewCurrentBinding ui-corner-all button button-gap-left button-topboard"
+                title="Press to view the current notices">View Current
+        </button>
+    </div>
+
+
+    <div class="board-button hidden">
+        <button id="viewArchiveButton"
+                class="nlButton viewArchiveBinding ui-corner-all button button-gap-left button-topboard"
+                title="Press to view the archives">View Archives
+        </button>
+    </div>
+
+
+    <div class="boardtype_events hidden horn _newNotice" id="newNotice"
+         title="ui.events.label.addNewEvent">
+
+
+        <label for="title" class="main">What*</label>
+        <input class="_title " type="text" size="60" maxlength="100" tabindex="0"
+               id="title" name="title" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="title"></label><label class="hint position-for-crossfade"
+                                       for="title">A summary of the event e.g.
+            &quot;Birthday party&quot; </label></div>
+
+
+        <label for="place" class="main">Where</label>
+        <input class="_place " type="text" size="60" maxlength="64" id="place"
+               name="place" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="place"></label><label class="hint position-for-crossfade"
+                                       for="place">Give a location e.g. &quot;The
+            village hall&quot;</label></div>
+
+
+        <label for="date" class="main">When*</label>
+        <input class="span-5 read-only _date " type="text" readonly="true" id="date"
+               name="date" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="date"></label><label class="hint position-for-crossfade"
+                                      for="date">The date of the event</label></div>
+
+
+        <label for="time" class="main">Time</label>
+        <input class="_time " type="text" size="60" maxlength="64" id="time"
+               name="time" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="time"></label><label class="hint position-for-crossfade"
+                                      for="time">Example: &quot;7pm&quot; or &quot;any
+            time after 3pm&quot;</label></div>
+
+
+        <label for="description" class="main">More details</label>
+        <textarea rows="3" class="_description" id="description"
+                  name="description"></textarea>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="description"></label><label class="hint position-for-crossfade"
+                                             for="description">Add any extra
+            information you like</label></div>
+
+
+        <label for="contact" class="main">Contact </label>
+        <input class="_contact " type="text" size="60" maxlength="64" id="contact"
+               name="contact" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden" for="contact"></label><label
+            class="hint position-for-crossfade" for="contact">Who should people
+            contact and how?</label></div>
+
+
+        <div class="button-newnotice-area">
+
+            <button
+                class="nlButton saveButton ui-corner-all button-dialog positive">
+                Save this event
+            </button>
+            or
+            <a class="nlAnchor cancelButton cancelLink"
+               title="Press this to cancel and close the form">Cancel</a>
+        </div>
+
+        <a class="terms" target="_terms"
+           href="http://info.test.noticelocal.com/blurb/terms">By clicking Save you
+            agree to our terms of use</a>
+    </div>
+
+
+    <div class="span-22 push-1 last groupcontainer event container hidden"
+         id="groupcontainer">
+        <div class="span-2 prepend-top">
+            <div class="event-date">
+                <p class="weekday"></p>
+
+                <h2 class="day"></h2>
+
+                <p class="month"></p>
+            </div>
+        </div>
+
+        <div class="span-20 last container">
+            <div class="noticegroup">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="span-20 prepend-top noticeelement list-events last horn _template"
+         id="template">
+
+
+        <div class="span-10">
+            <h3 class="title _title"></h3>
+
+            <p class="description hidden _description"></p>
+
+            <div>
+
+
+                <div class="notice_controls invisible">
+                    <p><span class="edit-notice"><a class="nlAnchor editButton"
+                                                    title="Press to edit this event">Edit</a> | </span>
+                        <span class="archive-notice"><a
+                            class="nlAnchor archiveButton"
+                            title="Press to archive this event">Archive</a> | </span>
+                        <span class="restore-notice"><a
+                            class="nlAnchor restoreButton"
+                            title="Press to restore this event">Publish</a> | </span>
+
+
+                        <span class="added-date-label">Added </span><span
+                            class="added-date"></span>
+                        <span class="added-by-you">by you</span>
+
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="span-4">
+
+            <p class="when-where">
+                <span class="place hidden _place"></span>
+                <span class="date"></span>
+                <span class="time hidden _time"></span>
+            </p>
+        </div>
+
+        <div class="span-4 prepend-1 email">
+            <p>
+
+                <span class="label hidden">Contact <br/></span>
+                <span class="contact hidden _contact"></span>
+            </p>
+        </div>
+    </div>
+
+
+    <div class="span-24 last container">
+        <div class="more_container crossfade-container">
+
+
+            <button id="moreButton"
+                    class="nlButton moreNoticesBinding position-for-crossfade ui-corner-all button button-more hidden"
+                    title="Press to get more results">More
+            </button>
+
+            <div id="moreButtonSpinner"
+                 class="position-for-crossfade span-24 hidden">
+                <img
+                    src="/noticelocal/images/spinner.gif?_debugResources=y&amp;n=1306637816991"/>
+            </div>
+
+            <div
+                class="hidden position-for-crossfade span-22 prepend-1 search-error "
+                id="moreButtonMessage">
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+
+    <div id="strippedEmailDialog" class="notice-dialog offscreen">
+        <div class="notice span-12">
+            <h3 class="noticetitle"></h3>
+
+            <p class="noticedescription"></p>
+        </div>
+        <p>You can respond to this notice by E-mail below.</p>
+
+        <div>
+
+
+            <label for="body" class="main">Message*</label>
+            <textarea id="body" name="body"></textarea>
+
+            <div class="fieldtext"><label
+                class="errorDetail position-for-crossfade hidden"
+                for="body"></label><label class="hint position-for-crossfade"
+                                          for="body">What do you want to say about
+                the notice?</label></div>
+
+
+            <button
+                class="nlButton saveButton ui-corner-all button-topboard positive">
+                Send message
+            </button>
+
+            or
+            <a class="nlAnchor cancelButton ui-corner-all cancelLink"
+               title="Press this to cancel and close the form">Cancel</a>
+        </div>
+    </div>
+
+
+    <div id="emailBoardOwnerDialog" class="offscreen">
+
+
+        <label for="boardOwnerBody" class="main">Message*</label>
+        <textarea id="boardOwnerBody" name="body"></textarea>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="body"></label><label class="hint position-for-crossfade"
+                                      for="body">Type your message here.</label>
+        </div>
+
+        <button class="nlButton saveButton ui-corner-all button-topboard positive">
+            Send message
+        </button>
+        or
+        <a class="nlAnchor cancelButton ui-corner-all cancelLink"
+           title="Press this to cancel and close the form">Cancel</a>
+    </div>
+
+
+    <div id="spinnerDialog" class="modalSpinner">
+        <img
+            src="/noticelocal/images/bigspin.gif?_debugResources=y&amp;n=1306637816991"/>
+
+    </div>
+
+
+    <div id="userCredentialsDialog" class="offscreen">
+        <p>Please enter your details so that we can confirm your email address </p>
+
+
+        <label for="email" class="main">E-mail*</label>
+        <input class=" " type="text" size="60" maxlength="64" id="email"
+               name="email" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="email"></label><label class="hint position-for-crossfade"
+                                       for="email">field.hint.ui.usercredentials.label.email</label>
+        </div>
+
+
+        <label for="boardUserName" class="main">Name*</label>
+        <input class=" " type="text" size="60" maxlength="64" id="boardUserName"
+               name="userName" value=""/>
+
+        <div class="fieldtext"><label
+            class="errorDetail position-for-crossfade hidden"
+            for="userName"></label><label class="hint position-for-crossfade"
+                                          for="userName">field.hint.ui.usercredentials.label.name</label>
+        </div>
+
+
+        <button class="nlButton cancelButton ui-corner-all negative"
+                title="Press this to cancel and close the form">Cancel
+        </button>
+        <button class="nlButton saveButton ui-corner-all positive"
+                title="Press this to save your data">Save
+        </button>
+
+    </div>
+
+
+    <div id="statusChangeDialog" class="notice-dialog offscreen">
+        <div class="notice span-12 last">
+            <h3 class="noticetitle"></h3>
+
+            <p class="noticedescription"></p>
+        </div>
+
+        <div class="form-section">
+            <p class="statusChangeDialogIntro"></p>
+
+
+            <select name="reason" id="reason">
+                <option value="abuse">I think it's offensive</option>
+                <option value="junk">I think it's junk/spam</option>
+                <option value="offTopic">If think it's off-topic for this board
+                </option>
+                <option value="expired">It is too old</option>
+                <option value="draft">It is a draft for use later</option>
+            </select>
+
+
+            <div class="button-changestatus-area">
+                <button
+                    class="nlButton saveButton ui-corner-all positive  button-topboard"
+                    title="Press this to archive the notice">Archive
+                </button>
+
+                or
+                <a class="nlAnchor cancelButton ui-corner-all cancelLink"
+                   title="Press this to cancel and close the form">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="archivedMessage" class="hidden">
+        <p>The event was archived. Click <a
+            class="nlAnchor viewArchiveBinding">here</a>&nbsp;to view the archived
+            events.</p>
+
+    </div>
+
+
+    <div id="restoredMessage" class="hidden">
+        <p>The event was published. Click <a class="nlAnchor viewCurrentBinding">here</a>&nbsp;to
+            view the current events.</p>
+    </div>
+
+    <div id="boardSentToFriend" class="hidden">
+        <!-- CMS content from [embed/share/send-to-friend-complete] -->
+        <h2>Isn't sharing great?</h2>
+
+        <p>
+            We&#39;ve sent an email to your friend with a link to this board.</p>
+
+
+    </div>
+
+    <div id="boardSentToFriends" class="hidden">
+        <!-- CMS content from [embed/share/send-to-multiple-friends-complete] -->
+        <h2>Isn't sharing great?</h2>
+
+        <p>
+            We&#39;ve sent an email to your friends with a link to this board.</p>
+
+
+    </div>
+
+
+    <div class="container">
+        <div class="footer">
+            <div class="span-8">&copy; 2010-2011 <a
+                href="http://spottymushroom.com">Spotty Mushroom</a></div>
+            <div class="footer-links span-16 last">
+
+                You are chrisdenman@me.com |
+
+
+                <a href="http://info.test.noticelocal.com/about">About
+                    NoticeLocal</a> |
+                <a href="http://info.test.noticelocal.com/blurb/legal">Legal
+                    stuff</a> |
+                <a href="http://info.test.noticelocal.com/abuse">Report abuse</a>
+
+
+            </div>
+
+            <div class="span-24 last">
+                <a href="/noticelocal/board/create">Create a board</a> |
+                <a href="/noticelocal/admin/index">Admin</a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script
+        src="/noticelocal/plugins/jquery-json-2.2.2/js/jquery.json-2.2.min.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+    <script
+        src="/noticelocal/js/debug/horn-jquery.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+    <script
+        src="/noticelocal/plugins/horn-1.0.27/js/jquery/horn/horn-jquery-CSS.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+
+
+    <script
+        src="/noticelocal/plugins/horn-1.0.27/js/jquery/horn/horn-jquery-extract.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+
+    <script
+        src="/noticelocal/js/grailsConstants.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+    <script src="/noticelocal/js/constants.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+    <script src="/noticelocal/js/util.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+
+    <script src="/noticelocal/js/forms.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+    <script src="/noticelocal/js/wizard.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+    <script src="/noticelocal/js/notices.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+    <script src="/noticelocal/js/events.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+    <script
+        src="/noticelocal/js/hornConverters.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+    <script
+        src="/noticelocal/jquery-ui/js/jquery-ui-1.8.1.custom.min.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+
+    <script
+        src="/noticelocal/js/jquery/plugins/jqModal/jqModal.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+    <script
+        src="/noticelocal/js/jquery/plugins/blockUI/blockUI.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+
+    <script
+        src="/noticelocal/js/jquery/plugins/scrollTo/jquery.scrollTo-min.js?_debugResources=y&n=1306637816991"
+        type="text/javascript"></script>
+
+    <script src="/noticelocal/js/nav.js?_debugResources=y&n=1306637816991"
+            type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+
+        var noticeLocalData = {
+        "noticeIdentifier": "event",
+        "noticeIdentifierPlural": "events",
+
+        "fieldConstraints": {
+        "description": {
+        "maxLength": 500,
+        "errorText": "Please use 500 characters or less"
+        }
+        },
+
+        "dateImageURL":
+        "\/noticelocal\/images\/calendar.png?_debugResources=y&n=1306637816991",
+
+        "listCurrentURL": '\/noticelocal\/ddddddw\/events',
+        "listArchivedURL": '\/noticelocal\/ddddddw\/events\/archive',
+        "addingLabel": "To add a new event just enter the details below",
+        "editingLabel": "Make your changes to the event below",
+        "currentNotices": "Forthcoming events",
+        "archivedNotices": "Archived events",
+        "badDateMessage": "ui.events.bad.date.message",
+
+        "archiverestoreIntroArchive": "Please tell us the reason for archiving this
+        event.",
+        "archiverestoreIntroRestore": "Please tell us the reason for restoring this
+        event."
+        };
+
+        var noticeLocalEvents = new NoticeLocalEvents( noticeLocalData);
+        $(document).ready( function() {
+        noticeLocalEvents.documentReady();
+        });
+
+        $(document).ready( function() {
+        $(".anchorButtonBinding").live( "click", function(event) {
+        window.location = $(event.target).attr( 'href');
+        });
+        });
+
+        var commonData = {
+        "pfEmbeddedUrl":
+        "http:\/\/pro.local:8080\/noticelocal\/paperfactory\/embedded\/noticelocal?cssUrl=http:\/\/pro.local:8080\/noticelocal\/css\/flyer.css&url=http:\/\/pro.local:8080\/noticelocal\/ddddddw\/events",
+        "mailMappings": {
+        "emailStripped": {
+        "dialogID": "strippedEmailDialog",
+        "title": "Send an email",
+        "bodyElementID": "body",
+        "sentMessage": "Your message has been sent"
+        },
+        "emailBoardOwner": {
+        "dialogID": "emailBoardOwnerDialog",
+        "title": "Send an email to the board owner",
+        "bodyElementID": "boardOwnerBody",
+        "sentMessage": "Your message has been sent to the board owner "
+        },
+        },
+
+
+        "editBoardURL": "/noticelocal/ddddddw/edit",
+
+        "archiveURL": '/noticelocal/ddddddw/events/archive/666',
+        "boardURL": 'http://pro.local:8080/noticelocal/ddddddw/events',
+        "getCleanNoticeURL": "/noticelocal/ddddddw/events/666",
+        "restoreURL": '/noticelocal/ddddddw/events/restore/666',
+        "saveNewNoticeURL": '/noticelocal/ddddddw/events',
+        "updateNoticeURL": '/noticelocal/ddddddw/events/666',
+
+        "authURL": "/noticelocal/user/validate",
+        "emailURL": "/noticelocal/ddddddw/events/send-email",
+        "loginURL": "/noticelocal/user/login",
+        "shareBoardURL": "/noticelocal/ddddddw/share",
+
+        "ticket": "be713b9c-f953-4c45-abd3-efbc747a1940",
+
+        "noMoreNoticesAtThisTime": "<p>There are no more notices at this time</p>",
+        "mustProvideAReasonMessage": "<p>You must provide a reason for performing
+        this action.</p>",
+        "mustProvideABodyMessage": "<p>You should write something in your email!</p>
+        ",
+        "notBoardOrNoticeOwnerMessage": "<p>Sorry, you need to be the board or
+        notice creator to perform this action.</p>",
+        "mustProvideRecipienteMessage": "<p>You must provide at least one recipient
+        to send this board to.</p>",
+
+        "filteredEmailTitle": "Press to send a mail to the hidden email address",
+        "filteredEmailText": "Email",
+        "filteredURLText": "Press to visit the site",
+
+        "shareBoardTitle": "Share this board",
+        "userCredentialsFormTitle": "We need to know who you are...",
+        "archiveFormTitle": "Archive this item",
+        "restoreFormTitle": "Restore this item",
+
+        "twitterText": "Check out the \"dD\" notice board",
+
+        "possiblyMoreResults": false,
+        "isSticky": false,
+        "isCurrent": true,
+        "ajaxErrorTitle": "Sorry!",
+
+        "urlAlias": "ddddddw",
+        "isBoardOwner": true,
+        "boardAreaUrlAlias": "events",
+        "boardAreaType": "events"
+        };
+    </script>
+    </body>
+</html>

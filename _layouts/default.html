@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>GitHub Pages - {{ page.title }}</title>
+
+    <link href="http://github.com/stylesheets/bundle_common.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="http://github.com/stylesheets/bundle_github.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/screen.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <a href="http://github.com/marcpalmer/HORN"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+    <div id="main">
+      <div id="header" class="basic" style="margin-bottom:20px">
+
+        <div class="site">
+          <div class="logo boring">
+              <a href="/index.html"><img src="/images/horn_logo.png" alt="HORN Logo" /></a>
+              <h1 class="big"><a href="http://github.com/marcpalmer/HORN">HORN</a>
+          </div>
+          <div class="topsearch">
+            <ul class="nav logged_out" style="margin-top:20px">
+                <li><a href="/index.html"><b>Overview</b></a></li>
+                <li><a href="/horn/spec/horn-specification-1.0.html"><b>Specification</b></a></li>
+                <li><a href="http://github.com/marcpalmer/HORN">Code</a></li>
+                <li><a href="http://github.com/marcpalmer/grails-horn">Grails Plugin</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="content" class="site">
+
+        {{ content }}
+
+      </div>
+
+      <div class="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="site">
+
+        <div class="info">
+          <div class="links">
+            <a href="/horn/spec/horn-specification-1.0.html"><b>Specification</b></a> |
+            <a href="http://github.com/marcpalmer/HORN">Code</a> |
+            <a href="http://github.com/marcpalmer/grails-horn">Grails Plugin</a>
+          </div>
+          <div class="company">
+           &copy;
+            {{ site.time | date: "%Y" }}
+            <a href="http://spottymushroom.com">Spotty Mushroom</a>
+            All rights reserved.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include analytics.html %}
+  </body>
+</html>
