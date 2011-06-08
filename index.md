@@ -27,7 +27,12 @@ specific MVC approach.
 
 ## Reference Implementations
 
-Based on jQuery: [Download](https://github.com/marcpalmer/HORN/tree/master/reference-implementations/jquery) | [Test reports (for CSS indicators)](horn/reference-implementations/jquery/test/test.html) | [Test reports (for HTML5 indicators)](horn/reference-implementations/jquery/test/test_html5.html)  
+### Based on jQuery
+
+[Download](https://github.com/marcpalmer/HORN/tree/master/reference-implementations/jquery)  
+[User guide](horn/reference-implementations/jquery/manual.html)  
+[Test reports (for CSS indicators)](horn/reference-implementations/jquery/test/test.html)  
+[Test reports (for HTML5 indicators)](horn/reference-implementations/jquery/test/test_html5.html)
 
 ## Download
 
