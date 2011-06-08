@@ -1,43 +1,40 @@
-Horn.prototype.features = {
+$.extend( Horn.prototype, {
     cssPrefix:          '_',
     cssDelimiter:       '-',
     cssRootContext:     'horn',
     cssJSON:            'data-json',
 
     extractCSSPropertyPath: function( n ) {
-        var cssPrefixLength = Horn.prototype.features.cssPrefix.length;
-        var classAttr = window.$(n).attr( "class");
+        var cssPrefixLength = this.cssPrefix.length;
+        var classAttr = $(n).attr( "class");
         var path = null;
+        var _this = this;
         if ( classAttr ) {
-            Horn.prototype.splitEach(
-                classAttr,
-                " ",
+            Horn.prototype.splitEach( classAttr, " ",
                 function( token ) {
-                    if ( Horn.prototype.startsWith( token,
-                        Horn.prototype.features.cssPrefix) ) {
+                    if ( _this.startsWith( token, _this.cssPrefix) ) {
                         path = token.substring( cssPrefixLength);
                         if ( path === '' ) { path = null; }
                         return false;
                     }
                 });
         }
-
         return path;
     },
 
-    INDICATOR_ROOT: function( args ) {
-        return window.$(args.n).hasClass( this.features.cssRootContext);
+    hasRootIndicator: function( args ) {
+        return $(args.n).hasClass( this.cssRootContext);
     },
 
-    INDICATOR_PATH: function( args ) {
-        return this.features.extractCSSPropertyPath.call( this, args.n);
+    pathIndicator: function( args ) {
+        return this.extractCSSPropertyPath.call( this, args.n);
     },
 
-    INDICATOR_JSON: function( args ) {
-        return window.$(args.n).hasClass( this.features.cssJSON);
+    jsonIndicator: function( args ) {
+        return $(args.n).hasClass( this.cssJSON);
     },
 
-    ROOT_NODES: function( args ) {
-        return window.$("." + this.features.cssRootContext);
+    rootNodes: function() {
+        return $("." + this.cssRootContext);
     }
-};
+});

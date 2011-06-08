@@ -28,7 +28,6 @@ window.Horn = function() {
             }, this);
             if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
         }
-
         return rv;
     }, this);
 
@@ -127,6 +126,7 @@ window.Horn = function() {
 
     var addJSONComponents = this.bind(
         function( args ) {
+            var defaults = {type:  'fromJSON', node:  args.node};
             var addJSONHelper = this.bind( function( args ) {
                 var oldValue = args.value;
                 args.value = convert( args);
@@ -135,24 +135,17 @@ window.Horn = function() {
                 }
                 addComponent( args);
             }, this);
-
             var jsonData = $.evalJSON( args.text);
             var rootPath = args.path;
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
                     this.bind( function( k, v ) {
-                        addJSONHelper( {
-                            value: v,
-                            path:  rootPath + k,
-                            type:  'fromJSON',
-                            node:  args.node});
+                        addJSONHelper( $.extend( defaults,
+                            {value: v, path:  rootPath + k}));
                     }, this), '');
             } else {
-                addJSONHelper( {
-                    value: jsonData,
-                    path:  rootPath,
-                    type:  'fromJSON',
-                    node:  args.node});
+                addJSONHelper( $.extend( defaults,
+                    {value: jsonData, path:  rootPath}));
             }
         }, this);
 
@@ -162,16 +155,19 @@ window.Horn = function() {
         var modelValue = component.context[ component.key];
         var textValue;
         if ( modelValue !== component.value ) {
-            if ( !rootNode || (rootNode && this.contains(
-                $(component.node).parents(), rootNode)) ) {
+            if ( !rootNode || (rootNode &&
+                this.contains( $(component.node).parents(), rootNode)) ) {
                 textValue = convert( {
                     value: modelValue,
                     path:  args.path,
                     type:  'toText',
-                    node: component.node
-                });
+                    node: component.node});
+                if ( this.isDefinedNotNull( textValue) === false) {
+                    textValue = modelValue + "";
+                }
                 this.setDOMNodeValue( {node: component.node, value: textValue});
                 component.value = modelValue;
+                return component.node;
             }
         }
     }, this);
@@ -217,14 +213,13 @@ window.Horn = function() {
                 var _this = this;
                 var rootNodes = this.definesArgument( args, 'rootNodes') ?
                     args.rootNodes : (this.definesArgument( args, 'selector') ?
-                        $(args.selector) :
-                        this.getFeature({type: 'ROOT_NODES'}));
+                        $(args.selector) : this.rootNodes());
                 setDefaultModel();
                 this.each( rootNodes,
                     function( i, n ) { this.visitNodes( n, '',
                         function( n, path ) {
-                            if ( _this.getFeature( {type: 'INDICATOR_ROOT',
-                                n: n}) === true ) { return false; }
+                            if ( _this.hasRootIndicator( { n: n}) === true ) {
+                                return false; }
                             var componentData = _this.getComponentData( n, path);
                             if ( componentData === false ) {
                                 return true; }
@@ -301,11 +296,15 @@ window.Horn = function() {
              *      only nodes under this node will be updated.
              */
             render: function( args ) {
+                var alteredNodes = [];
                 this.each( state.components, function( i, n ) {
-                    renderComponent( {rootNode: this.definesArgument(
+                    var node = renderComponent( {rootNode: this.definesArgument(
                         args, 'rootNode') ? args.rootNode : undefined,
                             component: n, path: i});
+                    if ( this.isDefinedNotNull( node) ) {
+                        alteredNodes.push( node); }
                 }, this);
+                return alteredNodes;
             },
 
             getModel: function() {
@@ -376,10 +375,10 @@ Horn.prototype = {
     getComponentData: function( node, parentPath ) {
         var theContained;
         var nodeName;
-        var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
+        var path = this.pathIndicator({n: node});
         var contents = $($(node).contents());
         var cd = {
-            isJSON: this.getFeature({type: 'INDICATOR_JSON', n: node}),
+            isJSON: this.jsonIndicator({n: node}),
             path: this.isAdjustingPath( path),
             node: node};
         var contentsSize = contents.size();
@@ -405,8 +404,6 @@ Horn.prototype = {
         return false;
     },
 
-    getDataAttr: function( n, name ) { return $(n).data( name); },
-
     getDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
         var jNode = $(args.node);
@@ -414,10 +411,6 @@ Horn.prototype = {
             ((nodeName === "input") || (nodeName === 'textarea')) ?
                 jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
                 jNode.text()));
-    },
-
-    getFeature: function( args ) {
-        return this.features[ args.type].call( this, args);
     },
 
     getIfSingleTextNode: function( element ) {
@@ -436,7 +429,7 @@ Horn.prototype = {
         var key;
         var componentData = this.getComponentData( node, path);
         if ( componentData !== false ) {
-            key = this.getFeature({type: 'INDICATOR_PATH', n: node});
+            key = this.pathIndicator({n: node});
             if ( this.isAdjustingPath( key) === true ) {
             componentData.path = (path + '-' + key); }
             if ( !componentData.isJSON  ) {
@@ -447,8 +440,7 @@ Horn.prototype = {
     },
 
     isAdjustingPath: function ( path ) {
-        return (path !== null) &&
-            (path !== undefined) && (path.toString().trim() !== '');
+        return this.isDefinedNotNull( path) && (path.toString().trim() !== '');
     },
 
     isAttached: function( ref ) { return $(ref).parents(':last').is('html'); },
@@ -481,30 +473,23 @@ Horn.prototype = {
 
     startsWith: function ( value, stem ) {
         return  (stem.length > 0) &&
-                ((value = value.match( "^" + stem)) !== null) &&
+            ((value = value.match( "^" + stem)) !== null) &&
                 (value.toString() === stem);
     },
 
     traverse: function( value, callback, key, context, propName ) {
-        if (!(value instanceof jQuery) &&
-            ((value instanceof Object) || (value instanceof Array)) &&
-            (value.constructor.toString().indexOf( 'Date') < 0) ) {
-            this.each( value, function( k, v ) {
-                this.traverse(
-                    v, callback, key ? (key + '-' + k) : ("-" + k), value, k);
+        if ( (value instanceof Object) || (value instanceof Array) ) {
+            this.each( value, function( k, v ) { this.traverse( v, callback,
+                key ? (key + '-' + k) : ("-" + k), value, k);
             }, this);
         } else { callback( key, value, context, propName); }
     },
 
     visitNodes: function( dataElement, path, fn ) {
-        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
-        if ( this.isAdjustingPath( _path) ) {
-            path = (path + '-' + _path); }
-        this.each(
-            window.$(dataElement).children(),
-            function( i, n ) {
-                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
-            this);
+        var _path = this.pathIndicator({n: dataElement});
+        if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
+        this.each( window.$(dataElement).children(), function( i, n ) {
+            if ( fn( n, path) ) { this.visitNodes( n, path, fn); }}, this);
     }
 };
 

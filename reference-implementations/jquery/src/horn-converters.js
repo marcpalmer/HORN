@@ -10,13 +10,16 @@ window.HornPatternConverter = function( args ) {
     };
 
     $.extend( this, {
-        addConverter: function( args ) { converters[ args.name] = args.converter; },
-        addPattern: function( args ) { patterns[ args.pattern] = args.converterName; },
+        addConverter: function( args ) {
+            converters[ args.name] = args.converter; },
+        addPattern: function( args ) {
+            patterns[ args.pattern] = args.converterName; },
         convert: function( args ) {
             var rv;
             instance.each( patterns, function( i, n ) {
                 var match = args.path.match( i);
-                if ( instance.isDefinedNotNull( match) && (match.toString() === args.path) ) {
+                if ( instance.isDefinedNotNull( match) &&
+                    (match.toString() === args.path) ) {
                     rv = converters[ n]( args);
                     return false;
                 }
@@ -35,11 +38,13 @@ window.HornPatternConverter = function( args ) {
 
 var hornConverter = new HornPatternConverter({horn: horn});
 
-hornConverter.addConverter( {name: "IntegerConverter", converter: function( args ) {
-    return args.type === 'fromText' ? parseInt( args.value) : args.value + "";
+hornConverter.addConverter( {name: "IntegerConverter", converter:
+    function( args ) {
+        return args.type === 'fromText' ?
+            parseInt( args.value) : args.value + "";
 }});
 
-hornConverter.addConverter( {name: "BooleanConverter", converter: function( args ) {
-    return args.type === 'fromText' ? args.value.toLowerCase() === 'true' : args.value + "";
+hornConverter.addConverter( {name: "BooleanConverter", converter:
+    function( args ) { return args.type === 'fromText' ?
+        args.value.toLowerCase() === 'true' : args.value + "";
 }});
-

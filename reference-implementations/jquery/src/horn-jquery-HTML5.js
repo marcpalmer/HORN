@@ -1,21 +1,36 @@
-Horn.prototype.features = {
-    dataNameHorn:       'horn',
-    dataNamePath:       'horn-path',
-    dataNameJSON:       'horn-json',
+$.extend( Horn.prototype, {
+    dataNameHorn:           'horn',
+    dataNameJSON:           'horn-json',
 
-    INDICATOR_ROOT: function( args ) {
-        return Horn.prototype.getDataAttr( args.n, this.features.dataNameHorn) === 'true';
+    encodeCSS: function( args ) {
+        var rv = args.path.replace( /(\[(\w+)\])/g, ".$2").replace( /\./g, "-").replace( "/", "");
+        rv = this.startsWith( rv, "-") ? rv.substring(1) : rv;
+        return rv;
     },
 
-    INDICATOR_PATH: function( args ) {
-        return Horn.prototype.getDataAttr( args.n, this.features.dataNamePath);
+    getDataAttr: function( n, name ) {
+        var rv =  $(n).data( name);
+        return (this.isDefinedNotNull( rv) === true) ? (rv + "") : undefined;
     },
 
-    INDICATOR_JSON: function( args ) {
-        return Horn.prototype.getDataAttr( args.n, this.features.dataNameJSON) === true;
+    hasRootIndicator: function( args ) {
+        var hornDeclaration = this.getDataAttr( args.n, this.dataNameHorn);
+        var jsonDeclaration = this.getDataAttr( args.n, this.dataNameJSON);
+        return ((this.isDefinedNotNull( hornDeclaration) === true) && (this.startsWith( hornDeclaration, "/") === true)) ||
+            ((this.isDefinedNotNull( jsonDeclaration) === true) && (this.startsWith( jsonDeclaration, "/") === true));
     },
 
-    ROOT_NODES: function( args ) {
-        return window.$('*[data-' + this.features.dataNameHorn + ']');
-    }
-};
+    jsonIndicator: function( args ) {
+        return this.isDefinedNotNull( this.getDataAttr( args.n, this.dataNameJSON)) === true;
+    },
+
+    pathIndicator: function( args ) {
+        var hornDeclaration = this.getDataAttr( args.n, this.dataNameHorn);
+        var jsonDeclaration = this.getDataAttr( args.n, this.dataNameJSON);
+        if ( jsonDeclaration === 'true' ) { jsonDeclaration = undefined; }
+        var declaration = this.isDefinedNotNull( hornDeclaration) ? hornDeclaration : jsonDeclaration;
+        return this.isDefinedNotNull( declaration) ? this.encodeCSS({path: declaration}) : declaration;
+    },
+
+    rootNodes: function( args ) { return $('[data-horn*="/"]'); }
+});
