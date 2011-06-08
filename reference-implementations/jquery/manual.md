@@ -26,7 +26,7 @@ horn-jquery-HTML5.js
 
 The data will be parsed out and accessible via:
 {% highlight javascript %}
-var yourModel = horn.getModel();
+var yourModel = horn.model();
 {% endhighlight }
 
 By default HORN will parse the data and bind to the DOM elements so that you
@@ -67,7 +67,7 @@ Example:
 {% highlight javascript %}
 var secondHorn = new Horn();
 secondHorn.bind('#data-area');
-{% endhighlight }
+{% endhighlight %}
 
 You can call load/bind as many times as you like, and the data extracted will
 be merged into the existing model, unless you call reset() before.
@@ -103,12 +103,17 @@ Example:
 {% highlight javascript %}
 publisherDOMNode.remove();
 horn.unbind('books[3].publishers[1]');
-horn.getModel().books[3].publishers.splice(1, 1);
-{% endhighlight }
+horn.model().books[3].publishers.splice(1, 1);
+{% endhighlight %}
 
-### option(optionName, value)
+### model()
 
-Call this to set options on the HORN parser instance. Valid options are:
+Returns the Horn data model that was extracted. You change values in this
+model and can later call updateDOM() to have these propagated back to the UI.
+
+### option(optionName) and option(optionName, value)
+
+Call this to get/set an option on the HORN parser instance. Valid options are:
 
 * readOnly -
 * converters -
