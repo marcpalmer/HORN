@@ -4,17 +4,26 @@
  *  @author Chris Denman
  *  @author Marc Palmer
  */
-window.Horn = function() {
+Horn = function() {
     var state;
 
     var setDefaultModel = function() {
-        if ( (state.model === undefined) &&
+        if ( !state.model &&
             (state.opts.hasOwnProperty( 'defaultModel')) ) {
             state.model = state.opts.defaultModel;
         }
     };
 
-    var getModelReference = this.bind( function( args ) {
+    var setDefaultArgs = this.scope( function( args ) {
+        var existingArgs = (this.definesArgument( args, 'args') === false) ?
+            {} : args.args;
+        if ( this.definesArgument( args, 'defaults') ) {
+            $.extend( args, defaults);
+        }
+        return existingArgs;
+    }, this);
+
+    var getModelReference = this.scope( function( args ) {
         var rv;
         var tokens = this.pathToTokens( args);
         var length = tokens.length;
@@ -22,23 +31,22 @@ window.Horn = function() {
             rv = {ref: state.model, key: tokens[ length - 1]};
             tokens.length = tokens.length - 1;
             this.each( tokens, function( i, n ) {
-                if ( this.isDefinedNotNull( rv.ref) ) {
+                if ( this.isDefinedNotNull( rv.ref) === true ) {
                     if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
                 } else { return false; }
             }, this);
             if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
         }
-
         return rv;
     }, this);
 
-    var setValue = this.bind( function( value, path, parentContext ) {
+    var setValue = this.scope( function( value, path, parentContext ) {
         var token;
         var numTokens;
         var subContext;
         if ( typeof path === 'string' ) {
             path = this.pathToTokens( {path: path});
-            if ( state.model === undefined ) {
+            if ( this.isDefinedNotNull( state.model) === true ) {
                 state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
             }
             parentContext = state.model;
@@ -60,7 +68,7 @@ window.Horn = function() {
         }
     }, this);
 
-    var convert = this.bind( function ( args ) {
+    var convert = this.scope( function ( args ) {
         var converter = state.opts.converter;
         if ( this.startsWith( args.path, "-") ) {
             args.path = args.path.substring( 1);
@@ -69,19 +77,20 @@ window.Horn = function() {
             converter.call( this, args) : undefined;
     }, this);
 
-    var addComponent = this.bind( function( args ) {
+    var addComponent = this.scope( function( args ) {
         var details;
         var culledPath = args.path.substring( 1);
         var rv;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
-        if ( (state.opts.storeBackRefs === true) && (!args.isJSON) ) {
+        if ( (args.readOnly === true) && (!args.isJSON) ) {
             if ( this.isDefinedNotNull( details) === true ) {
                 args.context = details.context;
                 args.key = details.key;
             }
-            if ( state.components === undefined ) {
+
+            if ( this.isDefinedNotNull( state.components) === true ) {
                 state.components = {}; }
             rv = {node: args.node, value: args.value};
             if ( this.isDefinedNotNull( args.context) === true ) {
@@ -92,7 +101,7 @@ window.Horn = function() {
         }
     }, this);
 
-    var addComponents = this.bind( function( args ) {
+    var addComponents = this.scope( function( args ) {
         this.each(
             args.components,
             function( i, newArgs ) {
@@ -125,65 +134,111 @@ window.Horn = function() {
             }, this);
     }, this);
 
-    var addJSONComponents = this.bind(
+    var addJSONComponents = this.scope(
         function( args ) {
-            var addJSONHelper = this.bind( function( args ) {
-                var oldValue = args.value;
-                args.value = convert( args);
-                if ( this.isDefinedNotNull( args.value) === false ) {
-                    args.value = oldValue;
+            var defaults = {type:  'fromJSON', node:  args.node,
+                readOnly: args.readOnly};
+            var addJSONHelper = this.scope( function( vargs ) {
+                var oldValue = vargs.value;
+                vargs.value = convert( vargs);
+                if ( this.isDefinedNotNull( vargs.value) === false ) {
+                    vargs.value = oldValue;
                 }
-                addComponent( args);
+                addComponent( vargs);
             }, this);
-
             var jsonData = $.evalJSON( args.text);
             var rootPath = args.path;
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
-                    this.bind( function( k, v ) {
-                        addJSONHelper( {
-                            value: v,
-                            path:  rootPath + k,
-                            type:  'fromJSON',
-                            node:  args.node});
+                    this.scope( function( k, v ) {
+                        addJSONHelper( $.extend( defaults,
+                            {value: v, path:  rootPath + k}));
                     }, this), '');
             } else {
-                addJSONHelper( {
-                    value: jsonData,
-                    path:  rootPath,
-                    type:  'fromJSON',
-                    node:  args.node});
+                addJSONHelper( $.extend( defaults,
+                    {value: jsonData, path:  rootPath}));
             }
         }, this);
 
-    var renderComponent = this.bind( function( args ) {
+    var renderComponent = this.scope( function( args ) {
         var rootNode = args.rootNode;
         var component = args.component;
         var modelValue = component.context[ component.key];
         var textValue;
         if ( modelValue !== component.value ) {
-            if ( !rootNode || (rootNode && this.contains(
-                $(component.node).parents(), rootNode)) ) {
+            if ( !rootNode || (rootNode &&
+                this.contains( $(component.node).parents(), rootNode)) ) {
                 textValue = convert( {
                     value: modelValue,
                     path:  args.path,
                     type:  'toText',
-                    node: component.node
-                });
+                    node: component.node});
+                if ( this.isDefinedNotNull( textValue) === false) {
+                    textValue = modelValue + "";
+                }
                 this.setDOMNodeValue( {node: component.node, value: textValue});
                 component.value = modelValue;
+                return component.node;
             }
         }
     }, this);
 
+    var extract = this.scope( function( args ) {
+        var _this = this;
+        var rootNodes = this.definesArgument( args, 'rootNodes') ?
+            args.rootNodes : (this.definesArgument( args, 'selector') ?
+                $(args.selector) : this.rootNodes());
+        setDefaultModel();
+        this.each( rootNodes,
+            function( i, n ) { this.visitNodes( n, '',
+                function( n, path ) {
+                    if ( _this.hasRootIndicator( { n: n}) === true ) {
+                        return false; }
+                    var componentData = _this.getComponentData( n, path);
+                    if ( componentData === false ) {
+                        return true; }
+                    componentData.readOnly = args.readOnly;
+                    if ( componentData.isJSON === false ) {
+                        componentData.value = convert( {
+                            value: componentData.text,
+                            path:  componentData.path,
+                            type:  'fromText',
+                            node:  componentData.node
+                        });
+                        if ( _this.isDefinedNotNull(
+                            componentData.value) === false ) {
+                            componentData.value = componentData.text;
+                        }
+                        addComponent( componentData);
+                    } else {
+                        addJSONComponents( componentData);
+                    }
+                    return false;
+                }
+            ); }, this);
+        return state.model;
+    }, this);
+
     $.extend(
         this, {
+
+            /**
+             * Reset all internal state: the model, and opt
+             * <p>
+             * Doesn't alter the prototype at all (so stuff added from css / html5) flavours remain.
+             * <p>
+             * The html5 / css impls are NOT stateful currently.
+             */
             reset: function() {
                 state = { opts: $.extend( {}, {model: undefined,
-                    storeBackRefs:  true})};
+                    readOnly:  false})};
             },
 
-            removeComponents: function( args ) {
+            /**
+             * Remove component bindings for those elements with a property path
+             * that starts with args.stem. Regex supported i think.
+             */
+            unbind: function( args ) {
                 this.each( state.components, function( i, n ) {
                     if ( this.startsWith( i, args.stem ) ) {
                         delete state.components[ i]; } }, this);
@@ -193,7 +248,7 @@ window.Horn = function() {
              *  Extract HORN data from the DOM and build a data model from it.
              *  <p>
              *  After extraction the model can be retrieved using
-             *  horn.getModel(),
+             *  horn.model(),
              *  this function also returns the model.
              *  <p>
              *  Data is extracted from the DOM either by locating all Horn
@@ -203,7 +258,7 @@ window.Horn = function() {
              *  <p>
              *  If multiple elements with the same effective property path are
              *  encountered, the final such one takes effect.
-             *  <p>
+             *
              *
              *  @param args.selector    optional jQuery selector used to select
              *      the nodes to extract a Horn data model from, overrides
@@ -213,41 +268,20 @@ window.Horn = function() {
              *      extract a Horn data model from, overrides default mechanism
              *      when supplied.
              */
-            extract: function( args ) {
-                var _this = this;
-                var rootNodes = this.definesArgument( args, 'rootNodes') ?
-                    args.rootNodes : (this.definesArgument( args, 'selector') ?
-                        $(args.selector) :
-                        this.getFeature({type: 'ROOT_NODES'}));
-                setDefaultModel();
-                this.each( rootNodes,
-                    function( i, n ) { this.visitNodes( n, '',
-                        function( n, path ) {
-                            if ( _this.getFeature( {type: 'INDICATOR_ROOT',
-                                n: n}) === true ) { return false; }
-                            var componentData = _this.getComponentData( n, path);
-                            if ( componentData === false ) {
-                                return true; }
-                            if ( componentData.isJSON === false ) {
-                                componentData.value = convert( {
-                                    value: componentData.text,
-                                    path:  componentData.path,
-                                    type:  'fromText',
-                                    node:  componentData.node
-                                });
-                                if ( _this.isDefinedNotNull(
-                                    componentData.value) === false ) {
-                                    componentData.value = componentData.text;
-                                }
-                                addComponent( componentData);
-                            } else {
-                                addJSONComponents( componentData);
-                            }
-                            return false;
-                        }
-                    ); }, this);
-                return state.model;
-            },
+
+             /**
+              * load and no bind
+              */
+             load: function( args ) {
+                return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
+             },
+
+             /**
+              * load and bind
+              */
+             bind: function( args ) {
+                return extract( setDefaultArgs( {args: args}));
+             },
 
             /**
              * Create a new UI element by cloning an existing template that is
@@ -261,8 +295,9 @@ window.Horn = function() {
              * path - The property path within the model, to use to populate
              * this DOM node and its descendents
              */
-            newFromTemplate: function( args ) {
+            cloneAndBind: function( args ) {
                 var template;
+                var pathStem;
                 var components = [];
                 if ( this.definesArgument( args, 'template') === true ) {
                     template = args.template;
@@ -276,8 +311,12 @@ window.Horn = function() {
                 }
 
                 setDefaultModel();
-                this.visitNodes( template, args.path ? args.path : '',
-                    this.bind( function( n, path ) {
+
+                pathStem = this.definesArgument( args, 'path') === true ?
+                    args.path : '';
+
+                this.visitNodes( template, pathStem,
+                    this.scope( function( n, path ) {
                         return this.handleTemplateValue( n, path, components);
                     }, this));
 
@@ -287,42 +326,56 @@ window.Horn = function() {
             },
 
             /**
-             *  Refresh the DOM nodes with the current model values.
+             *  Refresh DOM nodes with their current model values.
              *  <p>
-             *  Only DOM nodes that produced data on a previous call to
-             *  <code>horn.extract( ... )</code> will be considered for
-             *  updating.
-             *  <p>
-             *  <strong>Important: </strong>In addition, only DOM nodes that
-             *  were extracted whilst the <strong>storeBackRefs</strong> option
-             *  was set will be considered for updating.
              *
              *  @param args.rootNode   optional DOM node such that if supplied,
              *      only nodes under this node will be updated.
+             *
+             *  @return a list of nodes that had their sreen value changed
              */
-            render: function( args ) {
+            updateDOM: function( args ) {
+                var alteredNodes = [];
                 this.each( state.components, function( i, n ) {
-                    renderComponent( {rootNode: this.definesArgument(
+                    var node = renderComponent( {rootNode: this.definesArgument(
                         args, 'rootNode') ? args.rootNode : undefined,
                             component: n, path: i});
+                    if ( this.isDefinedNotNull( node) ) {
+                        alteredNodes.push( node); }
                 }, this);
+                return alteredNodes;
             },
 
-            getModel: function() {
+            /**
+             *  Return the Horn model.
+             *
+             *  @return the current model
+             */
+            model: function() {
                 return state.model;
             },
 
-            option: function( optionName, arg0 ) {
-                if ( this.isDefinedNotNull( optionName) ) {
-                    state.opts[ optionName] = arg0; }
+            /**
+             *  Set an option by name to the given value.
+             *  <p>
+             *  The following options are currently supported: defaultModel, readOnly, conveter
+             *  <p>
+             *
+             *  @param args.optionName   the name of the option to set
+             *  @param args.value        the value to set
+             */
+            option: function( optionName, value ) {
+                if ( value === undefined ) {
+                    state.opts[ optionName] = value;
+                } else { return state.opts[ optionName]; }
             }
     });
 
     this.reset();
-}
+};
 
 Horn.prototype = {
-    bind: function( fn, ctx ) {
+    scope: function( fn, ctx ) {
         return function() { return fn.apply(ctx, arguments); };
     },
 
@@ -352,7 +405,8 @@ Horn.prototype = {
      */
     copyInto: function( args ) {
         var val;
-        this.each( args.props ? args.props : args.dest, function( i, n ) {
+        this.each( this.isDefinedNotNull( args.props) === true  ?
+            args.props : args.dest, function( i, n ) {
             if ( args.src.hasOwnProperty( i) ) {
                 val = args.src[ i];
                 if ( val !== undefined ) { args.dest[ i] = val; }
@@ -370,16 +424,16 @@ Horn.prototype = {
 
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }
-        $.each( collection, ctx ? this.bind( fn, ctx) : fn);
+        $.each( collection, ctx ? this.scope( fn, ctx) : fn);
     },
 
     getComponentData: function( node, parentPath ) {
         var theContained;
         var nodeName;
-        var path = this.getFeature({type: 'INDICATOR_PATH', n: node});
+        var path = this.pathIndicator({n: node});
         var contents = $($(node).contents());
         var cd = {
-            isJSON: this.getFeature({type: 'INDICATOR_JSON', n: node}),
+            isJSON: this.jsonIndicator({n: node}),
             path: this.isAdjustingPath( path),
             node: node};
         var contentsSize = contents.size();
@@ -405,8 +459,6 @@ Horn.prototype = {
         return false;
     },
 
-    getDataAttr: function( n, name ) { return $(n).data( name); },
-
     getDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
         var jNode = $(args.node);
@@ -414,10 +466,6 @@ Horn.prototype = {
             ((nodeName === "input") || (nodeName === 'textarea')) ?
                 jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
                 jNode.text()));
-    },
-
-    getFeature: function( args ) {
-        return this.features[ args.type].call( this, args);
     },
 
     getIfSingleTextNode: function( element ) {
@@ -436,7 +484,7 @@ Horn.prototype = {
         var key;
         var componentData = this.getComponentData( node, path);
         if ( componentData !== false ) {
-            key = this.getFeature({type: 'INDICATOR_PATH', n: node});
+            key = this.pathIndicator({n: node});
             if ( this.isAdjustingPath( key) === true ) {
             componentData.path = (path + '-' + key); }
             if ( !componentData.isJSON  ) {
@@ -447,8 +495,7 @@ Horn.prototype = {
     },
 
     isAdjustingPath: function ( path ) {
-        return (path !== null) &&
-            (path !== undefined) && (path.toString().trim() !== '');
+        return this.isDefinedNotNull( path) && (path.toString().trim() !== '');
     },
 
     isAttached: function( ref ) { return $(ref).parents(':last').is('html'); },
@@ -481,30 +528,23 @@ Horn.prototype = {
 
     startsWith: function ( value, stem ) {
         return  (stem.length > 0) &&
-                ((value = value.match( "^" + stem)) !== null) &&
+            ((value = value.match( "^" + stem)) !== null) &&
                 (value.toString() === stem);
     },
 
     traverse: function( value, callback, key, context, propName ) {
-        if (!(value instanceof jQuery) &&
-            ((value instanceof Object) || (value instanceof Array)) &&
-            (value.constructor.toString().indexOf( 'Date') < 0) ) {
-            this.each( value, function( k, v ) {
-                this.traverse(
-                    v, callback, key ? (key + '-' + k) : ("-" + k), value, k);
+        if ( (value instanceof Object) || (value instanceof Array) ) {
+            this.each( value, function( k, v ) { this.traverse( v, callback,
+                key ? (key + '-' + k) : ("-" + k), value, k);
             }, this);
         } else { callback( key, value, context, propName); }
     },
 
     visitNodes: function( dataElement, path, fn ) {
-        var _path = this.getFeature({type: 'INDICATOR_PATH', n: dataElement});
-        if ( this.isAdjustingPath( _path) ) {
-            path = (path + '-' + _path); }
-        this.each(
-            window.$(dataElement).children(),
-            function( i, n ) {
-                if ( fn( n, path) ) { this.visitNodes( n, path, fn); }},
-            this);
+        var _path = this.pathIndicator({n: dataElement});
+        if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
+        this.each( window.$(dataElement).children(), function( i, n ) {
+            if ( fn( n, path) ) { this.visitNodes( n, path, fn); }}, this);
     }
 };
 
@@ -519,4 +559,11 @@ if ( !Node ) {
         });
 }
 
-horn = new Horn();
+$(function() {
+    horn = new Horn();
+    if ( horn.option( "readOnly") === true ) {
+        horn.load();
+    } else {
+        horn.bind();
+    }
+});

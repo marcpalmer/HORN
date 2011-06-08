@@ -4,17 +4,26 @@
  *  @author Chris Denman
  *  @author Marc Palmer
  */
-window.Horn = function() {
+Horn = function() {
     var state;
 
     var setDefaultModel = function() {
-        if ( (state.model === undefined) &&
+        if ( !state.model &&
             (state.opts.hasOwnProperty( 'defaultModel')) ) {
             state.model = state.opts.defaultModel;
         }
     };
 
-    var getModelReference = this.bind( function( args ) {
+    var setDefaultArgs = this.scope( function( args ) {
+        var existingArgs = (this.definesArgument( args, 'args') === false) ?
+            {} : args.args;
+        if ( this.definesArgument( args, 'defaults') ) {
+            $.extend( args, defaults);
+        }
+        return existingArgs;
+    }, this);
+
+    var getModelReference = this.scope( function( args ) {
         var rv;
         var tokens = this.pathToTokens( args);
         var length = tokens.length;
@@ -22,7 +31,7 @@ window.Horn = function() {
             rv = {ref: state.model, key: tokens[ length - 1]};
             tokens.length = tokens.length - 1;
             this.each( tokens, function( i, n ) {
-                if ( this.isDefinedNotNull( rv.ref) ) {
+                if ( this.isDefinedNotNull( rv.ref) === true ) {
                     if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
                 } else { return false; }
             }, this);
@@ -31,13 +40,13 @@ window.Horn = function() {
         return rv;
     }, this);
 
-    var setValue = this.bind( function( value, path, parentContext ) {
+    var setValue = this.scope( function( value, path, parentContext ) {
         var token;
         var numTokens;
         var subContext;
         if ( typeof path === 'string' ) {
             path = this.pathToTokens( {path: path});
-            if ( state.model === undefined ) {
+            if ( this.isDefinedNotNull( state.model) === true ) {
                 state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
             }
             parentContext = state.model;
@@ -59,7 +68,7 @@ window.Horn = function() {
         }
     }, this);
 
-    var convert = this.bind( function ( args ) {
+    var convert = this.scope( function ( args ) {
         var converter = state.opts.converter;
         if ( this.startsWith( args.path, "-") ) {
             args.path = args.path.substring( 1);
@@ -68,19 +77,20 @@ window.Horn = function() {
             converter.call( this, args) : undefined;
     }, this);
 
-    var addComponent = this.bind( function( args ) {
+    var addComponent = this.scope( function( args ) {
         var details;
         var culledPath = args.path.substring( 1);
         var rv;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
-        if ( (state.opts.storeBackRefs === true) && (!args.isJSON) ) {
+        if ( (args.readOnly === true) && (!args.isJSON) ) {
             if ( this.isDefinedNotNull( details) === true ) {
                 args.context = details.context;
                 args.key = details.key;
             }
-            if ( state.components === undefined ) {
+
+            if ( this.isDefinedNotNull( state.components) === true ) {
                 state.components = {}; }
             rv = {node: args.node, value: args.value};
             if ( this.isDefinedNotNull( args.context) === true ) {
@@ -91,7 +101,7 @@ window.Horn = function() {
         }
     }, this);
 
-    var addComponents = this.bind( function( args ) {
+    var addComponents = this.scope( function( args ) {
         this.each(
             args.components,
             function( i, newArgs ) {
@@ -124,22 +134,23 @@ window.Horn = function() {
             }, this);
     }, this);
 
-    var addJSONComponents = this.bind(
+    var addJSONComponents = this.scope(
         function( args ) {
-            var defaults = {type:  'fromJSON', node:  args.node};
-            var addJSONHelper = this.bind( function( args ) {
-                var oldValue = args.value;
-                args.value = convert( args);
-                if ( this.isDefinedNotNull( args.value) === false ) {
-                    args.value = oldValue;
+            var defaults = {type:  'fromJSON', node:  args.node,
+                readOnly: args.readOnly};
+            var addJSONHelper = this.scope( function( vargs ) {
+                var oldValue = vargs.value;
+                vargs.value = convert( vargs);
+                if ( this.isDefinedNotNull( vargs.value) === false ) {
+                    vargs.value = oldValue;
                 }
-                addComponent( args);
+                addComponent( vargs);
             }, this);
             var jsonData = $.evalJSON( args.text);
             var rootPath = args.path;
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
-                    this.bind( function( k, v ) {
+                    this.scope( function( k, v ) {
                         addJSONHelper( $.extend( defaults,
                             {value: v, path:  rootPath + k}));
                     }, this), '');
@@ -149,7 +160,7 @@ window.Horn = function() {
             }
         }, this);
 
-    var renderComponent = this.bind( function( args ) {
+    var renderComponent = this.scope( function( args ) {
         var rootNode = args.rootNode;
         var component = args.component;
         var modelValue = component.context[ component.key];
@@ -172,6 +183,42 @@ window.Horn = function() {
         }
     }, this);
 
+    var extract = this.scope( function( args ) {
+        var _this = this;
+        var rootNodes = this.definesArgument( args, 'rootNodes') ?
+            args.rootNodes : (this.definesArgument( args, 'selector') ?
+                $(args.selector) : this.rootNodes());
+        setDefaultModel();
+        this.each( rootNodes,
+            function( i, n ) { this.visitNodes( n, '',
+                function( n, path ) {
+                    if ( _this.hasRootIndicator( { n: n}) === true ) {
+                        return false; }
+                    var componentData = _this.getComponentData( n, path);
+                    if ( componentData === false ) {
+                        return true; }
+                    componentData.readOnly = args.readOnly;
+                    if ( componentData.isJSON === false ) {
+                        componentData.value = convert( {
+                            value: componentData.text,
+                            path:  componentData.path,
+                            type:  'fromText',
+                            node:  componentData.node
+                        });
+                        if ( _this.isDefinedNotNull(
+                            componentData.value) === false ) {
+                            componentData.value = componentData.text;
+                        }
+                        addComponent( componentData);
+                    } else {
+                        addJSONComponents( componentData);
+                    }
+                    return false;
+                }
+            ); }, this);
+        return state.model;
+    }, this);
+
     $.extend(
         this, {
 
@@ -184,14 +231,14 @@ window.Horn = function() {
              */
             reset: function() {
                 state = { opts: $.extend( {}, {model: undefined,
-                    storeBackRefs:  true})};
+                    readOnly:  false})};
             },
 
             /**
              * Remove component bindings for those elements with a property path
              * that starts with args.stem. Regex supported i think.
              */
-            removeComponents: function( args ) {
+            unbind: function( args ) {
                 this.each( state.components, function( i, n ) {
                     if ( this.startsWith( i, args.stem ) ) {
                         delete state.components[ i]; } }, this);
@@ -201,7 +248,7 @@ window.Horn = function() {
              *  Extract HORN data from the DOM and build a data model from it.
              *  <p>
              *  After extraction the model can be retrieved using
-             *  horn.getModel(),
+             *  horn.model(),
              *  this function also returns the model.
              *  <p>
              *  Data is extracted from the DOM either by locating all Horn
@@ -221,40 +268,20 @@ window.Horn = function() {
              *      extract a Horn data model from, overrides default mechanism
              *      when supplied.
              */
-            extract: function( args ) {
-                var _this = this;
-                var rootNodes = this.definesArgument( args, 'rootNodes') ?
-                    args.rootNodes : (this.definesArgument( args, 'selector') ?
-                        $(args.selector) : this.rootNodes());
-                setDefaultModel();
-                this.each( rootNodes,
-                    function( i, n ) { this.visitNodes( n, '',
-                        function( n, path ) {
-                            if ( _this.hasRootIndicator( { n: n}) === true ) {
-                                return false; }
-                            var componentData = _this.getComponentData( n, path);
-                            if ( componentData === false ) {
-                                return true; }
-                            if ( componentData.isJSON === false ) {
-                                componentData.value = convert( {
-                                    value: componentData.text,
-                                    path:  componentData.path,
-                                    type:  'fromText',
-                                    node:  componentData.node
-                                });
-                                if ( _this.isDefinedNotNull(
-                                    componentData.value) === false ) {
-                                    componentData.value = componentData.text;
-                                }
-                                addComponent( componentData);
-                            } else {
-                                addJSONComponents( componentData);
-                            }
-                            return false;
-                        }
-                    ); }, this);
-                return state.model;
-            },
+
+             /**
+              * load and no bind
+              */
+             load: function( args ) {
+                return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
+             },
+
+             /**
+              * load and bind
+              */
+             bind: function( args ) {
+                return extract( setDefaultArgs( {args: args}));
+             },
 
             /**
              * Create a new UI element by cloning an existing template that is
@@ -268,8 +295,9 @@ window.Horn = function() {
              * path - The property path within the model, to use to populate
              * this DOM node and its descendents
              */
-            newFromTemplate: function( args ) {
+            cloneAndBind: function( args ) {
                 var template;
+                var pathStem;
                 var components = [];
                 if ( this.definesArgument( args, 'template') === true ) {
                     template = args.template;
@@ -283,8 +311,12 @@ window.Horn = function() {
                 }
 
                 setDefaultModel();
-                this.visitNodes( template, args.path ? args.path : '',
-                    this.bind( function( n, path ) {
+
+                pathStem = this.definesArgument( args, 'path') === true ?
+                    args.path : '';
+
+                this.visitNodes( template, pathStem,
+                    this.scope( function( n, path ) {
                         return this.handleTemplateValue( n, path, components);
                     }, this));
 
@@ -302,7 +334,7 @@ window.Horn = function() {
              *
              *  @return a list of nodes that had their sreen value changed
              */
-            render: function( args ) {
+            updateDOM: function( args ) {
                 var alteredNodes = [];
                 this.each( state.components, function( i, n ) {
                     var node = renderComponent( {rootNode: this.definesArgument(
@@ -319,30 +351,31 @@ window.Horn = function() {
              *
              *  @return the current model
              */
-            getModel: function() {
+            model: function() {
                 return state.model;
             },
 
             /**
              *  Set an option by name to the given value.
              *  <p>
-             *  The following options are currently supported: defaultModel, storeBackRefs, conveter
+             *  The following options are currently supported: defaultModel, readOnly, conveter
              *  <p>
              *
              *  @param args.optionName   the name of the option to set
              *  @param args.value        the value to set
              */
             option: function( optionName, value ) {
-                if ( this.isDefinedNotNull( optionName) ) {
-                    state.opts[ optionName] = value; }
+                if ( value === undefined ) {
+                    state.opts[ optionName] = value;
+                } else { return state.opts[ optionName]; }
             }
     });
 
     this.reset();
-}
+};
 
 Horn.prototype = {
-    bind: function( fn, ctx ) {
+    scope: function( fn, ctx ) {
         return function() { return fn.apply(ctx, arguments); };
     },
 
@@ -372,7 +405,8 @@ Horn.prototype = {
      */
     copyInto: function( args ) {
         var val;
-        this.each( args.props ? args.props : args.dest, function( i, n ) {
+        this.each( this.isDefinedNotNull( args.props) === true  ?
+            args.props : args.dest, function( i, n ) {
             if ( args.src.hasOwnProperty( i) ) {
                 val = args.src[ i];
                 if ( val !== undefined ) { args.dest[ i] = val; }
@@ -390,7 +424,7 @@ Horn.prototype = {
 
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }
-        $.each( collection, ctx ? this.bind( fn, ctx) : fn);
+        $.each( collection, ctx ? this.scope( fn, ctx) : fn);
     },
 
     getComponentData: function( node, parentPath ) {
@@ -525,4 +559,11 @@ if ( !Node ) {
         });
 }
 
-horn = new Horn();
+$(function() {
+    horn = new Horn();
+    if ( horn.option( "readOnly") === true ) {
+        horn.load();
+    } else {
+        horn.bind();
+    }
+});

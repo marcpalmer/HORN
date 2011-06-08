@@ -9,7 +9,7 @@ The horn-jquery.js file defines the Horn class which you instantiate and call
 methods on:
 
 var horn = new Horn();
-var data = horn.extract();
+var data = horn.bind();
 
 This implementation uses HORN CSS classe indicators to support all browsers.
 
@@ -35,7 +35,7 @@ The return value of the extract() function is the root of your data model.
 
 Available options include:
 
-* storeBackRefs - set this to true if you need to re-populate the UI from the
+* readOnly - set this to true if you need to re-populate the UI from the
   horn model.
 
 * converters - a map of type names to objects implementing toText and fromText
@@ -44,7 +44,7 @@ Available options include:
 To define a custom type converter you can do the following:
 
 var data = horn.extract({
-	storeBackRefs:true,
+	readOnly:true,
 	converters: {
 		date: function() {
 		    this.toText = function( value, key, pattern ) { ... };

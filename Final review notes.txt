@@ -15,9 +15,9 @@
 
 Public API is just:
 
-extract()
+bind()
 updateDOM()
 newFromTemplate()
-getModel()
+model()
 option()
 reset()

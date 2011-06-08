@@ -430,8 +430,8 @@ test(
                     newNotice: { title: 'testTitle' }
                 };
                 horn.option( "defaultModel", model);
-                horn.extract();
-                var extractedModel = horn.getModel();
+                horn.bind();
+                var extractedModel = horn.model();
                 ok( extractedModel === model);
 
                 ok( isObject( extractedModel));
