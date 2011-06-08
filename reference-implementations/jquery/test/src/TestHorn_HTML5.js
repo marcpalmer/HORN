@@ -1030,7 +1030,8 @@ test(
                 model.a = false;
                 model.b = true;
                 horn.render( {rootNode: $('#root')});
-                ok( false);
+                ok( $('#div0').text() === 'false');
+                ok( $('#div1').text() === 'false');
         }});
     });
 

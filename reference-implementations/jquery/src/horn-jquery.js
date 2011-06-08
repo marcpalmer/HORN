@@ -174,11 +174,23 @@ window.Horn = function() {
 
     $.extend(
         this, {
+
+            /**
+             * Reset all internal state: the model, and opt
+             * <p>
+             * Doesn't alter the prototype at all (so stuff added from css / html5) flavours remain.
+             * <p>
+             * The html5 / css impls are NOT stateful currently.
+             */
             reset: function() {
                 state = { opts: $.extend( {}, {model: undefined,
                     storeBackRefs:  true})};
             },
 
+            /**
+             * Remove component bindings for those elements with a property path
+             * that starts with args.stem. Regex supported i think.
+             */
             removeComponents: function( args ) {
                 this.each( state.components, function( i, n ) {
                     if ( this.startsWith( i, args.stem ) ) {
@@ -199,7 +211,7 @@ window.Horn = function() {
              *  <p>
              *  If multiple elements with the same effective property path are
              *  encountered, the final such one takes effect.
-             *  <p>
+             *
              *
              *  @param args.selector    optional jQuery selector used to select
              *      the nodes to extract a Horn data model from, overrides
@@ -282,18 +294,13 @@ window.Horn = function() {
             },
 
             /**
-             *  Refresh the DOM nodes with the current model values.
+             *  Refresh DOM nodes with their current model values.
              *  <p>
-             *  Only DOM nodes that produced data on a previous call to
-             *  <code>horn.extract( ... )</code> will be considered for
-             *  updating.
-             *  <p>
-             *  <strong>Important: </strong>In addition, only DOM nodes that
-             *  were extracted whilst the <strong>storeBackRefs</strong> option
-             *  was set will be considered for updating.
              *
              *  @param args.rootNode   optional DOM node such that if supplied,
              *      only nodes under this node will be updated.
+             *
+             *  @return a list of nodes that had their sreen value changed
              */
             render: function( args ) {
                 var alteredNodes = [];
@@ -307,13 +314,27 @@ window.Horn = function() {
                 return alteredNodes;
             },
 
+            /**
+             *  Return the Horn model.
+             *
+             *  @return the current model
+             */
             getModel: function() {
                 return state.model;
             },
 
-            option: function( optionName, arg0 ) {
+            /**
+             *  Set an option by name to the given value.
+             *  <p>
+             *  The following options are currently supported: defaultModel, storeBackRefs, conveter
+             *  <p>
+             *
+             *  @param args.optionName   the name of the option to set
+             *  @param args.value        the value to set
+             */
+            option: function( optionName, value ) {
                 if ( this.isDefinedNotNull( optionName) ) {
-                    state.opts[ optionName] = arg0; }
+                    state.opts[ optionName] = value; }
             }
     });
 
