@@ -27,7 +27,7 @@ horn-jquery-HTML5.js
 The data will be parsed out and accessible via:
 {% highlight javascript %}
 var yourModel = horn.model();
-{% endhighlight }
+{% endhighlight %}
 
 By default HORN will parse the data and bind to the DOM elements so that you
 can update the content of DOM nodes when you change your model data so that
@@ -36,7 +36,7 @@ option before the code runs to extract the data. Simply add this code to the &lt
     
 {% highlight javascript %}
 horn.option('readOnly', true);
-{% endhighlight }
+{% endhighlight %}
     
 ## Methods of the Horn class
 
@@ -110,6 +110,17 @@ horn.model().books[3].publishers.splice(1, 1);
 
 Returns the Horn data model that was extracted. You change values in this
 model and can later call updateDOM() to have these propagated back to the UI.
+
+Example:
+
+{% highlight javascript %}
+$( function() {
+    var ourModel = horn.model();
+    if (ourModel.userHasRegistered != true) {
+        window.alert('You must register first!');
+    }
+});
+{% endhighlight %}
 
 ### option(optionName) and option(optionName, value)
 
