@@ -1,4 +1,3 @@
-
 module( "TestHorn - Horn Miscellany");
 
 test(
@@ -64,30 +63,6 @@ test(
         ok( horn.extractCSSPropertyPath.call( horn, node) === 'expected');
     });
 
-
-
-
-module( "TestHorn - {components:X}");
-
-test(
-    "{components:X} - No components if readOnly specified as true.",
-    function() {
-        dataTest( {
-            nodes: [ {
-                target: $('body'),
-                nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
-            ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key");
-                horn.option( "readOnly", "true");
-
-                var model = horn.bind();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
-                ok( model.key === -1);
-                ok( false);
-            }});
-    });
 
 
 
@@ -1103,7 +1078,6 @@ test(
                 ok( horn.isAttached( $('#root')));
                 ok( horn.isAttached( $('#root2')));
                 setPatternConverter( horn, "BooleanConverter", "a|b");
-
                 model = horn.bind();
                 ok( isObject( model));
                 ok( model.a === true);
@@ -1393,7 +1367,6 @@ test(
 
 
 
-
 module( "From Template");
 
 test(
@@ -1409,7 +1382,6 @@ test(
                             '    <div class="_a-b-c"><span class="_d"></span></div>' +
                             '</div>')}],
             callback: function( horn ) {
-                horn.name = 'test';
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';

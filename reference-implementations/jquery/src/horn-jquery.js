@@ -7,18 +7,17 @@
 Horn = function() {
     var state;
 
-    var setDefaultModel = function() {
-        if ( !state.model &&
-            (state.opts.hasOwnProperty( 'defaultModel')) ) {
+    var setDefaultModel = this.scope( function() {
+        if ( !this.isDefinedNotNull( state.model)
+            && state.opts.hasOwnProperty( 'defaultModel') ) {
             state.model = state.opts.defaultModel;
         }
-    };
+    }, this);
 
     var setDefaultArgs = this.scope( function( args ) {
-        var existingArgs = (this.definesArgument( args, 'args') === false) ?
-            {} : args.args;
+        var existingArgs = !this.definesArgument( args, 'args') ? {} : args.args;
         if ( this.definesArgument( args, 'defaults') ) {
-            $.extend( args, defaults);
+            $.extend( existingArgs, defaults);
         }
         return existingArgs;
     }, this);
@@ -31,11 +30,11 @@ Horn = function() {
             rv = {ref: state.model, key: tokens[ length - 1]};
             tokens.length = tokens.length - 1;
             this.each( tokens, function( i, n ) {
-                if ( this.isDefinedNotNull( rv.ref) === true ) {
+                if ( this.isDefinedNotNull( rv.ref) ) {
                     if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
                 } else { return false; }
             }, this);
-            if ( this.isDefinedNotNull( rv.ref) === false ) { rv = undefined; }
+            if ( !this.isDefinedNotNull( rv.ref) ) { rv = undefined; }
         }
         return rv;
     }, this);
@@ -46,7 +45,7 @@ Horn = function() {
         var subContext;
         if ( typeof path === 'string' ) {
             path = this.pathToTokens( {path: path});
-            if ( this.isDefinedNotNull( state.model) === true ) {
+            if ( !this.isDefinedNotNull( state.model) ) {
                 state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
             }
             parentContext = state.model;
@@ -73,7 +72,7 @@ Horn = function() {
         if ( this.startsWith( args.path, "-") ) {
             args.path = args.path.substring( 1);
         }
-        return ( this.isDefinedNotNull( converter) === true ) ?
+        return this.isDefinedNotNull( converter) ?
             converter.call( this, args) : undefined;
     }, this);
 
@@ -84,16 +83,16 @@ Horn = function() {
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
-        if ( (args.readOnly === true) && (!args.isJSON) ) {
-            if ( this.isDefinedNotNull( details) === true ) {
+        if ( (state.opts.readOnly === false) && (!args.isJSON) ) {
+            if ( this.isDefinedNotNull( details) ) {
                 args.context = details.context;
                 args.key = details.key;
             }
 
-            if ( this.isDefinedNotNull( state.components) === true ) {
+            if ( !this.isDefinedNotNull( state.components) ) {
                 state.components = {}; }
             rv = {node: args.node, value: args.value};
-            if ( this.isDefinedNotNull( args.context) === true ) {
+            if ( this.isDefinedNotNull( args.context) ) {
                 rv.context = args.context;
                 rv.key = args.key;
             }
@@ -108,7 +107,7 @@ Horn = function() {
                 var modelValue;
                 var textValue;
                 var ref = getModelReference( newArgs);
-                if ( this.isDefinedNotNull( ref) === true )  {
+                if ( this.isDefinedNotNull( ref) )  {
                     modelValue = ref.ref[ ref.key];
                     textValue = convert( {
                         value: modelValue,
@@ -136,12 +135,11 @@ Horn = function() {
 
     var addJSONComponents = this.scope(
         function( args ) {
-            var defaults = {type:  'fromJSON', node:  args.node,
-                readOnly: args.readOnly};
+            var defaults = {type:  'fromJSON', node:  args.node};
             var addJSONHelper = this.scope( function( vargs ) {
                 var oldValue = vargs.value;
                 vargs.value = convert( vargs);
-                if ( this.isDefinedNotNull( vargs.value) === false ) {
+                if ( !this.isDefinedNotNull( vargs.value) ) {
                     vargs.value = oldValue;
                 }
                 addComponent( vargs);
@@ -173,7 +171,7 @@ Horn = function() {
                     path:  args.path,
                     type:  'toText',
                     node: component.node});
-                if ( this.isDefinedNotNull( textValue) === false) {
+                if ( !this.isDefinedNotNull( textValue) ) {
                     textValue = modelValue + "";
                 }
                 this.setDOMNodeValue( {node: component.node, value: textValue});
@@ -192,12 +190,11 @@ Horn = function() {
         this.each( rootNodes,
             function( i, n ) { this.visitNodes( n, '',
                 function( n, path ) {
-                    if ( _this.hasRootIndicator( { n: n}) === true ) {
+                    if ( _this.hasRootIndicator( { n: n}) ) {
                         return false; }
                     var componentData = _this.getComponentData( n, path);
                     if ( componentData === false ) {
                         return true; }
-                    componentData.readOnly = args.readOnly;
                     if ( componentData.isJSON === false ) {
                         componentData.value = convert( {
                             value: componentData.text,
@@ -205,8 +202,7 @@ Horn = function() {
                             type:  'fromText',
                             node:  componentData.node
                         });
-                        if ( _this.isDefinedNotNull(
-                            componentData.value) === false ) {
+                        if ( !_this.isDefinedNotNull( componentData.value) ) {
                             componentData.value = componentData.text;
                         }
                         addComponent( componentData);
@@ -244,36 +240,11 @@ Horn = function() {
                         delete state.components[ i]; } }, this);
             },
 
-            /**
-             *  Extract HORN data from the DOM and build a data model from it.
-             *  <p>
-             *  After extraction the model can be retrieved using
-             *  horn.model(),
-             *  this function also returns the model.
-             *  <p>
-             *  Data is extracted from the DOM either by locating all Horn
-             *  'root nodes' and then traversing them for data. Alternatively,
-             *  the DOM nodes to traverse can be specified by either a jQuery
-             *  selector or list of elements.
-             *  <p>
-             *  If multiple elements with the same effective property path are
-             *  encountered, the final such one takes effect.
-             *
-             *
-             *  @param args.selector    optional jQuery selector used to select
-             *      the nodes to extract a Horn data model from, overrides
-             *      default mechanism when supplied
-             *  @param args.rootNodes   optional object of nodes that can be
-             *      traversed using <code>jQuery.each( ... )</code> use to
-             *      extract a Horn data model from, overrides default mechanism
-             *      when supplied.
-             */
-
              /**
               * load and no bind
               */
              load: function( args ) {
-                return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
+                return extract( setDefaultArgs( {args: args}));
              },
 
              /**
@@ -299,21 +270,20 @@ Horn = function() {
                 var template;
                 var pathStem;
                 var components = [];
-                if ( this.definesArgument( args, 'template') === true ) {
+                if ( this.definesArgument( args, 'template') ) {
                     template = args.template;
                 } else {
                     template = $(args.selector).clone();
                     template.removeAttr( "id");
                 }
 
-                if ( this.definesArgument( args, 'id') === true ) {
+                if ( this.definesArgument( args, 'id') ) {
                     template.attr( "id", args.id);
                 }
 
                 setDefaultModel();
 
-                pathStem = this.definesArgument( args, 'path') === true ?
-                    args.path : '';
+                pathStem = this.definesArgument( args, 'path') ? args.path : '';
 
                 this.visitNodes( template, pathStem,
                     this.scope( function( n, path ) {
@@ -358,14 +328,14 @@ Horn = function() {
             /**
              *  Set an option by name to the given value.
              *  <p>
-             *  The following options are currently supported: defaultModel, readOnly, conveter
+             *  The following options are currently supported: defaultModel, readOnly, converter
              *  <p>
              *
              *  @param args.optionName   the name of the option to set
              *  @param args.value        the value to set
              */
             option: function( optionName, value ) {
-                if ( value === undefined ) {
+                if ( value !== undefined ) {
                     state.opts[ optionName] = value;
                 } else { return state.opts[ optionName]; }
             }
@@ -405,7 +375,7 @@ Horn.prototype = {
      */
     copyInto: function( args ) {
         var val;
-        this.each( this.isDefinedNotNull( args.props) === true  ?
+        this.each( this.isDefinedNotNull( args.props) ?
             args.props : args.dest, function( i, n ) {
             if ( args.src.hasOwnProperty( i) ) {
                 val = args.src[ i];
@@ -485,7 +455,7 @@ Horn.prototype = {
         var componentData = this.getComponentData( node, path);
         if ( componentData !== false ) {
             key = this.pathIndicator({n: node});
-            if ( this.isAdjustingPath( key) === true ) {
+            if ( this.isAdjustingPath( key) ) {
             componentData.path = (path + '-' + key); }
             if ( !componentData.isJSON  ) {
             components.push( componentData); }
@@ -561,7 +531,7 @@ if ( !Node ) {
 
 $(function() {
     horn = new Horn();
-    if ( horn.option( "readOnly") === true ) {
+    if ( horn.option( "readOnly") === false ) {
         horn.load();
     } else {
         horn.bind();
