@@ -36,8 +36,9 @@ $ git clone git://github.com/marcpalmer/HORN
 [NoticeLocal](http://noticelocal.com)  
 [Grails HORN Plugin](http://grails.org/plugin/horn]) - Resources and tags for Grails developers to use HORN
 
-## Authors / Contact
+## Contributors / Contact
 
-[Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
-[Marc Palmer](http://github.com/marcpalmer) (marc@anyware.co.uk)
+jQuery Reference Implementation: [Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk)  
+Specification: [Marc Palmer](http://github.com/marcpalmer) ([Contact](http://www.anyware.co.uk/marc) [Twitter](http://twitter.com/wangjammer5))
+Logo: [Patricia Furtado](http://pap-l.com) ([Twitter](http://twitter.com/patriciafurtado))
 
