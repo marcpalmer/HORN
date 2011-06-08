@@ -126,5 +126,6 @@ $(function() {
     $('a.refreshButton').click( function( event ) {
         horn.render();
         event.stopPropagation();
+        return false;
     });
 });
