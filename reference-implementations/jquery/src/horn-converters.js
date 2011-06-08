@@ -48,4 +48,3 @@ hornConverter.addConverter( {name: "BooleanConverter", converter:
     function( args ) { return args.type === 'fromText' ?
         args.value.toLowerCase() === 'true' : args.value + "";
 }});
-

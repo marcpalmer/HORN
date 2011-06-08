@@ -1,3 +1,38 @@
+
+module( "TestHorn - Horn Miscellany");
+
+test(
+    "Features - Test horn has hasRootIndicator function.",
+    function() {
+        ok( isFunction( new Horn().hasRootIndicator));
+    }
+);
+
+test(
+    "Features - Test horn has jsonIndicator function.",
+    function() {
+        ok( isFunction( new Horn().jsonIndicator));
+    }
+);
+
+test(
+    "Features - Test horn has pathIndicator function.",
+    function() {
+        ok( isFunction( new Horn().pathIndicator));
+    }
+);
+
+test(
+    "Features - Test horn has rootNodes function.",
+    function() {
+        var horn = new Horn();
+        ok( isFunction( horn.rootNodes));
+    }
+);
+
+
+
+
 module( "TestHorn - hornConverters");
 
 test(
@@ -27,17 +62,17 @@ test(
 
 
 
-module( "TestHorn - Horn.features.extractCSSPropertyPath()");
+module( "TestHorn - extractCSSPropertyPath()");
 
 test(
-    "Horn.prototype.extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
+    "extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
     function() {
         var horn = new Horn();
-        var badPrefix = String.fromCharCode( horn.features.cssPrefix.charCodeAt( 0) + 1);
+        var badPrefix = String.fromCharCode( horn.cssPrefix.charCodeAt( 0) + 1);
         ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
         var node = $('<div class="' + badPrefix + '" />');
 
-        ok( horn.features.extractCSSPropertyPath.call( horn, node) === null);
+        ok( horn.extractCSSPropertyPath.call( horn, node) === null);
     });
 
 test(
@@ -46,16 +81,16 @@ test(
         var horn = new Horn();
         var node = $('<div />');
 
-        ok( horn.features.extractCSSPropertyPath.call( horn, node) === null);
+        ok( horn.extractCSSPropertyPath.call( horn, node) === null);
     });
 
 test(
     "Horn.prototype.extractCSSPropertyPath() - extracts known good key.",
     function() {
         var horn = new Horn();
-        var node = $('<div class="' + horn.features.cssPrefix + 'expected" />');
+        var node = $('<div class="' + horn.cssPrefix + 'expected" />');
 
-        ok( horn.features.extractCSSPropertyPath.call( horn, node) === 'expected');
+        ok( horn.extractCSSPropertyPath.call( horn, node) === 'expected');
     });
 
 
@@ -153,6 +188,7 @@ module( "TestHorn - Model Tests");
             }
     }
 */
+
 
 
 
@@ -1102,6 +1138,24 @@ test(
                 ok( model.b === false);
                 model.a = false;
                 model.b = true;
+                horn.render( {rootNode: $('#root')});
+                ok( false);
+        }});
+    });
+
+test(
+    "Model Tests - Single node doing the whole job non JSON.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<span class="horn _propName">true</span>')}
+            ],
+            callback: function( horn ) {
+                setPatternConverter( horn, "BooleanConverter", "propName");
+                var model = horn.extract();
+                model = horn.extract();
+                ok( isObject( model));
+                ok( model.propName === true);
         }});
     });
 
@@ -1184,6 +1238,31 @@ test(
         }});
     });
 
+test(
+    "Population - testing the correct nodes are reruned from populate, in the correct order.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_key1">a</span><span class="_key2">b</span></div>'),}
+            ],
+            callback: function( horn ) {
+                var model = horn.extract();
+                ok( horn.isAttached( $('._key1')));
+                ok( horn.isAttached( $('._key2')));
+                ok( isObject( model));
+                ok( model.key1 === 'a');
+                ok( model.key2 === 'b');
+                model.key1 = 'b';
+                model.key2 = 'a';
+                var alteredNodes = horn.render();
+                ok( alteredNodes.length === 2);
+                ok( $('._key1').text() === 'b');
+                ok( $('._key2').text() === 'a');
+                ok( $(alteredNodes[ 0]).text() === 'b');
+                ok( $(alteredNodes[ 1]).text() === 'a');
+
+        }});
+    });
 
 
 
@@ -1477,10 +1556,6 @@ test(
                 horn.debug = true;
                 ok( horn.isAttached( $('.terms')));
                 var date = new Date();
-
-
-
-
                 horn.option( "defaultModel", {
                     place:          'where',
                     time:           'time',
