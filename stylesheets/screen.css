@@ -27,4 +27,4 @@ td { padding: 8px;  border-bottom: 1px solid #eee }
 .site { width: 800px; }
 ol { margin-left: 40px; }
 ul { margin-left: 40px; }
-img.diagram { text-align: center;}
+img.diagram { margin: 10px auto 10px auto; display: block; }
