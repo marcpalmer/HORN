@@ -17,7 +17,7 @@ Horn = function() {
     var setDefaultArgs = this.scope( function( args ) {
         var existingArgs = !this.definesArgument( args, 'args') ? {} : args.args;
         if ( this.definesArgument( args, 'defaults') ) {
-            $.extend( existingArgs, defaults);
+            $.extend( existingArgs, args.defaults);
         }
         return existingArgs;
     }, this);
@@ -83,7 +83,7 @@ Horn = function() {
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
-        if ( (state.opts.readOnly === false) && (!args.isJSON) ) {
+        if ( (args.readOnly === false) && (!args.isJSON) ) {
             if ( this.isDefinedNotNull( details) ) {
                 args.context = details.context;
                 args.key = details.key;
@@ -135,7 +135,8 @@ Horn = function() {
 
     var addJSONComponents = this.scope(
         function( args ) {
-            var defaults = {type:  'fromJSON', node:  args.node};
+            var defaults = {type:  'fromJSON', node:  args.node,
+                readOnly: args.readOnly};
             var addJSONHelper = this.scope( function( vargs ) {
                 var oldValue = vargs.value;
                 vargs.value = convert( vargs);
@@ -195,6 +196,8 @@ Horn = function() {
                     var componentData = _this.getComponentData( n, path);
                     if ( componentData === false ) {
                         return true; }
+
+                    componentData.readOnly = args.readOnly;
                     if ( componentData.isJSON === false ) {
                         componentData.value = convert( {
                             value: componentData.text,
@@ -238,19 +241,19 @@ Horn = function() {
                         delete state.components[ i]; } }, this);
             },
 
-             /**
-              * load and no bind
-              */
-             load: function( args ) {
-                return extract( setDefaultArgs( {args: args}));
-             },
+            /**
+            * load and no bind
+            */
+            load: function( args ) {
+                return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
+            },
 
-             /**
-              * load and bind
-              */
-             bind: function( args ) {
-                return extract( setDefaultArgs( {args: args}));
-             },
+            /**
+            * bind and load
+            */
+            bind: function( args ) {
+                return extract( setDefaultArgs( {args: args, defaults: {readOnly: false}}));
+            },
 
             /**
              * Create a new UI element by cloning an existing template that is
