@@ -6,3 +6,5 @@ This is a specification for inlining model data into your HTML pages, which can 
 This saves duplication of data and AJAX round-trip on first page load, and means you have SEO-friendly data in your pages.
 
 Included is a specification for the HORN data-weaving conventions, and a jQuery reference implementation for CSS and HTML5 data-weaving.
+
+See http://horn.io
