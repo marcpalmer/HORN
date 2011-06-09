@@ -521,7 +521,8 @@ Horn.prototype = {
      *  @param args the object to check for the given property
      *  @param propertyName the name of the property to check for
      *
-     *  @return <code>true</code> if the arguments do define the given property, <code>false</code> otherwise
+     *  @return <code>true</code> if the arguments do define the given property,
+     *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
