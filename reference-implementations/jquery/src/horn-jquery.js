@@ -796,8 +796,9 @@ Horn.prototype = {
     }
 };
 
+var horn = new Horn();
+
 $(function() {
-    horn = new Horn();
     if ( horn.option( "readOnly") === true ) {
         horn.load();
     } else {
