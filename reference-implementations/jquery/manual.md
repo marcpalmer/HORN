@@ -155,6 +155,24 @@ $( function() {
 });
 {% endhighlight %}
 
+### cloneAndBind(args)
+
+This method will clone a DOM element, which may be hidden in your UI waiting
+for use, which has been marked up with HORN indicators. It will then populate
+the new DOM node and its descendents using this information, pulling values in
+from the model. 
+
+This is useful for UIs where the user can create new "entries" that follow a
+DOM template. You update your model with the data, and then call this function
+to create the on-screen represenation.
+
+Arguments:
+
+* path -
+* template -
+* id -
+* selector
+
 ### option(optionName) and option(optionName, value)
 
 Call this to get/set an option on the HORN parser instance. Valid options are:
