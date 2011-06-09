@@ -1,14 +1,19 @@
 ---
-title: HORN jQuery 1.0 Reference Implementation
+title: HORN jQuery Reference Implementation 1.0 
 layout: default
 ---
 
-HORN 1.0 jQuery Reference implementation
+HORN jQuery Reference Implementation 1.0
 ========================================
 
-The jQuery reference implementation provides you with tools to parse HORN data
-from your DOM and repopulate DOM nodes using that data, along with support for
-type transformations when moving data between model and DOM, and cloning DOM
+This is a reference implementation of a parser and UI populator for the [HORN
+Specification](http://horn.io/horn/spec/horn-specification-1.0.md). You must
+markup your HTML with "indicators" according to the HORN Specification in
+order for this library to function.
+
+The jQuery reference implementation provides you with tools to [parse HORN data
+from your DOM](http://horn.io/) and repopulate DOM nodes using that data, along with support for
+type conversions when moving data between model and DOM, and cloning DOM
 templates and populating them with data.
 
 The horn-jquery.js file defines the Horn class which you instantiate and call
@@ -41,11 +46,12 @@ The data will be automatically parsed out by the default "horn" instance and acc
 var yourModel = horn.model();
 {% endhighlight %}
 
-By default HORN will parse the data and bind to the DOM elements so that you
-can update the content of DOM nodes when you change your model data so that
-the user sees changes. If your UI is read-only then you can set the readOnly
-option before the code runs to extract the data. Simply add this code to the
-&lt;head&gt; section of your page after including the horn jquery JS file:
+By default HORN jQuery reference implementation will parse the data and bind
+to the DOM elements so that you can update the content of DOM nodes when you
+change your model data so that the user sees changes. If your UI is read-only
+then you can set the readOnly option before the code runs to extract the data.
+Simply add this code to the &lt;head&gt; section of your page after including
+the horn jquery JS file:
 
 {% highlight javascript %}
 horn.option('readOnly', true);
