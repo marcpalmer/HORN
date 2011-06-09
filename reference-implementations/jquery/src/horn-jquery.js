@@ -798,7 +798,7 @@ Horn.prototype = {
 
 $(function() {
     horn = new Horn();
-    if ( horn.option( "readOnly") === false ) {
+    if ( horn.option( "readOnly") === true ) {
         horn.load();
     } else {
         horn.bind();
