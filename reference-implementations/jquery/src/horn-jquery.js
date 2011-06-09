@@ -47,6 +47,33 @@ var Horn = function() {
     }, this);
 
     /**
+     *  xxxx
+     *  <p>
+     *
+     *  @param node
+     *  @param path
+     *  @param components
+     *
+     *  @return
+     *
+     *  @private
+     *  @function
+     */
+    var handleTemplateBinding = this.scope( function( node, path, components ) {
+        var key;
+        var componentData = this.getBindingData( node, path);
+        if ( componentData !== false ) {
+            key = this.pathIndicator({n: node});
+            if ( this.isAdjustingPath( key) ) {
+            componentData.path = (path + '-' + key); }
+            if ( !componentData.isJSON  ) {
+            components.push( componentData); }
+            return false;
+        }
+        return true;
+    }, this),
+
+    /**
      * @private
      * @function
      */
@@ -249,7 +276,7 @@ var Horn = function() {
                 function( n, path ) {
                     if ( _this.hasRootIndicator( { n: n}) ) {
                         return false; }
-                    var componentData = _this.getComponentData( n, path);
+                    var componentData = _this.getBindingData( n, path);
                     if ( componentData === false ) {
                         return true; }
 
@@ -326,20 +353,18 @@ var Horn = function() {
     };
 
     /**
-     * Create a new UI element by cloning an existing template that is
-     * marked up with HORN indicators, and populate the DOM nodes with
-     * data from the specified property path.
-     *
-     * The args parameter supports the following arguments:
-     *
-     * template - A jQuery object representing the DOM template to clone
-     * id - The new "id" attribute value for the cloned DOM node
-     * path - The property path within the model, to use to populate
-     * this DOM node and its descendants
+     *  Create a new UI element by cloning an existing template that is
+     *  marked up with HORN indicators, and populate the DOM nodes with
+     *  data from the specified property path.
      *
      *  @param {Object} [args] all arguments for this function
+     *  @param {String} args.path the property path within the model, to use to populate
+     *      this DOM node and its descendants
+     *  @param [args.template] a jQuery object representing the DOM template to clone
+     *  @param [args.id] the new "id" attribute value for the cloned DOM node
+     *  @param {String} [args.selector]
      *
-     *  @return the cloned template
+     *  @return the newly cloned and populated template
      *
      *  @public
      */
@@ -364,7 +389,7 @@ var Horn = function() {
 
         this.visitNodes( template, pathStem,
             this.scope( function( n, path ) {
-                return this.handleTemplateValue( n, path, components);
+                return handleTemplateBinding( n, path, components);
             }, this));
 
         addBindings({components: components});
@@ -376,9 +401,10 @@ var Horn = function() {
      *  Update all bound DOM nodes with their current model values.
      *
      *  @param {Object} [args] all arguments for this function
-     *  @param args.rootNode optional DOM node such that if supplied, only nodes under this node will be updated.
+     *  @param args.rootNode optional DOM node such that if supplied, only nodes
+     *      under this node will be updated.
      *
-     *  @return a list of nodes that had their sreen value changed
+     *  @return a list of nodes that had their screen values changed
      *
      *  @public
      */
@@ -408,16 +434,21 @@ var Horn = function() {
     /**
      *  Get an option's value by name, or set an option's value by name.
      *  <p>
-     *  If no value is provided, the value of the named option is returned.
+     *  If no value is provided, the value of the named option is returned,
+     *      otherwise the return value is undefined.
      *  <p>
-     *
-     *  The following options are currently supported: defaultModel, readOnly, converter
-     *  <p>
+     *  The following options are currently supported:<br>
+     *  <ul>
+     *      <li><strong>defaultModel</strong> - for setting an explicit default model (<code>Object</code> or <code>Array</code>)</li>
+     *      <li><strong>readOnly</strong> - </li>
+     *      <li><strong>converter</strong> - </li>
+     *  </ul>
      *
      *  @param {Object} optionName the name of the option to set
      *  @param {Object} [value] the value to set
      *
-     *  @return
+     *  @return the value of the named option if no value supplied else
+     *      <code>undefined</code>
      *
      *  @public
      */
@@ -499,30 +530,19 @@ Horn.prototype = {
             this.isDefinedNotNull( args[ propertyName]);
     },
 
-    /**
-     *  xxxx
-     *  <p>
-     *
-     *  @param object
-     *  @param property
-     *
-     *  @return <code>true</code> if , <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    didRemoveProperty: function( object, property ) {
-        return object.hasOwnProperty( property) && delete object[ property];
-    },
 
     /**
-     *  xxxx
+     *  Calls a callback function for each of an object's properties.
      *  <p>
+     *  An optional scope context can be provided which will provide the 'this'
+     *  for the callback function.
+     *  <p>
+     *  The callback function should have the following signature
+     *  <strong>( i, n )</strong> : where i is the propertyName and n is the item.
      *
-     *  @param collection
-     *  @param fn
-     *  @param ctx
-     *
-     *  @return
+     *  @param {Object} collection the object to iterate over
+     *  @param fn the callback function which will be called for each item
+     *  @param {Object} [ctx] the scope under which to execute the callback.
      *
      *  @methodOf Horn.prototype
      */
@@ -542,7 +562,7 @@ Horn.prototype = {
      *
      *  @methodOf Horn.prototype
      */
-    getComponentData: function( node, parentPath ) {
+    getBindingData: function( node, parentPath ) {
         var theContained;
         var nodeName;
         var path = this.pathIndicator({n: node});
@@ -575,11 +595,14 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
+     *  Retrieves a DOM node's displayed text.
      *  <p>
+     *  The value retrieved is HTML un-escaped.
      *
      *  @param {Object} args all arguments for this function
-     *  @param
+     *  @param args.node the node from which to retrieve text
+     *
+     *  @return {String} the given node's displayed text
      *
      *  @methodOf Horn.prototype
      */
@@ -590,54 +613,6 @@ Horn.prototype = {
             ((nodeName === "input") || (nodeName === 'textarea')) ?
                 jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
                 jNode.text()));
-    },
-
-    /**
-     *  xxxx
-     *  <p>
-     *
-     *  @param element
-     *
-     *  @return
-     *
-     *  @methodOf Horn.prototype
-     */
-    getIfSingleTextNode: function( element ) {
-        var theContained;
-        var contained = $($(element).contents());
-        if ( contained.size() === 1 ) {
-            theContained = contained[ 0];
-            if ( theContained.nodeType === Node.TEXT_NODE ) {
-                return unescape( theContained.nodeValue);
-            }
-        }
-        return null;
-    },
-
-    /**
-     *  xxxx
-     *  <p>
-     *
-     *  @param node
-     *  @param path
-     *  @param components
-     *
-     *  @return
-     *
-     *  @methodOf Horn.prototype
-     */
-    handleTemplateValue: function( node, path, components ) {
-        var key;
-        var componentData = this.getComponentData( node, path);
-        if ( componentData !== false ) {
-            key = this.pathIndicator({n: node});
-            if ( this.isAdjustingPath( key) ) {
-            componentData.path = (path + '-' + key); }
-            if ( !componentData.isJSON  ) {
-            components.push( componentData); }
-            return false;
-        }
-        return true;
     },
 
     /**
@@ -655,29 +630,30 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
-     *  <p>
+     *  Is the given node attached to the DOM?
      *
-     *  @param ref
+     *  @param node a DOM element to check for being attached
      *
-     *  @return <code>true</code> if , <code>false</code> otherwise
+     *  @return <code>true</code> if the elment is attached,
+     *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
     isAttached: function( node ) { return $(node).parents(':last').is('html'); },
 
     /**
-     *  xxxx
-     *  <p>
+     *  Is the given value neither, <code>undefined</code> nor <code>null</code>?
      *
-     *  @param args
+     *  @param args value the value to check
      *
-     *  @return <code>true</code> if , <code>false</code> otherwise
+     *  @return <code>true</code> if the value is neither,
+     *      <code>undefined</code> nor <code>null</code>,
+     *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
-    isDefinedNotNull: function( ref ) {
-        return (ref !== undefined) && (ref !== null);
+    isDefinedNotNull: function( value ) {
+        return (value !== undefined) && (value !== null);
     },
 
     /**
@@ -694,6 +670,22 @@ Horn.prototype = {
     pathToTokens: function( args ) {
         return (this.startsWith( args.path, "-") ?
             args.path.substring( 1) : args.path).split( "-");
+    },
+
+    /**
+     *  Removes a named property from an object if it exists and is non
+     *  prototypical.
+     *
+     *  @param {Object} object the object to remove the property from
+     *  @param {String} propName the name of the property to remove
+     *
+     *  @return <code>true</code> if the property was defined and was removed,
+     *      <code>false</code> otherwise
+     *
+     *  @methodOf Horn.prototype
+     */
+    removeProperty: function( object, propName ) {
+        return object.hasOwnProperty( propName) && delete object[ propName];
     },
 
     /**
@@ -741,20 +733,22 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     splitEach: function( object, delimiter, callback ) {
-        this.each( object.toString().split( delimiter !== undefined ?
+        this.each( object.toString().split( this.isDefinedNotNull( delimiter) ?
             delimiter : " "), function( i, token ) {
                 if ( token.trim() !== '' ) { callback( token); }
         });
     },
 
     /**
-     *  xxxx
+     *  Is the given <code>String</code> value prefixed by a given stem.
      *  <p>
+     *  'Stem' can be a regular expression pattern.
      *
-     *  @param value
-     *  @param stem
+     *  @param value the value to test
+     *  @param stem the candidate prefix for the given value
      *
-     *  @return <code>true</code> if , <code>false</code> otherwise
+     *  @return <code>true</code> if the given <code>String</code> is prefixed,
+     *      by the given stem, <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */

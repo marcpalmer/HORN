@@ -1281,8 +1281,8 @@ test(
             callback: function( horn ) {
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
-                ok( horn.getComponentData( $('#grabber1')[0], '', true) === false);
-                ok( isObject( horn.getComponentData( $('#grabber2')[0], '')));
+                ok( horn.getBindingData( $('#grabber1')[0], '', true) === false);
+                ok( isObject( horn.getBindingData( $('#grabber2')[0], '')));
                 model.a.b.c.f = 'updatedValue';
                 var populatedTemplate = horn.cloneAndBind( {
                     id: 'newID',

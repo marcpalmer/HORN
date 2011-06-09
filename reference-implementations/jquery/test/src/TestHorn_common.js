@@ -209,29 +209,29 @@ test(
 
 
 
-module( "TestHorn - Horn.didRemoveProperty()");
+module( "TestHorn - Horn.removeProperty()");
 
 test(
-    "didRemoveProperty() - that we can remove a new object's property X.",
+    "removeProperty() - that we can remove a new object's property X.",
     function() {
         var horn = new Horn();
 
-        ok( horn.didRemoveProperty( {"a": "b"}, "a"));
+        ok( horn.removeProperty( {"a": "b"}, "a"));
     });
 
 test(
-    "didRemoveProperty() - that we can't remove a property that doesn't exist.",
+    "removeProperty() - that we can't remove a property that doesn't exist.",
     function() {
         var horn = new Horn();
         var propertyName = "ajsdjfklsadjkfljlksadjfkljsdklfjlksadjf";
         var testObj = {};
 
         ok( testObj[ propertyName] === undefined);
-        ok( !horn.didRemoveProperty( testObj, propertyName));
+        ok( !horn.removeProperty( testObj, propertyName));
     });
 
 test(
-    "didRemoveProperty() - removal of known property is reported as have being removed and is actually removed.",
+    "removeProperty() - removal of known property is reported as have being removed and is actually removed.",
     function() {
         var testObj = {};
         ok( testObj.propertyName === undefined);
@@ -239,82 +239,8 @@ test(
         var horn = new Horn();
         testObj.propertyName = "propertyValue";
 
-        ok( horn.didRemoveProperty( testObj, "propertyName") === true);
+        ok( horn.removeProperty( testObj, "propertyName") === true);
         ok( testObj.propertyName === undefined);
-    });
-
-
-
-
-
-
-
-
-
-module( "TestHorn - Horn.getIfSingleTextNode()");
-
-test(
-    "getIfSingleTextNode() - that an empty '&lt;a/&gt;' element doesn't return anything using this function.",
-    function() {
-        var horn;
-        var node;
-        try {
-            horn = new Horn();
-            node = $('<a/>');
-            node.appendTo( $('body'));
-
-            ok( horn.getIfSingleTextNode( node) === null);
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "getIfSingleTextNode() - that applied to '&lt;a&gt;123 456&lt;/a&gt;' return the expected value '123 456'.",
-    function() {
-        var horn;
-        var node;
-        try {
-            horn = new Horn();
-            node = $('<a>123 456</a>');
-            node.appendTo( $('body'));
-
-            ok( horn.getIfSingleTextNode( node) === '123 456');
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "getIfSingleTextNode() - that applied to '&lt;a&gt; 123 456 &lt;/a&gt;' return the expected value ' 123 456 ', nice and bushy like.",
-    function() {
-        var horn;
-        var node;
-        try {
-            horn = new Horn();
-            node = $('<a> 123 456 </a>');
-            node.appendTo( $('body'));
-
-            ok( horn.getIfSingleTextNode( node) === ' 123 456 ');
-        } finally {
-            node.remove();
-        }
-    });
-
-test(
-    "getIfSingleTextNode() - that when applied to elements with more than 1 child (at least one text node), returns null.",
-    function() {
-        var horn;
-        var node;
-        try {
-            horn = new Horn();
-            node = $('<a> 123<a>a</a>456 </a>');
-            node.appendTo( $('body'));
-
-            ok( horn.getIfSingleTextNode( node) === null);
-        } finally {
-            node.remove();
-        }
     });
 
 
