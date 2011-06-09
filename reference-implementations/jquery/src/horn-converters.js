@@ -120,13 +120,13 @@ HornPatternConverter = function( args ) {
 
 var hornConverter = new HornPatternConverter({horn: horn});
 
-hornConverter.addConverter( {name: "IntegerConverter", converter:
+hornConverter.addConverter( {name: "Integer", converter:
     function( args ) {
         return args.type === 'fromText' ?
             parseInt( args.value) : args.value + "";
 }});
 
-hornConverter.addConverter( {name: "BooleanConverter", converter:
+hornConverter.addConverter( {name: "Boolean", converter:
     function( args ) {
         return args.type === 'fromText' ?
             args.value.toLowerCase() === 'true' : args.value + "";

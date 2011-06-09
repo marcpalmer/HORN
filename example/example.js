@@ -26,15 +26,15 @@
     var converterNameForNode = function( node ) {
         node = $(node);
         if ( node.hasClass( 'numberValue') ) {
-            return "IntegerConverter";
+            return "Integer";
         }
 
         if ( node.hasClass( 'dateValue') ) {
-            return "DateConverter";
+            return "Date";
         }
 
         if ( node.hasClass( 'booleanValue') ) {
-            return "BooleanConverter";
+            return "BooleanYesNo";
         }
 
         return null;
@@ -87,7 +87,7 @@
     };
 
     hornConverter.addConverter( {
-        name: "BooleanConverter",
+        name: "BooleanYesNo",
         converter: function( args ) {
             return args.type === 'fromText' ?
                 value.toLowerCase() === 'yes' :
@@ -95,16 +95,16 @@
         }});
 
     hornConverter.addConverter( {
-        name: "DateConverter",
+        name: "Date",
         converter: function( args ) {
             return args.type === 'fromText' ?
                 $.datepicker.parseDate( DATE_FORMAT, args.value) :
                 ($.datepicker.formatDate( DATE_FORMAT, args.value));
     }});
 
-    hornConverter.addPattern( { pattern: '.*Date', converterName: 'DateConverter'});
-    hornConverter.addPattern( { pattern: '.*pages', converterName: 'IntegerConverter'});
-    hornConverter.addPattern( { pattern: '.*price', converterName: 'IntegerConverter'});
+    hornConverter.addPattern( { pattern: '.*Date', converterName: 'Date'});
+    hornConverter.addPattern( { pattern: '.*pages', converterName: 'Integer'});
+    hornConverter.addPattern( { pattern: '.*price', converterName: 'Integer'});
 
 $(function() {
     $('#formattedOutput').html( render( horn.model() ));
