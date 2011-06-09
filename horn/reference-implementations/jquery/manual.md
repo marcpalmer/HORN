@@ -18,24 +18,25 @@ your data.
 You need to include a second JS file depending on whether you want to use CSS
 or HTML5 indicators:
 
-horn-jquery-CSS.js 
+horn-jquery-1.0-css.js 
 
 or
 
-horn-jquery-HTML5.js 
+horn-jquery-1.0-html5.js 
 
 For example you may include the CSS indicators and core HORN implementations like this:
 
 {% highlight html %}
 <html>
   <head>
-      <script src="js/horn-jquery.js" type="text/javascript"/>
-      <script src="js/horn-jquery-CSS.js" type="text/javascript"/>
+      <script src="js/horn-jquery-1.0.js" type="text/javascript"/>
+      <script src="js/horn-jquery-1.0-css.js" type="text/javascript"/>
   </head>
 </html>
 {% endhighlight %}
 
 The data will be automatically parsed out by the default "horn" instance and accessible via:
+
 {% highlight javascript %}
 var yourModel = horn.model();
 {% endhighlight %}
@@ -160,4 +161,58 @@ Call this to get/set an option on the HORN parser instance. Valid options are:
 
 This method will reset the Horn internal model and state, ready for re-parsing.
 
-## Definition of Type Conversions
+## Defining Type Conversions
+
+Conversion of the text found in the page to and from native JS types is
+possible using the converters mechanism. This is performed when the data is
+first loaded from the page, and also when updating the DOM to contain modified
+values from the model.
+
+You can register your own named converter functions, and specify property path
+patterns in your model that should have a given converter applied.
+
+By default, *Integer* and *Boolean* converters are supplied.
+
+The *Integer* converter will map to/from text and native JavaScript integers.
+
+The *Boolean* converter maps "true" to boolean true, and anything else to false and vice versa.
+
+### Implementing a custom converter
+
+To implement a custom converter you must pass a function to *hornConverter.add*:
+
+{% highlight javascript %}
+hornConverter.add( "Date", function( args ) {
+    return args.type === 'fromText' ?
+        $.datepicker.parseDate( DATE_FORMAT, args.value) :
+        ($.datepicker.formatDate( DATE_FORMAT, args.value));
+}});
+{% endhighlight %}
+
+This example registers a Date converter that uses jQuery UI functions to parse or format a date value.
+
+The converter functions are passed a map of arguments containing:
+
+* value - the value to convert from
+* path - the property path of the value within the model
+* type - the operation type, either 'fromText' or 'toText'
+* node - the DOM node that is bound to the property path
+
+### Telling HORN which model values should be converted
+
+Once you have added your custom converter, you can tell HORN which property
+paths should have the converter applied.
+
+To do this you just call *pattern*:
+
+{% highlight javascript %}
+hornConverter.pattern( ".*Date", "Date");
+hornConverter.pattern( ".*Count", "Integer");
+hornConverter.pattern( "books*.authors.total", "Integer");
+hornConverter.pattern( "books*.publicDomain", "Boolean");
+{% endhighlight %}
+
+The first argument is a regular expression matching the property paths you
+want to have the converter applied to, and the second argument is the name of
+the converter.
+

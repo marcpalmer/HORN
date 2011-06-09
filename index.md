@@ -50,6 +50,8 @@ $ git clone git://github.com/marcpalmer/HORN
 
 ## Contributors / Contact
 
+HORN was borne of the work done by [Spotty Mushroom](http://spottymushroom.com) on the web application [NoticeLocal](http://noticelocal.com).
+
 Code: [Chris Denman](http://github.com/wangjammer7) (cjd@anyware.co.uk | [Twitter](http://twitter.com/wangjammer7))  
 Concept &amp; docs: [Marc Palmer](http://github.com/marcpalmer) ([Contact](http://www.anyware.co.uk/marc) | [Twitter](http://twitter.com/wangjammer5))  
 Logo: [Patricia Furtado](http://patriciafurtado.net) ([Twitter](http://twitter.com/patriciafurtado))
