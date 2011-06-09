@@ -48,3 +48,8 @@ div.text {
 div.demo {
     clear: both;
 }
+
+.changed {
+    border: 3px solid yellow;
+    font-weight: bold;
+}
