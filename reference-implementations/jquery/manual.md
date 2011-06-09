@@ -7,7 +7,7 @@ HORN jQuery Reference Implementation 1.0
 ========================================
 
 This is a reference implementation of a parser and UI populator for the [HORN
-Specification](http://horn.io/horn/spec/horn-specification-1.0.md). You must
+Specification](http://horn.io/horn/spec/horn-specification-1.0.html). You must
 markup your HTML with "indicators" according to the HORN Specification in
 order for this library to function.
 
