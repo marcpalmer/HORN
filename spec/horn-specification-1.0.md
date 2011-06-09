@@ -227,9 +227,12 @@ How you access this is up to the parser implementation you use, but for
 example the jQuery reference implementation you will use something like:
 
 {% highlight javascript %}
-var horn = new Horn();
-var myModel = horn.extract();
+var myModel = horn.model();
 {% endhighlight %}
+
+The [jQuery reference
+implementation](/horn/reference-implementations/jquery/manual.html)
+automatically extracts the data on page load by default.
 
 ### Property path indicators in CSS
 
