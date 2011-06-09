@@ -107,8 +107,8 @@
     hornConverter.addPattern( { pattern: '.*price', converterName: 'IntegerConverter'});
 
 $(function() {
-    horn.extract();
-    $('#formattedOutput').html( render( horn.getModel() ));
+    horn.load();
+    $('#formattedOutput').html( render( horn.model() ));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
@@ -124,7 +124,7 @@ $(function() {
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
     $('a.refreshButton').click( function( event ) {
-        horn.render();
+        horn.updateDOM();
         event.stopPropagation();
         return false;
     });
