@@ -107,7 +107,6 @@
     hornConverter.addPattern( { pattern: '.*price', converterName: 'IntegerConverter'});
 
 $(function() {
-    horn.load();
     $('#formattedOutput').html( render( horn.model() ));
     $('.dynamic').change( function( event ) {
         var obj = $(this);
