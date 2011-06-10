@@ -10,7 +10,7 @@ $.extend( Horn.prototype, {
         var path = null;
         var _this = this;
         if ( classAttr ) {
-            Horn.prototype.splitEach( classAttr, " ",
+            Horn.prototype.splitEach( classAttr,
                 function( token ) {
                     if ( _this.startsWith( token, _this.cssPrefix) ) {
                         path = token.substring( cssPrefixLength);

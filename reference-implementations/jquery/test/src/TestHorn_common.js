@@ -146,7 +146,7 @@ test(
     function() {
         var horn = new Horn();
         var passed = true;
-        horn.splitEach( "", "", function( token ) { passed = false; });
+        horn.splitEach( "", function( token ) { passed = false; }, "");
         ok( passed);
     });
 
@@ -155,7 +155,7 @@ test(
     function() {
         var horn = new Horn();
         var passed = true;
-        horn.splitEach( " ", " ", function( token ) { passed = false; });
+        horn.splitEach( " ", function( token ) { passed = false; }, " ");
         ok( passed);
     });
 
@@ -164,11 +164,11 @@ test(
     function() {
         var horn = new Horn();
         var count = 0;
-        horn.splitEach( "    test     ", " ",
+        horn.splitEach( "    test     ",
             function( token ) {
                 count++;
                 ok( token === "test");
-            });
+            }, " ");
         ok( count === 1);
     });
 
@@ -178,10 +178,10 @@ test(
         var horn = new Horn();
         var count = 0;
         var expected = ['x', 'y', 'z'];
-        horn.splitEach( "  x    y     z", " ",
+        horn.splitEach( "  x    y     z",
             function( token ) {
                 ok( expected[ count++] === token);
-            });
+            }, " ");
     });
 
 test(
@@ -190,20 +190,20 @@ test(
         var horn = new Horn();
         var count = 0;
         var expected = ['x', 'y', 'z'];
-        horn.splitEach( "__x____y_____z_____", "_",
+        horn.splitEach( "__x____y_____z_____",
             function( token ) {
                 ok( expected[ count++] === token);
-            });
+            }, "_");
     });
 
 test(
     "Horn.prototype.splitEach() - that regex isn't supported.",
     function() {
         var horn = new Horn();
-        horn.splitEach( "abc", ".",
+        horn.splitEach( "abc",
             function( token ) {
                 ok( token === "abc");
-            });
+            }, ".");
     });
 
 

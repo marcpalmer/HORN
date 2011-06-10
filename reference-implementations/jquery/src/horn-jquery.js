@@ -1,4 +1,3 @@
-
 /**
  *  @fileOverview A reference implementation of HORN 1.0 on JS/JQuery/JQuery UI.
  *
@@ -22,122 +21,6 @@ var Horn = function() {
      *  @field
      */
     var state;
-
-    /**
-     * @private
-     * @function
-     */
-    var setDefaultModel = this.scope( function() {
-        if ( !this.isDefinedNotNull( state.model)
-            && state.opts.hasOwnProperty( 'defaultModel') ) {
-            state.model = state.opts.defaultModel;
-        }
-    }, this);
-
-    /**
-     * @private
-     * @function
-     */
-    var setDefaultArgs = this.scope( function( args ) {
-        var existingArgs = !this.definesProperty( args, 'args') ? {} : args.args;
-        if ( this.definesProperty( args, 'defaults') ) {
-            $.extend( existingArgs, args.defaults);
-        }
-        return existingArgs;
-    }, this);
-
-    /**
-     *  xxxx
-     *  <p>
-     *
-     *  @param node
-     *  @param path
-     *  @param components
-     *
-     *  @return
-     *
-     *  @private
-     *  @function
-     */
-    var handleTemplateBinding = this.scope( function( node, path, components ) {
-        var key;
-        var componentData = this.getBindingData( node, path);
-        if ( componentData !== false ) {
-            key = this.pathIndicator({n: node});
-            if ( this.isAdjustingPath( key) ) {
-            componentData.path = (path + '-' + key); }
-            if ( !componentData.isJSON  ) {
-            components.push( componentData); }
-            return false;
-        }
-        return true;
-    }, this),
-
-    /**
-     * @private
-     * @function
-     */
-    var getModelReference = this.scope( function( args ) {
-        var rv;
-        var tokens = this.pathToTokens( args);
-        var length = tokens.length;
-        if ( length > 0 ) {
-            rv = {ref: state.model, key: tokens[ length - 1]};
-            tokens.length = tokens.length - 1;
-            this.each( tokens, function( i, n ) {
-                if ( this.isDefinedNotNull( rv.ref) ) {
-                    if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
-                } else { return false; }
-            }, this);
-            if ( !this.isDefinedNotNull( rv.ref) ) { rv = undefined; }
-        }
-        return rv;
-    }, this);
-
-    /**
-     * @private
-     * @function
-     */
-    var setValue = this.scope( function( value, path, parentContext ) {
-        var token;
-        var numTokens;
-        var subContext;
-        if ( typeof path === 'string' ) {
-            path = this.pathToTokens( {path: path});
-            if ( !this.isDefinedNotNull( state.model) ) {
-                state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
-            }
-            parentContext = state.model;
-        }
-        numTokens = path.length;
-        if ( numTokens > 0 ) {
-            token = path.shift();
-            if ( numTokens > 1 ) {
-                if ( !parentContext.hasOwnProperty( token) ) {
-                    subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
-                    parentContext[ token] = subContext;
-                }
-                subContext = parentContext[ token];
-                return setValue( value, path, subContext);
-            } else {
-                parentContext[ token] = value;
-                return {context: parentContext, key: token, value: value};
-            }
-        }
-    }, this);
-
-    /**
-     * @private
-     * @function
-     */
-    var convert = this.scope( function ( args ) {
-        var converter = state.opts.converter;
-        if ( this.startsWith( args.path, "-") ) {
-            args.path = args.path.substring( 1);
-        }
-        return this.isDefinedNotNull( converter) ?
-            converter.call( this, args) : undefined;
-    }, this);
 
     /**
      * @private
@@ -173,7 +56,7 @@ var Horn = function() {
      */
     var addBindings = this.scope( function( args ) {
         this.each(
-            args.components,
+            args.bindings,
             function( i, newArgs ) {
                 var modelValue;
                 var textValue;
@@ -191,7 +74,7 @@ var Horn = function() {
                         textValue = modelValue + "";
                     }
                     newArgs.text = textValue;
-                    this.setDOMNodeValue( {node: newArgs.node,
+                    this.setHornDOMNodeValue( {node: newArgs.node,
                         value: newArgs.text});
                     addBinding({
                         setModel: false,
@@ -227,7 +110,7 @@ var Horn = function() {
                     this.scope( function( k, v ) {
                         addJSONHelper( $.extend( defaults,
                             {value: v, path:  rootPath + k}));
-                    }, this), '');
+                    }, this));
             } else {
                 addJSONHelper( $.extend( defaults,
                     {value: jsonData, path:  rootPath}));
@@ -238,27 +121,13 @@ var Horn = function() {
      * @private
      * @function
      */
-    var renderComponent = this.scope( function( args ) {
-        var rootNode = args.rootNode;
-        var component = args.component;
-        var modelValue = component.context[ component.key];
-        var textValue;
-        if ( modelValue !== component.value ) {
-            if ( !rootNode || (rootNode &&
-                this.contains( $(component.node).parents(), rootNode)) ) {
-                textValue = convert( {
-                    value: modelValue,
-                    path:  args.path,
-                    type:  'toText',
-                    node: component.node});
-                if ( !this.isDefinedNotNull( textValue) ) {
-                    textValue = modelValue + "";
-                }
-                this.setDOMNodeValue( {node: component.node, value: textValue});
-                component.value = modelValue;
-                return component.node;
-            }
+    var convert = this.scope( function ( args ) {
+        var converter = state.opts.converter;
+        if ( this.startsWith( args.path, "-") ) {
+            args.path = args.path.substring( 1);
         }
+        return this.isDefinedNotNull( converter) ?
+            converter.call( this, args) : undefined;
     }, this);
 
     /**
@@ -276,24 +145,23 @@ var Horn = function() {
                 function( n, path ) {
                     if ( _this.hasRootIndicator( { n: n}) ) {
                         return false; }
-                    var componentData = _this.getBindingData( n, path);
-                    if ( componentData === false ) {
+                    var bindingData = _this.hasHornBinding( n, path);
+                    if ( bindingData === false ) {
                         return true; }
-
-                    componentData.readOnly = args.readOnly;
-                    if ( componentData.isJSON === false ) {
-                        componentData.value = convert( {
-                            value: componentData.text,
-                            path:  componentData.path,
+                    bindingData.readOnly = args.readOnly;
+                    if ( bindingData.isJSON === false ) {
+                        bindingData.value = convert( {
+                            value: bindingData.text,
+                            path:  bindingData.path,
                             type:  'fromText',
-                            node:  componentData.node
+                            node:  bindingData.node
                         });
-                        if ( !_this.isDefinedNotNull( componentData.value) ) {
-                            componentData.value = componentData.text;
+                        if ( !_this.isDefinedNotNull( bindingData.value) ) {
+                            bindingData.value = bindingData.text;
                         }
-                        addBinding( componentData);
+                        addBinding( bindingData);
                     } else {
-                        addJSONBindings( componentData);
+                        addJSONBindings( bindingData);
                     }
                     return false;
                 }
@@ -302,59 +170,155 @@ var Horn = function() {
     }, this);
 
     /**
-     *  Resets all internal state: the model, all options and bindings.
-     *
-     *  @public
+     * @private
+     * @function
      */
-    this.reset = function() {
-        state = { opts: $.extend( {}, {model: undefined,
-            readOnly:  false})};
-    };
+    var getModelReference = this.scope( function( args ) {
+        var rv;
+        var tokens = this.pathToTokens( args);
+        var length = tokens.length;
+        if ( length > 0 ) {
+            rv = {ref: state.model, key: tokens[ length - 1]};
+            tokens.length = tokens.length - 1;
+            this.each( tokens, function( i, n ) {
+                if ( this.isDefinedNotNull( rv.ref) ) {
+                    if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
+                } else { return false; }
+            }, this);
+            if ( !this.isDefinedNotNull( rv.ref) ) { rv = undefined; }
+        }
+        return rv;
+    }, this);
 
     /**
-     *  Removes either, all bindings or, all bindings with property paths that match a given regex pattern.
-     *
-     *  @param {Object} [args] all arguments for this function
-     *  @param {String|Object} [args.pattern] a regular expression pattern to match against, converted to a String using toString() before use
-     *
-     *  @public
+     *  @private
+     *  @function
      */
-    this.unbind = function( args ) {
-        var pat = this.definesProperty( args, 'pattern') ?
-            args.pattern.toString() : false;
-        this.each( state.bindings, function( i, n ) {
-            if ( (pat === false) || (i.match( pat) !== null) ) {
-                delete state.bindings[ i]; } }, this);
-    };
+    var handleTemplateBinding = this.scope( function( node, path, bindings ) {
+        var key;
+        var bindingData = this.hasHornBinding( node, path);
+        if ( bindingData !== false ) {
+            key = this.pathIndicator({n: node});
+            if ( this.isAdjustingPath( key) ) {
+            bindingData.path = (path + '-' + key); }
+            if ( !bindingData.isJSON  ) {
+            bindings.push( bindingData); }
+            return false;
+        }
+        return true;
+    }, this),
 
     /**
-     *
-     *  @param {Object} [args] all arguments for this function
-     *
-     *  @return
-     *
-     *  @public
+     * @private
+     * @function
      */
-    this.load = function( args ) {
-        return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
-    };
+    var render = this.scope( function( args ) {
+        var rootNode = args.rootNode;
+        var binding = args.binding;
+        var modelValue = binding.context[ binding.key];
+        var textValue;
+        if ( modelValue !== binding.value ) {
+            if ( !rootNode || (rootNode &&
+                this.contains( $(binding.node).parents(), rootNode)) ) {
+                textValue = convert( {
+                    value: modelValue,
+                    path:  args.path,
+                    type:  'toText',
+                    node: binding.node});
+                if ( !this.isDefinedNotNull( textValue) ) {
+                    textValue = modelValue + "";
+                }
+                this.setHornDOMNodeValue( {node: binding.node, value: textValue});
+                binding.value = modelValue;
+                return binding.node;
+            }
+        }
+    }, this);
 
     /**
-     *  bind and load
+     * @private
+     * @function
+     */
+    var setDefaultArgs = this.scope( function( args ) {
+        var existingArgs = !this.definesProperty( args, 'args') ? {} : args.args;
+        if ( this.definesProperty( args, 'defaults') ) {
+            $.extend( existingArgs, args.defaults);
+        }
+        return existingArgs;
+    }, this);
+
+    /**
+     * @private
+     * @function
+     */
+    var setDefaultModel = this.scope( function() {
+        if ( !this.isDefinedNotNull( state.model)
+            && state.opts.hasOwnProperty( 'defaultModel') ) {
+            state.model = state.opts.defaultModel;
+        }
+    }, this);
+
+    /**
+     * @private
+     * @function
+     */
+    var setValue = this.scope( function( value, path, parentContext ) {
+        var token;
+        var numTokens;
+        var subContext;
+        if ( typeof path === 'string' ) {
+            path = this.pathToTokens( {path: path});
+            if ( !this.isDefinedNotNull( state.model) ) {
+                state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
+            }
+            parentContext = state.model;
+        }
+        numTokens = path.length;
+        if ( numTokens > 0 ) {
+            token = path.shift();
+            if ( numTokens > 1 ) {
+                if ( !parentContext.hasOwnProperty( token) ) {
+                    subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
+                    parentContext[ token] = subContext;
+                }
+                subContext = parentContext[ token];
+                return setValue( value, path, subContext);
+            } else {
+                parentContext[ token] = value;
+                return {context: parentContext, key: token, value: value};
+            }
+        }
+    }, this);
+
+    /**
+     *  Creates two way bindings for tree(s) of DOM nodes marked with Horn
+     *  indicators.
+     *  <p>
      *
-     *  @param {Object} [args] all arguments for this function
      *
-     *  @return
+     *  The <code>args.rootNodes</code> argument takes precedence over the
+     *  <code>args.selector</code> argument if both are supplied.
+     *
+     *  @param [rootNodes] a collection of DOM nodes to bind from, overrides
+     *      the default node selection mechanism
+     *  @param {String} [selector] a jQuery DOM node selector for nodes to bind
+     *      from,
+     *  @return the current Horn model
      *
      *  @public
      */
     this.bind = function( args ) {
-        return extract( setDefaultArgs( {args: args, defaults: {readOnly: false}}));
+        return extract(
+            setDefaultArgs( {args: args, defaults: {readOnly: false}}));
     };
 
     /**
+     *  Clone an HTML template, then walk it, binding values encountered.  
+     *  <p>
+     *  
+     *
      *  Create a new UI element by cloning an existing template that is
-     *  marked up with HORN indicators, and populate the DOM nodes with
+     *  marked up with Horn indicators, and populate the DOM nodes with
      *  data from the specified property path.
      *
      *  @param {Object} [args] all arguments for this function
@@ -371,7 +335,7 @@ var Horn = function() {
     this.cloneAndBind = function( args ) {
         var template;
         var pathStem;
-        var components = [];
+        var bindings = [];
         if ( this.definesProperty( args, 'template') ) {
             template = args.template;
         } else {
@@ -389,39 +353,28 @@ var Horn = function() {
 
         this.visitNodes( template, pathStem,
             this.scope( function( n, path ) {
-                return handleTemplateBinding( n, path, components);
+                return handleTemplateBinding( n, path, bindings);
             }, this));
 
-        addBindings({components: components});
+        addBindings({bindings: bindings});
 
         return template;
     };
 
     /**
-     *  Update all bound DOM nodes with their current model values.
      *
      *  @param {Object} [args] all arguments for this function
-     *  @param args.rootNode optional DOM node such that if supplied, only nodes
-     *      under this node will be updated.
      *
-     *  @return a list of nodes that had their screen values changed
+     *  @return
      *
      *  @public
      */
-    this.updateDOM = function( args ) {
-        var alteredNodes = [];
-        this.each( state.bindings, function( i, n ) {
-            var node = renderComponent( {rootNode: this.definesProperty(
-                args, 'rootNode') ? args.rootNode : undefined,
-                    component: n, path: i});
-            if ( this.isDefinedNotNull( node) ) {
-                alteredNodes.push( node); }
-        }, this);
-        return alteredNodes;
+    this.load = function( args ) {
+        return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
     };
 
     /**
-     *  Returns the model
+     *  Returns the Horn model.
      *
      *  @return the model
      *
@@ -456,6 +409,56 @@ var Horn = function() {
         if ( value !== undefined ) {
             state.opts[ optionName] = value;
         } else { return state.opts[ optionName]; }
+    };
+
+    /**
+     *  Resets all internal state: the model, all options and bindings.
+     *
+     *  @public
+     */
+    this.reset = function() {
+        state = { opts: $.extend( {}, {model: undefined, readOnly:  false})};
+    };
+
+    /**
+     *  Removes either, all bindings or, all bindings with property paths that
+     *  match a given regex pattern.
+     *
+     *  @param {Object} [args] all arguments for this function
+     *  @param {String|Object} [args.pattern] a regular expression pattern to
+     *      match against, converted to a String using toString() before use
+     *
+     *  @public
+     */
+    this.unbind = function( args ) {
+        var pat = this.definesProperty( args, 'pattern') ?
+            args.pattern.toString() : false;
+        this.each( state.bindings, function( i, n ) {
+            if ( (pat === false) || (i.match( pat) !== null) ) {
+                delete state.bindings[ i]; } }, this);
+    };
+
+    /**
+     *  Update all bound DOM nodes with their current model values.
+     *
+     *  @param {Object} [args] all arguments for this function
+     *  @param args.rootNode optional DOM node such that if supplied, only nodes
+     *      under this node will be updated.
+     *
+     *  @return a list of nodes that had their screen values changed
+     *
+     *  @public
+     */
+    this.updateDOM = function( args ) {
+        var alteredNodes = [];
+        this.each( state.bindings, function( i, n ) {
+            var node = render( {rootNode: this.definesProperty(
+                args, 'rootNode') ? args.rootNode : undefined,
+                    binding: n, path: i});
+            if ( this.isDefinedNotNull( node) ) {
+                alteredNodes.push( node); }
+        }, this);
+        return alteredNodes;
     };
 
     this.reset();
@@ -531,7 +534,6 @@ Horn.prototype = {
             this.isDefinedNotNull( args[ propertyName]);
     },
 
-
     /**
      *  Calls a callback function for each of an object's properties.
      *  <p>
@@ -553,31 +555,37 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
+     *  Determines if a given node in the context of a Horn DOM tree is a value
+     *  node or not.
      *  <p>
+     *  If the node is a value node, the necessary binding information is
+     *  extracted and returned.
      *
-     *  @param node
-     *  @param parentPath
+     *  @param node the DOM node to examine
+     *  @param parentPath the node's parent Horn property path
      *
-     *  @return
+     *  @return <code>false</code> if the given node is not a value node else,
+     *      this function returns an object containing the binding information
+     *      extracted
      *
      *  @methodOf Horn.prototype
      */
-    getBindingData: function( node, parentPath ) {
+    hasHornBinding: function( node, parentPath ) {
         var theContained;
         var nodeName;
         var path = this.pathIndicator({n: node});
         var contents = $($(node).contents());
+        var isAdjustingPath = this.isAdjustingPath( path);
         var cd = {
             isJSON: this.jsonIndicator({n: node}),
-            path: this.isAdjustingPath( path),
             node: node};
         var contentsSize = contents.size();
         var isEmptyNode = contentsSize === 0;
         if ( (contentsSize === 1) || (isEmptyNode && !cd.isJSON))  {
             if ( !isEmptyNode ) { theContained = contents[0]; }
-            if ( cd.isJSON || cd.path ) {
-                cd.path = cd.path ? (parentPath + '-' + path) : parentPath;
+            if ( cd.isJSON || isAdjustingPath ) {
+                cd.path = isAdjustingPath ? (parentPath + '-' + path) :
+                    parentPath;
                 nodeName = node.nodeName.toLowerCase();
                 cd.isFormElementNode =
                     (nodeName === 'input') || (nodeName === 'textarea');
@@ -587,7 +595,7 @@ Horn.prototype = {
                     (theContained.nodeType === Node.TEXT_NODE));
 
                 if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
-                    cd.text = this.getDOMNodeValue( {node: node});
+                    cd.text = this.getHornDOMNodeValue( {node: node});
                     return cd;
                 }
             }
@@ -607,7 +615,7 @@ Horn.prototype = {
      *
      *  @methodOf Horn.prototype
      */
-    getDOMNodeValue: function( args ) {
+    getHornDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
         var jNode = $(args.node);
         return unescape(
@@ -631,11 +639,11 @@ Horn.prototype = {
     },
 
     /**
-     *  Is the given node attached to the DOM?
+     *  Determines if an element is attached to the DOM or not.
      *
-     *  @param node a DOM element to check for being attached
+     *  @param ref a DOM element to check for being attached
      *
-     *  @return <code>true</code> if the elment is attached,
+     *  @return <code>true</code> if the element is attached,
      *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
@@ -658,15 +666,18 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
+     *  Split a Horn property path into tokens.
      *  <p>
+     *  For example, "-a-0-b-2-2" yields the array [a, 0, b, 2, 2].
      *
      *  @param {Object} args all arguments for this function
-     *  @param
+     *  @param {String} args.path the Horn property path to split
      *
-     *  @return
+     *  @return an array containing the tokens extracted
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo consider replacing with splitEach
      */
     pathToTokens: function( args ) {
         return (this.startsWith( args.path, "-") ?
@@ -690,13 +701,14 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
-     *  <p>
+     *  Returns a new function that executes the given one under a new head
+     *  context.
      *
-     *  @param value
-     *  @param stem
+     *  @param {Function} fn the function to bind a new context to
+     *  @param {Object} ctx the new 'this' context the function will be executed
+     *      under
      *
-     *  @return
+     *  @return a new function that calls the old under a new given context
      *
      *  @methodOf Horn.prototype
      */
@@ -705,36 +717,45 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
+     *  Sets the 'value' for a given Horn DOM node.
      *  <p>
+     *  The behaviour here is specific to Horn, for example with
+     *  <code>ABBR</code> elements, we set their title, not their true displayed
+     *  value.
      *
      *  @param {Object} args all arguments for this function
-     *  @param
+     *  @param {Element} args.node the node to set the value of
+     *  @param {Object} args.value the value to set
      *
      *  @methodOf Horn.prototype
      */
-    setDOMNodeValue: function( args ) {
+    setHornDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
-        var jNode = $(args.node);
+        var n = $(args.node);
         if ( (nodeName === "input") || (nodeName === 'textarea') ) {
-            jNode.val( args.value);
+            n.val( args.value);
         } else if ( nodeName === "abbr" ) {
-            jNode.attr('title', args.value);
-        } else { jNode.text( args.value); }
+            n.attr('title', args.value);
+        } else { n.text( args.value); }
     },
 
     /**
-     *  xxxx
+     *  Execute a callback function for each token of a split
+     *  <code>String</code>.
      *  <p>
+     *  The value is converted to a string and then split, using either a
+     *  delimiter supplied or the default delimiter " ".
      *
-     *  @param object
-     *  @param delimiter
-     *  @param callback
+     *  @param value converted to a <code>String</code> and then split
+     *  @param {Function} a function with the following signature ( i, token )
+     *      - where i is the index of the token (zero based) and token is the
+     *      current token
+     *  @param {String} [delimiter] a delimiter used to split 'object's
      *
      *  @methodOf Horn.prototype
      */
-    splitEach: function( object, delimiter, callback ) {
-        this.each( object.toString().split( this.isDefinedNotNull( delimiter) ?
+    splitEach: function( value, callback, delimiter ) {
+        this.each( (value + "").split( this.isDefinedNotNull( delimiter) ?
             delimiter : " "), function( i, token ) {
                 if ( token.trim() !== '' ) { callback( token); }
         });
@@ -760,40 +781,69 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
+     *  Traverses an object graph and executes a callback function for each
+     *  value encountered.
      *  <p>
+     *  <code>Object</code> and <code>Array</code> types are considered
+     *  containers of values rather than values themselves.
+     *  <p>
+     *  For any model value, the corresponding equivalent Horn property path is
+     *  constructed and reported to the callback function. An optional property
+     *  path stem may be supplied which will be prepended to any such path.
      *
-     *  @param value
-     *  @param callback
-     *  @param key
-     *  @param context
-     *  @param propName
+     *  @param value the root of the object graph to traverse
+     *  @param {Function} callback a callback function that will be executed for
+     *      each value of the object graph encountered, it should have the
+     *      following signature: ( path, value, context, propName) where, 'path'
+     *      is the value's Horn path within its container, 'value' is the
+     *      current value found, 'context' is the object in which the value can
+     *      be found and 'key' is the property name within 'context' that the
+     *      value can be found.
+     *  @param {String} [path] an optional property path that will be prefixed
+     *      to every callback reported property path constructed
+     *  @param [context] internal use only - no value required
+     *  @param [propName] internal use only  - no value required
      *
      *  @methodOf Horn.prototype
      */
-    traverse: function( value, callback, key, context, propName ) {
+    traverse: function( value, callback, path, context, propName ) {
         if ( (value instanceof Object) || (value instanceof Array) ) {
             this.each( value, function( k, v ) { this.traverse( v, callback,
-                key ? (key + '-' + k) : ("-" + k), value, k);
+                path ? (path + '-' + k) : ("-" + k), value, k);
             }, this);
-        } else { callback( key, value, context, propName); }
+        } else { callback( path, value, context, propName); }
     },
 
     /**
-     *  xxxx
+     *  Walks the DOM and executes a callback for each node visited, building
+     *  up a Horn property path as it goes by extracting DOM nodes' property
+     *  path indicators.
      *  <p>
+     *  This function takes a property path stem it prepends to all Horn paths
+     *  constructed.
+     *  <p>
+     *  The callback function can stop at a given node by returning a non
+     *  <code>true</code> value.
      *
-     *  @param dataElement
-     *  @param path
-     *  @param fn
+     *  @param {Element} node the node to start the walk from, this node is
+     *      implicitly visited (the callback will not be executed in respect
+     *      of it)
+     *  @param {String} path the Horn property path stem that will be prepended
+     *      to each Horn path constructed
+     *  @param {Function} fn the callback function with the following signature
+     *  ( node, path )  - where node is the current node being visited and path
+     *  is its full property path (relative to the first DOM node visited and
+     *  the path argument to <code>visitNodes(...)</code> proper.
+     *  visited and
      *
      *  @methodOf Horn.prototype
      */
-    visitNodes: function( dataElement, path, fn ) {
-        var _path = this.pathIndicator({n: dataElement});
+    visitNodes: function( node, path, fn ) {
+        var _path = this.pathIndicator({n: node});
         if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
-        this.each( window.$(dataElement).children(), function( i, n ) {
-            if ( fn( n, path) ) { this.visitNodes( n, path, fn); }}, this);
+        this.each( window.$(node).children(), function( i, n ) {
+            if ( fn( n, path) === true ) {
+                this.visitNodes( n, path, fn); }}, this);
     }
 };
 
