@@ -52,7 +52,7 @@ HornPatternConverter = function( args ) {
      *
      *  @public
      */
-    this.pattern = function( pattern, converterName ) {
+    this.addPattern = function( pattern, converterName ) {
         patterns[ args.pattern] = args.converterName; };
 
     /**
