@@ -20,7 +20,7 @@
  *  @class
  *  @function
  */
-HornPatternConverter = function( args ) {
+var HornPatternConverter = function (args) {
 
     /**
      *  @private
@@ -44,16 +44,18 @@ HornPatternConverter = function( args ) {
      *
      *
      */
-    this.add = function( name, converter ) {
-        converters[ name] = converter; };
+    this.add = function (name, converter) {
+        converters[name] = converter;
+    };
 
     /**
      *
      *
      *  @public
      */
-    this.pattern = function( pattern, converterName ) {
-        patterns[ pattern] = converterName; };
+    this.pattern = function (pattern, converterName) {
+        patterns[pattern] = converterName;
+    };
 
     /**
      *
@@ -61,13 +63,12 @@ HornPatternConverter = function( args ) {
      *
      *  @public
      */
-    this.convert = function( args ) {
+    this.convert = function (args) {
         var rv;
-        instance.each( patterns, function( i, n ) {
-            var match = args.path.match( i);
-            if ( instance.isDefinedNotNull( match) &&
-                (match.toString() === args.path) ) {
-                rv = converters[ n]( args);
+        instance.each(patterns, function (i, n) {
+            var match = args.path.match(i);
+            if (instance.isDefinedNotNull(match) && (match.toString() === args.path)) {
+                rv = converters[n](args);
                 return false;
             }
         });
@@ -79,23 +80,29 @@ HornPatternConverter = function( args ) {
      *
      *  @public
      */
-    this.remove = function( name ) { delete converters[ name]; };
+    this.remove = function (name) {
+        delete converters[name];
+    };
 
-    this.get = function( name ) { return converters[ name]; };
+    this.get = function (name) {
+        return converters[name];
+    };
 
     /**
      *
      *
      *  @public
      */
-    this.removePattern = function( pattern ) { delete patterns[ pattern]; };
+    this.removePattern = function (pattern) {
+        delete patterns[pattern];
+    };
 
     /**
      *  Reset all
      *
      *  @public
      */
-    this.reset = function( args ) {
+    this.reset = function (args) {
         instance = undefined;
         converters = {};
         patterns = {};
@@ -103,19 +110,19 @@ HornPatternConverter = function( args ) {
 
     this.reset();
     instance = args.horn;
-    instance.option( "converter", this.convert);
+    instance.option("converter", this.convert);
 };
 
 var hornConverter = new HornPatternConverter({horn: horn});
 
-hornConverter.add( "Integer",
-    function( args ) {
+hornConverter.add("Integer",
+    function (args) {
         return args.type === 'fromText' ?
-            parseInt( args.value) : args.value + "";
-});
+            parseInt(args.value) : args.value + "";
+    });
 
-hornConverter.add( "Boolean",
-    function( args ) {
+hornConverter.add("Boolean",
+    function (args) {
         return args.type === 'fromText' ?
             args.value.toLowerCase() === 'true' : args.value + "";
-});
+    });
