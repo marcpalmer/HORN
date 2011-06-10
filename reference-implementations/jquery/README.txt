@@ -5,8 +5,8 @@ The jQuery reference implementation provides you with tools to parse HORN data
 from your DOM and repopulate DOM nodes using that data, along with support for
 type transformations when moving data between model and DOM.
 
-The horn-jquery.js file defines the Horn class which you instantiate and call
-methods on:
+The horn-jquery-1.0.js file defines the Horn class which you instantiate and
+call methods on:
 
 var horn = new Horn();
 var data = horn.bind();
