@@ -208,7 +208,7 @@ var Horn = function() {
             return false;
         }
         return true;
-    }, this),
+    }, this);
 
     /**
      * @private
