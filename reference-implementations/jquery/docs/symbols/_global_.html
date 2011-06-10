@@ -238,16 +238,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#addConverter">addConverter</a></b>(args)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#addPattern">addPattern</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/_global_.html#add">add</a></b>(name, converter)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -265,15 +256,6 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#getConverter">getConverter</a></b>(args)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/_global_.html#HornPatternConverter">HornPatternConverter</a></b>()
 								</div>
 								<div class="description">Used to create new HornPatternConverter instances.</div>
@@ -283,7 +265,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#removeConverter">removeConverter</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/_global_.html#pattern">pattern</a></b>(pattern, converterName)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -292,7 +274,16 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#removePattern">removePattern</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/_global_.html#remove">remove</a></b>(name)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/_global_.html#removePattern">removePattern</a></b>(pattern)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -303,7 +294,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/_global_.html#reset">reset</a></b>(args)
 								</div>
-								<div class="description"></div>
+								<div class="description">Reset all</div>
 							</td>
 						</tr>
 					
@@ -328,11 +319,11 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="addConverter"> </a>
+					<a name="add"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>addConverter</b>(args)
+					<b>add</b>(name, converter)
 					
 					</div>
 					<div class="description">
@@ -351,46 +342,13 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args</b>
+									<b>name</b>
 									
 								</dt>
 								<dd></dd>
 							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="addPattern"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>addPattern</b>(args)
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_horn-converters.js.html">horn-converters.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
 								<dt>
-									<b>args</b>
+									<b>converter</b>
 									
 								</dt>
 								<dd></dd>
@@ -411,52 +369,6 @@ ul.inheritsList
 					
 					
 					<b>convert</b>(args)
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_horn-converters.js.html">horn-converters.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>args</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getConverter"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>getConverter</b>(args)
 					
 					</div>
 					<div class="description">
@@ -537,11 +449,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="removeConverter"> </a>
+					<a name="pattern"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>removeConverter</b>(args)
+					<b>pattern</b>(pattern, converterName)
 					
 					</div>
 					<div class="description">
@@ -560,7 +472,52 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args</b>
+									<b>pattern</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>converterName</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="remove"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>remove</b>(name)
+					
+					</div>
+					<div class="description">
+						
+						
+							<br />
+							<i>Defined in: </i> <a href="../symbols/src/src_horn-converters.js.html">horn-converters.js</a>.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>name</b>
 									
 								</dt>
 								<dd></dd>
@@ -580,7 +537,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>removePattern</b>(args)
+					<b>removePattern</b>(pattern)
 					
 					</div>
 					<div class="description">
@@ -599,7 +556,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args</b>
+									<b>pattern</b>
 									
 								</dt>
 								<dd></dd>
@@ -623,7 +580,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						
+						Reset all
 						
 							<br />
 							<i>Defined in: </i> <a href="../symbols/src/src_horn-converters.js.html">horn-converters.js</a>.
@@ -666,7 +623,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jun 10 2011 03:59:39 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jun 10 2011 15:10:45 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

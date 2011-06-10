@@ -44,7 +44,7 @@ HornPatternConverter = function( args ) {
      *
      *
      */
-    this.addConverter = function( name, converter ) {
+    this.add = function( name, converter ) {
         converters[ name] = converter; };
 
     /**
@@ -52,7 +52,7 @@ HornPatternConverter = function( args ) {
      *
      *  @public
      */
-    this.addPattern = function( pattern, converterName ) {
+    this.pattern = function( pattern, converterName ) {
         patterns[ pattern] = converterName; };
 
     /**
@@ -76,25 +76,19 @@ HornPatternConverter = function( args ) {
 
     /**
      *
-     *  @return
      *
      *  @public
      */
-    this.getConverter = function( args) { return converters[ args.name]; };
+    this.remove = function( name ) { delete converters[ name]; };
+
+    this.get = function( name ) { return converters[ name]; };
 
     /**
      *
      *
      *  @public
      */
-    this.removeConverter = function( args ) { delete converters[ args.name]; };
-
-    /**
-     *
-     *
-     *  @public
-     */
-    this.removePattern = function( args ) { delete patterns[ args.pattern]; };
+    this.removePattern = function( pattern ) { delete patterns[ pattern]; };
 
     /**
      *  Reset all
@@ -114,13 +108,13 @@ HornPatternConverter = function( args ) {
 
 var hornConverter = new HornPatternConverter({horn: horn});
 
-hornConverter.addConverter( "Integer",
+hornConverter.add( "Integer",
     function( args ) {
         return args.type === 'fromText' ?
             parseInt( args.value) : args.value + "";
 });
 
-hornConverter.addConverter( "Boolean",
+hornConverter.add( "Boolean",
     function( args ) {
         return args.type === 'fromText' ?
             args.value.toLowerCase() === 'true' : args.value + "";

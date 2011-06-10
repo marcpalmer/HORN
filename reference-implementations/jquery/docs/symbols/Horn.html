@@ -213,7 +213,7 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/src_horn-jquery.js.html">horn-jquery.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/src_horn-jquery-1.0.js.html">horn-jquery-1.0.js</a>.
 				
 			</p>
 
@@ -289,7 +289,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#copyInto">copyInto</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#copyInto">copyInto</a></b>()
 								</div>
 								<div class="description">Shallow copies properties from source to destination objects.</div>
 							</td>
@@ -300,7 +300,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#definesProperty">definesProperty</a></b>(args, propertyName)
 								</div>
-								<div class="description">Determines if a collection defines a given property.</div>
+								<div class="description">Determines if a collection defines a named property.</div>
 							</td>
 						</tr>
 					
@@ -316,7 +316,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#getHornDOMNodeValue">getHornDOMNodeValue</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#getHornDOMNodeValue">getHornDOMNodeValue</a></b>()
 								</div>
 								<div class="description">Retrieves a DOM node's displayed text.</div>
 							</td>
@@ -390,7 +390,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#pathToTokens">pathToTokens</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#pathToTokens">pathToTokens</a></b>()
 								</div>
 								<div class="description">Split a Horn property path into tokens.</div>
 							</td>
@@ -429,7 +429,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#setHornDOMNodeValue">setHornDOMNodeValue</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#setHornDOMNodeValue">setHornDOMNodeValue</a></b>()
 								</div>
 								<div class="description">Sets the 'value' for a given Horn DOM node.</div>
 							</td>
@@ -762,7 +762,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>copyInto</b>(args)
+					<b>copyInto</b>()
 					
 					</div>
 					<div class="description">
@@ -771,9 +771,9 @@ ul.inheritsList
  Copies neither, <code>undefined</code> nor prototypical, properties.
  <p>
  The source of property names to copy is given by
- <code>args.dest</code>'s property names unless the optional
- <code>args.props</code> is supplied, in which case it is used as an
- alternative source of property names.
+ <code>args.dest</code>'s property names, unless the optional
+ <code>args.props</code> argument is supplied, in which case it is used
+ instead.
 						
 						
 					</div>
@@ -783,12 +783,6 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>args</b>
-									
-								</dt>
-								<dd>all arguments for this function</dd>
 							
 								<dt>
 									<span class="light fixedFont">{Object}</span> <b>args.src</b>
@@ -827,9 +821,9 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Determines if a collection defines a given property.
+						Determines if a collection defines a named property.
  <p>
- The property can not be neither, prototypical nor <code>undefined</code>
+ The property can be neither, prototypical nor <code>undefined</code>
  nor <code>null</code>.
 						
 						
@@ -930,7 +924,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					<span class="light">{String}</span>
-					<b>getHornDOMNodeValue</b>(args)
+					<b>getHornDOMNodeValue</b>()
 					
 					</div>
 					<div class="description">
@@ -946,12 +940,6 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>args</b>
-									
-								</dt>
-								<dd>all arguments for this function</dd>
 							
 								<dt>
 									<b>args.node</b>
@@ -1308,7 +1296,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					<span class="light">{Array}</span>
-					<b>pathToTokens</b>(args)
+					<b>pathToTokens</b>()
 					
 					</div>
 					<div class="description">
@@ -1325,12 +1313,6 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>args</b>
-									
-								</dt>
-								<dd>all arguments for this function</dd>
 							
 								<dt>
 									<span class="light fixedFont">{String}</span> <b>args.path</b>
@@ -1496,7 +1478,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>setHornDOMNodeValue</b>(args)
+					<b>setHornDOMNodeValue</b>()
 					
 					</div>
 					<div class="description">
@@ -1514,12 +1496,6 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>args</b>
-									
-								</dt>
-								<dd>all arguments for this function</dd>
 							
 								<dt>
 									<span class="light fixedFont">{Element}</span> <b>args.node</b>
@@ -1885,7 +1861,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jun 10 2011 03:59:39 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jun 10 2011 15:10:45 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

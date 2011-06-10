@@ -94,7 +94,7 @@
         }
     };
 
-    hornConverter.addConverter(
+    hornConverter.add(
         "BooleanYesNo",
         function( args ) {
             return args.type === 'fromText' ?
@@ -102,7 +102,7 @@
                 (args.value === true ? "Yes" : "No");
         });
 
-    hornConverter.addConverter(
+    hornConverter.add(
         "Date",
         function( args ) {
             return args.type === 'fromText' ?
@@ -110,12 +110,13 @@
                 ($.datepicker.formatDate( DATE_FORMAT, args.value));
     });
 
-    hornConverter.addPattern( '.*Date', 'Date');
-    hornConverter.addPattern( '.*pages', 'Integer');
-    hornConverter.addPattern( '.*price', 'Integer');
+    hornConverter.pattern( '.*Date', 'Date');
+    hornConverter.pattern( '.*pages', 'Integer');
+    hornConverter.pattern( '.*price', 'Integer');
 
 $(function() {
     render( $('#formattedOutput'), horn.model());
+    window.__AA = horn.model();
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
@@ -124,7 +125,7 @@ $(function() {
         if ( !converterName ) {
             binding.parent[ binding.pk] = obj.val();
         } else {
-            converter = hornConverter.getConverter({name: converterName});
+            converter = hornConverter.get({name: converterName});
             convertedValue = converter( {type: 'fromText', value: obj.val()});
             binding.parent[ binding.pk] = convertedValue;
         }
