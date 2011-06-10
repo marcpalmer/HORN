@@ -86,25 +86,25 @@
         }
     };
 
-    hornConverter.addConverter( {
-        name: "BooleanYesNo",
-        converter: function( args ) {
+    hornConverter.addConverter(
+        "BooleanYesNo",
+        function( args ) {
             return args.type === 'fromText' ?
                 value.toLowerCase() === 'yes' :
                 (args.value === true ? "Yes" : "No");
-        }});
+        });
 
-    hornConverter.addConverter( {
-        name: "Date",
-        converter: function( args ) {
+    hornConverter.addConverter(
+        "Date",
+        function( args ) {
             return args.type === 'fromText' ?
                 $.datepicker.parseDate( DATE_FORMAT, args.value) :
                 ($.datepicker.formatDate( DATE_FORMAT, args.value));
-    }});
+    });
 
-    hornConverter.addPattern( { pattern: '.*Date', converterName: 'Date'});
-    hornConverter.addPattern( { pattern: '.*pages', converterName: 'Integer'});
-    hornConverter.addPattern( { pattern: '.*price', converterName: 'Integer'});
+    hornConverter.addPattern( '.*Date', 'Date');
+    hornConverter.addPattern( '.*pages', 'Integer');
+    hornConverter.addPattern( '.*price', 'Integer');
 
 $(function() {
     $('#formattedOutput').html( render( horn.model() ));
@@ -122,6 +122,7 @@ $(function() {
         }
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
+
     $('a.refreshButton').click( function( event ) {
         $('.changed').removeClass('changed');
         var affected = horn.updateDOM();
