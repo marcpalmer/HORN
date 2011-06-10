@@ -265,7 +265,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#add">add</a></b>(name, converter)
 								</div>
-								<div class="description"></div>
+								<div class="description">Add a named converter.</div>
 							</td>
 						</tr>
 					
@@ -281,9 +281,18 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#get">get</a></b>(name)
+								</div>
+								<div class="description">Retrieve a named converter.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#pattern">pattern</a></b>(pattern, converterName)
 								</div>
-								<div class="description"></div>
+								<div class="description">Add a pattern, bound to a given named converter.</div>
 							</td>
 						</tr>
 					
@@ -292,7 +301,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#remove">remove</a></b>(name)
 								</div>
-								<div class="description"></div>
+								<div class="description">Remove a named converter function.</div>
 							</td>
 						</tr>
 					
@@ -301,16 +310,16 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#removePattern">removePattern</a></b>(pattern)
 								</div>
-								<div class="description"></div>
+								<div class="description">Remove a pattern>converter binding.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#reset">reset</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#reset">reset</a></b>(horn)
 								</div>
-								<div class="description">Reset all</div>
+								<div class="description">Reset all internal state.</div>
 							</td>
 						</tr>
 					
@@ -381,7 +390,8 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						
+						Add a named converter.
+ <p>
 						
 						
 					</div>
@@ -393,16 +403,16 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>name</b>
+									<span class="light fixedFont">{String}</span> <b>name</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>the name to associate with the converter</dd>
 							
 								<dt>
-									<b>converter</b>
+									<span class="light fixedFont">{Function}</span> <b>converter</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>the converter to add</dd>
 							
 							</dl>
 						
@@ -458,15 +468,15 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="pattern"> </a>
+					<a name="get"> </a>
 					<div class="fixedFont">
 					
-					
-					<b>pattern</b>(pattern, converterName)
+					<span class="light">{Function}</span>
+					<b>get</b>(name)
 					
 					</div>
 					<div class="description">
-						
+						Retrieve a named converter.
 						
 						
 					</div>
@@ -478,16 +488,61 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>pattern</b>
+									<span class="light fixedFont">{String}</span> <b>name</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>the name associated with the converter</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Function}</span> the given converter else <code>undefined</code></dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="pattern"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>pattern</b>(pattern, converterName)
+					
+					</div>
+					<div class="description">
+						Add a pattern, bound to a given named converter.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>converterName</b>
+									<span class="light fixedFont">{String}</span> <b>pattern</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>a valid regular expression that is designed to
+     match one or many <code>Horn</code> property paths.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>converterName</b>
+									
+								</dt>
+								<dd>the name of the converter that will handle
+     conversions for the given property path</dd>
 							
 							</dl>
 						
@@ -508,7 +563,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						
+						Remove a named converter function.
 						
 						
 					</div>
@@ -520,10 +575,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>name</b>
+									<span class="light fixedFont">{String}</span> <b>name</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>the name associated with the converter function</dd>
 							
 							</dl>
 						
@@ -544,7 +599,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						
+						Remove a pattern>converter binding.
 						
 						
 					</div>
@@ -556,10 +611,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>pattern</b>
+									<span class="light fixedFont">{String}</span> <b>pattern</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>the regular expression pattern to remove</dd>
 							
 							</dl>
 						
@@ -576,11 +631,15 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>reset</b>(args)
+					<b>reset</b>(horn)
 					
 					</div>
 					<div class="description">
-						Reset all
+						Reset all internal state.
+ <p>
+ Removes all converters and patterns.
+ <p>
+ Take a new <code>Horn</code> instance to bind to.
 						
 						
 					</div>
@@ -592,10 +651,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args</b>
+									<span class="light fixedFont">{<a href="../symbols/Horn.html">Horn</a>}</span> <b>horn</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>the new <code>Horn</code> instance to use</dd>
 							
 							</dl>
 						
@@ -620,7 +679,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jun 10 2011 16:29:38 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jun 10 2011 17:03:16 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

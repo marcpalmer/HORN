@@ -19,13 +19,13 @@
  *
  *  @constructor
  */
-var HornPatternConverter = function(args) {
+var HornPatternConverter = function (args) {
 
     /**
      *  @private
      *  @field
      */
-    var instance;
+    var hornInstance;
 
     /**
      *  @private
@@ -40,33 +40,29 @@ var HornPatternConverter = function(args) {
     var patterns;
 
     /**
+     *  Add a named converter.
+     *  <p>
      *
+     *  @param {String} name the name to associate with the converter
+     *  @param {Function} converter the converter to add
      *
+     *  @public
      */
     this.add = function (name, converter) {
         converters[name] = converter;
     };
 
     /**
-     *
-     *
-     *  @public
-     */
-    this.pattern = function (pattern, converterName) {
-        patterns[pattern] = converterName;
-    };
-
-    /**
-     *
      *  @return
      *
      *  @public
      */
     this.convert = function (args) {
         var rv;
-        instance.each(patterns, function (i, n) {
+        hornInstance.each(patterns, function (i, n) {
             var match = args.path.match(i);
-            if (instance.isDefinedNotNull(match) && (match.toString() === args.path)) {
+            if (hornInstance.isDefinedNotNull(match) &&
+                (match.toString() === args.path)) {
                 rv = converters[n](args);
                 return false;
             }
@@ -75,20 +71,49 @@ var HornPatternConverter = function(args) {
     };
 
     /**
+     *  Retrieve a named converter.
      *
+     *  @param {String} name the name associated with the converter
+     *
+     *  @return {Function} the given converter else <code>undefined</code>
      *
      *  @public
      */
-    this.remove = function (name) {
-        delete converters[name];
-    };
-
     this.get = function (name) {
         return converters[name];
     };
 
     /**
+     *  Add a pattern, bound to a given named converter.
      *
+     *  @param {String} pattern a valid regular expression that is designed to
+     *      match one or many <code>Horn</code> property paths.
+     *  @param {String} converterName the name of the converter that will handle
+     *      conversions for the given property path
+     *
+     *  @public
+     */
+    this.pattern = function (pattern, converterName) {
+        patterns[pattern] = converterName;
+    };
+
+    /**
+     *  Remove a named converter function.
+     *
+     *  @param {String} name the name associated with the converter function
+     *
+     *  @public
+     */
+    this.remove = function (name) {
+        if ( converters.hasOwnProperty( name) ) {
+            delete converters[name];
+        }
+    };
+
+    /**
+     *  Remove a pattern>converter binding.
+     *
+     *  @param {String} pattern the regular expression pattern to remove
      *
      *  @public
      */
@@ -97,19 +122,24 @@ var HornPatternConverter = function(args) {
     };
 
     /**
-     *  Reset all
+     *  Reset all internal state.
+     *  <p>
+     *  Removes all converters and patterns.
+     *  <p>
+     *  Take a new <code>Horn</code> instance to bind to.
+     *
+     *  @param {Horn} horn the new <code>Horn</code> instance to use
      *
      *  @public
      */
-    this.reset = function (args) {
-        instance = undefined;
+    this.reset = function ( horn ) {
         converters = {};
         patterns = {};
+        hornInstance = horn;
+        hornInstance.option("converter", this.convert);
     };
 
-    this.reset();
-    instance = args.horn;
-    instance.option("converter", this.convert);
+    this.reset(args.horn);
 };
 
 var hornConverter = new HornPatternConverter({horn: horn});
