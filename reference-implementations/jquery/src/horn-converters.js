@@ -17,10 +17,9 @@
  *
  *  @param {Horn} args.horn the Horn instance to bind to
  *
- *  @class
- *  @function
+ *  @constructor
  */
-var HornPatternConverter = function (args) {
+var HornPatternConverter = function(args) {
 
     /**
      *  @private
