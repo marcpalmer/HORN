@@ -1385,9 +1385,9 @@ test(
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
-                var populatedTemplate = horn.cloneAndBind( {
+                var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    selector: '#template'});
+                    template: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1415,9 +1415,9 @@ test(
             callback: function( horn ) {
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
-                var populatedTemplate = horn.cloneAndBind( {
+                var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    selector: '#template',
+                    template: '#template',
                     data: { f: { b: { c: { d: 'updatedValue'}}}}});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
@@ -1448,9 +1448,9 @@ test(
                 ok( model.a.b.c.d === 'value');
                 ok( horn.hasHornBinding( $('#grabber1')[0], '', true) === false);
                 ok( isObject( horn.hasHornBinding( $('#grabber2')[0], '')));
-                var populatedTemplate = horn.cloneAndBind( {
+                var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    selector: '#template',
+                    template: '#template',
                     data: { a: { b: { c: { f: 'updatedValue'}}}}});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
@@ -1514,7 +1514,7 @@ test(
                 ok( $('._title').val() === '');
                 ok( $('._contact').val() === '');
                 ok( $('._description').val() === '');
-                horn.cloneAndBind( {template: $('#newNotice')});
+                horn.bindTo( {node: $('#newNotice')});
                 ok( $('._date').val() === date.toString());
                 ok( $('._place').val() === 'where');
                 ok( $('._time').val() === 'time');

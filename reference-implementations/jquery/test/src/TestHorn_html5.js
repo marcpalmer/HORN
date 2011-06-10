@@ -1220,9 +1220,9 @@ test(
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
-                var populatedTemplate = horn.cloneAndBind( {
+                var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    selector: '#template'});
+                    template: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1251,9 +1251,9 @@ test(
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.e = 'updatedValue';
-                var populatedTemplate = horn.cloneAndBind( {
+                var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    selector: '#template'});
+                    template: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1284,9 +1284,9 @@ test(
                 ok( horn.hasHornBinding( $('#grabber1')[0], '', true) === false);
                 ok( isObject( horn.hasHornBinding( $('#grabber2')[0], '')));
                 model.a.b.c.f = 'updatedValue';
-                var populatedTemplate = horn.cloneAndBind( {
+                var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    selector: '#template'});
+                    template: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));

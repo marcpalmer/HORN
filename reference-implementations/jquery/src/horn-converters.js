@@ -111,7 +111,7 @@ var HornPatternConverter = function (args) {
     };
 
     /**
-     *  Remove a pattern>converter binding.
+     *  Remove a pattern (pattern to converter binding).
      *
      *  @param {String} pattern the regular expression pattern to remove
      *

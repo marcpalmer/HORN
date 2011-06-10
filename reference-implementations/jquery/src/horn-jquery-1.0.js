@@ -352,41 +352,42 @@ var Horn = function() {
      *
      *  @param {String} args.path the property path within the model, to use to populate
      *      this DOM node and its descendants
-     *  @param [args.template] a jQuery object representing the DOM template to clone
-     *  @param [args.id] the new "id" attribute value for the cloned DOM node
-     *  @param {String} [args.selector]
+     *
+     *  @param {Object} [args.data]
+     *  @param {Element|String} [args.node] a jQuery node or selector String
+     *  @param {Element|String} [args.template] jQuery node or selector String
+     *  @param [args.id] the new 'id' attribute value for a cloned args.template
      *
      *  @return the newly cloned and populated template
      *
      *  @public
      */
-    this.cloneAndBind = function( args ) {
-        var template;
+    this.bindTo = function( args ) {
+        var node;
         var pathStem;
         var bindings = [];
-        if ( this.definesProperty( args, 'template') ) {
-            template = args.template;
+        if ( this.definesProperty( args, 'node') ) {
+            node = $(args.node);
         } else {
-            template = $(args.selector).clone();
-            template.removeAttr( "id");
-        }
-
-        if ( this.definesProperty( args, 'id') ) {
-            template.attr( "id", args.id);
+            node = $(args.template).clone();
+            node.removeAttr( "id");
+            if ( this.definesProperty( args, 'id') ) {
+               node.attr( "id", args.id);
+            }
         }
 
         setDefaultModel();
 
         pathStem = this.definesProperty( args, 'path') ? args.path : '';
 
-        this.visitNodes( template, pathStem,
+        this.visitNodes( node, pathStem,
             this.scope( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
             }, this));
 
         addBindings({bindings: bindings});
 
-        return template;
+        return node;
     };
 
     /**
