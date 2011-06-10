@@ -533,7 +533,6 @@ Horn.prototype = {
      *  <code>args.props</code> argument is supplied, in which case it is used
      *  instead.
      *
-     *  @param {Object} args all arguments for this function
      *  @param {Object} args.src the property source
      *  @param {Object} args.dest the property destination
      *  @param {Object} [args.props] an alternative source of property names
@@ -643,7 +642,6 @@ Horn.prototype = {
      *  <p>
      *  The value retrieved is HTML un-escaped.
      *
-     *  @param {Object} args all arguments for this function
      *  @param args.node the node from which to retrieve text
      *
      *  @return {String} the given node's displayed text
@@ -708,7 +706,6 @@ Horn.prototype = {
      *  For example, <code>pathToTokens( "-a-0-b-2-2")</code> yields,
      *  <code>[a, 0, b, 2, 2]</code>.
      *
-     *  @param {Object} args all arguments for this function
      *  @param {String} args.path the Horn property path to split
      *
      *  @return {Array} the tokens extracted from the property path
@@ -762,7 +759,6 @@ Horn.prototype = {
      *  <code>ABBR</code> elements, we set their title, not their true displayed
      *  value.
      *
-     *  @param {Object} args all arguments for this function
      *  @param {Element} args.node the node to set the value of
      *  @param {Object} args.value the value to set
      *

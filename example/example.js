@@ -51,14 +51,22 @@
             classAttribute.toString() + '\'') : '') + '>' + text + '</span>';
     };
 
+    var inputValues = {};
     var input = function ( value, type, id ) {
-        var insert = (type ? "Value" : "");
-        return "<input value='" + value + "' class='dynamic " + type + insert +
+        var insert = (type ? (type + "Value") : "");
+        inputValues[ id] = value;
+        return "<input class='dynamic " + insert +
             "'  id='" + id + "' type='text'/>";
     };
 
+    var render = function ( target, hornModel ) {
+        target.html( renderHTML( hornModel));
+        horn.each( inputValues, function( i, n ) {
+            $('#' + i).val( n);
+        });
+    };
 
-    var render = function ( object, ind, parent, pk ) {
+    var renderHTML = function ( object, ind, parent, pk ) {
         var rv;
         var isO = isObject( object);
         var isA = isArray( object);
@@ -67,7 +75,7 @@
             rv = (isA ? "[" : "{") + "<br/>"
             horn.each( object, function( key, value ) {
                 rv +=   indent( ind + 1) + "\"" + key + "\": " +
-                        render( value, ind + 1, object, key) + ",<br/>";
+                        renderHTML( value, ind + 1, object, key) + ",<br/>";
             });
             rv += indent( ind) + (isA ? "]" : "}");
             return  rv;
@@ -107,7 +115,7 @@
     hornConverter.addPattern( '.*price', 'Integer');
 
 $(function() {
-    $('#formattedOutput').html( render( horn.model() ));
+    render( $('#formattedOutput'), horn.model());
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
