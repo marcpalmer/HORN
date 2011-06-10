@@ -43,75 +43,72 @@ HornPatternConverter = function( args ) {
      */
     var patterns;
 
-    $.extend( this, {
+    /**
+     *
+     *
+     */
+    this.addConverter = function( args ) {
+        converters[ args.name] = args.converter; };
 
-        /**
-         *
-         *
-         */
-        addConverter: function( args ) {
-            converters[ args.name] = args.converter; },
+    /**
+     *
+     *
+     *  @public
+     */
+    this.addPattern = function( args ) {
+        patterns[ args.pattern] = args.converterName; };
 
-        /**
-         *
-         *
-         *  @public
-         */
-        addPattern: function( args ) {
-            patterns[ args.pattern] = args.converterName; },
+    /**
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.convert = function( args ) {
+        var rv;
+        instance.each( patterns, function( i, n ) {
+            var match = args.path.match( i);
+            if ( instance.isDefinedNotNull( match) &&
+                (match.toString() === args.path) ) {
+                rv = converters[ n]( args);
+                return false;
+            }
+        });
+        return rv === undefined ? args.value : rv;
+    };
 
-        /**
-         *
-         *  @return
-         *
-         *  @public
-         */
-        convert: function( args ) {
-            var rv;
-            instance.each( patterns, function( i, n ) {
-                var match = args.path.match( i);
-                if ( instance.isDefinedNotNull( match) &&
-                    (match.toString() === args.path) ) {
-                    rv = converters[ n]( args);
-                    return false;
-                }
-            });
-            return rv === undefined ? args.value : rv;
-        },
+    /**
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.getConverter = function( args) { return converters[ args.name]; };
 
-        /**
-         *
-         *  @return
-         *
-         *  @public
-         */
-        getConverter: function( args) { return converters[ args.name]; },
+    /**
+     *
+     *
+     *  @public
+     */
+    this.removeConverter = function( args ) { delete converters[ args.name]; };
 
-        /**
-         *
-         *
-         *  @public
-         */
-        removeConverter: function( args ) { delete converters[ args.name]; },
+    /**
+     *
+     *
+     *  @public
+     */
+    this.removePattern = function( args ) { delete patterns[ args.name]; };
 
-        /**
-         *
-         *
-         *  @public
-         */
-        removePattern: function( args ) { delete patterns[ args.name]; },
-
-        /**
-         *
-         *
-         *  @public
-         */
-        reset: function( args ) {
-            instance = undefined;
-            converters = {};
-            patterns = {};
-        }
-    });
+    /**
+     *
+     *
+     *  @public
+     */
+    this.reset = function( args ) {
+        instance = undefined;
+        converters = {};
+        patterns = {};
+    };
 
     this.reset();
     instance = args.horn;

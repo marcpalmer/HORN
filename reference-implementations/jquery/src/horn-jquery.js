@@ -291,19 +291,46 @@ var Horn = function() {
     }, this);
 
     /**
-     *  Creates two way bindings for tree(s) of DOM nodes marked with Horn
-     *  indicators.
+     *  Walk DOM tree(s) and extract Horn model data, allowing for subsequent
+     *  updating.
      *  <p>
+     *  After execution, each Horn value element encountered will have a
+     *  corresponding representation in the model. Altering such model
+     *  values and then calling <code>updateDOM(...)</code> will refresh their
+     *  displayed value.
+     *  <p>
+     *  The DOM tree(s) to walk can be specified in exactly one of three ways:
+     *  <ol>
+     *      <li>
+     *          Horn will automatically find all DOM trees that have a root
+     *          indicator.
+     *      </li>
+     *      <li>
+     *          Passing a collection of DOM elements as
+     *          <code>args.rootNodes</code>.
+     *      </li>
+     *      <li>
+     *          Passing a JQuery selector string as <code>args.selector.</code>
+     *      </li>
+     *  </ol>
+     *  <p>
+     *  Before a value is stored in the model it is converted to its
+     *  <code>String</code> representation. Alternatively, applications can
+     *  register converter functions to override this default behaviour.
+     *  <p>
+     *  If later, model to DOM updates are not required, the alternative yet
+     *  otherwise identical function, <code>{@link Horn#load}</code> should be
+     *  used.
      *
-     *
-     *  The <code>args.rootNodes</code> argument takes precedence over the
-     *  <code>args.selector</code> argument if both are supplied.
-     *
-     *  @param [rootNodes] a collection of DOM nodes to bind from, overrides
+     *  @param {Object} [rootNodes] a collection of DOM nodes to bind from, overrides
      *      the default node selection mechanism
      *  @param {String} [selector] a jQuery DOM node selector for nodes to bind
      *      from,
-     *  @return the current Horn model
+     *
+     *  @return the updated Horn model
+     *
+     *  @see Horn#option for the detailing of Horn converter functions
+     *  @see Horn#load
      *
      *  @public
      */
@@ -321,7 +348,6 @@ var Horn = function() {
      *  marked up with Horn indicators, and populate the DOM nodes with
      *  data from the specified property path.
      *
-     *  @param {Object} [args] all arguments for this function
      *  @param {String} args.path the property path within the model, to use to populate
      *      this DOM node and its descendants
      *  @param [args.template] a jQuery object representing the DOM template to clone
@@ -362,10 +388,10 @@ var Horn = function() {
     };
 
     /**
+     *  Identical to {@link Horn#bind} except that subsequent model changes are
+     *  not reflected in the DOM.
      *
-     *  @param {Object} [args] all arguments for this function
-     *
-     *  @return
+     *  @see Horn#load
      *
      *  @public
      */
@@ -376,7 +402,7 @@ var Horn = function() {
     /**
      *  Returns the Horn model.
      *
-     *  @return the model
+     *  @return {Object} the model
      *
      *  @public
      */
@@ -388,11 +414,12 @@ var Horn = function() {
      *  Get an option's value by name, or set an option's value by name.
      *  <p>
      *  If no value is provided, the value of the named option is returned,
-     *      otherwise the return value is undefined.
+     *  otherwise the return value is undefined.
      *  <p>
      *  The following options are currently supported:<br>
      *  <ul>
-     *      <li><strong>defaultModel</strong> - for setting an explicit default model (<code>Object</code> or <code>Array</code>)</li>
+     *      <li><strong>defaultModel</strong> - for setting an explicit default
+     *          model (<code>Object</code> or <code>Array</code>)</li>
      *      <li><strong>readOnly</strong> - </li>
      *      <li><strong>converter</strong> - </li>
      *  </ul>
@@ -412,7 +439,10 @@ var Horn = function() {
     };
 
     /**
-     *  Resets all internal state: the model, all options and bindings.
+     *  Resets this instance's internal state: the model, the 'defaultModel',
+     *  'readOnly' and 'converter' options.
+     *
+     *  @see Horn#option
      *
      *  @public
      */
@@ -424,7 +454,6 @@ var Horn = function() {
      *  Removes either, all bindings or, all bindings with property paths that
      *  match a given regex pattern.
      *
-     *  @param {Object} [args] all arguments for this function
      *  @param {String|Object} [args.pattern] a regular expression pattern to
      *      match against, converted to a String using toString() before use
      *
@@ -439,13 +468,15 @@ var Horn = function() {
     };
 
     /**
-     *  Update all bound DOM nodes with their current model values.
+     *  Update all bound DOM nodes with their current model values, if altered.
+     *  <p>
+     *  This function will not update DOM nodes unless their corresponding Horn
+     *  model value has changed.
      *
-     *  @param {Object} [args] all arguments for this function
      *  @param args.rootNode optional DOM node such that if supplied, only nodes
-     *      under this node will be updated.
+     *      under this nodes will be updated.
      *
-     *  @return a list of nodes that had their screen values changed
+     *  @return {Array} an array of nodes that had their DOM values changed
      *
      *  @public
      */
@@ -474,8 +505,8 @@ Horn.prototype = {
      *  @param container the container to search
      *  @param {Object} item the item to search for
      *
-     *  @return <code>true</code> if the item was found, <code>false</code>
-     *  otherwise
+     *  @return {Boolean} <code>true</code> if the item was found,
+     *  <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
@@ -524,7 +555,7 @@ Horn.prototype = {
      *  @param args the object to check for the given property
      *  @param propertyName the name of the property to check for
      *
-     *  @return <code>true</code> if the arguments do define the given property,
+     *  @return {Boolean} <code>true</code> if the arguments do define the given property,
      *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
@@ -625,17 +656,19 @@ Horn.prototype = {
     },
 
     /**
-     *  xxxx
+     *  Determines if the given Horn property path is 'context-altering'.
      *  <p>
+     *  The 'path' argument is converted to a <code>String</code> before
+     *  examination.
      *
-     *  @param path
+     *  @param {Object} path an object that represents a Horn property path
      *
-     *  @return <code>true</code> if , <code>false</code> otherwise
+     *  @return {Boolean} <code>true</code> if , <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
     isAdjustingPath: function ( path ) {
-        return this.isDefinedNotNull( path) && (path.toString().trim() !== '');
+        return this.isDefinedNotNull( path) && ((path + "").trim() !== '');
     },
 
     /**
@@ -643,7 +676,7 @@ Horn.prototype = {
      *
      *  @param ref a DOM element to check for being attached
      *
-     *  @return <code>true</code> if the element is attached,
+     *  @return {Boolean} <code>true</code> if the element is attached,
      *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
@@ -655,7 +688,7 @@ Horn.prototype = {
      *
      *  @param args value the value to check
      *
-     *  @return <code>true</code> if the value is neither,
+     *  @return {Boolean} <code>true</code> if the value is neither,
      *      <code>undefined</code> nor <code>null</code>,
      *      <code>false</code> otherwise
      *
@@ -668,12 +701,13 @@ Horn.prototype = {
     /**
      *  Split a Horn property path into tokens.
      *  <p>
-     *  For example, "-a-0-b-2-2" yields the array [a, 0, b, 2, 2].
+     *  For example, <code>pathToTokens( "-a-0-b-2-2")</code> yields,
+     *  <code>[a, 0, b, 2, 2]</code>.
      *
      *  @param {Object} args all arguments for this function
      *  @param {String} args.path the Horn property path to split
      *
-     *  @return an array containing the tokens extracted
+     *  @return {Array} the tokens extracted from the property path
      *
      *  @methodOf Horn.prototype
      *
@@ -691,7 +725,7 @@ Horn.prototype = {
      *  @param {Object} object the object to remove the property from
      *  @param {String} propName the name of the property to remove
      *
-     *  @return <code>true</code> if the property was defined and was removed,
+     *  @return {Boolean} <code>true</code> if the property was defined and was removed,
      *      <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
@@ -708,7 +742,8 @@ Horn.prototype = {
      *  @param {Object} ctx the new 'this' context the function will be executed
      *      under
      *
-     *  @return a new function that calls the old under a new given context
+     *  @return {Function} a new function that calls the supplied, under a new
+     *      context
      *
      *  @methodOf Horn.prototype
      */
@@ -769,7 +804,7 @@ Horn.prototype = {
      *  @param value the value to test
      *  @param stem the candidate prefix for the given value
      *
-     *  @return <code>true</code> if the given <code>String</code> is prefixed,
+     *  @return {Boolean} <code>true</code> if the given <code>String</code> is prefixed,
      *      by the given stem, <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
