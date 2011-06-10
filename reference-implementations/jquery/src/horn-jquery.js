@@ -13,6 +13,8 @@
  *  Used to create new Horn instances.
  *
  *  @constructor
+ *
+ *  @return {Horn} a newly initialized Horn instance
  */
 var Horn = function() {
 
@@ -291,10 +293,10 @@ var Horn = function() {
     }, this);
 
     /**
-     *  Walk DOM tree(s) and extract Horn model data, allowing for subsequent
+     *  Walk DOM tree(s) and extract model data, allowing for subsequent
      *  updating.
      *  <p>
-     *  After execution, each Horn value element encountered will have a
+     *  After execution, each value element encountered will have a
      *  corresponding representation in the model. Altering such model
      *  values and then calling <code>updateDOM(...)</code> will refresh their
      *  displayed value.
@@ -327,9 +329,9 @@ var Horn = function() {
      *  @param {String} [selector] a jQuery DOM node selector for nodes to bind
      *      from,
      *
-     *  @return the updated Horn model
+     *  @return the updated model
      *
-     *  @see Horn#option for the detailing of Horn converter functions
+     *  @see Horn#option for the detailing of converter functions
      *  @see Horn#load
      *
      *  @public
@@ -391,6 +393,8 @@ var Horn = function() {
      *  Identical to {@link Horn#bind} except that subsequent model changes are
      *  not reflected in the DOM.
      *
+     *  @param args identical to those used in {@link Horn#bind}
+     *
      *  @see Horn#load
      *
      *  @public
@@ -400,7 +404,7 @@ var Horn = function() {
     };
 
     /**
-     *  Returns the Horn model.
+     *  Returns the model.
      *
      *  @return {Object} the model
      *
@@ -470,8 +474,8 @@ var Horn = function() {
     /**
      *  Update all bound DOM nodes with their current model values, if altered.
      *  <p>
-     *  This function will not update DOM nodes unless their corresponding Horn
-     *  model value has changed.
+     *  This function will not update DOM nodes if their model value has not
+     *  changed.
      *
      *  @param args.rootNode optional DOM node such that if supplied, only nodes
      *      under this nodes will be updated.
@@ -522,12 +526,12 @@ Horn.prototype = {
     /**
      *  Shallow copies properties from source to destination objects.
      *  <p>
-     *  Neither copies, <code>undefined</code> valued properties, nor
-     *  prototypical properties.
+     *  Copies neither, <code>undefined</code> nor prototypical, properties.
      *  <p>
-     *  The source of property names to copy is given by args.dest's property
-     *  names unless the optional args.props is supplied in which case it is
-     *  used instead.
+     *  The source of property names to copy is given by
+     *  <code>args.dest</code>'s property names, unless the optional
+     *  <code>args.props</code> argument is supplied, in which case it is used
+     *  instead.
      *
      *  @param {Object} args all arguments for this function
      *  @param {Object} args.src the property source
@@ -547,10 +551,10 @@ Horn.prototype = {
     },
 
     /**
-     *  Does an arguments <code>Object</code> define a given property.
+     *  Determines if a collection defines a named property.
      *  <p>
-     *  The property can not be a prototypical property nor
-     *  <code>undefined</code> or <code>null</code>.
+     *  The property can be neither, prototypical nor <code>undefined</code>
+     *  nor <code>null</code>.
      *
      *  @param args the object to check for the given property
      *  @param propertyName the name of the property to check for

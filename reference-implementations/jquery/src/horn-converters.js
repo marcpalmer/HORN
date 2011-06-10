@@ -1,8 +1,7 @@
 /**
  *  @fileOverview Provides the <code>HornPatternConverter</code> class that
- *      assists in mapping <strong>Horn</strong> property paths to
- *      corresponding types; and their native JS value <> String value
- *      conversions.
+ *      assists in the conversion of Horn model values to their DOM node
+ *      representation, and vice versa.
  *
  *  @author <a href="mailto:cdenman@me.com">Chris Denman</a>
  *  @author <a href="mailto:marc@anyware.co.uk">Marc Palmer</a>
@@ -14,14 +13,12 @@
  */
 
 /**
- *  Creates a new HornPatternConverter instance which should continue even though
- *  we have started a new line.
+ *  Used to create new HornPatternConverter instances.
  *
- *  @param {Object} args all arguments for this constructor
- *  @param {Horn} args.horn the horn instance to which to bind this pattern converter
- *      instance
+ *  @param {Horn} args.horn the Horn instance to bind to
  *
- *  @constructor
+ *  @class
+ *  @function
  */
 HornPatternConverter = function( args ) {
 
@@ -55,7 +52,7 @@ HornPatternConverter = function( args ) {
      *
      *  @public
      */
-    this.addPattern = function( args ) {
+    this.pattern = function( pattern, converterName ) {
         patterns[ args.pattern] = args.converterName; };
 
     /**
@@ -97,10 +94,10 @@ HornPatternConverter = function( args ) {
      *
      *  @public
      */
-    this.removePattern = function( args ) { delete patterns[ args.name]; };
+    this.removePattern = function( args ) { delete patterns[ args.pattern]; };
 
     /**
-     *
+     *  Reset all
      *
      *  @public
      */
