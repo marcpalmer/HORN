@@ -396,7 +396,7 @@ var Horn = function() {
      *
      *  @param args identical to those used in {@link Horn#bind}
      *
-     *  @see Horn#load
+     *  @see Horn#bind
      *
      *  @public
      */
@@ -502,6 +502,29 @@ var Horn = function() {
 
 Horn.prototype = {
 
+
+    /**
+     *  Determines if two values the same.
+     *  <p>
+     *  Uses the <code>compare</code> function if it is defined on either
+     *  argument else, the strict equality operator <code>===</code> is put
+     *  to work.
+     *
+     *  @param i the a value to compare
+     *  @param j the a value to compare
+     *
+     *  @return {Boolean} <code>true</code> if the two values are equal,
+     *  <code>false</code> otherwise
+     *
+     *  @methodOf Horn.prototype
+     *
+     *  @todo not sure if this clause (j.compare && j.compare( i)) is needed,
+     *  read up on the workings of the compare function
+     */
+    compare: function( i, j ) {
+        return (i.compare && i.compare( j)) || (j.compare && j.compare( i)) || (i === j);
+    },
+
     /**
      *  Returns <code>true</code> if a container contains an item.
      *  <p>
@@ -519,7 +542,7 @@ Horn.prototype = {
      *  good coverage on tests that use this method
      */
     contains: function( container, item ) {
-        return this.indexOf(container, item) !== undefined;
+        return this.indexOf(container, item) !== -1;
     },
 
     /**
@@ -589,6 +612,32 @@ Horn.prototype = {
         $.each( collection, ctx ? this.scope( fn, ctx) : fn);
     },
 
+
+    /**
+     *  Retrieves a DOM node's displayed text.
+     *  <p>
+     *  The value retrieved is HTML un-escaped.
+     *
+     *  @param args.node the node from which to retrieve text
+     *
+     *  @return {String} the given node's displayed text
+     *
+     *  @methodOf Horn.prototype
+     *
+     *  @todo test
+     *
+     *  @todo use in tests rather than doing manually perhaps? perhaps in
+     *  example too?
+     */
+    getHornDOMNodeValue: function( args ) {
+        var nodeName = args.node.nodeName.toLowerCase();
+        var jNode = $(args.node);
+        return unescape(
+            ((nodeName === "input") || (nodeName === 'textarea')) ?
+                jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
+                jNode.text()));
+    },
+
     /**
      *  Determines if a given node in the context of a Horn DOM tree is a value
      *  node or not.
@@ -639,31 +688,6 @@ Horn.prototype = {
     },
 
     /**
-     *  Retrieves a DOM node's displayed text.
-     *  <p>
-     *  The value retrieved is HTML un-escaped.
-     *
-     *  @param args.node the node from which to retrieve text
-     *
-     *  @return {String} the given node's displayed text
-     *
-     *  @methodOf Horn.prototype
-     *
-     *  @todo test
-     *
-     *  @todo use in tests rather than doing manually perhaps? perhaps in
-     *  example too?
-     */
-    getHornDOMNodeValue: function( args ) {
-        var nodeName = args.node.nodeName.toLowerCase();
-        var jNode = $(args.node);
-        return unescape(
-            ((nodeName === "input") || (nodeName === 'textarea')) ?
-                jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
-                jNode.text()));
-    },
-
-    /**
      *  Determines the index of an item with a container.
      *  <p>
      *  Returns the <code>Number</code> array index, OR {String} property name
@@ -676,11 +700,9 @@ Horn.prototype = {
      *  @return the index of the item in its container else
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo test
      */
-    indexOf: function( container, item ) {
-        var index;
+    indexOf: function( container, item, index ) {
+        index = -1;
         this.each( container, function( i, o ) {
             if ( this.compare( o, item ) ) {
                 index = i;
@@ -688,30 +710,6 @@ Horn.prototype = {
             }
         }, this);
         return index;
-    },
-
-    /**
-     *  Determines if two values the same.
-     *  <p>
-     *  Uses the <code>compare</code> function if it is defined on either
-     *  argument else, the strict equality operator <code>===</code> is put
-     *  to work.
-     *
-     *  @param i the a value to compare
-     *  @param j the a value to compare
-     *
-     *  @return {Boolean} <code>true</code> if the two values are equal,
-     *  <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     *
-     *  @todo not sure if this clause (j.compare && j.compare( i)) is needed,
-     *  read up on the workings of the compare function
-     *
-     *  @todo test
-     */
-    compare: function( i, j ) {
-        return (i.compare && i.compare( j)) || (j.compare && j.compare( i)) || (i === j);
     },
 
     /**

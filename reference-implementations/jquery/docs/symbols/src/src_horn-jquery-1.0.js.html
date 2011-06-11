@@ -403,7 +403,7 @@
 <span class='line'>396</span>      *
 <span class='line'>397</span>      *  @param args identical to those used in {@link Horn#bind}
 <span class='line'>398</span>      *
-<span class='line'>399</span>      *  @see Horn#load
+<span class='line'>399</span>      *  @see Horn#bind
 <span class='line'>400</span>      *
 <span class='line'>401</span>      *  @public
 <span class='line'>402</span>      */</span><span class="WHIT">
@@ -509,442 +509,453 @@
 <span class='line'>502</span> 
 <span class='line'>503</span> </span><span class="NAME">Horn.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>504</span> 
-<span class='line'>505</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>506</span>      *  Returns &lt;code>true&lt;/code> if a container contains an item.
-<span class='line'>507</span>      *  &lt;p>
-<span class='line'>508</span>      *  Equality testing is performed with &lt;code>===&lt;/code>.
-<span class='line'>509</span>      *
-<span class='line'>510</span>      *  @param container the container to search
-<span class='line'>511</span>      *  @param {Object} item the item to search for
+<span class='line'>505</span> 
+<span class='line'>506</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>507</span>      *  Determines if two values the same.
+<span class='line'>508</span>      *  &lt;p>
+<span class='line'>509</span>      *  Uses the &lt;code>compare&lt;/code> function if it is defined on either
+<span class='line'>510</span>      *  argument else, the strict equality operator &lt;code>===&lt;/code> is put
+<span class='line'>511</span>      *  to work.
 <span class='line'>512</span>      *
-<span class='line'>513</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the item was found,
-<span class='line'>514</span>      *  &lt;code>false&lt;/code> otherwise
+<span class='line'>513</span>      *  @param i the a value to compare
+<span class='line'>514</span>      *  @param j the a value to compare
 <span class='line'>515</span>      *
-<span class='line'>516</span>      *  @methodOf Horn.prototype
-<span class='line'>517</span>      *
-<span class='line'>518</span>      *  @todo change here caused a test to fail, look at what's going on
-<span class='line'>519</span>      *  good coverage on tests that use this method
-<span class='line'>520</span>      */</span><span class="WHIT">
-<span class='line'>521</span> </span><span class="WHIT">    </span><span class="NAME">contains</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>522</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.indexOf</span><span class="PUNC">(</span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>523</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>524</span> 
-<span class='line'>525</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>526</span>      *  Shallow copies properties from source to destination objects.
-<span class='line'>527</span>      *  &lt;p>
-<span class='line'>528</span>      *  Copies neither, &lt;code>undefined&lt;/code> nor prototypical, properties.
-<span class='line'>529</span>      *  &lt;p>
-<span class='line'>530</span>      *  The source of property names to copy is given by
-<span class='line'>531</span>      *  &lt;code>args.dest&lt;/code>'s property names, unless the optional
-<span class='line'>532</span>      *  &lt;code>args.props&lt;/code> argument is supplied, in which case it is used
-<span class='line'>533</span>      *  instead.
-<span class='line'>534</span>      *
-<span class='line'>535</span>      *  @param {Object} args.src the property source
-<span class='line'>536</span>      *  @param {Object} args.dest the property destination
-<span class='line'>537</span>      *  @param {Object} [args.props] an alternative source of property names
+<span class='line'>516</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the two values are equal,
+<span class='line'>517</span>      *  &lt;code>false&lt;/code> otherwise
+<span class='line'>518</span>      *
+<span class='line'>519</span>      *  @methodOf Horn.prototype
+<span class='line'>520</span>      *
+<span class='line'>521</span>      *  @todo not sure if this clause (j.compare && j.compare( i)) is needed,
+<span class='line'>522</span>      *  read up on the workings of the compare function
+<span class='line'>523</span>      */</span><span class="WHIT">
+<span class='line'>524</span> </span><span class="WHIT">    </span><span class="NAME">compare</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">j</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>525</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">i.compare</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">i.compare</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">j.compare</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">j.compare</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>526</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>527</span> 
+<span class='line'>528</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>529</span>      *  Returns &lt;code>true&lt;/code> if a container contains an item.
+<span class='line'>530</span>      *  &lt;p>
+<span class='line'>531</span>      *  Equality testing is performed with &lt;code>===&lt;/code>.
+<span class='line'>532</span>      *
+<span class='line'>533</span>      *  @param container the container to search
+<span class='line'>534</span>      *  @param {Object} item the item to search for
+<span class='line'>535</span>      *
+<span class='line'>536</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the item was found,
+<span class='line'>537</span>      *  &lt;code>false&lt;/code> otherwise
 <span class='line'>538</span>      *
 <span class='line'>539</span>      *  @methodOf Horn.prototype
-<span class='line'>540</span>      */</span><span class="WHIT">
-<span class='line'>541</span> </span><span class="WHIT">    </span><span class="NAME">copyInto</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>542</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>543</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.props</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
-<span class='line'>544</span> </span><span class="WHIT">            </span><span class="NAME">args.props</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">args.dest</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>545</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.src.hasOwnProperty</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>546</span> </span><span class="WHIT">                </span><span class="NAME">val</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args.src</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>547</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">val</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">args.dest</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>548</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>549</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>550</span> 
-<span class='line'>551</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>552</span>      *  Determines if a collection defines a named property.
-<span class='line'>553</span>      *  &lt;p>
-<span class='line'>554</span>      *  The property can be neither, prototypical nor &lt;code>undefined&lt;/code>
-<span class='line'>555</span>      *  nor &lt;code>null&lt;/code>.
-<span class='line'>556</span>      *
-<span class='line'>557</span>      *  @param args the object to check for the given property
-<span class='line'>558</span>      *  @param propertyName the name of the property to check for
-<span class='line'>559</span>      *
-<span class='line'>560</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the arguments do define the given property,
-<span class='line'>561</span>      *      &lt;code>false&lt;/code> otherwise
-<span class='line'>562</span>      *
-<span class='line'>563</span>      *  @methodOf Horn.prototype
-<span class='line'>564</span>      */</span><span class="WHIT">
-<span class='line'>565</span> </span><span class="WHIT">    </span><span class="NAME">definesProperty</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propertyName</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>566</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">args.hasOwnProperty</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">propertyName</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
-<span class='line'>567</span> </span><span class="WHIT">            </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">propertyName</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>568</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>569</span> 
-<span class='line'>570</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>571</span>      *  Calls a callback function for each of an object's properties.
-<span class='line'>572</span>      *  &lt;p>
-<span class='line'>573</span>      *  An optional scope context can be provided which will provide the 'this'
-<span class='line'>574</span>      *  for the callback function.
-<span class='line'>575</span>      *  &lt;p>
-<span class='line'>576</span>      *  The callback function should have the following signature
-<span class='line'>577</span>      *  &lt;strong>( i, n )&lt;/strong> : where i is the propertyName and n is the item.
-<span class='line'>578</span>      *
-<span class='line'>579</span>      *  @param {Object} collection the object to iterate over
-<span class='line'>580</span>      *  @param fn the callback function which will be called for each item
-<span class='line'>581</span>      *  @param {Object} [ctx] the scope under which to execute the callback.
+<span class='line'>540</span>      *
+<span class='line'>541</span>      *  @todo change here caused a test to fail, look at what's going on
+<span class='line'>542</span>      *  good coverage on tests that use this method
+<span class='line'>543</span>      */</span><span class="WHIT">
+<span class='line'>544</span> </span><span class="WHIT">    </span><span class="NAME">contains</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>545</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.indexOf</span><span class="PUNC">(</span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>546</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>547</span> 
+<span class='line'>548</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>549</span>      *  Shallow copies properties from source to destination objects.
+<span class='line'>550</span>      *  &lt;p>
+<span class='line'>551</span>      *  Copies neither, &lt;code>undefined&lt;/code> nor prototypical, properties.
+<span class='line'>552</span>      *  &lt;p>
+<span class='line'>553</span>      *  The source of property names to copy is given by
+<span class='line'>554</span>      *  &lt;code>args.dest&lt;/code>'s property names, unless the optional
+<span class='line'>555</span>      *  &lt;code>args.props&lt;/code> argument is supplied, in which case it is used
+<span class='line'>556</span>      *  instead.
+<span class='line'>557</span>      *
+<span class='line'>558</span>      *  @param {Object} args.src the property source
+<span class='line'>559</span>      *  @param {Object} args.dest the property destination
+<span class='line'>560</span>      *  @param {Object} [args.props] an alternative source of property names
+<span class='line'>561</span>      *
+<span class='line'>562</span>      *  @methodOf Horn.prototype
+<span class='line'>563</span>      */</span><span class="WHIT">
+<span class='line'>564</span> </span><span class="WHIT">    </span><span class="NAME">copyInto</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>565</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>566</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.props</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">            </span><span class="NAME">args.props</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">args.dest</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.src.hasOwnProperty</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">                </span><span class="NAME">val</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args.src</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">val</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">args.dest</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">val</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>572</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>573</span> 
+<span class='line'>574</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>575</span>      *  Determines if a collection defines a named property.
+<span class='line'>576</span>      *  &lt;p>
+<span class='line'>577</span>      *  The property can be neither, prototypical nor &lt;code>undefined&lt;/code>
+<span class='line'>578</span>      *  nor &lt;code>null&lt;/code>.
+<span class='line'>579</span>      *
+<span class='line'>580</span>      *  @param args the object to check for the given property
+<span class='line'>581</span>      *  @param propertyName the name of the property to check for
 <span class='line'>582</span>      *
-<span class='line'>583</span>      *  @methodOf Horn.prototype
-<span class='line'>584</span>      */</span><span class="WHIT">
-<span class='line'>585</span> </span><span class="WHIT">    </span><span class="NAME">each</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">collection</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>586</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">collection</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">collection</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>587</span> </span><span class="WHIT">        </span><span class="NAME">$.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">collection</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">this.scope</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>588</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>589</span> 
-<span class='line'>590</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>591</span>      *  Determines if a given node in the context of a Horn DOM tree is a value
-<span class='line'>592</span>      *  node or not.
-<span class='line'>593</span>      *  &lt;p>
-<span class='line'>594</span>      *  If the node is a value node, the necessary binding information is
-<span class='line'>595</span>      *  extracted and returned.
-<span class='line'>596</span>      *
-<span class='line'>597</span>      *  @param node the DOM node to examine
-<span class='line'>598</span>      *  @param parentPath the node's parent Horn property path
-<span class='line'>599</span>      *
-<span class='line'>600</span>      *  @return &lt;code>false&lt;/code> if the given node is not a value node else,
-<span class='line'>601</span>      *      this function returns an object containing the binding information
-<span class='line'>602</span>      *      extracted
-<span class='line'>603</span>      *
-<span class='line'>604</span>      *  @methodOf Horn.prototype
-<span class='line'>605</span>      */</span><span class="WHIT">
-<span class='line'>606</span> </span><span class="WHIT">    </span><span class="NAME">hasHornBinding</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">parentPath</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>607</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">theContained</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>608</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>609</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.pathIndicator</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">n</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>610</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contents</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">contents</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>611</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">isAdjustingPath</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.isAdjustingPath</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>612</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cd</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>613</span> </span><span class="WHIT">            </span><span class="NAME">isJSON</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.jsonIndicator</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">n</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>614</span> </span><span class="WHIT">            </span><span class="NAME">node</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>615</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contentsSize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contents.size</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>616</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contentsSize</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>617</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">contentsSize</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">cd.isJSON</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">  </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>618</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">theContained</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contents</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>619</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">cd.isJSON</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">isAdjustingPath</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>620</span> </span><span class="WHIT">                </span><span class="NAME">cd.path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">isAdjustingPath</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">parentPath</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'-'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>621</span> </span><span class="WHIT">                    </span><span class="NAME">parentPath</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>622</span> </span><span class="WHIT">                </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">node.nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>623</span> </span><span class="WHIT">                </span><span class="NAME">cd.isFormElementNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">
-<span class='line'>624</span> </span><span class="WHIT">                    </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'input'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'textarea'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>625</span> </span><span class="WHIT">                </span><span class="NAME">cd.isABBRNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">cd.isFormElementNode</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
-<span class='line'>626</span> </span><span class="WHIT">                    </span><span class="PUNC">(</span><span class="NAME">nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"abbr"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>627</span> </span><span class="WHIT">                </span><span class="NAME">cd.isTextNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">cd.isABBRNode</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
-<span class='line'>628</span> </span><span class="WHIT">                    </span><span class="PUNC">(</span><span class="NAME">theContained.nodeType</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">Node.TEXT_NODE</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>629</span> 
-<span class='line'>630</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">cd.isFormElementNode</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">cd.isTextNode</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">cd.isABBRNode</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>631</span> </span><span class="WHIT">                    </span><span class="NAME">cd.text</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getHornDOMNodeValue</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">node</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>632</span> </span><span class="WHIT">                    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">cd</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>633</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>634</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>635</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>636</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>637</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>638</span> 
-<span class='line'>639</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>640</span>      *  Retrieves a DOM node's displayed text.
-<span class='line'>641</span>      *  &lt;p>
-<span class='line'>642</span>      *  The value retrieved is HTML un-escaped.
-<span class='line'>643</span>      *
-<span class='line'>644</span>      *  @param args.node the node from which to retrieve text
-<span class='line'>645</span>      *
-<span class='line'>646</span>      *  @return {String} the given node's displayed text
+<span class='line'>583</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the arguments do define the given property,
+<span class='line'>584</span>      *      &lt;code>false&lt;/code> otherwise
+<span class='line'>585</span>      *
+<span class='line'>586</span>      *  @methodOf Horn.prototype
+<span class='line'>587</span>      */</span><span class="WHIT">
+<span class='line'>588</span> </span><span class="WHIT">    </span><span class="NAME">definesProperty</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propertyName</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>589</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">args.hasOwnProperty</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">propertyName</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
+<span class='line'>590</span> </span><span class="WHIT">            </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">propertyName</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>591</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>592</span> 
+<span class='line'>593</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>594</span>      *  Calls a callback function for each of an object's properties.
+<span class='line'>595</span>      *  &lt;p>
+<span class='line'>596</span>      *  An optional scope context can be provided which will provide the 'this'
+<span class='line'>597</span>      *  for the callback function.
+<span class='line'>598</span>      *  &lt;p>
+<span class='line'>599</span>      *  The callback function should have the following signature
+<span class='line'>600</span>      *  &lt;strong>( i, n )&lt;/strong> : where i is the propertyName and n is the item.
+<span class='line'>601</span>      *
+<span class='line'>602</span>      *  @param {Object} collection the object to iterate over
+<span class='line'>603</span>      *  @param fn the callback function which will be called for each item
+<span class='line'>604</span>      *  @param {Object} [ctx] the scope under which to execute the callback.
+<span class='line'>605</span>      *
+<span class='line'>606</span>      *  @methodOf Horn.prototype
+<span class='line'>607</span>      *
+<span class='line'>608</span>      *  @todo test
+<span class='line'>609</span>      */</span><span class="WHIT">
+<span class='line'>610</span> </span><span class="WHIT">    </span><span class="NAME">each</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">collection</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>611</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">collection</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">collection</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>612</span> </span><span class="WHIT">        </span><span class="NAME">$.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">collection</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">this.scope</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>613</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>614</span> 
+<span class='line'>615</span> 
+<span class='line'>616</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>617</span>      *  Retrieves a DOM node's displayed text.
+<span class='line'>618</span>      *  &lt;p>
+<span class='line'>619</span>      *  The value retrieved is HTML un-escaped.
+<span class='line'>620</span>      *
+<span class='line'>621</span>      *  @param args.node the node from which to retrieve text
+<span class='line'>622</span>      *
+<span class='line'>623</span>      *  @return {String} the given node's displayed text
+<span class='line'>624</span>      *
+<span class='line'>625</span>      *  @methodOf Horn.prototype
+<span class='line'>626</span>      *
+<span class='line'>627</span>      *  @todo test
+<span class='line'>628</span>      *
+<span class='line'>629</span>      *  @todo use in tests rather than doing manually perhaps? perhaps in
+<span class='line'>630</span>      *  example too?
+<span class='line'>631</span>      */</span><span class="WHIT">
+<span class='line'>632</span> </span><span class="WHIT">    </span><span class="NAME">getHornDOMNodeValue</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>633</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args.node.nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>634</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">args.node</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>635</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">unescape</span><span class="PUNC">(</span><span class="WHIT">
+<span class='line'>636</span> </span><span class="WHIT">            </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"input"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'textarea'</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
+<span class='line'>637</span> </span><span class="WHIT">                </span><span class="NAME">jNode.val</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"abbr"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">jNode.attr</span><span class="PUNC">(</span><span class="STRN">'title'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>638</span> </span><span class="WHIT">                </span><span class="NAME">jNode.text</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>639</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>640</span> 
+<span class='line'>641</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>642</span>      *  Determines if a given node in the context of a Horn DOM tree is a value
+<span class='line'>643</span>      *  node or not.
+<span class='line'>644</span>      *  &lt;p>
+<span class='line'>645</span>      *  If the node is a value node, the necessary binding information is
+<span class='line'>646</span>      *  extracted and returned.
 <span class='line'>647</span>      *
-<span class='line'>648</span>      *  @methodOf Horn.prototype
-<span class='line'>649</span>      */</span><span class="WHIT">
-<span class='line'>650</span> </span><span class="WHIT">    </span><span class="NAME">getHornDOMNodeValue</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>651</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args.node.nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>652</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">args.node</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>653</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">unescape</span><span class="PUNC">(</span><span class="WHIT">
-<span class='line'>654</span> </span><span class="WHIT">            </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"input"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'textarea'</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
-<span class='line'>655</span> </span><span class="WHIT">                </span><span class="NAME">jNode.val</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"abbr"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="NAME">jNode.attr</span><span class="PUNC">(</span><span class="STRN">'title'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>656</span> </span><span class="WHIT">                </span><span class="NAME">jNode.text</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>657</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>658</span> 
-<span class='line'>659</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>660</span>      *  Determines the index of an item with a container.
-<span class='line'>661</span>      *  &lt;p>
-<span class='line'>662</span>      *  Returns the &lt;code>Number&lt;/code> array index, OR {String} property name
-<span class='line'>663</span>      *  of the given item relative to its container if the item was found else
-<span class='line'>664</span>      *  &lt;code>undefined&lt;/code>.
-<span class='line'>665</span>      *
-<span class='line'>666</span>      *  @param container {Object|Array} container the item collection
-<span class='line'>667</span>      *  @param item item the element for which to determine its index
-<span class='line'>668</span>      *
-<span class='line'>669</span>      *  @return the index of the item in its container else
-<span class='line'>670</span>      */</span><span class="WHIT">
-<span class='line'>671</span> </span><span class="WHIT">    </span><span class="NAME">indexOf</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>672</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>673</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">o</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>674</span> 
-<span class='line'>675</span> 
-<span class='line'>676</span> 
-<span class='line'>677</span> 
-<span class='line'>678</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">o</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">item</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>679</span> </span><span class="WHIT">                </span><span class="NAME">index</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>680</span> </span><span class="WHIT">                </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>681</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>682</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>683</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>684</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>685</span> 
-<span class='line'>686</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>687</span>      *  Determines if two values the same.
-<span class='line'>688</span>      *  &lt;p>
-<span class='line'>689</span>      *  Uses the &lt;code>compare&lt;/code> function if it is defined on either
-<span class='line'>690</span>      *  argument else, the strict equality operator &lt;code>===&lt;/code> is put
-<span class='line'>691</span>      *  to work.
-<span class='line'>692</span>      *
-<span class='line'>693</span>      *  @param i the a value to compare
-<span class='line'>694</span>      *  @param j the a value to compare
-<span class='line'>695</span>      *
-<span class='line'>696</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the two values are equal,
-<span class='line'>697</span>      *  &lt;code>false&lt;/code> otherwise
-<span class='line'>698</span>      *
-<span class='line'>699</span>      *  @todo not sure if this clause (j.compare && j.compare( i)) is needed,
-<span class='line'>700</span>      *  read up on the workings of the compare function
-<span class='line'>701</span>      */</span><span class="WHIT">
-<span class='line'>702</span> </span><span class="WHIT">    </span><span class="NAME">compare</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">j</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>703</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">i.compare</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">i.compare</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">j.compare</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">j.compare</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>704</span> </span><span class="WHIT">            </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>705</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>706</span> 
-<span class='line'>707</span> 
-<span class='line'>708</span> 
-<span class='line'>709</span> 
-<span class='line'>710</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>711</span>      *  Determines if the given Horn property path is 'context-altering'.
-<span class='line'>712</span>      *  &lt;p>
-<span class='line'>713</span>      *  The 'path' argument is converted to a &lt;code>String&lt;/code> before
-<span class='line'>714</span>      *  examination.
-<span class='line'>715</span>      *
-<span class='line'>716</span>      *  @param {Object} path an object that represents a Horn property path
-<span class='line'>717</span>      *
-<span class='line'>718</span>      *  @return {Boolean} &lt;code>true&lt;/code> if , &lt;code>false&lt;/code> otherwise
-<span class='line'>719</span>      *
-<span class='line'>720</span>      *  @methodOf Horn.prototype
-<span class='line'>721</span>      */</span><span class="WHIT">
-<span class='line'>722</span> </span><span class="WHIT">    </span><span class="NAME">isAdjustingPath</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>723</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">""</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">trim</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>724</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>725</span> 
-<span class='line'>726</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>727</span>      *  Determines if an element is attached to the DOM or not.
-<span class='line'>728</span>      *
-<span class='line'>729</span>      *  @param ref a DOM element to check for being attached
-<span class='line'>730</span>      *
-<span class='line'>731</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the element is attached,
-<span class='line'>732</span>      *      &lt;code>false&lt;/code> otherwise
+<span class='line'>648</span>      *  @param node the DOM node to examine
+<span class='line'>649</span>      *  @param parentPath the node's parent Horn property path
+<span class='line'>650</span>      *
+<span class='line'>651</span>      *  @return &lt;code>false&lt;/code> if the given node is not a value node else,
+<span class='line'>652</span>      *      this function returns an object containing the binding information
+<span class='line'>653</span>      *      extracted
+<span class='line'>654</span>      *
+<span class='line'>655</span>      *  @methodOf Horn.prototype
+<span class='line'>656</span>      */</span><span class="WHIT">
+<span class='line'>657</span> </span><span class="WHIT">    </span><span class="NAME">hasHornBinding</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">parentPath</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>658</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">theContained</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>659</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>660</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.pathIndicator</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">n</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>661</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contents</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">contents</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>662</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">isAdjustingPath</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.isAdjustingPath</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>663</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cd</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>664</span> </span><span class="WHIT">            </span><span class="NAME">isJSON</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.jsonIndicator</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">n</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>665</span> </span><span class="WHIT">            </span><span class="NAME">node</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>666</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contentsSize</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contents.size</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>667</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contentsSize</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>668</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">contentsSize</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">cd.isJSON</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">  </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>669</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">theContained</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contents</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>670</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">cd.isJSON</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">isAdjustingPath</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>671</span> </span><span class="WHIT">                </span><span class="NAME">cd.path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">isAdjustingPath</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">parentPath</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'-'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>672</span> </span><span class="WHIT">                    </span><span class="NAME">parentPath</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>673</span> </span><span class="WHIT">                </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">node.nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>674</span> </span><span class="WHIT">                </span><span class="NAME">cd.isFormElementNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">
+<span class='line'>675</span> </span><span class="WHIT">                    </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'input'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'textarea'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>676</span> </span><span class="WHIT">                </span><span class="NAME">cd.isABBRNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">cd.isFormElementNode</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
+<span class='line'>677</span> </span><span class="WHIT">                    </span><span class="PUNC">(</span><span class="NAME">nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"abbr"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>678</span> </span><span class="WHIT">                </span><span class="NAME">cd.isTextNode</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">cd.isABBRNode</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">isEmptyNode</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
+<span class='line'>679</span> </span><span class="WHIT">                    </span><span class="PUNC">(</span><span class="NAME">theContained.nodeType</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">Node.TEXT_NODE</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>680</span> 
+<span class='line'>681</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">cd.isFormElementNode</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">cd.isTextNode</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">cd.isABBRNode</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>682</span> </span><span class="WHIT">                    </span><span class="NAME">cd.text</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getHornDOMNodeValue</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="NAME">node</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>683</span> </span><span class="WHIT">                    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">cd</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>684</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>685</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>686</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>687</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>688</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>689</span> 
+<span class='line'>690</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>691</span>      *  Determines the index of an item with a container.
+<span class='line'>692</span>      *  &lt;p>
+<span class='line'>693</span>      *  Returns the &lt;code>Number&lt;/code> array index, OR {String} property name
+<span class='line'>694</span>      *  of the given item relative to its container if the item was found else
+<span class='line'>695</span>      *  &lt;code>undefined&lt;/code>.
+<span class='line'>696</span>      *
+<span class='line'>697</span>      *  @param container {Object|Array} container the item collection
+<span class='line'>698</span>      *  @param item item the element for which to determine its index
+<span class='line'>699</span>      *
+<span class='line'>700</span>      *  @return the index of the item in its container else
+<span class='line'>701</span>      *
+<span class='line'>702</span>      *  @methodOf Horn.prototype
+<span class='line'>703</span>      */</span><span class="WHIT">
+<span class='line'>704</span> </span><span class="WHIT">    </span><span class="NAME">indexOf</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">index</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>705</span> </span><span class="WHIT">        </span><span class="NAME">index</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>706</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">container</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">o</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>707</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.compare</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">o</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">item</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>708</span> </span><span class="WHIT">                </span><span class="NAME">index</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>709</span> </span><span class="WHIT">                </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>710</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>711</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>712</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">index</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>713</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>714</span> 
+<span class='line'>715</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>716</span>      *  Determines if the given Horn property path is 'context-altering'.
+<span class='line'>717</span>      *  &lt;p>
+<span class='line'>718</span>      *  The 'path' argument is converted to a &lt;code>String&lt;/code> before
+<span class='line'>719</span>      *  examination.
+<span class='line'>720</span>      *
+<span class='line'>721</span>      *  @param {Object} path an object that represents a Horn property path
+<span class='line'>722</span>      *
+<span class='line'>723</span>      *  @return {Boolean} &lt;code>true&lt;/code> if , &lt;code>false&lt;/code> otherwise
+<span class='line'>724</span>      *
+<span class='line'>725</span>      *  @methodOf Horn.prototype
+<span class='line'>726</span>      */</span><span class="WHIT">
+<span class='line'>727</span> </span><span class="WHIT">    </span><span class="NAME">isAdjustingPath</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>728</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">""</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">trim</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>729</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>730</span> 
+<span class='line'>731</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>732</span>      *  Determines if an element is attached to the DOM or not.
 <span class='line'>733</span>      *
-<span class='line'>734</span>      *  @methodOf Horn.prototype
-<span class='line'>735</span>      */</span><span class="WHIT">
-<span class='line'>736</span> </span><span class="WHIT">    </span><span class="NAME">isAttached</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">node</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">parents</span><span class="PUNC">(</span><span class="STRN">':last'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">is</span><span class="PUNC">(</span><span class="STRN">'html'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>737</span> 
-<span class='line'>738</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>739</span>      *  Is the given value neither, &lt;code>undefined&lt;/code> nor &lt;code>null&lt;/code>?
-<span class='line'>740</span>      *
-<span class='line'>741</span>      *  @param args value the value to check
-<span class='line'>742</span>      *
-<span class='line'>743</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the value is neither,
-<span class='line'>744</span>      *      &lt;code>undefined&lt;/code> nor &lt;code>null&lt;/code>,
-<span class='line'>745</span>      *      &lt;code>false&lt;/code> otherwise
-<span class='line'>746</span>      *
-<span class='line'>747</span>      *  @methodOf Horn.prototype
-<span class='line'>748</span>      */</span><span class="WHIT">
-<span class='line'>749</span> </span><span class="WHIT">    </span><span class="NAME">isDefinedNotNull</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>750</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>751</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>752</span> 
-<span class='line'>753</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>754</span>      *  Split a Horn property path into tokens.
-<span class='line'>755</span>      *  &lt;p>
-<span class='line'>756</span>      *  For example, &lt;code>pathToTokens( "-a-0-b-2-2")&lt;/code> yields,
-<span class='line'>757</span>      *  &lt;code>[a, 0, b, 2, 2]&lt;/code>.
-<span class='line'>758</span>      *
-<span class='line'>759</span>      *  @param {String} path the Horn property path to split
-<span class='line'>760</span>      *
-<span class='line'>761</span>      *  @return {Array} the tokens extracted from the property path
-<span class='line'>762</span>      *
-<span class='line'>763</span>      *  @methodOf Horn.prototype
-<span class='line'>764</span>      */</span><span class="WHIT">
-<span class='line'>765</span> </span><span class="WHIT">    </span><span class="NAME">pathToTokens</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>766</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
-<span class='line'>767</span> </span><span class="WHIT">            </span><span class="PUNC">(</span><span class="NAME">this.startsWith</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">"-"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
-<span class='line'>768</span> </span><span class="WHIT">                </span><span class="NAME">path.substring</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">split</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="STRN">"-"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>769</span> </span><span class="WHIT">            </span><span class="NAME">undefined</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>770</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>771</span> 
-<span class='line'>772</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>773</span>      *  Removes a named property from an object if it exists and is non
-<span class='line'>774</span>      *  prototypical.
-<span class='line'>775</span>      *
-<span class='line'>776</span>      *  @param {Object} object the object to remove the property from
-<span class='line'>777</span>      *  @param {String} propName the name of the property to remove
-<span class='line'>778</span>      *
-<span class='line'>779</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the property was defined and was removed,
-<span class='line'>780</span>      *      &lt;code>false&lt;/code> otherwise
-<span class='line'>781</span>      *
-<span class='line'>782</span>      *  @methodOf Horn.prototype
-<span class='line'>783</span>      */</span><span class="WHIT">
-<span class='line'>784</span> </span><span class="WHIT">    </span><span class="NAME">removeProperty</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">object</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>785</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">object.hasOwnProperty</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">object</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>786</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>787</span> 
-<span class='line'>788</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>789</span>      *  Returns a new function that executes the given one under a new head
-<span class='line'>790</span>      *  context.
-<span class='line'>791</span>      *
-<span class='line'>792</span>      *  @param {Function} fn the function to bind a new context to
-<span class='line'>793</span>      *  @param {Object} ctx the new 'this' context the function will be executed
-<span class='line'>794</span>      *      under
-<span class='line'>795</span>      *
-<span class='line'>796</span>      *  @return {Function} a new function that calls the supplied, under a new
-<span class='line'>797</span>      *      context
-<span class='line'>798</span>      *
-<span class='line'>799</span>      *  @methodOf Horn.prototype
-<span class='line'>800</span>      */</span><span class="WHIT">
-<span class='line'>801</span> </span><span class="WHIT">    </span><span class="NAME">scope</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>802</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">fn.apply</span><span class="PUNC">(</span><span class="NAME">ctx</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>803</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>804</span> 
-<span class='line'>805</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>806</span>      *  Sets the 'value' for a given Horn DOM node.
-<span class='line'>807</span>      *  &lt;p>
-<span class='line'>808</span>      *  The behaviour here is specific to Horn, for example with
-<span class='line'>809</span>      *  &lt;code>ABBR&lt;/code> elements, we set their title, not their true displayed
-<span class='line'>810</span>      *  value.
-<span class='line'>811</span>      *
-<span class='line'>812</span>      *  @param {Element} args.node the node to set the value of
-<span class='line'>813</span>      *  @param {Object} args.value the value to set
-<span class='line'>814</span>      *
-<span class='line'>815</span>      *  @methodOf Horn.prototype
-<span class='line'>816</span>      */</span><span class="WHIT">
-<span class='line'>817</span> </span><span class="WHIT">    </span><span class="NAME">setHornDOMNodeValue</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>818</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args.node.nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>819</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">args.node</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>820</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"input"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'textarea'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>821</span> </span><span class="WHIT">            </span><span class="NAME">n.val</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>822</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"abbr"</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>823</span> </span><span class="WHIT">            </span><span class="NAME">n.attr</span><span class="PUNC">(</span><span class="STRN">'title'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">args.value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>824</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">n.text</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>825</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>826</span> 
-<span class='line'>827</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>828</span>      *  Execute a callback function for each token of a split
-<span class='line'>829</span>      *  &lt;code>String&lt;/code>.
-<span class='line'>830</span>      *  &lt;p>
-<span class='line'>831</span>      *  The value is converted to a string and then split, using either a
-<span class='line'>832</span>      *  delimiter supplied or the default delimiter " ".
-<span class='line'>833</span>      *
-<span class='line'>834</span>      *  @param value converted to a &lt;code>String&lt;/code> and then split
-<span class='line'>835</span>      *  @param {Function} a function with the following signature ( i, token )
-<span class='line'>836</span>      *      - where i is the index of the token (zero based) and token is the
-<span class='line'>837</span>      *      current token
-<span class='line'>838</span>      *  @param {String} [delimiter] a delimiter used to split 'object's
-<span class='line'>839</span>      *
-<span class='line'>840</span>      *  @methodOf Horn.prototype
-<span class='line'>841</span>      */</span><span class="WHIT">
-<span class='line'>842</span> </span><span class="WHIT">    </span><span class="NAME">splitEach</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">delimiter</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>843</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">""</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">split</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">delimiter</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
-<span class='line'>844</span> </span><span class="WHIT">            </span><span class="NAME">delimiter</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">" "</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">token</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>845</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">token.trim</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">''</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">token</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>846</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>847</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>848</span> 
-<span class='line'>849</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>850</span>      *  Is the given &lt;code>String&lt;/code> value prefixed by a given stem.
-<span class='line'>851</span>      *  &lt;p>
-<span class='line'>852</span>      *  'Stem' can be a regular expression pattern.
-<span class='line'>853</span>      *
-<span class='line'>854</span>      *  @param value the value to test
-<span class='line'>855</span>      *  @param stem the candidate prefix for the given value
-<span class='line'>856</span>      *
-<span class='line'>857</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the given &lt;code>String&lt;/code> is prefixed,
-<span class='line'>858</span>      *      by the given stem, &lt;code>false&lt;/code> otherwise
-<span class='line'>859</span>      *
-<span class='line'>860</span>      *  @methodOf Horn.prototype
-<span class='line'>861</span>      */</span><span class="WHIT">
-<span class='line'>862</span> </span><span class="WHIT">    </span><span class="NAME">startsWith</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">stem</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>863</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT">  </span><span class="PUNC">(</span><span class="NAME">stem.length</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
-<span class='line'>864</span> </span><span class="WHIT">            </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value.match</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="STRN">"^"</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">stem</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
-<span class='line'>865</span> </span><span class="WHIT">                </span><span class="PUNC">(</span><span class="NAME">value.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">stem</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>866</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>867</span> 
-<span class='line'>868</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>869</span>      *  Traverses an object graph and executes a callback function for each
-<span class='line'>870</span>      *  value encountered.
-<span class='line'>871</span>      *  &lt;p>
-<span class='line'>872</span>      *  &lt;code>Object&lt;/code> and &lt;code>Array&lt;/code> types are considered
-<span class='line'>873</span>      *  containers of values rather than values themselves.
-<span class='line'>874</span>      *  &lt;p>
-<span class='line'>875</span>      *  For any model value, the corresponding equivalent Horn property path is
-<span class='line'>876</span>      *  constructed and reported to the callback function. An optional property
-<span class='line'>877</span>      *  path stem may be supplied which will be prepended to any such path.
-<span class='line'>878</span>      *
-<span class='line'>879</span>      *  @param value the root of the object graph to traverse
-<span class='line'>880</span>      *  @param {Function} callback a callback function that will be executed for
-<span class='line'>881</span>      *      each value of the object graph encountered, it should have the
-<span class='line'>882</span>      *      following signature: ( path, value, context, propName) where, 'path'
-<span class='line'>883</span>      *      is the value's Horn path within its container, 'value' is the
-<span class='line'>884</span>      *      current value found, 'context' is the object in which the value can
-<span class='line'>885</span>      *      be found and 'key' is the property name within 'context' that the
-<span class='line'>886</span>      *      value can be found.
-<span class='line'>887</span>      *  @param {String} [path] an optional property path that will be prefixed
-<span class='line'>888</span>      *      to every callback reported property path constructed
-<span class='line'>889</span>      *  @param [context] internal use only - no value required
-<span class='line'>890</span>      *  @param [propName] internal use only  - no value required
-<span class='line'>891</span>      *
-<span class='line'>892</span>      *  @methodOf Horn.prototype
-<span class='line'>893</span>      */</span><span class="WHIT">
-<span class='line'>894</span> </span><span class="WHIT">    </span><span class="NAME">traverse</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">context</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>895</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">Object</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>896</span> </span><span class="WHIT">            </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">this.traverse</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>897</span> </span><span class="WHIT">                </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'-'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="STRN">"-"</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>898</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>899</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">context</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>900</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>901</span> 
-<span class='line'>902</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>903</span>      *  Walks the DOM and executes a callback for each node visited, building
-<span class='line'>904</span>      *  up a Horn property path as it goes by extracting DOM nodes' property
-<span class='line'>905</span>      *  path indicators.
-<span class='line'>906</span>      *  &lt;p>
-<span class='line'>907</span>      *  This function takes a property path stem it prepends to all Horn paths
-<span class='line'>908</span>      *  constructed.
-<span class='line'>909</span>      *  &lt;p>
-<span class='line'>910</span>      *  The callback function can stop at a given node by returning a non
-<span class='line'>911</span>      *  &lt;code>true&lt;/code> value.
-<span class='line'>912</span>      *
-<span class='line'>913</span>      *  @param {Element} node the node to start the walk from, this node is
-<span class='line'>914</span>      *      implicitly visited (the callback will not be executed in respect
-<span class='line'>915</span>      *      of it)
-<span class='line'>916</span>      *  @param {String} path the Horn property path stem that will be prepended
-<span class='line'>917</span>      *      to each Horn path constructed
-<span class='line'>918</span>      *  @param {Function} fn the callback function with the following signature
-<span class='line'>919</span>      *  ( node, path )  - where node is the current node being visited and path
-<span class='line'>920</span>      *  is its full property path (relative to the first DOM node visited and
-<span class='line'>921</span>      *  the path argument to &lt;code>visitNodes(...)&lt;/code> proper.
-<span class='line'>922</span>      *  visited and
-<span class='line'>923</span>      *
-<span class='line'>924</span>      *  @methodOf Horn.prototype
-<span class='line'>925</span>      */</span><span class="WHIT">
-<span class='line'>926</span> </span><span class="WHIT">    </span><span class="NAME">visitNodes</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>927</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.pathIndicator</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">n</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>928</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.isAdjustingPath</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">_path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'-'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">_path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>929</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">window.$</span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">children</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>930</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">n</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>931</span> </span><span class="WHIT">                </span><span class="NAME">this.visitNodes</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">n</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>932</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>933</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>934</span> 
-<span class='line'>935</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">horn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Horn</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>936</span> 
-<span class='line'>937</span> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>938</span> </span><span class="WHIT">    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">horn.option</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="STRN">"readOnly"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>939</span> </span><span class="WHIT">        </span><span class="NAME">horn.load</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>940</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>941</span> </span><span class="WHIT">        </span><span class="NAME">horn.bind</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>942</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>943</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'>734</span>      *  @param ref a DOM element to check for being attached
+<span class='line'>735</span>      *
+<span class='line'>736</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the element is attached,
+<span class='line'>737</span>      *      &lt;code>false&lt;/code> otherwise
+<span class='line'>738</span>      *
+<span class='line'>739</span>      *  @methodOf Horn.prototype
+<span class='line'>740</span>      */</span><span class="WHIT">
+<span class='line'>741</span> </span><span class="WHIT">    </span><span class="NAME">isAttached</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">node</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">parents</span><span class="PUNC">(</span><span class="STRN">':last'</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">is</span><span class="PUNC">(</span><span class="STRN">'html'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>742</span> 
+<span class='line'>743</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>744</span>      *  Is the given value neither, &lt;code>undefined&lt;/code> nor &lt;code>null&lt;/code>?
+<span class='line'>745</span>      *
+<span class='line'>746</span>      *  @param args value the value to check
+<span class='line'>747</span>      *
+<span class='line'>748</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the value is neither,
+<span class='line'>749</span>      *      &lt;code>undefined&lt;/code> nor &lt;code>null&lt;/code>,
+<span class='line'>750</span>      *      &lt;code>false&lt;/code> otherwise
+<span class='line'>751</span>      *
+<span class='line'>752</span>      *  @methodOf Horn.prototype
+<span class='line'>753</span>      */</span><span class="WHIT">
+<span class='line'>754</span> </span><span class="WHIT">    </span><span class="NAME">isDefinedNotNull</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>755</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="NAME">undefined</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>756</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>757</span> 
+<span class='line'>758</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>759</span>      *  Split a Horn property path into tokens.
+<span class='line'>760</span>      *  &lt;p>
+<span class='line'>761</span>      *  For example, &lt;code>pathToTokens( "-a-0-b-2-2")&lt;/code> yields,
+<span class='line'>762</span>      *  &lt;code>[a, 0, b, 2, 2]&lt;/code>.
+<span class='line'>763</span>      *
+<span class='line'>764</span>      *  @param {String} path the Horn property path to split
+<span class='line'>765</span>      *
+<span class='line'>766</span>      *  @return {Array} the tokens extracted from the property path
+<span class='line'>767</span>      *
+<span class='line'>768</span>      *  @methodOf Horn.prototype
+<span class='line'>769</span>      */</span><span class="WHIT">
+<span class='line'>770</span> </span><span class="WHIT">    </span><span class="NAME">pathToTokens</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>771</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
+<span class='line'>772</span> </span><span class="WHIT">            </span><span class="PUNC">(</span><span class="NAME">this.startsWith</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="STRN">"-"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
+<span class='line'>773</span> </span><span class="WHIT">                </span><span class="NAME">path.substring</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">split</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="STRN">"-"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>774</span> </span><span class="WHIT">            </span><span class="NAME">undefined</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>775</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>776</span> 
+<span class='line'>777</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>778</span>      *  Removes a named property from an object if it exists and is non
+<span class='line'>779</span>      *  prototypical.
+<span class='line'>780</span>      *
+<span class='line'>781</span>      *  @param {Object} object the object to remove the property from
+<span class='line'>782</span>      *  @param {String} propName the name of the property to remove
+<span class='line'>783</span>      *
+<span class='line'>784</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the property was defined and was removed,
+<span class='line'>785</span>      *      &lt;code>false&lt;/code> otherwise
+<span class='line'>786</span>      *
+<span class='line'>787</span>      *  @methodOf Horn.prototype
+<span class='line'>788</span>      */</span><span class="WHIT">
+<span class='line'>789</span> </span><span class="WHIT">    </span><span class="NAME">removeProperty</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">object</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>790</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">object.hasOwnProperty</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="KEYW">delete</span><span class="WHIT"> </span><span class="NAME">object</span><span class="PUNC">[</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>791</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>792</span> 
+<span class='line'>793</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>794</span>      *  Returns a new function that executes the given one under a new head
+<span class='line'>795</span>      *  context.
+<span class='line'>796</span>      *
+<span class='line'>797</span>      *  @param {Function} fn the function to bind a new context to
+<span class='line'>798</span>      *  @param {Object} ctx the new 'this' context the function will be executed
+<span class='line'>799</span>      *      under
+<span class='line'>800</span>      *
+<span class='line'>801</span>      *  @return {Function} a new function that calls the supplied, under a new
+<span class='line'>802</span>      *      context
+<span class='line'>803</span>      *
+<span class='line'>804</span>      *  @methodOf Horn.prototype
+<span class='line'>805</span>      */</span><span class="WHIT">
+<span class='line'>806</span> </span><span class="WHIT">    </span><span class="NAME">scope</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>807</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">fn.apply</span><span class="PUNC">(</span><span class="NAME">ctx</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>808</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>809</span> 
+<span class='line'>810</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>811</span>      *  Sets the 'value' for a given Horn DOM node.
+<span class='line'>812</span>      *  &lt;p>
+<span class='line'>813</span>      *  The behaviour here is specific to Horn, for example with
+<span class='line'>814</span>      *  &lt;code>ABBR&lt;/code> elements, we set their title, not their true displayed
+<span class='line'>815</span>      *  value.
+<span class='line'>816</span>      *
+<span class='line'>817</span>      *  @param {Element} args.node the node to set the value of
+<span class='line'>818</span>      *  @param {Object} args.value the value to set
+<span class='line'>819</span>      *
+<span class='line'>820</span>      *  @methodOf Horn.prototype
+<span class='line'>821</span>      *
+<span class='line'>822</span>      *  @todo test
+<span class='line'>823</span>      */</span><span class="WHIT">
+<span class='line'>824</span> </span><span class="WHIT">    </span><span class="NAME">setHornDOMNodeValue</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>825</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args.node.nodeName.toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>826</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">args.node</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>827</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"input"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">'textarea'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>828</span> </span><span class="WHIT">            </span><span class="NAME">n.val</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>829</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">nodeName</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="STRN">"abbr"</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>830</span> </span><span class="WHIT">            </span><span class="NAME">n.attr</span><span class="PUNC">(</span><span class="STRN">'title'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">args.value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>831</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">n.text</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">args.value</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>832</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>833</span> 
+<span class='line'>834</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>835</span>      *  Execute a callback function for each token of a split
+<span class='line'>836</span>      *  &lt;code>String&lt;/code>.
+<span class='line'>837</span>      *  &lt;p>
+<span class='line'>838</span>      *  The value is converted to a string and then split, using either a
+<span class='line'>839</span>      *  delimiter supplied or the default delimiter " ".
+<span class='line'>840</span>      *
+<span class='line'>841</span>      *  @param value converted to a &lt;code>String&lt;/code> and then split
+<span class='line'>842</span>      *  @param {Function} a function with the following signature ( i, token )
+<span class='line'>843</span>      *      - where i is the index of the token (zero based) and token is the
+<span class='line'>844</span>      *      current token
+<span class='line'>845</span>      *  @param {String} [delimiter] a delimiter used to split 'object's
+<span class='line'>846</span>      *
+<span class='line'>847</span>      *  @methodOf Horn.prototype
+<span class='line'>848</span>      */</span><span class="WHIT">
+<span class='line'>849</span> </span><span class="WHIT">    </span><span class="NAME">splitEach</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">delimiter</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>850</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">""</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">split</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.isDefinedNotNull</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">delimiter</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT">
+<span class='line'>851</span> </span><span class="WHIT">            </span><span class="NAME">delimiter</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">" "</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">token</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>852</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">token.trim</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="STRN">''</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">token</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>853</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>854</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>855</span> 
+<span class='line'>856</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>857</span>      *  Is the given &lt;code>String&lt;/code> value prefixed by a given stem.
+<span class='line'>858</span>      *  &lt;p>
+<span class='line'>859</span>      *  'Stem' can be a regular expression pattern.
+<span class='line'>860</span>      *
+<span class='line'>861</span>      *  @param value the value to test
+<span class='line'>862</span>      *  @param stem the candidate prefix for the given value
+<span class='line'>863</span>      *
+<span class='line'>864</span>      *  @return {Boolean} &lt;code>true&lt;/code> if the given &lt;code>String&lt;/code> is prefixed,
+<span class='line'>865</span>      *      by the given stem, &lt;code>false&lt;/code> otherwise
+<span class='line'>866</span>      *
+<span class='line'>867</span>      *  @methodOf Horn.prototype
+<span class='line'>868</span>      */</span><span class="WHIT">
+<span class='line'>869</span> </span><span class="WHIT">    </span><span class="NAME">startsWith</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">stem</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>870</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT">  </span><span class="PUNC">(</span><span class="NAME">stem.length</span><span class="WHIT"> </span><span class="PUNC">></span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
+<span class='line'>871</span> </span><span class="WHIT">            </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">value.match</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="STRN">"^"</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">stem</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT">
+<span class='line'>872</span> </span><span class="WHIT">                </span><span class="PUNC">(</span><span class="NAME">value.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="NAME">stem</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>873</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>874</span> 
+<span class='line'>875</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>876</span>      *  Traverses an object graph and executes a callback function for each
+<span class='line'>877</span>      *  value encountered.
+<span class='line'>878</span>      *  &lt;p>
+<span class='line'>879</span>      *  &lt;code>Object&lt;/code> and &lt;code>Array&lt;/code> types are considered
+<span class='line'>880</span>      *  containers of values rather than values themselves.
+<span class='line'>881</span>      *  &lt;p>
+<span class='line'>882</span>      *  For any model value, the corresponding equivalent Horn property path is
+<span class='line'>883</span>      *  constructed and reported to the callback function. An optional property
+<span class='line'>884</span>      *  path stem may be supplied which will be prepended to any such path.
+<span class='line'>885</span>      *
+<span class='line'>886</span>      *  @param value the root of the object graph to traverse
+<span class='line'>887</span>      *  @param {Function} callback a callback function that will be executed for
+<span class='line'>888</span>      *      each value of the object graph encountered, it should have the
+<span class='line'>889</span>      *      following signature: ( path, value, context, propName) where, 'path'
+<span class='line'>890</span>      *      is the value's Horn path within its container, 'value' is the
+<span class='line'>891</span>      *      current value found, 'context' is the object in which the value can
+<span class='line'>892</span>      *      be found and 'key' is the property name within 'context' that the
+<span class='line'>893</span>      *      value can be found.
+<span class='line'>894</span>      *  @param {String} [path] an optional property path that will be prefixed
+<span class='line'>895</span>      *      to every callback reported property path constructed
+<span class='line'>896</span>      *  @param [context] internal use only - no value required
+<span class='line'>897</span>      *  @param [propName] internal use only  - no value required
+<span class='line'>898</span>      *
+<span class='line'>899</span>      *  @methodOf Horn.prototype
+<span class='line'>900</span>      *
+<span class='line'>901</span>      *  @todo test
+<span class='line'>902</span>      */</span><span class="WHIT">
+<span class='line'>903</span> </span><span class="WHIT">    </span><span class="NAME">traverse</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">context</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>904</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">Object</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">value</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>905</span> </span><span class="WHIT">            </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">v</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">this.traverse</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>906</span> </span><span class="WHIT">                </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'-'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="STRN">"-"</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">k</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>907</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>908</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">context</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">propName</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>909</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>910</span> 
+<span class='line'>911</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>912</span>      *  Walks the DOM and executes a callback for each node visited, building
+<span class='line'>913</span>      *  up a Horn property path as it goes by extracting DOM nodes' property
+<span class='line'>914</span>      *  path indicators.
+<span class='line'>915</span>      *  &lt;p>
+<span class='line'>916</span>      *  This function takes a property path stem it prepends to all Horn paths
+<span class='line'>917</span>      *  constructed.
+<span class='line'>918</span>      *  &lt;p>
+<span class='line'>919</span>      *  The callback function can stop at a given node by returning a non
+<span class='line'>920</span>      *  &lt;code>true&lt;/code> value.
+<span class='line'>921</span>      *
+<span class='line'>922</span>      *  @param {Element} node the node to start the walk from, this node is
+<span class='line'>923</span>      *      implicitly visited (the callback will not be executed in respect
+<span class='line'>924</span>      *      of it)
+<span class='line'>925</span>      *  @param {String} path the Horn property path stem that will be prepended
+<span class='line'>926</span>      *      to each Horn path constructed
+<span class='line'>927</span>      *  @param {Function} fn the callback function with the following signature
+<span class='line'>928</span>      *  ( node, path )  - where node is the current node being visited and path
+<span class='line'>929</span>      *  is its full property path (relative to the first DOM node visited and
+<span class='line'>930</span>      *  the path argument to &lt;code>visitNodes(...)&lt;/code> proper.
+<span class='line'>931</span>      *  visited and
+<span class='line'>932</span>      *
+<span class='line'>933</span>      *  @methodOf Horn.prototype
+<span class='line'>934</span>      *
+<span class='line'>935</span>      *  @todo test
+<span class='line'>936</span>      */</span><span class="WHIT">
+<span class='line'>937</span> </span><span class="WHIT">    </span><span class="NAME">visitNodes</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>938</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.pathIndicator</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">n</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">node</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>939</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">this.isAdjustingPath</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">_path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">path</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'-'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">_path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>940</span> </span><span class="WHIT">        </span><span class="NAME">this.each</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">window.$</span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">children</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">n</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>941</span> </span><span class="WHIT">            </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">n</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>942</span> </span><span class="WHIT">                </span><span class="NAME">this.visitNodes</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">n</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">fn</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>943</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>944</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>945</span> 
+<span class='line'>946</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">horn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Horn</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>947</span> 
+<span class='line'>948</span> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>949</span> </span><span class="WHIT">    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="WHIT"> </span><span class="NAME">horn.option</span><span class="PUNC">(</span><span class="WHIT"> </span><span class="STRN">"readOnly"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="WHIT"> </span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>950</span> </span><span class="WHIT">        </span><span class="NAME">horn.load</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>951</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>952</span> </span><span class="WHIT">        </span><span class="NAME">horn.bind</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>953</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>954</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

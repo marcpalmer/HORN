@@ -1,6 +1,27 @@
 module( "horn-jquery-1.0.js");
 
 test(
+    "compare - test common expected positives and negatives.",
+    function() {
+        var horn = new Horn();
+        var ref = {};
+        ok( horn.compare( 0, 0) === true);
+        ok( horn.compare( "a", "a") === true);
+        ok( horn.compare( true, true) === true);
+        ok( horn.compare( false, false) === true);
+        ok( horn.compare( 0, "0") === false);
+        ok( horn.compare( false, "false") === false);
+        ok( horn.compare( 0, "0") === false);
+        ok( horn.compare( "Case", "case") === false);
+        ok( horn.compare( {}, {}) === false);
+        ok( horn.compare( [], []) === false);
+        ok( horn.compare( ref, ref) === true);
+        ok( horn.compare( 0.5, .5) === true);
+    }
+);
+
+
+test(
     "contains - returns false for empty, null and undefined collections.",
     function() {
         var horn = new Horn();
@@ -142,6 +163,52 @@ test(
     function() {
         ok( new Horn().isDefinedNotNull( false) === true);
     });
+
+
+
+
+test(
+    "indexOf - testing null, undefined, and empty containers and values.",
+    function() {
+        ok( new Horn().indexOf( null, null) === -1);
+        ok( new Horn().indexOf( undefined, null) === -1);
+        ok( new Horn().indexOf( [], null) === -1);
+
+        ok( new Horn().indexOf( null, undefined) === -1);
+        ok( new Horn().indexOf( undefined, undefined) === -1);
+        ok( new Horn().indexOf( [], undefined) === -1);
+    });
+
+test(
+    "indexOf - single entry array containing our target.",
+    function() {
+        ok( new Horn().indexOf( [0], 0) === 0); }
+    );
+test(
+    "indexOf - our entry at last position of array.",
+    function() {
+        ok( new Horn().indexOf( [1, 0], 0) === 1); }
+    );
+test(
+    "indexOf - first index returned from multiple, initial position target.",
+    function() {
+        ok( new Horn().indexOf( [0, 0], 0) === 0); }
+    );
+test(
+    "indexOf - medial position target.",
+    function() {
+        ok( new Horn().indexOf( [1, 0, 1], 0) === 1); }
+    );
+test(
+    "indexOf - that case is strictly compared for string/number.",
+    function() {
+        ok( new Horn().indexOf( [0, "1"], 1) === -1); }
+    );
+test(
+    "indexOf - various container item type test.",
+    function() {
+        ok( new Horn().indexOf( [0, false, true, {}, "-1", -1], -1) === 5); }
+    );
 
 
 
