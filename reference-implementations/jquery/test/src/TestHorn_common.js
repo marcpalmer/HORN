@@ -159,17 +159,19 @@ test(
 );
 
 test(
-    "each - ranging over an object container.",
+    "each - ranging over an object container - and that we don't deep visit items.",
     function() {
         var eachData = {
             a: {
-                a: 1
+                z: -1
             },
             b: 2,
             c: true,
             d: "false"};
         var result = [];
         new Horn().each( eachData, function( i, n) {
+            ok( n !== 'z');
+            ok( n !== -1);
             ok( new Horn().compare( eachData[ i], n) === true);
         });
     }
@@ -219,6 +221,48 @@ test(
         ok( arrayCompare( result, [ "s", "t", "r", "i", "n", "g"]));
     }
 );
+
+test(
+    "each - that the context is applied if supplied.",
+    function() {
+        new Horn().each( [0], function( i, n) { ok( this.x === true); }, {x: true});
+    }
+);
+
+
+
+
+test(
+    "getHornDOMNodeValue - test for various tags.",
+    function() {
+        var horn = new Horn();
+        var tagData = [
+            "<a>initialValue</a>",
+            "<h3>initialValue</h3>",
+            "<label>initialValue</label>",
+            "<p>initialValue</p>",
+            "<pre>initialValue</pre>",
+            "<strong>initialValue</strong>",
+            "<span>initialValue</span>",
+            "<div>initialValue</div>",
+            "<abbr title='initialValue'>displayValue</abbr>",
+            "<input type='text' value='initialValue'>",
+            "<input type='hidden' value='initialValue'>",
+            "<textarea>initialValue</textarea>"];
+        horn.each( tagData,
+            function( i, n ) {
+                var node = $(n);
+                try {
+                    node.attr( "id", "_soonToBeRemoved");
+                    $('body').append( node);
+                    ok( horn.isAttached( node) === true);
+                    ok( horn.getHornDOMNodeValue( {node: node}) === 'initialValue');
+                } finally {
+                    node.remove();
+                    ok( horn.isAttached( node) === false);
+                }
+            });
+    });
 
 
 
@@ -476,6 +520,43 @@ test(
 
         ok( horn.removeProperty( testObj, "propertyName") === true);
         ok( testObj.propertyName === undefined);
+    });
+
+
+
+
+test(
+    "setHornDOMNodeValue - test for various tags.",
+    function() {
+        var horn = new Horn();
+        var tagData = [
+            "<a>initialValue</a>",
+            "<h3>initialValue</h3>",
+            "<label>initialValue</label>",
+            "<p>initialValue</p>",
+            "<pre>initialValue</pre>",
+            "<strong>initialValue</strong>",
+            "<span>initialValue</span>",
+            "<div>initialValue</div>",
+            "<abbr title='initialValue'>displayValue</abbr>",
+            "<input type='text' value='initialValue'>",
+            "<input type='hidden' value='initialValue'>",
+            "<textarea>initialValue</textarea>"];
+        horn.each( tagData,
+            function( i, n ) {
+                var node = $(n);
+                try {
+                    node.attr( "id", "_soonToBeRemoved");
+                    $('body').append( node);
+                    ok( horn.isAttached( node) === true);
+                    ok( horn.getHornDOMNodeValue( {node: node}) === 'initialValue');
+                    horn.setHornDOMNodeValue( {node: node, value: 'newValue'});
+                    ok( horn.getHornDOMNodeValue( {node: node}) === 'newValue');
+                } finally {
+                    node.remove();
+                    ok( horn.isAttached( node) === false);
+                }
+            });
     });
 
 

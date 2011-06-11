@@ -591,15 +591,18 @@ Horn.prototype = {
     },
 
     /**
-     *  Calls a callback function for each of an object's properties.
+     *  Iterates over various types and executes a callback function for each
+     *  value encountered.
      *  <p>
-     *  An optional scope context can be provided which will provide the 'this'
-     *  for the callback function.
+     *  An optional scope context can be provided which will provide the
+     *  <code>this</code> for the callback function.
      *  <p>
      *  The callback function should have the following signature
-     *  <strong>( i, n )</strong> : where i is the propertyName and n is the item.
+     *  <strong>( i, n )</strong> : where 'i' is the propertyName of the item
+     *  within its container (for objects and arrays and strings) and 'n' is the
+     *  item.
      *
-     *  @param {Object} collection the object to iterate over
+     *  @param {Object} collection the item to iterate over
      *  @param fn the callback function which will be called for each item
      *  @param {Object} [ctx] the scope under which to execute the callback.
      *
@@ -622,14 +625,12 @@ Horn.prototype = {
      *
      *  @methodOf Horn.prototype
      *
-     *  @todo test
-     *
      *  @todo use in tests rather than doing manually perhaps? perhaps in
      *  example too?
      */
     getHornDOMNodeValue: function( args ) {
-        var nodeName = args.node.nodeName.toLowerCase();
         var jNode = $(args.node);
+        var nodeName = jNode[0].nodeName.toLowerCase();
         return unescape(
             ((nodeName === "input") || (nodeName === 'textarea')) ?
                 jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
@@ -816,12 +817,10 @@ Horn.prototype = {
      *  @param {Object} args.value the value to set
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo test
      */
     setHornDOMNodeValue: function( args ) {
-        var nodeName = args.node.nodeName.toLowerCase();
         var n = $(args.node);
+        var nodeName = n[0].nodeName.toLowerCase();
         if ( (nodeName === "input") || (nodeName === 'textarea') ) {
             n.val( args.value);
         } else if ( nodeName === "abbr" ) {
