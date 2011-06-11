@@ -21,6 +21,19 @@ var isEmptyObject = function( object ) {
     return true;
 };
 
+var arrayCompare = function( array1, array2 ) {
+    var i;
+    var array1Length = array1.length;
+    if (array1Length != array2.length) { return false; }
+    for ( i = 0; i < array1Length; i++ ) {
+        if ( (array1[i].compare && array2[i].compare( array2[i])) ||
+            (array1[i] !== array2[i]) ) {
+            return false;
+        }
+    }
+    return true;
+};
+
 var isFunction = function( object ) {
     if ( object === undefined ) { return false; }
     if ( object === null ) { return false; }

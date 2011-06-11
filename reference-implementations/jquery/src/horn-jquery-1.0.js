@@ -177,7 +177,7 @@ var Horn = function() {
      */
     var getModelReference = this.scope( function( args ) {
         var rv;
-        var tokens = this.pathToTokens( args);
+        var tokens = this.pathToTokens( args.path);
         var length = tokens.length;
         if ( length > 0 ) {
             rv = {ref: state.model, key: tokens[ length - 1]};
@@ -269,7 +269,7 @@ var Horn = function() {
         var numTokens;
         var subContext;
         if ( typeof path === 'string' ) {
-            path = this.pathToTokens( {path: path});
+            path = this.pathToTokens( path);
             if ( !this.isDefinedNotNull( state.model) ) {
                 state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
             }
@@ -514,14 +514,12 @@ Horn.prototype = {
      *  <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo change here caused a test to fail, look at what's going on
+     *  good coverage on tests that use this method
      */
     contains: function( container, item ) {
-        var rv = null;
-        this.each( container, function( i, o ) {
-            rv = $(o)[0] === $(item)[0];
-            if ( rv ) { return false; }
-        });
-        return rv;
+        return this.indexOf(container, item) !== undefined;
     },
 
     /**
@@ -659,6 +657,29 @@ Horn.prototype = {
     },
 
     /**
+     *  Determines the index of an item with a container.
+     *  <p>
+     *  Returns the <code>Number</code> array index, OR {String} property name
+     *  of the given item relative to its container if the item was found else
+     *  <code>undefined</code>.
+     *
+     *  @param container {Object|Array} container the item collection
+     *  @param item item the element for which to determine its index
+     *
+     *  @return the index of the item in its container else
+     */
+    indexOf: function( container, item ) {
+        var index;
+        this.each( container, function( i, o ) {
+            if ( o === item ) {
+                index = i;
+                return false;
+            }
+        });
+        return index;
+    },
+
+    /**
      *  Determines if the given Horn property path is 'context-altering'.
      *  <p>
      *  The 'path' argument is converted to a <code>String</code> before
@@ -707,17 +728,17 @@ Horn.prototype = {
      *  For example, <code>pathToTokens( "-a-0-b-2-2")</code> yields,
      *  <code>[a, 0, b, 2, 2]</code>.
      *
-     *  @param {String} args.path the Horn property path to split
+     *  @param {String} path the Horn property path to split
      *
      *  @return {Array} the tokens extracted from the property path
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo consider replacing with splitEach
      */
-    pathToTokens: function( args ) {
-        return (this.startsWith( args.path, "-") ?
-            args.path.substring( 1) : args.path).split( "-");
+    pathToTokens: function( path ) {
+        return path ?
+            (this.startsWith( path, "-") ?
+                path.substring( 1) : path).split( "-") :
+            undefined;
     },
 
     /**

@@ -1,4 +1,4 @@
-module( "TestHorn - Horn Miscellany");
+module( "horn-jquery-css-1.0.js");
 
 test(
     "Features - Test horn has hasRootIndicator function.",
@@ -32,7 +32,6 @@ test(
 
 
 
-module( "TestHorn - extractCSSPropertyPath()");
 
 test(
     "extractCSSPropertyPath() - that no key is extracted if no suitable 'class' attribute token exists.",
@@ -46,7 +45,7 @@ test(
     });
 
 test(
-    "Horn.prototype.extractCSSPropertyPath() - that the code handles the element having no 'class' atribute.",
+    "extractCSSPropertyPath() - that the code handles the element having no 'class' atribute.",
     function() {
         var horn = new Horn();
         var node = $('<div />');
@@ -55,7 +54,7 @@ test(
     });
 
 test(
-    "Horn.prototype.extractCSSPropertyPath() - extracts known good key.",
+    "extractCSSPropertyPath() - extracts known good key.",
     function() {
         var horn = new Horn();
         var node = $('<div class="' + horn.cssPrefix + 'expected" />');
@@ -65,9 +64,6 @@ test(
 
 
 
-
-
-module( "TestHorn - Model Tests");
 
 /*
                                     'Key' - 'Value'         Structure           Java
@@ -1110,8 +1106,6 @@ test(
 
 
 
-module( "TestHorn - ABBR");
-
 test(
     "ABBR - ABBR node for value, no type conversion.",
     function() {
@@ -1163,7 +1157,6 @@ test(
     });
 
 
-module( "TestHorn - Population");
 
 test(
     "Population - integer from horn, extracted, modified in model, repopulated and checked.",
@@ -1213,7 +1206,6 @@ test(
 
 
 
-module( "Nested Contexts");
 
 test(
     "Nested Contexts - Simple nested in immediate parent.",
@@ -1234,7 +1226,6 @@ test(
 
 
 
-module( "TestHorn - Population");
 
 test(
     "Population - integer from horn, extracted, modified in model, repopulated and checked.",
@@ -1259,7 +1250,6 @@ test(
 
 
 
-module( "TestHorn - INPUT");
 
 test(
     "INPUT - INPUT node for value, no type conversion.",
@@ -1313,7 +1303,6 @@ test(
 
 
 
-module( "TestHorn - TEXTAREA");
 
 test(
     "TEXTAREA - TEXTAREA node for value, no type conversion.",
@@ -1367,7 +1356,6 @@ test(
 
 
 
-module( "From Template");
 
 test(
     "From Template - Testing the population of a template with no type conversion nor pattern matching.",

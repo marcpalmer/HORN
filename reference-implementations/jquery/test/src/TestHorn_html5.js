@@ -1,5 +1,4 @@
-
-module( "TestHorn - Horn Miscellany");
+module( "horn-jquery-html-1.0.js");
 
 test(
     "Features - Test horn has hasRootIndicator function.",
@@ -33,8 +32,6 @@ test(
 
 
 
-module( "TestHorn - Horn.encodeCSS()");
-
 test(
     "Horn.encodeCSS() - .",
     function() {
@@ -57,8 +54,6 @@ test(
 
 
 
-
-module( "TestHorn_HTML5 - Model Tests");
 
 test(
     "Model Tests - _0 - 'one'",
@@ -1054,8 +1049,6 @@ test(
 
 
 
-module( "TestHorn_HTML5 - ABBR");
-
 test(
     "ABBR - ABBR node for value, no type conversion.",
     function() {
@@ -1125,8 +1118,6 @@ test(
 
 
 
-module( "TestHorn - Population");
-
 test(
     "Population - integer from horn, extracted, modified in model, repopulated and checked.",
     function() {
@@ -1175,8 +1166,6 @@ test(
 
 
 
-module( "TestHorn_HTML5 - getDataAttr()");
-
 test(
     "getDataAttr() - Returns the attribute value expected.",
     function() {
@@ -1201,8 +1190,6 @@ test(
 
 
 
-
-module( "From Template");
 
 test(
     "From Template - Testing the population of a template with no type conversion nor pattern matching.",
@@ -1302,8 +1289,6 @@ test(
 
 
 
-module( "TestHorn - INPUT");
-
 test(
     "INPUT - INPUT node for value, no type conversion.",
     function() {
@@ -1353,8 +1338,6 @@ test(
 
 
 
-
-module( "TestHorn - TEXTAREA");
 
 test(
     "TEXTAREA - TEXTAREA node for value, no type conversion.",
