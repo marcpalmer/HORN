@@ -581,6 +581,8 @@ Horn.prototype = {
      *  @param {Object} [ctx] the scope under which to execute the callback.
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo test
      */
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }
@@ -646,6 +648,11 @@ Horn.prototype = {
      *  @return {String} the given node's displayed text
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo test
+     *
+     *  @todo use in tests rather than doing manually perhaps? perhaps in
+     *  example too?
      */
     getHornDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
@@ -667,16 +674,44 @@ Horn.prototype = {
      *  @param item item the element for which to determine its index
      *
      *  @return the index of the item in its container else
+     *
+     *  @methodOf Horn.prototype
+     *
+     *  @todo test
      */
     indexOf: function( container, item ) {
         var index;
         this.each( container, function( i, o ) {
-            if ( o === item ) {
+            if ( this.compare( o, item ) ) {
                 index = i;
                 return false;
             }
-        });
+        }, this);
         return index;
+    },
+
+    /**
+     *  Determines if two values the same.
+     *  <p>
+     *  Uses the <code>compare</code> function if it is defined on either
+     *  argument else, the strict equality operator <code>===</code> is put
+     *  to work.
+     *
+     *  @param i the a value to compare
+     *  @param j the a value to compare
+     *
+     *  @return {Boolean} <code>true</code> if the two values are equal,
+     *  <code>false</code> otherwise
+     *
+     *  @methodOf Horn.prototype
+     *
+     *  @todo not sure if this clause (j.compare && j.compare( i)) is needed,
+     *  read up on the workings of the compare function
+     *
+     *  @todo test
+     */
+    compare: function( i, j ) {
+        return (i.compare && i.compare( j)) || (j.compare && j.compare( i)) || (i === j);
     },
 
     /**
@@ -785,6 +820,8 @@ Horn.prototype = {
      *  @param {Object} args.value the value to set
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo test
      */
     setHornDOMNodeValue: function( args ) {
         var nodeName = args.node.nodeName.toLowerCase();
@@ -862,6 +899,8 @@ Horn.prototype = {
      *  @param [propName] internal use only  - no value required
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo test
      */
     traverse: function( value, callback, path, context, propName ) {
         if ( (value instanceof Object) || (value instanceof Array) ) {
@@ -894,6 +933,8 @@ Horn.prototype = {
      *  visited and
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo test
      */
     visitNodes: function( node, path, fn ) {
         var _path = this.pathIndicator({n: node});

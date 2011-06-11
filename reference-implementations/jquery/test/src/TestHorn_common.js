@@ -332,6 +332,34 @@ test(
 
 
 test(
+    "scope - that we do indeed get a new scope chain head (or not).",
+    function() {
+        var horn = new Horn();
+        var fn = function() { return this.key; };
+        var rv = horn.scope( fn, {key: 'value'})();
+        ok( rv === 'value');
+
+        horn = new Horn();
+        fn = function() { return this.key; };
+        rv = fn();
+        ok( rv === undefined);
+    });
+
+test(
+    "scope - that arguments passed are preserved.",
+    function() {
+        var fn = function( arg1, arg2, arg3 ) {
+            ok( arg1 === undefined);
+            ok( arg2 === true);
+            ok( arg3 === "true");
+        };
+        new Horn().scope( fn)( undefined, true, "true");
+    });
+
+
+
+
+test(
     "startsWith - Sanity check on random string.",
     function() {
         var horn = new Horn();

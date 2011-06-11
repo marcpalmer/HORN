@@ -18,6 +18,8 @@
  *  @param {Horn} args.horn the Horn instance to bind to
  *
  *  @constructor
+ *
+ *  @test
  */
 var HornPatternConverter = function (args) {
 
