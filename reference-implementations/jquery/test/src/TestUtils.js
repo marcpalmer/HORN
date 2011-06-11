@@ -9,6 +9,15 @@ var countOwnProps = function( object ) {
     return count;
 };
 
+var walk = function walk(node, func) {
+    func( node );
+    node = node.firstChild;
+    while ( node ) {
+        walk(node, func);
+        node = node.nextSibling;
+    }
+};
+
 var isJQueryObject = function( object ) {
     return object instanceof jQuery;
 };

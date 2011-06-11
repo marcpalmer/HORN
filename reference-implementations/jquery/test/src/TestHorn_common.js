@@ -693,6 +693,24 @@ test(
             }, ".");
     });
 
+test(
+    "traverse",
+    function() {
+        ok( false);
+    });
+
+test(
+    "visitNodes",
+    function() {
+        // dataTest
+
+
+            // get all body nods via jquery
+            // visit all nodes via our method
+            // make sure they are all represented
+
+        ok( false);
+    });
 
 
 //

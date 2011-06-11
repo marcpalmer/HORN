@@ -143,10 +143,20 @@ var Horn = function() {
                 $(args.selector) : this.rootNodes());
         setDefaultModel();
         this.each( rootNodes,
-            function( i, n ) { this.visitNodes( n, '',
+            function( i, n ) {
+                var inGraph = false;
+                this.visitNodes( n, '',
                 function( n, path ) {
+
+                    // @todo test this change here
                     if ( _this.hasRootIndicator( { n: n}) ) {
-                        return false; }
+                        if ( inGraph ) {
+                            return false
+                        } else {
+                            inGraph = true;
+                            return true;
+                        }
+                    }
                     var bindingData = _this.hasHornBinding( n, path);
                     if ( bindingData === false ) {
                         return true; }
@@ -324,8 +334,8 @@ var Horn = function() {
      *  otherwise identical function, <code>{@link Horn#load}</code> should be
      *  used.
      *
-     *  @param {Object} [rootNodes] a collection of DOM nodes to bind from, overrides
-     *      the default node selection mechanism
+     *  @param {Object} [rootNodes] a collection of DOM nodes to bind from,
+     *      overrides the default node selection mechanism
      *  @param {String} [selector] a jQuery DOM node selector for nodes to bind
      *      from,
      *
@@ -350,9 +360,8 @@ var Horn = function() {
      *  marked up with Horn indicators, and populate the DOM nodes with
      *  data from the specified property path.
      *
-     *  @param {String} args.path the property path within the model, to use to populate
-     *      this DOM node and its descendants
-     *
+     *  @param {String} args.path the property path within the model, to use to
+     *      populate this DOM node and its descendants
      *  @param {Object} [args.data]
      *  @param {Element|String} [args.node] a jQuery node or selector String
      *  @param {Element|String} [args.template] jQuery node or selector String
@@ -401,7 +410,8 @@ var Horn = function() {
      *  @public
      */
     this.load = function( args ) {
-        return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
+        return extract(
+            setDefaultArgs( {args: args, defaults: {readOnly: true}}));
     };
 
     /**
@@ -522,7 +532,8 @@ Horn.prototype = {
      *  read up on the workings of the compare function
      */
     compare: function( i, j ) {
-        return (i.compare && i.compare( j)) || (j.compare && j.compare( i)) || (i === j);
+        return (i.compare && i.compare( j)) ||
+            (j.compare && j.compare( i)) || (i === j);
     },
 
     /**
@@ -580,8 +591,8 @@ Horn.prototype = {
      *  @param args the object to check for the given property
      *  @param propertyName the name of the property to check for
      *
-     *  @return {Boolean} <code>true</code> if the arguments do define the given property,
-     *      <code>false</code> otherwise
+     *  @return {Boolean} <code>true</code> if the arguments do define the given
+     *      property, <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
@@ -737,10 +748,13 @@ Horn.prototype = {
      *
      *  @methodOf Horn.prototype
      */
-    isAttached: function( node ) { return $(node).parents(':last').is('html'); },
+    isAttached: function( node ) {
+        return $(node).parents(':last').is('html');
+    },
 
     /**
-     *  Is the given value neither, <code>undefined</code> nor <code>null</code>?
+     *  Is the given value neither, <code>undefined</code> nor
+     *  <code>null</code>?
      *
      *  @param args value the value to check
      *
@@ -780,8 +794,8 @@ Horn.prototype = {
      *  @param {Object} object the object to remove the property from
      *  @param {String} propName the name of the property to remove
      *
-     *  @return {Boolean} <code>true</code> if the property was defined and was removed,
-     *      <code>false</code> otherwise
+     *  @return {Boolean} <code>true</code> if the property was defined and was
+     *      removed, <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
@@ -858,8 +872,8 @@ Horn.prototype = {
      *  @param value the value to test
      *  @param stem the candidate prefix for the given value
      *
-     *  @return {Boolean} <code>true</code> if the given <code>String</code> is prefixed,
-     *      by the given stem, <code>false</code> otherwise
+     *  @return {Boolean} <code>true</code> if the given <code>String</code> is
+     *      prefixed, by the given stem, <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
      */
@@ -934,6 +948,7 @@ Horn.prototype = {
     visitNodes: function( node, path, fn ) {
         var _path = this.pathIndicator({n: node});
         if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
+        fn( node, path)
         this.each( window.$(node).children(), function( i, n ) {
             if ( fn( n, path) === true ) {
                 this.visitNodes( n, path, fn); }}, this);
