@@ -604,8 +604,6 @@ Horn.prototype = {
      *  @param {Object} [ctx] the scope under which to execute the callback.
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo test
      */
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }

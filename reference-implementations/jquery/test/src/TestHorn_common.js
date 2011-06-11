@@ -1,4 +1,4 @@
-module( "horn-jquery-1.0.js");
+module( "horn-jquery-1.0.js - prototype functions");
 
 test(
     "compare - test common expected positives and negatives.",
@@ -134,6 +134,89 @@ test(
     "definesProperty - true for existing array indices using Number index as property name.",
     function() {
         ok( new Horn().definesProperty( [1], 0) === true);
+    }
+);
+
+
+
+
+test(
+    "each - ranging over various array containers.",
+    function() {
+        $.each( [
+            { col: [] },
+            { col: [0] },
+            { col: [1, 2] },
+            { col: ["1", 2, false] },
+            { col: ["cheeses"] },
+            { col: [[0], [1]] }
+        ], function( i, n ) {
+            var result = [];
+            new Horn().each( n.col, function( j, o) { result.push( o); });
+            ok( arrayCompare( result, n.col) === true);
+        })
+    }
+);
+
+test(
+    "each - ranging over an object container.",
+    function() {
+        var eachData = {
+            a: {
+                a: 1
+            },
+            b: 2,
+            c: true,
+            d: "false"};
+        var result = [];
+        new Horn().each( eachData, function( i, n) {
+            ok( new Horn().compare( eachData[ i], n) === true);
+        });
+    }
+);
+
+test(
+    "each - null containers shouldn't call the callback .",
+    function() {
+        new Horn().each( null, function( i, n) { ok( false); });
+    }
+);
+
+test(
+    "each - undefined containers shouldn't call the callback .",
+    function() {
+        new Horn().each( undefined, function( i, n) { ok( false); });
+    }
+);
+
+test(
+    "each - empty containers shouldn't call the callback .",
+    function() {
+        new Horn().each( [], function( i, n) { ok( false); });
+    }
+);
+
+test(
+    "each - empty containers shouldn't call the callback .",
+    function() {
+        new Horn().each( {}, function( i, n) { ok( false); });
+    }
+);
+
+test(
+    "each - simple values should not call the callback .",
+    function() {
+        new Horn().each( true, function( i, n) { ok( false); });
+        new Horn().each( 0, function( i, n) { ok( false); });
+    }
+);
+
+test(
+    "each - string values should call the callback for each char.",
+    function() {
+        var result = [];
+        new Horn().each( "string", function( i, n) { result.push( n);});
+        ok( arrayCompare( result, [ "s", "t", "r", "i", "n", "g"]));
     }
 );
 
@@ -531,47 +614,54 @@ test(
 
 
 
+//
+//module( "horn-jquery-1.0.js - instance functions");
+//
+//test(
+//    "that we have the expected global (window) horn property.",
+//    function() { ok( window.horn instanceof Horn ); });
 
-test(
-    "Form Elements - Testing jQuery Input element getter/setter.",
-    function() {
-        dataTest( {
-            nodes: [ {
-                nodes:  $(' <input class=" " type="text" size="60" maxlength="64" id="pfBoardName" name="boardName" value="testValue" />')}
-            ],
-            callback: function( horn ) {
-                ok( $('#pfBoardName').val() === 'testValue');
-                $('#pfBoardName').val( 'newValue');
-                ok( $('#pfBoardName').val() === 'newValue');
-        }});
-    });
-
-test(
-    "Form Elements - Testing jQuery TextArea element getter/setter.",
-    function() {
-        dataTest( {
-            nodes: [ {
-                nodes:  $(' <textarea class="span-10 text-field email-list" id="addresses" name="addresses" >testValue</textarea>')}
-            ],
-            callback: function( horn ) {
-                ok( $('#addresses').val() === 'testValue');
-                $('#addresses').val( 'newValue');
-                ok( $('#addresses').val() === 'newValue');
-        }});
-    });
-
-
-
-
-test(
-    "jQuery - Sanity Testing typeof and instanceof.",
-    function() {
-        var node = $('<div></div>');
-        ok( node instanceof jQuery );
-        ok( typeof node === 'object' );
-    });
-
-
+//
+//test(
+//    "Form Elements - Testing jQuery Input element getter/setter.",
+//    function() {
+//        dataTest( {
+//            nodes: [ {
+//                nodes:  $(' <input class=" " type="text" size="60" maxlength="64" id="pfBoardName" name="boardName" value="testValue" />')}
+//            ],
+//            callback: function( horn ) {
+//                ok( $('#pfBoardName').val() === 'testValue');
+//                $('#pfBoardName').val( 'newValue');
+//                ok( $('#pfBoardName').val() === 'newValue');
+//        }});
+//    });
+//
+//test(
+//    "Form Elements - Testing jQuery TextArea element getter/setter.",
+//    function() {
+//        dataTest( {
+//            nodes: [ {
+//                nodes:  $(' <textarea class="span-10 text-field email-list" id="addresses" name="addresses" >testValue</textarea>')}
+//            ],
+//            callback: function( horn ) {
+//                ok( $('#addresses').val() === 'testValue');
+//                $('#addresses').val( 'newValue');
+//                ok( $('#addresses').val() === 'newValue');
+//        }});
+//    });
+//
+//
+//
+//
+//test(
+//    "jQuery - Sanity Testing typeof and instanceof.",
+//    function() {
+//        var node = $('<div></div>');
+//        ok( node instanceof jQuery );
+//        ok( typeof node === 'object' );
+//    });
+//
+//
 
 
 test(
@@ -597,3 +687,12 @@ test(
                 ok( extractedModel.newNotice.title === 'testTitle');
             }});
     });
+
+
+
+
+module( "horn-converters.js");
+
+test(
+    "that we have the expected global (window) hornConverter property.",
+    function() { ok( window.hornConverter instanceof HornPatternConverter ); });
