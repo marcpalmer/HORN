@@ -320,7 +320,8 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#each">each</a></b>(collection, fn, ctx)
 								</div>
-								<div class="description">Calls a callback function for each of an object's properties.</div>
+								<div class="description">Iterates over various types and executes a callback function for each
+ value encountered.</div>
 							</td>
 						</tr>
 					
@@ -373,9 +374,10 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#isDefinedNotNull">isDefinedNotNull</a></b>(args)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#isDefinedNotNull">isDefinedNotNull</a></b>(value)
 								</div>
-								<div class="description">Is the given value neither, <code>undefined</code> nor <code>null</code>?</div>
+								<div class="description">Is the given value neither, <code>undefined</code> nor
+ <code>null</code>?</div>
 							</td>
 						</tr>
 					
@@ -506,7 +508,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#visitNodes">visitNodes</a></b>(node, path, fn)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#visitNodes">visitNodes</a></b>(node, fn, path)
 								</div>
 								<div class="description">Walks the DOM and executes a callback for each node visited, building
  up a Horn property path as it goes by extracting DOM nodes' property
@@ -621,8 +623,8 @@ ul.inheritsList
 									<span class="light fixedFont">{Object}</span> <b>rootNodes</b>
 									<i>Optional</i>
 								</dt>
-								<dd>a collection of DOM nodes to bind from, overrides
-     the default node selection mechanism</dd>
+								<dd>a collection of DOM nodes to bind from,
+     overrides the default node selection mechanism</dd>
 							
 								<dt>
 									<span class="light fixedFont">{String}</span> <b>selector</b>
@@ -687,8 +689,8 @@ ul.inheritsList
 									<span class="light fixedFont">{String}</span> <b>args.path</b>
 									
 								</dt>
-								<dd>the property path within the model, to use to populate
-     this DOM node and its descendants</dd>
+								<dd>the property path within the model, to use to
+     populate this DOM node and its descendants</dd>
 							
 								<dt>
 									<span class="light fixedFont">{Object}</span> <b>args.data</b>
@@ -745,6 +747,8 @@ ul.inheritsList
  Uses the <code>compare</code> function if it is defined on either
  argument else, the strict equality operator <code>===</code> is put
  to work.
+ <p>
+ Handles unwrapping jQuery instnaces.
 						
 						
 					</div>
@@ -759,13 +763,13 @@ ul.inheritsList
 									<b>i</b>
 									
 								</dt>
-								<dd>the a value to compare</dd>
+								<dd>a value to compare</dd>
 							
 								<dt>
 									<b>j</b>
 									
 								</dt>
-								<dd>the a value to compare</dd>
+								<dd>a value to compare</dd>
 							
 							</dl>
 						
@@ -936,8 +940,8 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the arguments do define the given property,
-     <code>false</code> otherwise</dd>
+								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the arguments do define the given
+     property, <code>false</code> otherwise</dd>
 							
 							</dl>
 						
@@ -954,13 +958,16 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Calls a callback function for each of an object's properties.
+						Iterates over various types and executes a callback function for each
+ value encountered.
  <p>
- An optional scope context can be provided which will provide the 'this'
- for the callback function.
+ An optional scope context can be provided which will provide the
+ <code>this</code> for the callback function.
  <p>
  The callback function should have the following signature
- <strong>( i, n )</strong> : where i is the propertyName and n is the item.
+ <strong>( i, n )</strong> : where 'i' is the propertyName of the item
+ within its container (for objects and arrays and strings) and 'n' is the
+ item.
 						
 						
 					</div>
@@ -975,10 +982,10 @@ ul.inheritsList
 									<span class="light fixedFont">{Object}</span> <b>collection</b>
 									
 								</dt>
-								<dd>the object to iterate over</dd>
+								<dd>the item to iterate over</dd>
 							
 								<dt>
-									<b>fn</b>
+									<span class="light fixedFont">{Function}</span> <b>fn</b>
 									
 								</dt>
 								<dd>the callback function which will be called for each item</dd>
@@ -1253,11 +1260,12 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					<span class="light">{Boolean}</span>
-					<b>isDefinedNotNull</b>(args)
+					<b>isDefinedNotNull</b>(value)
 					
 					</div>
 					<div class="description">
-						Is the given value neither, <code>undefined</code> nor <code>null</code>?
+						Is the given value neither, <code>undefined</code> nor
+ <code>null</code>?
 						
 						
 					</div>
@@ -1269,10 +1277,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args</b>
+									<b>value</b>
 									
 								</dt>
-								<dd>value the value to check</dd>
+								<dd>the value to check</dd>
 							
 							</dl>
 						
@@ -1518,8 +1526,8 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the property was defined and was removed,
-     <code>false</code> otherwise</dd>
+								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the property was defined and was
+     removed, <code>false</code> otherwise</dd>
 							
 							</dl>
 						
@@ -1755,8 +1763,8 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the given <code>String</code> is prefixed,
-     by the given stem, <code>false</code> otherwise</dd>
+								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the given <code>String</code> is
+     prefixed, by the given stem, <code>false</code> otherwise</dd>
 							
 							</dl>
 						
@@ -1929,7 +1937,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>visitNodes</b>(node, path, fn)
+					<b>visitNodes</b>(node, fn, path)
 					
 					</div>
 					<div class="description">
@@ -1961,21 +1969,21 @@ ul.inheritsList
      of it)</dd>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>path</b>
-									
-								</dt>
-								<dd>the Horn property path stem that will be prepended
-     to each Horn path constructed</dd>
-							
-								<dt>
 									<span class="light fixedFont">{Function}</span> <b>fn</b>
 									
 								</dt>
 								<dd>the callback function with the following signature
- ( node, path )  - where node is the current node being visited and path
- is its full property path (relative to the first DOM node visited and
- the path argument to <code>visitNodes(...)</code> proper.
- visited and</dd>
+     ( node, path )  - where node is the current node being visited and
+     path is its full property path (relative to the first DOM node
+     visited and the path argument to <code>visitNodes(...)</code>
+     proper.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>path</b>
+									<i>Optional</i>
+								</dt>
+								<dd>the Horn property path stem that will be
+     prepended to each Horn path constructed</dd>
 							
 							</dl>
 						
@@ -2000,7 +2008,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sat Jun 11 2011 19:14:34 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sun Jun 12 2011 05:43:48 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

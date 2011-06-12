@@ -148,12 +148,16 @@ var hornConverter = new HornPatternConverter({horn: horn});
 
 hornConverter.add("Integer",
     function (args) {
-        return args.type === 'fromText' ?
-            parseInt(args.value) : args.value + "";
+        if ( args.type !== 'fromJSON' ) {
+            return (args.type === 'fromText' ) ?
+                parseInt(args.value) : args.value + "";
+        }
     });
 
 hornConverter.add("Boolean",
     function (args) {
-        return args.type === 'fromText' ?
-            args.value.toLowerCase() === 'true' : args.value + "";
+        if ( args.type !== 'fromJSON' ) {
+            return (args.type === 'fromText') ?
+                args.value.toLowerCase() === 'true' : args.value + "";
+        }
     });

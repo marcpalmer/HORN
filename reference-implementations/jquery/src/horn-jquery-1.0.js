@@ -29,9 +29,9 @@ var Horn = function() {
      * @function
      */
     var addBinding = this.scope( function( args ) {
+        var rv;
         var details;
         var culledPath = args.path.substring( 1);
-        var rv;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
@@ -40,7 +40,6 @@ var Horn = function() {
                 args.context = details.context;
                 args.key = details.key;
             }
-
             if ( !this.isDefinedNotNull( state.bindings) ) {
                 state.bindings = {}; }
             rv = {node: args.node, value: args.value};
@@ -111,8 +110,7 @@ var Horn = function() {
                 this.traverse( jsonData,
                     this.scope( function( k, v ) {
                         addJSONHelper( $.extend( defaults,
-                            {value: v, path:  rootPath + k}));
-                    }, this));
+                            {value: v, path:  rootPath + k})); }, this));
             } else {
                 addJSONHelper( $.extend( defaults,
                     {value: jsonData, path:  rootPath}));
@@ -138,10 +136,12 @@ var Horn = function() {
      */
     var extract = this.scope( function( args ) {
         var _this = this;
+
         var rootNodes = this.definesProperty( args, 'rootNodes') ?
             args.rootNodes : (this.definesProperty( args, 'selector') ?
                 $(args.selector) : this.rootNodes());
         setDefaultModel();
+
         this.each( rootNodes,
             function( i, n ) {
                 var inGraph = false;
@@ -228,7 +228,8 @@ var Horn = function() {
         var modelValue = binding.context[ binding.key];
         var textValue;
         if ( modelValue !== binding.value ) {
-            if ( !rootNode || (rootNode && this.contains( $(binding.node).parents(), rootNode)) ) {
+            if ( !rootNode || (rootNode && this.contains(
+                $(binding.node).parents(), rootNode)) ) {
                 textValue = convert( {
                     value: modelValue,
                     path:  args.path,
@@ -237,7 +238,8 @@ var Horn = function() {
                 if ( !this.isDefinedNotNull( textValue) ) {
                     textValue = modelValue + "";
                 }
-                this.setHornDOMNodeValue( {node: binding.node, value: textValue});
+                this.setHornDOMNodeValue(
+                    {node: binding.node, value: textValue});
                 binding.value = modelValue;
                 return binding.node;
             }
@@ -249,7 +251,8 @@ var Horn = function() {
      * @function
      */
     var setDefaultArgs = this.scope( function( args ) {
-        var existingArgs = !this.definesProperty( args, 'args') ? {} : args.args;
+        var existingArgs = !this.definesProperty(
+            args, 'args') ? {} : args.args;
         if ( this.definesProperty( args, 'defaults') ) {
             $.extend( existingArgs, args.defaults);
         }
@@ -381,18 +384,13 @@ var Horn = function() {
                node.attr( "id", args.id);
             }
         }
-
         setDefaultModel();
-
         pathStem = this.definesProperty( args, 'path') ? args.path : '';
-
         this.visitNodes( node,
             this.scope( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
             }, this), pathStem);
-
         addBindings({bindings: bindings});
-
         return node;
     };
 
@@ -516,17 +514,16 @@ Horn.prototype = {
      *  Uses the <code>compare</code> function if it is defined on either
      *  argument else, the strict equality operator <code>===</code> is put
      *  to work.
+     *  <p>
+     *  Handles unwrapping jQuery instnaces.
      *
-     *  @param i the a value to compare
-     *  @param j the a value to compare
+     *  @param i a value to compare
+     *  @param j a value to compare
      *
      *  @return {Boolean} <code>true</code> if the two values are equal,
      *  <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo not sure if this clause (j.compare && j.compare( i)) is needed,
-     *  read up on the workings of the compare function
      */
     compare: function( i, j ) {
         if ( i instanceof jQuery ) { i = i.get(0); }
@@ -613,7 +610,7 @@ Horn.prototype = {
      *  item.
      *
      *  @param {Object} collection the item to iterate over
-     *  @param fn the callback function which will be called for each item
+     *  @param {Function} fn the callback function which will be called for each item
      *  @param {Object} [ctx] the scope under which to execute the callback.
      *
      *  @methodOf Horn.prototype
@@ -752,7 +749,7 @@ Horn.prototype = {
      *  Is the given value neither, <code>undefined</code> nor
      *  <code>null</code>?
      *
-     *  @param args value the value to check
+     *  @param value the value to check
      *
      *  @return {Boolean} <code>true</code> if the value is neither,
      *      <code>undefined</code> nor <code>null</code>,

@@ -79,14 +79,17 @@ var setPatternConverter = function( horn, converterName, pattern ) {
         });
     } else if ( converterName === 'BooleanConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) ) {
-                return args.type === 'fromText' ? (args.value.toLowerCase() === 'true') : (args.value + "");
+            if ( pattern.match( args.path) && (args.type !== 'fromJSON') ) {
+                return args.type === 'fromText' ?
+                    (args.value.toLowerCase() === 'true') : (args.value + "");
             }
         });
     } else if ( converterName === 'DateConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) ) {
-                return args.type === 'fromText' ? $.datepicker.parseDate( "yy-mm-dd", value) : $.datepicker.formatDate( "yy-mm-dd", value);
+            if ( pattern.match( args.path) && (args.type !== 'fromJSON') ) {
+                return args.type === 'fromText' ?
+                    $.datepicker.parseDate( "yy-mm-dd", value) :
+                    $.datepicker.formatDate( "yy-mm-dd", value);
             }
         });
     }

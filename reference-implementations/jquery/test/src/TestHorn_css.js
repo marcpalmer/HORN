@@ -1105,6 +1105,19 @@ test(
         }});
     });
 
+test(
+    "Model Tests - Single node doing the whole job JSON.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<span class="horn _propName data-json">true</span>')}
+            ],
+            callback: function( horn ) {
+                var model = horn.bind();
+                ok( isObject( model));
+                ok( model.propName === true);
+        }});
+    });
 
 
 

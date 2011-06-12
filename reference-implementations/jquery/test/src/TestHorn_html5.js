@@ -1035,7 +1035,7 @@ test(
     function() {
         dataTest( {
             nodes: [ {
-                nodes:  $('<span data-horn-json="/propName">true</span>')}
+                nodes:  $('<span data-horn="/propName">true</span>')}
             ],
             callback: function( horn ) {
                 setPatternConverter( horn, "BooleanConverter", "propName");
@@ -1043,6 +1043,23 @@ test(
                 model = horn.bind();
                 ok( isObject( model));
                 ok( model.propName === true);
+        }});
+    });
+
+test(
+    "Model Tests - Single node doing the whole job JSON.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<span data-horn-json="/propName">0</span>')}
+            ],
+            callback: function( horn ) {
+                horn.name = "a";
+                setPatternConverter( horn, "BooleanConverter", "propName");
+                var model = horn.bind();
+                model = horn.bind();
+                ok( isObject( model));
+                ok( model.propName === 0);
         }});
     });
 

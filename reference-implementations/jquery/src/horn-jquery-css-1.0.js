@@ -1,3 +1,17 @@
+/**
+ *  @fileOverview CSS features for the HORN 1.0
+ *
+ *  @author <a href="mailto:cdenman@me.com">Chris Denman</a>
+ *  @author <a href="mailto:marc@anyware.co.uk">Marc Palmer</a>
+ *
+ *  @version 1.0
+ *
+ *  @requires
+ */
+
+/**
+ *  Used to...
+ */
 $.extend( Horn.prototype, {
     cssPrefix:          '_',
     cssDelimiter:       '-',
