@@ -145,7 +145,7 @@ var Horn = function() {
         this.each( rootNodes,
             function( i, n ) {
                 var inGraph = false;
-                this.visitNodes( n, '',
+                this.visitNodes( n,
                     function( n, path ) {
                         if ( _this.hasRootIndicator( {n: n}) ) {
                             if ( inGraph ) {
@@ -154,9 +154,6 @@ var Horn = function() {
                                 inGraph = true;
                             }
                         }
-//                        if ( _this.name === "a" ) {
-//                            alert( path);
-//                        }
                         var bindingData = _this.hasHornBinding( n, path);
                         if ( bindingData === false ) {
                             return true; }
@@ -231,8 +228,7 @@ var Horn = function() {
         var modelValue = binding.context[ binding.key];
         var textValue;
         if ( modelValue !== binding.value ) {
-            if ( !rootNode || (rootNode &&
-                this.contains( $(binding.node).parents(), rootNode)) ) {
+            if ( !rootNode || (rootNode && this.contains( $(binding.node).parents(), rootNode)) ) {
                 textValue = convert( {
                     value: modelValue,
                     path:  args.path,
@@ -390,10 +386,10 @@ var Horn = function() {
 
         pathStem = this.definesProperty( args, 'path') ? args.path : '';
 
-        this.visitNodes( node, pathStem,
+        this.visitNodes( node,
             this.scope( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
-            }, this));
+            }, this), pathStem);
 
         addBindings({bindings: bindings});
 
@@ -533,6 +529,8 @@ Horn.prototype = {
      *  read up on the workings of the compare function
      */
     compare: function( i, j ) {
+        if ( i instanceof jQuery ) { i = i.get(0); }
+        if ( j instanceof jQuery ) { j = j.get(0); }
         return (i.compare && i.compare( j)) ||
             (j.compare && j.compare( i)) || (i === j);
     },
@@ -636,9 +634,6 @@ Horn.prototype = {
      *  @return {String} the given node's displayed text
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo use in tests rather than doing manually perhaps? perhaps in
-     *  example too?
      */
     getHornDOMNodeValue: function( args ) {
         var jNode = $(args.node);
@@ -934,25 +929,24 @@ Horn.prototype = {
      *  @param {Element} node the node to start the walk from, this node is
      *      implicitly visited (the callback will not be executed in respect
      *      of it)
-     *  @param {String} path the Horn property path stem that will be prepended
-     *      to each Horn path constructed
      *  @param {Function} fn the callback function with the following signature
-     *  ( node, path )  - where node is the current node being visited and path
-     *  is its full property path (relative to the first DOM node visited and
-     *  the path argument to <code>visitNodes(...)</code> proper.
-     *  visited and
+     *      ( node, path )  - where node is the current node being visited and
+     *      path is its full property path (relative to the first DOM node
+     *      visited and the path argument to <code>visitNodes(...)</code>
+     *      proper.
+     *  @param {String} [path] the Horn property path stem that will be
+     *      prepended to each Horn path constructed
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo consider changing order to path last so don't have to specify
      */
-    visitNodes: function( node, path, fn ) {
+    visitNodes: function( node, fn, path ) {
+        if ( !this.isDefinedNotNull( path) ) { path = ''; }
         if ( fn( node, path) === true ) {
             var _path = this.pathIndicator({n: node});
             if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
             this.each( window.$(node).children(),
                 function( i, n ) {
-                    this.visitNodes( n, path, fn);
+                    this.visitNodes( n, fn, path);
                 }, this);
         }
     }
