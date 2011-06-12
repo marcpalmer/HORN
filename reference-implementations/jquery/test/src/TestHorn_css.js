@@ -1078,8 +1078,11 @@ test(
                 ok( isObject( model));
                 ok( model.a === true);
                 ok( model.b === false);
+                ok( horn.contains( $('#div0').parents(), $('#root')), "sssss");
                 model.a = false;
                 model.b = true;
+                ok( $('#div0').text() === 'true');
+                ok( $('#div1').text() === 'false');
                 horn.updateDOM( {rootNode: $('#root')});
                 ok( $('#div0').text() === 'false');
                 ok( $('#div1').text() === 'false');
@@ -1215,7 +1218,6 @@ test(
                 nodes:  $('<div class="horn _z"><div class="horn"><span class="_b">b</span></div><span class="_a">a</span></div>')}
             ],
             callback: function( horn ) {
-                horn.name = "a";
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.z));

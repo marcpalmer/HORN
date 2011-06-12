@@ -706,7 +706,7 @@ test(
         var expected = [];
         walk( $('html')[0], function( node ) { expected.push( node); } );
         var actual = [];
-        new Horn().visitNodes( $('html'), '',
+        new Horn().visitNodes( $('html'),
             function( node, path ) { actual.push( node); return true; } );
         ok( expected.length, actual.length);
     });
