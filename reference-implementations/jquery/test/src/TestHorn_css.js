@@ -1215,7 +1215,11 @@ test(
                 nodes:  $('<div class="horn _z"><div class="horn"><span class="_b">b</span></div><span class="_a">a</span></div>')}
             ],
             callback: function( horn ) {
+                horn.name = "a";
                 var model = horn.bind();
+                ok( isObject( model));
+                ok( isObject( model.z));
+                ok( model.z.hasOwnProperty( 'a'));
                 ok( model.z.a === 'a');
                 ok( model.b === 'b');
                 ok( model.z.a.b === undefined);

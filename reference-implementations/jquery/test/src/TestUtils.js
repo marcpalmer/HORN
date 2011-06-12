@@ -10,11 +10,10 @@ var countOwnProps = function( object ) {
 };
 
 var walk = function walk(node, func) {
-    func( node );
-    node = node.firstChild;
-    while ( node ) {
-        walk(node, func);
-        node = node.nextSibling;
+    func( node);
+    var children = $(node).children();
+    for ( var index = 0; index < children.length; index++ ) {
+        walk( children[ index], func);
     }
 };
 

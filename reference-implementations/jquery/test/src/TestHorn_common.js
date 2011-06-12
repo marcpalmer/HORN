@@ -700,16 +700,15 @@ test(
     });
 
 test(
-    "visitNodes",
+    "visitNodes - count all visited nodes from html node downwards via two methods. ",
     function() {
-        // dataTest
-
-
-            // get all body nods via jquery
-            // visit all nodes via our method
-            // make sure they are all represented
-
-        ok( false);
+        var nodeData = function( node ) { return {a: 1}; }
+        var expected = [];
+        walk( $('html')[0], function( node ) { expected.push( node); } );
+        var actual = [];
+        new Horn().visitNodes( $('html'), '',
+            function( node, path ) { actual.push( node); return true; } );
+        ok( expected.length, actual.length);
     });
 
 

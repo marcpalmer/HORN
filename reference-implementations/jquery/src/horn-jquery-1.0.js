@@ -146,38 +146,39 @@ var Horn = function() {
             function( i, n ) {
                 var inGraph = false;
                 this.visitNodes( n, '',
-                function( n, path ) {
-
-                    // @todo test this change here
-                    if ( _this.hasRootIndicator( { n: n}) ) {
-                        if ( inGraph ) {
-                            return false
+                    function( n, path ) {
+                        if ( _this.hasRootIndicator( {n: n}) ) {
+                            if ( inGraph ) {
+                                return false
+                            } else {
+                                inGraph = true;
+                            }
+                        }
+//                        if ( _this.name === "a" ) {
+//                            alert( path);
+//                        }
+                        var bindingData = _this.hasHornBinding( n, path);
+                        if ( bindingData === false ) {
+                            return true; }
+                        bindingData.readOnly = args.readOnly;
+                        if ( bindingData.isJSON === false ) {
+                            bindingData.value = convert( {
+                                value: bindingData.text,
+                                path:  bindingData.path,
+                                type:  'fromText',
+                                node:  bindingData.node
+                            });
+                            if ( !_this.isDefinedNotNull( bindingData.value) ) {
+                                bindingData.value = bindingData.text;
+                            }
+                            addBinding( bindingData);
                         } else {
-                            inGraph = true;
-                            return true;
+                            addJSONBindings( bindingData);
                         }
+                        return false;
                     }
-                    var bindingData = _this.hasHornBinding( n, path);
-                    if ( bindingData === false ) {
-                        return true; }
-                    bindingData.readOnly = args.readOnly;
-                    if ( bindingData.isJSON === false ) {
-                        bindingData.value = convert( {
-                            value: bindingData.text,
-                            path:  bindingData.path,
-                            type:  'fromText',
-                            node:  bindingData.node
-                        });
-                        if ( !_this.isDefinedNotNull( bindingData.value) ) {
-                            bindingData.value = bindingData.text;
-                        }
-                        addBinding( bindingData);
-                    } else {
-                        addJSONBindings( bindingData);
-                    }
-                    return false;
-                }
-            ); }, this);
+                );
+            }, this);
         return state.model;
     }, this);
 
@@ -943,15 +944,17 @@ Horn.prototype = {
      *
      *  @methodOf Horn.prototype
      *
-     *  @todo test
+     *  @todo consider changing order to path last so don't have to specify
      */
     visitNodes: function( node, path, fn ) {
-        var _path = this.pathIndicator({n: node});
-        if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
-        fn( node, path)
-        this.each( window.$(node).children(), function( i, n ) {
-            if ( fn( n, path) === true ) {
-                this.visitNodes( n, path, fn); }}, this);
+        if ( fn( node, path) === true ) {
+            var _path = this.pathIndicator({n: node});
+            if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
+            this.each( window.$(node).children(),
+                function( i, n ) {
+                    this.visitNodes( n, path, fn);
+                }, this);
+        }
     }
 };
 
