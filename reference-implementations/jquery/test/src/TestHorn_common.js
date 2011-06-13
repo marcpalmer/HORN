@@ -1,4 +1,13 @@
-module( "horn-jquery-1.0.js - prototype functions");
+module( "horn-jquery-1.0.js - horn miscellany");
+
+test(
+    "that we have the expected global (window) horn property.",
+    function() { ok( window.horn instanceof Horn ); });
+
+
+
+
+module( "horn-jquery-1.0.js - horn functions");
 
 test(
     "compare - test common expected positives and negatives.",
@@ -228,6 +237,46 @@ test(
         new Horn().each( [0], function( i, n) { ok( this.x === true); }, {x: true});
     }
 );
+
+
+
+
+
+test(
+    "hasPrefix - Sanity check on random string.",
+    function() {
+        var horn = new Horn();
+        var val = "asakmfkdsj klasdjflkdlskfldksajflkdjs f8ds ufoas dfi";
+
+        ok( horn.hasPrefix( val, val.substring(0, val.length - 5)) === true);
+    });
+
+test(
+    "hasPrefix - Check reflexivity, ie. s.hasPrefix( s) === true.",
+    function() {
+        var horn = new Horn();
+        var val = "abcdefghijklmnopqrstuvwxyz";
+
+        ok( horn.hasPrefix( val, val) === true);
+    });
+
+test(
+    "hasPrefix - Test regex not supported as expected.",
+    function() {
+        var val = "abcdefghijklmnopqrstuvwxyz";
+        var horn = new Horn();
+
+        ok( horn.hasPrefix( val, ".") === false);
+    });
+
+test(
+    "hasPrefix - doesn't trim.",
+    function() {
+        var val = "  ";
+        var horn = new Horn();
+
+        ok( horn.hasPrefix( val, " ") === true);
+    });
 
 
 
@@ -477,6 +526,33 @@ test(
 
 
 test(
+    "option defaultModel')",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                var model = {
+                    notices: [],
+                    newNotice: { title: 'testTitle' }
+                };
+                horn.option( "defaultModel", model);
+                horn.bind();
+                var extractedModel = horn.model();
+                ok( extractedModel === model);
+
+                ok( isObject( extractedModel));
+                ok( isArray( extractedModel.notices));
+                ok( extractedModel.notices.length === 0);
+                ok( isObject( extractedModel.newNotice));
+                ok( countOwnProps( extractedModel) === 2);
+                ok( countOwnProps( extractedModel.newNotice) === 1);
+                ok( extractedModel.newNotice.title === 'testTitle');
+            }});
+    });
+
+
+
+
+test(
     "pathToTokens - Check 'false' type values..",
     function() {
         var horn = new Horn();
@@ -588,44 +664,6 @@ test(
 
 
 test(
-    "hasPrefix - Sanity check on random string.",
-    function() {
-        var horn = new Horn();
-        var val = "asakmfkdsj klasdjflkdlskfldksajflkdjs f8ds ufoas dfi";
-
-        ok( horn.hasPrefix( val, val.substring(0, val.length - 5)) === true);
-    });
-
-test(
-    "hasPrefix - Check reflexivity, ie. s.hasPrefix( s) === true.",
-    function() {
-        var horn = new Horn();
-        var val = "abcdefghijklmnopqrstuvwxyz";
-
-        ok( horn.hasPrefix( val, val) === true);
-    });
-
-test(
-    "hasPrefix - Test regex not supported as expected.",
-    function() {
-        var val = "abcdefghijklmnopqrstuvwxyz";
-        var horn = new Horn();
-
-        ok( horn.hasPrefix( val, ".") === false);
-    });
-
-test(
-    "hasPrefix - doesn't trim.",
-    function() {
-        var val = "  ";
-        var horn = new Horn();
-
-        ok( horn.hasPrefix( val, " ") === true);
-    });
-
-
-
-test(
     "splitEach() - that an empty string doesn't yield a callback.",
     function() {
         var horn = new Horn();
@@ -691,32 +729,61 @@ test(
     });
 
 
-//    traverse: function( value, callback, path, context, propName ) {
-//        if ( (value instanceof Object) || (value instanceof Array) ) {
-//            this.each( value, function( k, v ) { this.traverse( v, callback,
-//                path ? (path + '-' + k) : ("-" + k), value, k);
-//            }, this);
-//        } else { callback( path, value, context, propName); }
-//    },
 
 
-//test(
-//    "traverse",
-//    function() {
-//        var horn = new Horn();
-//        var graph = {a: "value"};
-//        var path = null;
-//        var callback = function( path, value, context, propName ) {
-//            ok(path === "a");
-//            ok(value === "value");
-//            ok(context === graph);
-//            ok(propName === "a");
-//        };
-//
-//    });
-
-// @todo
 test(
+    "traverse - sanity check a simple graph visitation with no path.",
+    function() {
+        var horn = new Horn();
+        var graph = {a: "value", b: {c: [1]}};
+        var count = 0;
+        var expected = [
+            ["-a",          "value",    graph, "a"],
+            ["-b-c-0",      1,          graph.b.c, 0]
+        ];
+        var f = function( path, value, context, propName ) {
+            ok(path === expected[ count][ 0]);
+            ok(value === expected[ count][ 1]);
+            ok(context === expected[ count][ 2]);
+            ok(propName === expected[ count++][ 3]);
+        };
+        horn.traverse( graph, f);
+    });
+
+test(
+    "traverse - more nested example with a path prefix.",
+    function() {
+        var horn = new Horn();
+        var graph = {
+            a: [
+                "zero",
+                1,
+                {
+                    b: "one"}],
+            c: {
+                d: [ true, [ false]]}};
+        var count = 0;
+        var expected = [
+            ["-a-0",        "zero", graph.a,            0],
+            ["-a-1",        1,      graph.a,            1],
+            ["-a-2-b",      "one",  graph.a[2],         "b"],
+            ["-c-d-0",      true,   graph.c.d,          0],
+            ["-c-d-1-0",    false,  graph.c.d[1],       0]
+        ];
+        var prefix = "-test-path-0";
+        var f = function( path, value, context, propName ) {
+            ok(path === prefix + expected[ count][ 0], "path : " + path + " <> " + expected[ count][ 0]);
+            ok(value === expected[ count][ 1], "value");
+            ok(context === expected[ count][ 2], "context");
+            ok(propName === expected[ count++][ 3], "propName");
+        };
+        horn.traverse( graph, f, prefix);
+    });
+
+
+
+
+test( // @todo sort out the comparison here, shouldn't the anyorder test work now?
     "walkDOM - count all visited nodes from html node downwards via two methods. ",
     function() {
         var nodeData = function( node ) { return {a: 1}; }
@@ -726,81 +793,6 @@ test(
         new Horn().walkDOM( $('html'),
             function( node, path ) { actual.push( node); return true; } );
         ok( expected.length, actual.length);
-    });
-
-
-//
-//module( "horn-jquery-1.0.js - instance functions");
-//
-//test(
-//    "that we have the expected global (window) horn property.",
-//    function() { ok( window.horn instanceof Horn ); });
-
-//
-//test(
-//    "Form Elements - Testing jQuery Input element getter/setter.",
-//    function() {
-//        dataTest( {
-//            nodes: [ {
-//                nodes:  $(' <input class=" " type="text" size="60" maxlength="64" id="pfBoardName" name="boardName" value="testValue" />')}
-//            ],
-//            callback: function( horn ) {
-//                ok( $('#pfBoardName').val() === 'testValue');
-//                $('#pfBoardName').val( 'newValue');
-//                ok( $('#pfBoardName').val() === 'newValue');
-//        }});
-//    });
-//
-//test(
-//    "Form Elements - Testing jQuery TextArea element getter/setter.",
-//    function() {
-//        dataTest( {
-//            nodes: [ {
-//                nodes:  $(' <textarea class="span-10 text-field email-list" id="addresses" name="addresses" >testValue</textarea>')}
-//            ],
-//            callback: function( horn ) {
-//                ok( $('#addresses').val() === 'testValue');
-//                $('#addresses').val( 'newValue');
-//                ok( $('#addresses').val() === 'newValue');
-//        }});
-//    });
-//
-//
-//
-//
-//test(
-//    "jQuery - Sanity Testing typeof and instanceof.",
-//    function() {
-//        var node = $('<div></div>');
-//        ok( node instanceof jQuery );
-//        ok( typeof node === 'object' );
-//    });
-//
-//
-
-
-test(
-    "horn.option( 'defaultModel')",
-    function() {
-        dataTest( {
-            callback: function( horn ) {
-                var model = {
-                    notices: [],
-                    newNotice: { title: 'testTitle' }
-                };
-                horn.option( "defaultModel", model);
-                horn.bind();
-                var extractedModel = horn.model();
-                ok( extractedModel === model);
-
-                ok( isObject( extractedModel));
-                ok( isArray( extractedModel.notices));
-                ok( extractedModel.notices.length === 0);
-                ok( isObject( extractedModel.newNotice));
-                ok( countOwnProps( extractedModel) === 2);
-                ok( countOwnProps( extractedModel.newNotice) === 1);
-                ok( extractedModel.newNotice.title === 'testTitle');
-            }});
     });
 
 

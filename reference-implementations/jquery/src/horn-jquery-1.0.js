@@ -550,7 +550,7 @@ Horn.prototype = {
     },
 
     /**
-     *  Shallow copies properties from source to destination objects.
+     *  Shallow copy properties from source to destination objects.
      *  <p>
      *  Copies neither, <code>undefined</code> nor prototypical, properties.
      *  <p>
@@ -888,8 +888,6 @@ Horn.prototype = {
      *  @param [propName] internal use only  - no value required
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo test
      */
     traverse: function( value, callback, path, context, propName ) {
         if ( (value instanceof Object) || (value instanceof Array) ) {
