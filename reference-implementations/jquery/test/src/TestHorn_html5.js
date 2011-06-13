@@ -1054,7 +1054,6 @@ test(
                 nodes:  $('<span data-horn-json="/propName">0</span>')}
             ],
             callback: function( horn ) {
-                horn.name = "a";
                 setPatternConverter( horn, "BooleanConverter", "propName");
                 var model = horn.bind();
                 model = horn.bind();
