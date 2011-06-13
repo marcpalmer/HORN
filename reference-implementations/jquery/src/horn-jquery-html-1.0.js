@@ -20,7 +20,7 @@ $.extend(
         encodeCSS: function( args ) {
             var rv = args.path.replace(
                 /(\[(\w+)\])/g, ".$2").replace( /\./g, "-").replace( "/", "");
-            rv = this.startsWith( rv, "-") ? rv.substring(1) : rv;
+            rv = this.hasPrefix( rv, "-") ? rv.substring(1) : rv;
             return rv;
         },
 
@@ -33,9 +33,9 @@ $.extend(
             var hornDeclaration = this.getDataAttr( args.n, this.dataNameHorn);
             var jsonDeclaration = this.getDataAttr( args.n, this.dataNameJSON);
             return ((this.isDefinedNotNull( hornDeclaration) === true) &&
-                (this.startsWith( hornDeclaration, "/") === true)) ||
+                (this.hasPrefix( hornDeclaration, "/") === true)) ||
                 ((this.isDefinedNotNull( jsonDeclaration) === true) &&
-                (this.startsWith( jsonDeclaration, "/") === true));
+                (this.hasPrefix( jsonDeclaration, "/") === true));
         },
 
         jsonIndicator: function( args ) {

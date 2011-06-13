@@ -233,7 +233,7 @@ test(
 
 
 test(
-    "getHornDOMNodeValue - test for various tags.",
+    "hornNodeValue - get tests for various tags.",
     function() {
         var horn = new Horn();
         var tagData = [
@@ -256,7 +256,41 @@ test(
                     node.attr( "id", "_soonToBeRemoved");
                     $('body').append( node);
                     ok( horn.isAttached( node) === true);
-                    ok( horn.getHornDOMNodeValue( {node: node}) === 'initialValue');
+                    ok( horn.hornNodeValue( {node: node}) === 'initialValue');
+                } finally {
+                    node.remove();
+                    ok( horn.isAttached( node) === false);
+                }
+            });
+    });
+
+test(
+    "hornNodeValue - set tests for various tags.",
+    function() {
+        var horn = new Horn();
+        var tagData = [
+            "<a>initialValue</a>",
+            "<h3>initialValue</h3>",
+            "<label>initialValue</label>",
+            "<p>initialValue</p>",
+            "<pre>initialValue</pre>",
+            "<strong>initialValue</strong>",
+            "<span>initialValue</span>",
+            "<div>initialValue</div>",
+            "<abbr title='initialValue'>displayValue</abbr>",
+            "<input type='text' value='initialValue'>",
+            "<input type='hidden' value='initialValue'>",
+            "<textarea>initialValue</textarea>"];
+        horn.each( tagData,
+            function( i, n ) {
+                var node = $(n);
+                try {
+                    node.attr( "id", "_soonToBeRemoved");
+                    $('body').append( node);
+                    ok( horn.isAttached( node) === true);
+                    ok( horn.hornNodeValue( {node: node}) === 'initialValue');
+                    horn.hornNodeValue( {node: node, value: 'newValue'});
+                    ok( horn.hornNodeValue( {node: node}) === 'newValue');
                 } finally {
                     node.remove();
                     ok( horn.isAttached( node) === false);
@@ -526,43 +560,6 @@ test(
 
 
 test(
-    "setHornDOMNodeValue - test for various tags.",
-    function() {
-        var horn = new Horn();
-        var tagData = [
-            "<a>initialValue</a>",
-            "<h3>initialValue</h3>",
-            "<label>initialValue</label>",
-            "<p>initialValue</p>",
-            "<pre>initialValue</pre>",
-            "<strong>initialValue</strong>",
-            "<span>initialValue</span>",
-            "<div>initialValue</div>",
-            "<abbr title='initialValue'>displayValue</abbr>",
-            "<input type='text' value='initialValue'>",
-            "<input type='hidden' value='initialValue'>",
-            "<textarea>initialValue</textarea>"];
-        horn.each( tagData,
-            function( i, n ) {
-                var node = $(n);
-                try {
-                    node.attr( "id", "_soonToBeRemoved");
-                    $('body').append( node);
-                    ok( horn.isAttached( node) === true);
-                    ok( horn.getHornDOMNodeValue( {node: node}) === 'initialValue');
-                    horn.setHornDOMNodeValue( {node: node, value: 'newValue'});
-                    ok( horn.getHornDOMNodeValue( {node: node}) === 'newValue');
-                } finally {
-                    node.remove();
-                    ok( horn.isAttached( node) === false);
-                }
-            });
-    });
-
-
-
-
-test(
     "scope - that we do indeed get a new scope chain head (or not).",
     function() {
         var horn = new Horn();
@@ -591,39 +588,39 @@ test(
 
 
 test(
-    "startsWith - Sanity check on random string.",
+    "hasPrefix - Sanity check on random string.",
     function() {
         var horn = new Horn();
         var val = "asakmfkdsj klasdjflkdlskfldksajflkdjs f8ds ufoas dfi";
 
-        ok( horn.startsWith( val, val.substring(0, val.length - 5)) === true);
+        ok( horn.hasPrefix( val, val.substring(0, val.length - 5)) === true);
     });
 
 test(
-    "startsWith - Check reflexivity, ie. s.startsWith( s) === true.",
+    "hasPrefix - Check reflexivity, ie. s.hasPrefix( s) === true.",
     function() {
         var horn = new Horn();
         var val = "abcdefghijklmnopqrstuvwxyz";
 
-        ok( horn.startsWith( val, val) === true);
+        ok( horn.hasPrefix( val, val) === true);
     });
 
 test(
-    "startsWith - Test regex not supported as expected.",
+    "hasPrefix - Test regex not supported as expected.",
     function() {
         var val = "abcdefghijklmnopqrstuvwxyz";
         var horn = new Horn();
 
-        ok( horn.startsWith( val, ".") === false);
+        ok( horn.hasPrefix( val, ".") === false);
     });
 
 test(
-    "startsWith - doesn't trim.",
+    "hasPrefix - doesn't trim.",
     function() {
         var val = "  ";
         var horn = new Horn();
 
-        ok( horn.startsWith( val, " ") === true);
+        ok( horn.hasPrefix( val, " ") === true);
     });
 
 
@@ -693,20 +690,40 @@ test(
             }, ".");
     });
 
-test(
-    "traverse",
-    function() {
-        ok( false);
-    });
 
+//    traverse: function( value, callback, path, context, propName ) {
+//        if ( (value instanceof Object) || (value instanceof Array) ) {
+//            this.each( value, function( k, v ) { this.traverse( v, callback,
+//                path ? (path + '-' + k) : ("-" + k), value, k);
+//            }, this);
+//        } else { callback( path, value, context, propName); }
+//    },
+
+
+//test(
+//    "traverse",
+//    function() {
+//        var horn = new Horn();
+//        var graph = {a: "value"};
+//        var path = null;
+//        var callback = function( path, value, context, propName ) {
+//            ok(path === "a");
+//            ok(value === "value");
+//            ok(context === graph);
+//            ok(propName === "a");
+//        };
+//
+//    });
+
+// @todo
 test(
-    "visitNodes - count all visited nodes from html node downwards via two methods. ",
+    "walkDOM - count all visited nodes from html node downwards via two methods. ",
     function() {
         var nodeData = function( node ) { return {a: 1}; }
         var expected = [];
         walk( $('html')[0], function( node ) { expected.push( node); } );
         var actual = [];
-        new Horn().visitNodes( $('html'),
+        new Horn().walkDOM( $('html'),
             function( node, path ) { actual.push( node); return true; } );
         ok( expected.length, actual.length);
     });

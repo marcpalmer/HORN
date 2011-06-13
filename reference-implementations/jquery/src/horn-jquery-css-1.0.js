@@ -26,7 +26,7 @@ $.extend( Horn.prototype, {
         if ( classAttr ) {
             Horn.prototype.splitEach( classAttr,
                 function( token ) {
-                    if ( _this.startsWith( token, _this.cssPrefix) ) {
+                    if ( _this.hasPrefix( token, _this.cssPrefix) ) {
                         path = token.substring( cssPrefixLength);
                         if ( path === '' ) { path = null; }
                         return false;

@@ -75,7 +75,7 @@ var Horn = function() {
                         textValue = modelValue + "";
                     }
                     newArgs.text = textValue;
-                    this.setHornDOMNodeValue( {node: newArgs.node,
+                    this.hornNodeValue( {node: newArgs.node,
                         value: newArgs.text});
                     addBinding({
                         setModel: false,
@@ -123,7 +123,7 @@ var Horn = function() {
      */
     var convert = this.scope( function ( args ) {
         var converter = state.opts.converter;
-        if ( this.startsWith( args.path, "-") ) {
+        if ( this.hasPrefix( args.path, "-") ) {
             args.path = args.path.substring( 1);
         }
         return this.isDefinedNotNull( converter) ?
@@ -145,7 +145,7 @@ var Horn = function() {
         this.each( rootNodes,
             function( i, n ) {
                 var inGraph = false;
-                this.visitNodes( n,
+                this.walkDOM( n,
                     function( n, path ) {
                         if ( _this.hasRootIndicator( {n: n}) ) {
                             if ( inGraph ) {
@@ -238,7 +238,7 @@ var Horn = function() {
                 if ( !this.isDefinedNotNull( textValue) ) {
                     textValue = modelValue + "";
                 }
-                this.setHornDOMNodeValue(
+                this.hornNodeValue(
                     {node: binding.node, value: textValue});
                 binding.value = modelValue;
                 return binding.node;
@@ -386,7 +386,7 @@ var Horn = function() {
         }
         setDefaultModel();
         pathStem = this.definesProperty( args, 'path') ? args.path : '';
-        this.visitNodes( node,
+        this.walkDOM( node,
             this.scope( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
             }, this), pathStem);
@@ -544,9 +544,6 @@ Horn.prototype = {
      *  <code>false</code> otherwise
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo change here caused a test to fail, look at what's going on
-     *  good coverage on tests that use this method
      */
     contains: function( container, item ) {
         return this.indexOf(container, item) !== -1;
@@ -598,8 +595,8 @@ Horn.prototype = {
     },
 
     /**
-     *  Iterates over various types and executes a callback function for each
-     *  value encountered.
+     *  Iterates over collection types and executes a callback for each value
+     *  encountered.
      *  <p>
      *  An optional scope context can be provided which will provide the
      *  <code>this</code> for the callback function.
@@ -618,27 +615,6 @@ Horn.prototype = {
     each: function( collection, fn, ctx ) {
         if ( (collection === undefined) || (collection === null) ) { return; }
         $.each( collection, ctx ? this.scope( fn, ctx) : fn);
-    },
-
-
-    /**
-     *  Retrieves a DOM node's displayed text.
-     *  <p>
-     *  The value retrieved is HTML un-escaped.
-     *
-     *  @param args.node the node from which to retrieve text
-     *
-     *  @return {String} the given node's displayed text
-     *
-     *  @methodOf Horn.prototype
-     */
-    getHornDOMNodeValue: function( args ) {
-        var jNode = $(args.node);
-        var nodeName = jNode[0].nodeName.toLowerCase();
-        return unescape(
-            ((nodeName === "input") || (nodeName === 'textarea')) ?
-                jNode.val() : ((nodeName === "abbr") ? jNode.attr('title') :
-                jNode.text()));
     },
 
     /**
@@ -682,12 +658,31 @@ Horn.prototype = {
                     (theContained.nodeType === Node.TEXT_NODE));
 
                 if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
-                    cd.text = this.getHornDOMNodeValue( {node: node});
+                    cd.text = this.hornNodeValue( {node: node});
                     return cd;
                 }
             }
         }
         return false;
+    },
+
+    /**
+     *  Is the given <code>String</code> value prefixed by a given stem.
+     *  <p>
+     *  'Stem' can be a regular expression pattern.
+     *
+     *  @param value the value to test
+     *  @param stem the candidate prefix for the given value
+     *
+     *  @return {Boolean} <code>true</code> if the given <code>String</code> is
+     *      prefixed, by the given stem, <code>false</code> otherwise
+     *
+     *  @methodOf Horn.prototype
+     */
+    hasPrefix: function ( value, stem ) {
+        return  (stem.length > 0) &&
+            ((value = value.match( "^" + stem)) !== null) &&
+                (value.toString() === stem);
     },
 
     /**
@@ -775,7 +770,7 @@ Horn.prototype = {
      */
     pathToTokens: function( path ) {
         return path ?
-            (this.startsWith( path, "-") ?
+            (this.hasPrefix( path, "-") ?
                 path.substring( 1) : path).split( "-") :
             undefined;
     },
@@ -814,25 +809,36 @@ Horn.prototype = {
     },
 
     /**
-     *  Sets the 'value' for a given Horn DOM node.
+     *  Retrieves a DOM node's displayed text.
      *  <p>
-     *  The behaviour here is specific to Horn, for example with
-     *  <code>ABBR</code> elements, we set their title, not their true displayed
-     *  value.
+     *  The value retrieved is HTML un-escaped.
      *
-     *  @param {Element} args.node the node to set the value of
+     *  @param args.node the node from which to retrieve text
      *  @param {Object} args.value the value to set
+     *
+     *  @return {String} the given node's displayed text
      *
      *  @methodOf Horn.prototype
      */
-    setHornDOMNodeValue: function( args ) {
-        var n = $(args.node);
-        var nodeName = n[0].nodeName.toLowerCase();
-        if ( (nodeName === "input") || (nodeName === 'textarea') ) {
-            n.val( args.value);
-        } else if ( nodeName === "abbr" ) {
-            n.attr('title', args.value);
-        } else { n.text( args.value); }
+    hornNodeValue: function( args ) {
+        var isSet = this.definesProperty( args, 'value');
+        var jNode = $(args.node);
+        switch (jNode[0].nodeName.toLowerCase()) {
+            case "input": case "textarea":
+                if ( isSet ) { jNode.val( args.value); }
+                    else return jNode.val();
+            break;
+
+            case "abbr":
+                if ( isSet ) { jNode.attr( "title", args.value); }
+                    else return jNode.attr( "title");
+            break;
+
+            default:
+                if ( isSet ) { jNode.text( args.value); }
+                    else return jNode.text();
+            break;
+        }
     },
 
     /**
@@ -855,25 +861,6 @@ Horn.prototype = {
             delimiter : " "), function( i, token ) {
                 if ( token.trim() !== '' ) { callback( token); }
         });
-    },
-
-    /**
-     *  Is the given <code>String</code> value prefixed by a given stem.
-     *  <p>
-     *  'Stem' can be a regular expression pattern.
-     *
-     *  @param value the value to test
-     *  @param stem the candidate prefix for the given value
-     *
-     *  @return {Boolean} <code>true</code> if the given <code>String</code> is
-     *      prefixed, by the given stem, <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    startsWith: function ( value, stem ) {
-        return  (stem.length > 0) &&
-            ((value = value.match( "^" + stem)) !== null) &&
-                (value.toString() === stem);
     },
 
     /**
@@ -929,21 +916,21 @@ Horn.prototype = {
      *  @param {Function} fn the callback function with the following signature
      *      ( node, path )  - where node is the current node being visited and
      *      path is its full property path (relative to the first DOM node
-     *      visited and the path argument to <code>visitNodes(...)</code>
+     *      visited and the path argument to <code>walkDOM(...)</code>
      *      proper.
      *  @param {String} [path] the Horn property path stem that will be
      *      prepended to each Horn path constructed
      *
      *  @methodOf Horn.prototype
      */
-    visitNodes: function( node, fn, path ) {
+    walkDOM: function( node, fn, path ) {
         if ( !this.isDefinedNotNull( path) ) { path = ''; }
         if ( fn( node, path) === true ) {
             var _path = this.pathIndicator({n: node});
             if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
             this.each( window.$(node).children(),
                 function( i, n ) {
-                    this.visitNodes( n, fn, path);
+                    this.walkDOM( n, fn, path);
                 }, this);
         }
     }

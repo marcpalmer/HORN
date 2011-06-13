@@ -320,17 +320,8 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#each">each</a></b>(collection, fn, ctx)
 								</div>
-								<div class="description">Iterates over various types and executes a callback function for each
- value encountered.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#getHornDOMNodeValue">getHornDOMNodeValue</a></b>()
-								</div>
-								<div class="description">Retrieves a DOM node's displayed text.</div>
+								<div class="description">Iterates over collection types and executes a callback for each value
+ encountered.</div>
 							</td>
 						</tr>
 					
@@ -341,6 +332,24 @@ ul.inheritsList
 								</div>
 								<div class="description">Determines if a given node in the context of a Horn DOM tree is a value
  node or not.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#hasPrefix">hasPrefix</a></b>(value, stem)
+								</div>
+								<div class="description">Is the given <code>String</code> value prefixed by a given stem.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#hornNodeValue">hornNodeValue</a></b>()
+								</div>
+								<div class="description">Retrieves a DOM node's displayed text.</div>
 							</td>
 						</tr>
 					
@@ -451,28 +460,10 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#setHornDOMNodeValue">setHornDOMNodeValue</a></b>()
-								</div>
-								<div class="description">Sets the 'value' for a given Horn DOM node.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#splitEach">splitEach</a></b>(value, a, delimiter)
 								</div>
 								<div class="description">Execute a callback function for each token of a split
  <code>String</code>.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#startsWith">startsWith</a></b>(value, stem)
-								</div>
-								<div class="description">Is the given <code>String</code> value prefixed by a given stem.</div>
 							</td>
 						</tr>
 					
@@ -508,7 +499,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#visitNodes">visitNodes</a></b>(node, fn, path)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#walkDOM">walkDOM</a></b>(node, fn, path)
 								</div>
 								<div class="description">Walks the DOM and executes a callback for each node visited, building
  up a Horn property path as it goes by extracting DOM nodes' property
@@ -958,8 +949,8 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Iterates over various types and executes a callback function for each
- value encountered.
+						Iterates over collection types and executes a callback for each value
+ encountered.
  <p>
  An optional scope context can be provided which will provide the
  <code>this</code> for the callback function.
@@ -1001,51 +992,6 @@ ul.inheritsList
 						
 						
 						
-						
-						
-						
-
-					<hr />
-				
-					<a name="getHornDOMNodeValue"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{String}</span>
-					<b>getHornDOMNodeValue</b>()
-					
-					</div>
-					<div class="description">
-						Retrieves a DOM node's displayed text.
- <p>
- The value retrieved is HTML un-escaped.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>args.node</b>
-									
-								</dt>
-								<dd>the node from which to retrieve text</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{String}</span> the given node's displayed text</dd>
-							
-							</dl>
 						
 						
 						
@@ -1099,6 +1045,109 @@ ul.inheritsList
 								<dd><code>false</code> if the given node is not a value node else,
      this function returns an object containing the binding information
      extracted</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="hasPrefix"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Boolean}</span>
+					<b>hasPrefix</b>(value, stem)
+					
+					</div>
+					<div class="description">
+						Is the given <code>String</code> value prefixed by a given stem.
+ <p>
+ 'Stem' can be a regular expression pattern.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>value</b>
+									
+								</dt>
+								<dd>the value to test</dd>
+							
+								<dt>
+									<b>stem</b>
+									
+								</dt>
+								<dd>the candidate prefix for the given value</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the given <code>String</code> is
+     prefixed, by the given stem, <code>false</code> otherwise</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="hornNodeValue"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>hornNodeValue</b>()
+					
+					</div>
+					<div class="description">
+						Retrieves a DOM node's displayed text.
+ <p>
+ The value retrieved is HTML un-escaped.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>args.node</b>
+									
+								</dt>
+								<dd>the node from which to retrieve text</dd>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>args.value</b>
+									
+								</dt>
+								<dd>the value to set</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{String}</span> the given node's displayed text</dd>
 							
 							</dl>
 						
@@ -1621,52 +1670,6 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="setHornDOMNodeValue"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>setHornDOMNodeValue</b>()
-					
-					</div>
-					<div class="description">
-						Sets the 'value' for a given Horn DOM node.
- <p>
- The behaviour here is specific to Horn, for example with
- <code>ABBR</code> elements, we set their title, not their true displayed
- value.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Element}</span> <b>args.node</b>
-									
-								</dt>
-								<dd>the node to set the value of</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>args.value</b>
-									
-								</dt>
-								<dd>the value to set</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
 					<a name="splitEach"> </a>
 					<div class="fixedFont">
 					
@@ -1715,58 +1718,6 @@ ul.inheritsList
 						
 						
 						
-						
-						
-						
-
-					<hr />
-				
-					<a name="startsWith"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{Boolean}</span>
-					<b>startsWith</b>(value, stem)
-					
-					</div>
-					<div class="description">
-						Is the given <code>String</code> value prefixed by a given stem.
- <p>
- 'Stem' can be a regular expression pattern.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>value</b>
-									
-								</dt>
-								<dd>the value to test</dd>
-							
-								<dt>
-									<b>stem</b>
-									
-								</dt>
-								<dd>the candidate prefix for the given value</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the given <code>String</code> is
-     prefixed, by the given stem, <code>false</code> otherwise</dd>
-							
-							</dl>
 						
 						
 						
@@ -1933,11 +1884,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="visitNodes"> </a>
+					<a name="walkDOM"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>visitNodes</b>(node, fn, path)
+					<b>walkDOM</b>(node, fn, path)
 					
 					</div>
 					<div class="description">
@@ -1975,7 +1926,7 @@ ul.inheritsList
 								<dd>the callback function with the following signature
      ( node, path )  - where node is the current node being visited and
      path is its full property path (relative to the first DOM node
-     visited and the path argument to <code>visitNodes(...)</code>
+     visited and the path argument to <code>walkDOM(...)</code>
      proper.</dd>
 							
 								<dt>
@@ -2008,7 +1959,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sun Jun 12 2011 05:43:48 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 13 2011 04:09:03 GMT+0100 (BST)
 		</div>
 	</body>
 </html>
