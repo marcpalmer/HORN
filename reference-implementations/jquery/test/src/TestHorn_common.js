@@ -798,7 +798,7 @@ test( // @todo sort out the comparison here, shouldn't the anyorder test work no
 
 
 
-module( "horn-converters.js");
+module( "horn-converters-1.0.js");
 
 test(
     "that we have the expected global (window) hornConverter property.",
