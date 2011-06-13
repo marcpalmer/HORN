@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Horn - Example using HTML5</title>
+        <title>Horn - Example using HTML5 indicators</title>
 
         <!-- Include JQuery -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
@@ -15,14 +15,13 @@
         <!-- Include JQuery UI -->
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
 
-        <!-- Include Horn -->
+        <!-- Include Horn + converters -->
         <script type="text/javascript" src="../reference-implementations/jquery/src/horn-jquery-1.0.js"></script>
         <script type="text/javascript" src="../reference-implementations/jquery/src/horn-jquery-html-1.0.js"></script>
         <script type="text/javascript" src="../reference-implementations/jquery/src/horn-converters-1.0.js"></script>
 
-        <!-- Our Example JS files  -->
+        <!-- Example JS file -->
         <script type="text/javascript" src="example.js"></script>
-        <!--<script type="text/javascript" src="example-html5.js"></script>-->
 
         <!-- Our Example CSS file  -->
         <link rel="stylesheet" href="example.css" type="text/css"/>
@@ -49,7 +48,7 @@
             <div class="contentpanel">
                 <h1>Book List &raquo;&raquo;&raquo;</h1>
                 <p>This is HTML content served verbatim by the server.</p>
-                <div data-horn="books">
+                <div data-horn="/books">
                     <div data-horn="[0]" class="book">
                         <span data-horn="title">XML Complete</span><br/>
                         by <span data-horn="author">by Steven Holzner</span><br/>
@@ -74,7 +73,7 @@
                         </ol>
                     </div>
 
-                    <div data-horn="2" class="book">
+                    <div data-horn="[2]" class="book">
                         <span data-horn="title">XML: Extensible Markup Language</span><br/>
                         by <span data-horn="author">Elliotte Rusty Harold</span><br/>
                         <ol>
@@ -98,7 +97,7 @@
                         </ol>
                     </div>
 
-                    <div data-horn"[4]" class="book">
+                    <div data-horn="[4]" class="book">
                         <span data-horn="title">The XML Handbook</span><br/>
                         by <span data-horn="author">Charles F. Goldfarb, Paul Prescod</span><br/>
                         <ol>
@@ -127,12 +126,10 @@
             <div class="datapanel">
                 <h1>&laquo;&laquo;&laquo; HORN Data model</h1>
                 <p>This is the JS data model extracted from the HTML using HORN.</p>
-                <a href="#" class="populateButton">Click to update DOM with your changes</a>
+                <a href="#" class="refreshButton">Click to update DOM with your changes</a>
                 <div id="formattedOutput"></div>
-                <a href="#" class="populateButton">Click to update DOM with your changes</a>
+                <a href="#" class="refreshButton">Click to update DOM with your changes</a>
             </div>
         </div>
     </body>
 </html>
-
-

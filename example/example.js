@@ -116,7 +116,6 @@
 
 $(function() {
     render( $('#formattedOutput'), horn.model());
-    window.__AA = horn.model();
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
@@ -125,13 +124,12 @@ $(function() {
         if ( !converterName ) {
             binding.parent[ binding.pk] = obj.val();
         } else {
-            converter = hornConverter.get({name: converterName});
+            converter = hornConverter.get(converterName);
             convertedValue = converter( {type: 'fromText', value: obj.val()});
             binding.parent[ binding.pk] = convertedValue;
         }
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
-
     $('a.refreshButton').click( function( event ) {
         $('.changed').removeClass('changed');
         var affected = horn.updateDOM();
