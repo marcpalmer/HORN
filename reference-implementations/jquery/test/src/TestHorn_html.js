@@ -1208,7 +1208,7 @@ test(
 
 
 test(
-    "From Template - Testing the population of a template with no type conversion nor pattern matching.",
+    "bindTo - Testing the population of a template with no type conversion nor pattern matching.",
     function() {
         ok( !isAttached( $('#newID')));
         dataTest( {
@@ -1239,7 +1239,7 @@ test(
     });
 
 test(
-    "From Template - Testing the population of a template with no type conversion - no matching data a.",
+    "bindTo - Testing the population of a template with no type conversion - no matching data a.",
     function() {
         ok( !isAttached( $('#newID')));
         dataTest( {
@@ -1270,7 +1270,7 @@ test(
     });
 
 test(
-    "From Template - Testing the population of a template with no type conversion - no matching data b.",
+    "bindTo - Testing the population of a template with no type conversion - no matching data b.",
     function() {
         ok( !isAttached( $('#newID')));
         dataTest( {
@@ -1400,4 +1400,70 @@ test(
                 horn.updateDOM();
                 ok( $('#grabMe').val() === 'false');
         }});
+    });
+
+test(
+    "unbind - unbind all by not defining an argument.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="/d"><span id="x__" data-horn="[2]">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                setPatternConverter( horn, "BooleanConverter", "d-2");
+                var model = horn.bind();
+                ok( model.d[ 2] === false);
+                model.d[ 2] = true;
+                horn.updateDOM();
+                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                horn.unbind( );
+                model.d[ 2] = false;
+                horn.updateDOM();
+                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+            }
+        });
+    });
+
+test(
+    "unbind - unbind all using regex.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="/d"><span id="x__" data-horn="[2]">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                setPatternConverter( horn, "BooleanConverter", "d-2");
+                var model = horn.bind();
+                ok( model.d[ 2] === false);
+                model.d[ 2] = true;
+                horn.updateDOM();
+                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                horn.unbind( ".*");
+                model.d[ 2] = false;
+                horn.updateDOM();
+                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+            }
+        });
+    });
+
+test(
+    "unbind - unbind a single property.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="/d"><span id="x__" data-horn="[2]">false</span></div>')}
+            ],
+            callback: function( horn ) {
+                setPatternConverter( horn, "BooleanConverter", "d-2");
+                var model = horn.bind();
+                ok( model.d[ 2] === false);
+                model.d[ 2] = true;
+                horn.updateDOM();
+                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                horn.unbind( "d-2");
+                model.d[ 2] = false;
+                horn.updateDOM();
+                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+            }
+        });
     });

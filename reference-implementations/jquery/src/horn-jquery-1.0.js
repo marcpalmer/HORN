@@ -82,7 +82,7 @@ var Horn = function() {
                         value: modelValue,
                         node: newArgs.node,
                         key: ref.key,
-                        context: ref.ref, // @todo rename to ref nee context
+                        context: ref.ref,
                         path: newArgs.path});
                 }
             }, this);
@@ -468,7 +468,7 @@ var Horn = function() {
      */
     this.unbind = function( pattern ) {
         this.each( state.bindings, function( i, n ) {
-            if ( (pat === false) || (i.match( pattern) !== null) ) {
+            if ( !pattern || (i.match( pattern) !== null) ) {
                 delete state.bindings[ i]; } }, this);
     };
 

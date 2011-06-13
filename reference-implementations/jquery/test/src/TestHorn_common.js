@@ -783,7 +783,7 @@ test(
 
 
 
-test( // @todo sort out the comparison here, shouldn't the anyorder test work now?
+test(
     "walkDOM - count all visited nodes from html node downwards via two methods. ",
     function() {
         var nodeData = function( node ) { return {a: 1}; }
