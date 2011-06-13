@@ -1024,7 +1024,7 @@ test(
                 ok( model.b === false);
                 model.a = false;
                 model.b = true;
-                horn.updateDOM( {rootNode: $('#root')});
+                horn.updateDOM( $('#root'));
                 ok( $('#div0').text() === 'false');
                 ok( $('#div1').text() === 'false');
         }});
