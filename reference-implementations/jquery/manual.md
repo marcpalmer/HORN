@@ -123,13 +123,15 @@ horn.updateDOM();
 {% endhighlight %}
 
 
-### unbind(propertyPath)
+### unbind(pattern)
 
 This method allows you to remove bindings from the model to DOM elements for a
 given property path within the model. 
 
 For example if a user deletes an entry in your UI, you will want to remove the
 bindings for it so that Horn does not keep references to invalid DOM nodes.
+
+The pattern you pass in is a regular expression.
 
 Example:
 
@@ -155,23 +157,46 @@ $( function() {
 });
 {% endhighlight %}
 
-### cloneAndBind(args)
+### bindTo(args)
 
-This method will clone a DOM element, which may be hidden in your UI waiting
-for use, which has been marked up with HORN indicators. It will then populate
-the new DOM node and its descendents using this information, pulling values in
-from the model. 
+This method will populate a DOM node and its descendents using this
+information, pulling values in from the model and binding from the
+model to the DOM nodes so that calls to *updateDOM* can re-populate the DOM
+when data is changed.
+
+It will also optionally clone a DOM node template first, and bind into that.
 
 This is useful for UIs where the user can create new "entries" that follow a
 DOM template. You update your model with the data, and then call this function
-to create the on-screen represenation.
+to create the on-screen representation.
 
 Arguments:
 
-* path -
-* template -
-* id -
-* selector
+* template (_Optional_) - A jQuery object or selector string, indicating DOM node to _clone_ and use as the target for binding
+* node (_Optional_) - A jQuery object or selector to use as the target for binding, *without cloning first*
+* path (_Optional_) - The property path to which the DOM node should be bound. The data at
+  this path in the model will be used to populate the target DOM node. Alternatively use *data* to pass in data.
+* data (_Optional_) - An object to use as the model to populate the node. Use this to populate with data that is not yet in the node. *updateDOM* functionality will not be available, call *bindTo* again instead.
+* id (_Optional_) - The "id" attribute to set on a cloned template DOM node after cloning. Any id from the template is necessarily stripped out after cloning as duplicate ids are invalid in the DOM.
+
+Example:
+
+{% highlight javascript %}
+$( function() {
+    $('.addButton').click( function() {
+        var ourModel = horn.model();
+        var newIdx = ourModel.books.length;
+        ourModel.books[newIdx] = { saved: false };
+        
+        var domNode = horn.bindTo( { 
+            template:'#bookEntryTemplate', 
+            path:'books['+newIdx+']' 
+        });
+        
+        $(domNode).appendTo($('#bookList')).show();
+    });
+});
+{% endhighlight %}
 
 ### option(optionName) and option(optionName, value)
 
