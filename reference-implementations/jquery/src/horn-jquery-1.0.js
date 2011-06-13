@@ -66,8 +66,8 @@ var Horn = function() {
                     modelValue = ref.ref[ ref.key];
                     textValue = convert( {
                         value: modelValue,
-                        path:  newArgs.path,
                         type:  'toText',
+                        path:  newArgs.path,
                         node:  newArgs.node
                     });
                     if ( (textValue === undefined) &&
@@ -79,10 +79,10 @@ var Horn = function() {
                         value: newArgs.text});
                     addBinding({
                         setModel: false,
-                        node: newArgs.node,
-                        context: ref.ref,
-                        key: ref.key,
                         value: modelValue,
+                        node: newArgs.node,
+                        key: ref.key,
+                        context: ref.ref, // @todo rename to ref nee context
                         path: newArgs.path});
                 }
             }, this);
@@ -148,11 +148,8 @@ var Horn = function() {
                 this.walkDOM( n,
                     function( n, path ) {
                         if ( _this.hasRootIndicator( {n: n}) ) {
-                            if ( inGraph ) {
-                                return false
-                            } else {
-                                inGraph = true;
-                            }
+                            if ( inGraph ) { return false }
+                                else { inGraph = true; }
                         }
                         var bindingData = _this.hasHornBinding( n, path);
                         if ( bindingData === false ) {
@@ -309,7 +306,7 @@ var Horn = function() {
      *  After execution, each value element encountered will have a
      *  corresponding representation in the model. Altering such model
      *  values and then calling <code>updateDOM(...)</code> will refresh their
-     *  displayed value.
+     *  display values.
      *  <p>
      *  The DOM tree(s) to walk can be specified in exactly one of three ways:
      *  <ol>
@@ -354,8 +351,6 @@ var Horn = function() {
     /**
      *  Clone an HTML template, then walk it, binding values encountered.  
      *  <p>
-     *  
-     *
      *  Create a new UI element by cloning an existing template that is
      *  marked up with Horn indicators, and populate the DOM nodes with
      *  data from the specified property path.
@@ -468,12 +463,12 @@ var Horn = function() {
      *      match against, converted to a String using toString() before use
      *
      *  @public
+     *
+     *  @todo test
      */
-    this.unbind = function( args ) {
-        var pat = this.definesProperty( args, 'pattern') ?
-            args.pattern.toString() : false;
+    this.unbind = function( pattern ) {
         this.each( state.bindings, function( i, n ) {
-            if ( (pat === false) || (i.match( pat) !== null) ) {
+            if ( (pat === false) || (i.match( pattern) !== null) ) {
                 delete state.bindings[ i]; } }, this);
     };
 
@@ -490,11 +485,10 @@ var Horn = function() {
      *
      *  @public
      */
-    this.updateDOM = function( args ) {
+    this.updateDOM = function( rootNode ) {
         var alteredNodes = [];
         this.each( state.bindings, function( i, n ) {
-            var node = render( {rootNode: this.definesProperty(
-                args, 'rootNode') ? args.rootNode : undefined,
+            var node = render( {rootNode: rootNode,
                     binding: n, path: i});
             if ( this.isDefinedNotNull( node) ) {
                 alteredNodes.push( node); }
@@ -515,7 +509,7 @@ Horn.prototype = {
      *  argument else, the strict equality operator <code>===</code> is put
      *  to work.
      *  <p>
-     *  Handles unwrapping jQuery instnaces.
+     *  Handles de-referencing jQuery instances.
      *
      *  @param i a value to compare
      *  @param j a value to compare
@@ -534,8 +528,6 @@ Horn.prototype = {
 
     /**
      *  Returns <code>true</code> if a container contains an item.
-     *  <p>
-     *  Equality testing is performed with <code>===</code>.
      *
      *  @param container the container to search
      *  @param {Object} item the item to search for
@@ -741,7 +733,7 @@ Horn.prototype = {
     },
 
     /**
-     *  Is the given value neither, <code>undefined</code> nor
+     *  Determines if a value is neither, <code>undefined</code> nor
      *  <code>null</code>?
      *
      *  @param value the value to check
