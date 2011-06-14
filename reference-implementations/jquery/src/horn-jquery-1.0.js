@@ -7,6 +7,23 @@
  *  @version 1.0
  *
  *  @requires JQuery
+ *
+ *
+ *
+ *
+ *  bind
+ *  bindTo
+ *  load
+ *  unbind
+ *  updateDOM
+ *  convert()
+ *  tests
+ *  hornpatternconverter
+ *
+ *
+ *
+ *
+ *
  */
 
 /**
@@ -691,12 +708,12 @@ Horn.prototype = {
     },
 
     /**
-     *  Retrieves a DOM node's displayed text.
+     *  Sets or retrieves a DOM node's Horn text.
      *  <p>
      *  The value retrieved is HTML un-escaped.
      *
-     *  @param args
-     *  @param args.node the node from which to retrieve text
+     *  @param {Object} args
+     *  @param {Element} args.node the node from which to retrieve text
      *  @param {Object} args.value the value to set
      *
      *  @return {String} the given node's displayed text
@@ -875,7 +892,19 @@ Horn.prototype = {
      *
      *  @param {String} path
      *
-     * @methodOf Horn.prototype
+     *  @methodOf Horn.prototype
+     */
+    toExternalPath: function( path ) {
+        return path.replace( /\-?(\d+)/g, "[$1]").replace( /\-/g, ".");
+    },
+
+    /**
+     *
+     *
+     *
+     *  @param {String} path
+     *
+     *  @methodOf Horn.prototype
      */
     toInternalPath: function( path ) {
         var rv = path.replace(
