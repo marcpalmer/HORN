@@ -331,6 +331,7 @@ var Horn = function() {
      *  otherwise identical function, <code>{@link Horn#load}</code> should be
      *  used.
      *
+     *  @param {Object} args
      *  @param {Object} [rootNodes] a collection of DOM nodes to bind from,
      *      overrides the default node selection mechanism
      *  @param {String} [selector] a jQuery DOM node selector for nodes to bind
@@ -355,6 +356,7 @@ var Horn = function() {
      *  marked up with Horn indicators, and populate the DOM nodes with
      *  data from the specified property path.
      *
+     *  @param {Object} args
      *  @param {String} args.path the property path within the model, to use to
      *      populate this DOM node and its descendants
      *  @param {Object} [args.data]
@@ -459,12 +461,9 @@ var Horn = function() {
      *  Removes either, all bindings or, all bindings with property paths that
      *  match a given regex pattern.
      *
-     *  @param {String|Object} [args.pattern] a regular expression pattern to
-     *      match against, converted to a String using toString() before use
+     *  @param {String} pattern a regular expression pattern to match against
      *
      *  @public
-     *
-     *  @todo test
      */
     this.unbind = function( pattern ) {
         this.each( state.bindings, function( i, n ) {
@@ -478,7 +477,7 @@ var Horn = function() {
      *  This function will not update DOM nodes if their model value has not
      *  changed.
      *
-     *  @param args.rootNode optional DOM node such that if supplied, only nodes
+     *  @param rootNode optional DOM node such that if supplied, only nodes
      *      under this nodes will be updated.
      *
      *  @return {Array} an array of nodes that had their DOM values changed
@@ -500,6 +499,25 @@ var Horn = function() {
 };
 
 Horn.prototype = {
+
+    /**
+     *
+     *
+     *
+     */
+    combinePaths: function( path1, path2 ) {
+        var path1Defined = this.isAdjustingPath( path1);
+        var path2Defined = this.isAdjustingPath( path2);
+        if ( path1Defined && path2Defined ) {
+            return path1 + "-" + path2;
+        } else if ( path1Defined ) {
+            return path1;
+        } else if ( path2Defined ) {
+            return path2;
+        } else return "";
+    },
+
+
 
 
     /**
@@ -551,6 +569,7 @@ Horn.prototype = {
      *  <code>args.props</code> argument is supplied, in which case it is used
      *  instead.
      *
+     *  @param {Object} args
      *  @param {Object} args.src the property source
      *  @param {Object} args.dest the property destination
      *  @param {Object} [args.props] an alternative source of property names
@@ -678,6 +697,40 @@ Horn.prototype = {
     },
 
     /**
+     *  Retrieves a DOM node's displayed text.
+     *  <p>
+     *  The value retrieved is HTML un-escaped.
+     *
+     *  @param args
+     *  @param args.node the node from which to retrieve text
+     *  @param {Object} args.value the value to set
+     *
+     *  @return {String} the given node's displayed text
+     *
+     *  @methodOf Horn.prototype
+     */
+    hornNodeValue: function( args ) {
+        var isSet = this.definesProperty( args, 'value');
+        var jNode = $(args.node);
+        switch (jNode[0].nodeName.toLowerCase()) {
+            case "input": case "textarea":
+                if ( isSet ) { jNode.val( args.value); }
+                    else return jNode.val();
+            break;
+
+            case "abbr":
+                if ( isSet ) { jNode.attr( "title", args.value); }
+                    else return jNode.attr( "title");
+            break;
+
+            default:
+                if ( isSet ) { jNode.text( args.value); }
+                    else return jNode.text();
+            break;
+        }
+    },
+
+    /**
      *  Determines the index of an item with a container.
      *  <p>
      *  Returns the <code>Number</code> array index, OR {String} property name
@@ -801,39 +854,6 @@ Horn.prototype = {
     },
 
     /**
-     *  Retrieves a DOM node's displayed text.
-     *  <p>
-     *  The value retrieved is HTML un-escaped.
-     *
-     *  @param args.node the node from which to retrieve text
-     *  @param {Object} args.value the value to set
-     *
-     *  @return {String} the given node's displayed text
-     *
-     *  @methodOf Horn.prototype
-     */
-    hornNodeValue: function( args ) {
-        var isSet = this.definesProperty( args, 'value');
-        var jNode = $(args.node);
-        switch (jNode[0].nodeName.toLowerCase()) {
-            case "input": case "textarea":
-                if ( isSet ) { jNode.val( args.value); }
-                    else return jNode.val();
-            break;
-
-            case "abbr":
-                if ( isSet ) { jNode.attr( "title", args.value); }
-                    else return jNode.attr( "title");
-            break;
-
-            default:
-                if ( isSet ) { jNode.text( args.value); }
-                    else return jNode.text();
-            break;
-        }
-    },
-
-    /**
      *  Execute a callback function for each token of a split
      *  <code>String</code>.
      *  <p>
@@ -912,16 +932,15 @@ Horn.prototype = {
      *      prepended to each Horn path constructed
      *
      *  @methodOf Horn.prototype
+     *
+     *  @todo test
      */
     walkDOM: function( node, fn, path ) {
         if ( !this.isDefinedNotNull( path) ) { path = ''; }
         if ( fn( node, path) === true ) {
-            var _path = this.pathIndicator({n: node});
-            if ( this.isAdjustingPath( _path) ) { path = (path + '-' + _path); }
-            this.each( window.$(node).children(),
-                function( i, n ) {
-                    this.walkDOM( n, fn, path);
-                }, this);
+            path = this.combinePaths( path, this.pathIndicator({n: node}));
+            this.each( $(node).children(), function( i, n ) {
+                this.walkDOM( n, fn, path); }, this);
         }
     }
 };
