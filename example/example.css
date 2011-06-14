@@ -3,11 +3,12 @@ body {
     font-size: 1em;
 }
 
-._title {
+div.book h2 {
     font-size: 1.4em;
+    margin: 0.2em 0;
 }
 
-._author {
+div.book .authorName {
     font-size: 1.1em;
 }
 
@@ -26,7 +27,7 @@ body {
 
 .contentpanel {
     float: left;
-    width: 500px;
+    width: 400px;
     margin-left: 50px;
     padding-right: 50px;
     padding-bottom: 25px;
@@ -36,7 +37,7 @@ body {
     border-left: 1px dashed #888;
     float: left;
     padding-left: 50px;
-    width: 500px;
+    width: 400px;
     padding-bottom: 25px;
 }
 
