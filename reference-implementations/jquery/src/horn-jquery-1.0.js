@@ -506,7 +506,7 @@ Horn.prototype = {
      *
      *  @return {String} the resultant, combined property path
      *
-     *  @todo test
+     *  @methodOf Horn.prototype
      */
     combinePaths: function( parent, child ) {
         var parentDefined = this.isAdjustingPath( parent);
