@@ -263,7 +263,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#bind">bind</a></b>(rootNodes, selector)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#bind">bind</a></b>(args, rootNodes, selector)
 								</div>
 								<div class="description">Walk DOM tree(s) and extract model data, allowing for subsequent
  updating.</div>
@@ -273,9 +273,18 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#bindTo">bindTo</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#bindTo">bindTo</a></b>(args)
 								</div>
 								<div class="description">Clone an HTML template, then walk it, binding values encountered.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#combinePaths">combinePaths</a></b>(parent, child)
+								</div>
+								<div class="description">Join parent and child property paths.</div>
 							</td>
 						</tr>
 					
@@ -300,7 +309,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#copyInto">copyInto</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#copyInto">copyInto</a></b>(args)
 								</div>
 								<div class="description">Shallow copy properties from source to destination objects.</div>
 							</td>
@@ -347,7 +356,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#hornNodeValue">hornNodeValue</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#hornNodeValue">hornNodeValue</a></b>(args)
 								</div>
 								<div class="description">Retrieves a DOM node's displayed text.</div>
 							</td>
@@ -480,7 +489,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#unbind">unbind</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#unbind">unbind</a></b>(pattern)
 								</div>
 								<div class="description">Removes either, all bindings or, all bindings with property paths that
  match a given regex pattern.</div>
@@ -490,7 +499,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#updateDOM">updateDOM</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#updateDOM">updateDOM</a></b>(rootNode)
 								</div>
 								<div class="description">Update all bound DOM nodes with their current model values, if altered.</div>
 							</td>
@@ -566,7 +575,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>bind</b>(rootNodes, selector)
+					<b>bind</b>(args, rootNodes, selector)
 					
 					</div>
 					<div class="description">
@@ -609,6 +618,12 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>args</b>
+									
+								</dt>
+								<dd></dd>
 							
 								<dt>
 									<span class="light fixedFont">{Object}</span> <b>rootNodes</b>
@@ -655,7 +670,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>bindTo</b>()
+					<b>bindTo</b>(args)
 					
 					</div>
 					<div class="description">
@@ -673,6 +688,12 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>args</b>
+									
+								</dt>
+								<dd></dd>
 							
 								<dt>
 									<span class="light fixedFont">{String}</span> <b>args.path</b>
@@ -715,6 +736,59 @@ ul.inheritsList
 							<dt class="heading">Returns:</dt>
 							
 								<dd>the newly cloned and populated template</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="combinePaths"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>combinePaths</b>(parent, child)
+					
+					</div>
+					<div class="description">
+						Join parent and child property paths.
+ <p>
+ If exactly one path is <code>null</code> or <code>undefined</code>, the
+ other is returned. If both paths are not defined, the empty
+ <code>String</code> is returned.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>parent</b>
+									<i>Optional</i>
+								</dt>
+								<dd>the parent horn property path</dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>child</b>
+									<i>Optional</i>
+								</dt>
+								<dd>the child horn property path</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{String}</span> the resultant, combined property path</dd>
 							
 							</dl>
 						
@@ -833,7 +907,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>copyInto</b>()
+					<b>copyInto</b>(args)
 					
 					</div>
 					<div class="description">
@@ -854,6 +928,12 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>args</b>
+									
+								</dt>
+								<dd></dd>
 							
 								<dt>
 									<span class="light fixedFont">{Object}</span> <b>args.src</b>
@@ -1105,7 +1185,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					<span class="light">{String}</span>
-					<b>hornNodeValue</b>()
+					<b>hornNodeValue</b>(args)
 					
 					</div>
 					<div class="description">
@@ -1121,6 +1201,12 @@ ul.inheritsList
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>args</b>
+									
+								</dt>
+								<dd></dd>
 							
 								<dt>
 									<b>args.node</b>
@@ -1799,7 +1885,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>unbind</b>()
+					<b>unbind</b>(pattern)
 					
 					</div>
 					<div class="description">
@@ -1816,11 +1902,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String|Object}</span> <b>args.pattern</b>
-									<i>Optional</i>
+									<span class="light fixedFont">{String}</span> <b>pattern</b>
+									
 								</dt>
-								<dd>a regular expression pattern to
-     match against, converted to a String using toString() before use</dd>
+								<dd>a regular expression pattern to match against</dd>
 							
 							</dl>
 						
@@ -1837,7 +1922,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					<span class="light">{Array}</span>
-					<b>updateDOM</b>()
+					<b>updateDOM</b>(rootNode)
 					
 					</div>
 					<div class="description">
@@ -1856,7 +1941,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args.rootNode</b>
+									<b>rootNode</b>
 									
 								</dt>
 								<dd>optional DOM node such that if supplied, only nodes
@@ -1955,7 +2040,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 13 2011 23:39:12 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Tue Jun 14 2011 17:00:40 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

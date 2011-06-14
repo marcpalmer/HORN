@@ -140,8 +140,7 @@ test(
     function() {
         dataTest( {
             callback: function( horn ) {
-                var model = horn.bind();
-                ok( model === undefined);
+                ok( horn.bind() === undefined);
             }});
     });
 
@@ -1550,7 +1549,7 @@ test(
                 model.d[ 2] = true;
                 horn.updateDOM();
                 ok( horn.hornNodeValue( {node: $('._2')}) === "true");
-                horn.unbind( );
+                horn.unbind();
                 model.d[ 2] = false;
                 horn.updateDOM();
                 ok( horn.hornNodeValue( {node: $('._2')}) === "true");
@@ -1588,6 +1587,7 @@ test(
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
             callback: function( horn ) {
+                horn.name = "a";
                 setPatternConverter( horn, "BooleanConverter", "d-2");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1598,6 +1598,59 @@ test(
                 model.d[ 2] = false;
                 horn.updateDOM();
                 ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+            }
+        });
+    });
+
+
+
+
+test(
+    "walkDOM - div/span test.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="_a"><span id="b">adsfadsfds</span></div>')}
+            ],
+            callback: function( horn ) {
+                var count = 0;
+                var expected = [
+                    ["a", $('._a')]
+                ];
+                var f = function( node, path ) {
+                    ok(path === expected[ count++][ 0], "path");
+                };
+                horn.walkDOM( $('._a'), f);
+            }
+        });
+    });
+
+
+
+
+test(
+    "walkDOM - more involved tag nesting.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="_a"><div class="_aa"><span id="a"></span></div><div class="_ab"><span id="b"></span></div></div><div class="_b"><div class="_ba"><span id="c"></span></div><div class="_bb"><span id="d"></span></div></div>')}
+            ],
+            callback: function( horn ) {
+                var count = 0;
+                var expected = [
+                    ["a", $('._a')],
+                    ["a-aa", $('._aa')],
+                    ["a-aa", $('#a')],
+                    ["a-ab", $('._ab')],
+                    ["a-ab", $('#b')]
+                ];
+                var f = function( node, path ) {
+                    ok(path === expected[ count][ 0], "path");
+                    ok(horn.compare( node, expected[ count++][ 1]), "node");
+                    return true;
+                };
+                horn.walkDOM( $('._a'), f);
+                ok( count === expected.length);
             }
         });
     });

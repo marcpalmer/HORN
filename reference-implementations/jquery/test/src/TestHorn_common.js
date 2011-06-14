@@ -597,6 +597,12 @@ test(
         ok( arrayCompare( horn.pathToTokens( "-a--b-a"), ['a', 'b', 'a']) === false);
     });
 
+test(
+    "pathToTokens - Checking initial underscores are removed.",
+    function() {
+        var horn = new Horn();
+        ok( arrayCompare( horn.pathToTokens( "_a-b-a"), ['a', 'b', 'a']) === true);
+    });
 
 
 
@@ -778,6 +784,21 @@ test(
             ok(propName === expected[ count++][ 3], "propName");
         };
         horn.traverse( graph, f, prefix);
+    });
+
+
+
+
+test(
+    "walkDOM - count all visited nodes from html node downwards via two methods. ",
+    function() {
+        var nodeData = function( node ) { return {a: 1}; }
+        var expected = [];
+        walk( $('html')[0], function( node ) { expected.push( node); } );
+        var actual = [];
+        new Horn().walkDOM( $('html'),
+            function( node, path ) { actual.push( node); return true; } );
+        ok( expected.length, actual.length);
     });
 
 

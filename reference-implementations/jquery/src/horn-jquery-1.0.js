@@ -31,7 +31,7 @@ var Horn = function() {
     var addBinding = this.scope( function( args ) {
         var rv;
         var details;
-        var culledPath = args.path.substring( 1);
+        var culledPath = args.path;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
@@ -123,9 +123,6 @@ var Horn = function() {
      */
     var convert = this.scope( function ( args ) {
         var converter = state.opts.converter;
-        if ( this.hasPrefix( args.path, "-") ) {
-            args.path = args.path.substring( 1);
-        }
         return this.isDefinedNotNull( converter) ?
             converter.call( this, args) : undefined;
     }, this);
@@ -151,14 +148,15 @@ var Horn = function() {
                             if ( inGraph ) { return false }
                                 else { inGraph = true; }
                         }
-                        var bindingData = _this.hasHornBinding( n, path);
+                        var bindingData = _this.hasHornBinding( n);
                         if ( bindingData === false ) {
                             return true; }
                         bindingData.readOnly = args.readOnly;
+                        bindingData.path = path;
                         if ( bindingData.isJSON === false ) {
                             bindingData.value = convert( {
                                 value: bindingData.text,
-                                path:  bindingData.path,
+                                path:  path,
                                 type:  'fromText',
                                 node:  bindingData.node
                             });
@@ -202,14 +200,10 @@ var Horn = function() {
      *  @function
      */
     var handleTemplateBinding = this.scope( function( node, path, bindings ) {
-        var key;
-        var bindingData = this.hasHornBinding( node, path);
-        if ( bindingData !== false ) {
-            key = this.pathIndicator({n: node});
-            if ( this.isAdjustingPath( key) ) {
-            bindingData.path = (path + '-' + key); }
-            if ( !bindingData.isJSON  ) {
-            bindings.push( bindingData); }
+        var bindingData = this.hasHornBinding( node);
+        if ( (bindingData !== false) && !bindingData.isJSON ) {
+            bindingData.path = path;
+            bindings.push( bindingData);
             return false;
         }
         return true;
@@ -501,24 +495,30 @@ var Horn = function() {
 Horn.prototype = {
 
     /**
+     *  Join parent and child property paths.
+     *  <p>
+     *  If exactly one path is <code>null</code> or <code>undefined</code>, the
+     *  other is returned. If both paths are not defined, the empty
+     *  <code>String</code> is returned.
      *
+     *  @param {String} [parent] the parent horn property path
+     *  @param {String} [child] the child horn property path
      *
+     *  @return {String} the resultant, combined property path
      *
+     *  @todo test
      */
-    combinePaths: function( path1, path2 ) {
-        var path1Defined = this.isAdjustingPath( path1);
-        var path2Defined = this.isAdjustingPath( path2);
-        if ( path1Defined && path2Defined ) {
-            return path1 + "-" + path2;
-        } else if ( path1Defined ) {
-            return path1;
-        } else if ( path2Defined ) {
-            return path2;
+    combinePaths: function( parent, child ) {
+        var parentDefined = this.isAdjustingPath( parent);
+        var childDefined = this.isAdjustingPath( child);
+        if ( parentDefined && childDefined ) {
+            return parent + "-" + child;
+        } else if ( parentDefined ) {
+            return parent;
+        } else if ( childDefined ) {
+            return child;
         } else return "";
     },
-
-
-
 
     /**
      *  Determines if two values the same.
@@ -644,12 +644,12 @@ Horn.prototype = {
      *
      *  @methodOf Horn.prototype
      */
-    hasHornBinding: function( node, parentPath ) {
+    hasHornBinding: function( node ) {
         var theContained;
         var nodeName;
-        var path = this.pathIndicator({n: node});
         var contents = $($(node).contents());
-        var isAdjustingPath = this.isAdjustingPath( path);
+        var isAdjustingPath = this.isAdjustingPath(
+            this.pathIndicator({n: node}));
         var cd = {
             isJSON: this.jsonIndicator({n: node}),
             node: node};
@@ -658,8 +658,6 @@ Horn.prototype = {
         if ( (contentsSize === 1) || (isEmptyNode && !cd.isJSON))  {
             if ( !isEmptyNode ) { theContained = contents[0]; }
             if ( cd.isJSON || isAdjustingPath ) {
-                cd.path = isAdjustingPath ? (parentPath + '-' + path) :
-                    parentPath;
                 nodeName = node.nodeName.toLowerCase();
                 cd.isFormElementNode =
                     (nodeName === 'input') || (nodeName === 'textarea');
@@ -667,7 +665,6 @@ Horn.prototype = {
                     (nodeName.toLowerCase() === "abbr");
                 cd.isTextNode = !cd.isABBRNode && (isEmptyNode ||
                     (theContained.nodeType === Node.TEXT_NODE));
-
                 if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
                     cd.text = this.hornNodeValue( {node: node});
                     return cd;
@@ -815,7 +812,7 @@ Horn.prototype = {
      */
     pathToTokens: function( path ) {
         return path ?
-            (this.hasPrefix( path, "-") ?
+            ((this.hasPrefix( path, "-")|| this.hasPrefix( path, "_"))  ?
                 path.substring( 1) : path).split( "-") :
             undefined;
     },
@@ -932,13 +929,11 @@ Horn.prototype = {
      *      prepended to each Horn path constructed
      *
      *  @methodOf Horn.prototype
-     *
-     *  @todo test
      */
     walkDOM: function( node, fn, path ) {
         if ( !this.isDefinedNotNull( path) ) { path = ''; }
+        path = this.combinePaths( path, this.pathIndicator({n: node}));
         if ( fn( node, path) === true ) {
-            path = this.combinePaths( path, this.pathIndicator({n: node}));
             this.each( $(node).children(), function( i, n ) {
                 this.walkDOM( n, fn, path); }, this);
         }
