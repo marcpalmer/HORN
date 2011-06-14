@@ -202,9 +202,14 @@ $( function() {
 
 Call this to get/set an option on the HORN parser instance. Valid options are:
 
-* readOnly - Setting this to true prevents the auto-loader for the single "horn" instance from binding to DOM nodes, causing it to call load() instead of bind()
-* defaultModel - A default model object to apply before parsing. Any data from the page will be merged with this.
-* converters -
+* readOnly - Setting this to true prevents the auto-loader for the single
+  "horn" instance from binding to DOM nodes, causing it to call load() instead
+  of bind()
+* defaultModel - A default model object to apply before parsing. Any data from
+  the page will be merged with this.
+* converter - An object that implements the convert() function to perform
+  mapping to and from DOM and model. See horn-converters JS file for an
+  example.
 
 ### reset()
 
