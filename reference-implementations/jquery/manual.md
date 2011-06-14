@@ -7,7 +7,7 @@ HORN jQuery Reference Implementation 1.0
 ========================================
 
 This is a reference implementation of a parser and UI populator for the [HORN
-Specification](http://horn.io/horn/spec/horn-specification-1.0.html). You must
+Specification 1.0](http://horn.io/horn/spec/horn-specification-1.0.html). You must
 markup your HTML with "indicators" according to the HORN Specification in
 order for this library to function.
 
@@ -93,16 +93,16 @@ be merged into the existing model, unless you call *reset* before.
 
 The return value of *load* and *bind* is your data model object.
 
-### updateDOM(args)
+### updateDOM(rootNode)
 
 Call this method to update your DOM with the data that is currently in your model.
 
 This will look at the HORN-marked up nodes and resolve them to the data in the
 model, and update their text or values as appropriate.
 
-There is a single optional argument you can pass in the args object:
+There is a single optional parameter you can pass in:
 
-* rootNode - The jQuery object representing the DOM node to update. Used to
+* rootNode (_Optional_) - The jQuery object representing the DOM node to update. Used to
   limit the scope of DOM traversal if performance is an issue.
 
 The return value is a list of DOM nodes that were affected by the update. You
