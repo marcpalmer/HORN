@@ -31,7 +31,6 @@ var Horn = function() {
     var addBinding = this.scope( function( args ) {
         var rv;
         var details;
-        var culledPath = args.path;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
@@ -47,7 +46,7 @@ var Horn = function() {
                 rv.context = args.context;
                 rv.key = args.key;
             }
-            state.bindings[ culledPath] = rv;
+            state.bindings[ args.path] = rv;
         }
     }, this);
 
@@ -105,15 +104,14 @@ var Horn = function() {
                 addBinding( vargs);
             }, this);
             var jsonData = $.evalJSON( args.text);
-            var rootPath = args.path;
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
                     this.scope( function( k, v ) {
                         addJSONHelper( $.extend( defaults,
-                            {value: v, path:  rootPath + k})); }, this));
+                            {value: v, path:  args.path + k})); }, this));
             } else {
                 addJSONHelper( $.extend( defaults,
-                    {value: jsonData, path:  rootPath}));
+                    {value: jsonData, path:  args.path}));
             }
         }, this);
 
@@ -145,7 +143,7 @@ var Horn = function() {
                 this.walkDOM( n,
                     function( n, path ) {
                         if ( _this.hasRootIndicator( {n: n}) ) {
-                            if ( inGraph ) { return false }
+                            if ( inGraph ) { return false; }
                                 else { inGraph = true; }
                         }
                         var bindingData = _this.hasHornBinding( n);
@@ -156,7 +154,7 @@ var Horn = function() {
                         if ( bindingData.isJSON === false ) {
                             bindingData.value = convert( {
                                 value: bindingData.text,
-                                path:  path,
+                                path:  bindingData.path,
                                 type:  'fromText',
                                 node:  bindingData.node
                             });
@@ -517,7 +515,7 @@ Horn.prototype = {
             return parent;
         } else if ( childDefined ) {
             return child;
-        } else return "";
+        } else { return ""; }
     },
 
     /**
@@ -628,7 +626,7 @@ Horn.prototype = {
         $.each( collection, ctx ? this.scope( fn, ctx) : fn);
     },
 
-    /**
+        /**
      *  Determines if a given node in the context of a Horn DOM tree is a value
      *  node or not.
      *  <p>
@@ -636,7 +634,6 @@ Horn.prototype = {
      *  extracted and returned.
      *
      *  @param node the DOM node to examine
-     *  @param parentPath the node's parent Horn property path
      *
      *  @return <code>false</code> if the given node is not a value node else,
      *      this function returns an object containing the binding information
@@ -712,17 +709,17 @@ Horn.prototype = {
         switch (jNode[0].nodeName.toLowerCase()) {
             case "input": case "textarea":
                 if ( isSet ) { jNode.val( args.value); }
-                    else return jNode.val();
+                    else { return jNode.val(); }
             break;
 
             case "abbr":
                 if ( isSet ) { jNode.attr( "title", args.value); }
-                    else return jNode.attr( "title");
+                    else { return jNode.attr( "title"); }
             break;
 
             default:
                 if ( isSet ) { jNode.text( args.value); }
-                    else return jNode.text();
+                    else { return jNode.text(); }
             break;
         }
     },
@@ -870,6 +867,20 @@ Horn.prototype = {
             delimiter : " "), function( i, token ) {
                 if ( token.trim() !== '' ) { callback( token); }
         });
+    },
+
+    /**
+     *
+     *
+     *
+     *  @param {String} path
+     *
+     * @methodOf Horn.prototype
+     */
+    toInternalPath: function( path ) {
+        var rv = path.replace(
+            /(\[(\w+)\])/g, ".$2").replace( /\./g, "-").replace( "/", "");
+        return this.hasPrefix( rv, "-") ? rv.substring(1) : rv;
     },
 
     /**

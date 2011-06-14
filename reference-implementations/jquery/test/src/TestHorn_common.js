@@ -241,6 +241,28 @@ test(
 
 
 
+test(
+    "Horn.toInternalPath() - .",
+    function() {
+        var horn = new Horn();
+        ok( horn.toInternalPath !== undefined);
+    });
+
+test(
+    "Horn.toInternalPath() - Sanity check various values - this relies upon the default horn options.",
+    function() {
+        var horn = new Horn();
+        ok( horn.toInternalPath( 'a') === 'a');
+
+        ok( horn.toInternalPath('a[10]') === 'a-10');
+        ok( horn.toInternalPath('[10]') === '10');
+        ok( horn.toInternalPath('[10][20]') === '10-20');
+        ok( horn.toInternalPath('x[1].y[2].z[3]') === 'x-1-y-2-z-3');
+        ok( horn.toInternalPath('x[1][2][3].y[2].z') === 'x-1-2-3-y-2-z');
+    });
+
+
+
 
 test(
     "hasPrefix - Sanity check on random string.",

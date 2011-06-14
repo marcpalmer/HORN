@@ -33,29 +33,6 @@ test(
 
 
 test(
-    "Horn.encodeCSS() - .",
-    function() {
-        var horn = new Horn();
-        ok( horn.encodeCSS !== undefined);
-    });
-
-test(
-    "Horn.encodeCSS() - Sanity check various values - this relies upon the default horn options.",
-    function() {
-        var horn = new Horn();
-        ok( horn.encodeCSS( {path: 'a'}) === 'a');
-
-        ok( horn.encodeCSS({path: 'a[10]'}) === 'a-10');
-        ok( horn.encodeCSS({path: '[10]'}) === '10');
-        ok( horn.encodeCSS({path: '[10][20]'}) === '10-20');
-        ok( horn.encodeCSS({path: 'x[1].y[2].z[3]'}) === 'x-1-y-2-z-3');
-        ok( horn.encodeCSS({path: 'x[1][2][3].y[2].z'}) === 'x-1-2-3-y-2-z');
-    });
-
-
-
-
-test(
     "Model Tests - _0 - 'one'",
     function() {
         dataTest( {
