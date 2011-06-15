@@ -72,6 +72,7 @@ var isArray = function( object ) {
 };
 
 var setPatternConverter = function( horn, converterName, pattern ) {
+    pattern = hornConverter.toRegularExpression( pattern);
     if ( converterName === 'IntegerConverter' ) {
         horn.option( "converter", function( args ) {
             if ( (args.path.match( pattern).toString() === args.path) ) {

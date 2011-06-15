@@ -57,7 +57,7 @@ test(
                 nodes:  $('<div data-horn="/"><span data-horn="1">2</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[1\\]");
+                setPatternConverter( horn, "IntegerConverter", "[1]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 2);
@@ -73,7 +73,7 @@ test(
                 nodes:  $('<div data-horn="/"><span data-horn="2">true</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "[2]");
                 var data = horn.bind();
                 ok( isArray( data));
                 ok( data.length === 3);
@@ -108,7 +108,7 @@ test(
                 nodes:  $('<div data-horn="/[3]"><span data-horn="[1]">4</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[3\\]\\[1\\]");
+                setPatternConverter( horn, "IntegerConverter", "[3][1]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -128,7 +128,7 @@ test(
                 nodes:  $('<div data-horn="/[3]"><span data-horn="[2]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[3\\]\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "[3][2]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -170,7 +170,7 @@ test(
                 nodes:  $('<div data-horn="/[3][3]"><span data-horn="[1]">6</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[3\\]\\[3\\]\\[1\\]");
+                setPatternConverter( horn, "IntegerConverter", "[3][3][1]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -193,7 +193,7 @@ test(
                 nodes:  $('<div data-horn="/[3][3]"><span data-horn="[2]">true</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[3\\]\\[3\\]\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "[3][3][2]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -236,7 +236,7 @@ test(
                 nodes:  $('<div data-horn="/[3][4]"><span data-horn="l">8</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[3\\]\\[4\\]\\.l");
+                setPatternConverter( horn, "IntegerConverter", "[3][4].l");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -257,7 +257,7 @@ test(
                 nodes:  $('<div data-horn="/[3][4]"><span data-horn="m">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[3\\]\\[4\\]\\.m");
+                setPatternConverter( horn, "BooleanConverter", "[3][4].m");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 4);
@@ -295,7 +295,7 @@ test(
                 nodes:  $('<div data-horn="/[4]"><span data-horn="g">10</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[4\\]\\.g");
+                setPatternConverter( horn, "IntegerConverter", "[4].g");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -313,7 +313,7 @@ test(
                 nodes:  $('<div data-horn="/[4]"><span data-horn="h">true</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[4\\]\\.h");
+                setPatternConverter( horn, "BooleanConverter", "[4].h");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -351,7 +351,7 @@ test(
                 nodes:  $('<div data-horn="/[4].i"><span data-horn="[2]">12</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[4\\]\\.i\\[2\\]");
+                setPatternConverter( horn, "IntegerConverter", "[4].i[2]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -372,7 +372,7 @@ test(
                 nodes:  $('<div data-horn="/[4].i"><span data-horn="[3]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[4\\]\\.i\\[3\\]");
+                setPatternConverter( horn, "BooleanConverter", "[4].i[3]");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -412,7 +412,7 @@ test(
                 nodes:  $('<div data-horn="/[4].j"><span data-horn="o">14</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "\\[4\\]\\.j\\.o");
+                setPatternConverter( horn, "IntegerConverter", "[4].j.o");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -432,7 +432,7 @@ test(
                 nodes:  $('<div data-horn="/[4].j"><span data-horn="p">true</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "\\[4\\]\\.j\\.p");
+                setPatternConverter( horn, "BooleanConverter", "[4].j.p");
                 var model = horn.bind();
                 ok( isArray( model));
                 ok( model.length === 5);
@@ -497,7 +497,7 @@ test(
                 nodes:  $('<div data-horn="/d"><span data-horn="[1]">4</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "d\\[1\\]");
+                setPatternConverter( horn, "IntegerConverter", "d[1]");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -514,7 +514,7 @@ test(
                 nodes:  $('<div data-horn="/d"><span data-horn="[2]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -549,7 +549,7 @@ test(
                 nodes:  $('<div data-horn="/d[3]"><span data-horn="[1]">6</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "d\\[3\\]\\[1\\]");
+                setPatternConverter( horn, "IntegerConverter", "d[3][1]");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -568,7 +568,7 @@ test(
                 nodes:  $('<div data-horn="/d[3]"><span data-horn="[2]">true</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d\\[3\\]\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "d[3][2]");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isArray( model.d));
@@ -607,7 +607,7 @@ test(
                 nodes:  $('<div data-horn="/d[4]"><span data-horn="l">8</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "d\\[4\\]\\.l");
+                setPatternConverter( horn, "IntegerConverter", "d[4].l");
                 var model = horn.bind();
                 ok( isObject( model));
 
@@ -628,7 +628,7 @@ test(
                 nodes:  $('<div data-horn="/d[4]"><span data-horn="m">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d\\[4\\]\\.m");
+                setPatternConverter( horn, "BooleanConverter", "d[4].m");
                 var model = horn.bind();
                 ok( isObject( model));
 
@@ -664,7 +664,7 @@ test(
                 nodes:  $('<div data-horn="/e"><span data-horn="g">10</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "e\\.g");
+                setPatternConverter( horn, "IntegerConverter", "e.g");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -714,7 +714,7 @@ test(
             ],
             callback: function( horn ) {
                 horn.option( "pattern", "e-i-2", "IntegerConverter");
-                setPatternConverter( horn, "IntegerConverter", "e\\.i\\[2\\]");
+                setPatternConverter( horn, "IntegerConverter", "e.i[2]");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -732,7 +732,7 @@ test(
                 nodes:  $('<div data-horn="/e.i"><span data-horn="[3]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "e\\.i\\[3\\]");
+                setPatternConverter( horn, "BooleanConverter", "e.i[3]");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -766,7 +766,7 @@ test(
                 nodes:  $('<div data-horn="/e.i"><span data-horn="o">14</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "e\\.i\\.o");
+                setPatternConverter( horn, "IntegerConverter", "e.i.o");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -783,7 +783,7 @@ test(
                 nodes:  $('<div data-horn="/e.i"><span data-horn="p">true</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "e\\.i\\.p");
+                setPatternConverter( horn, "BooleanConverter", "e.i.p");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.e));
@@ -830,7 +830,7 @@ test(
                 nodes:  $('<div data-horn="/a"><div data-horn="b"><div data-horn="c"><span data-horn="d">-23</span></div></div></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "a\\.b\\.c\\.d");
+                setPatternConverter( horn, "IntegerConverter", "a.b.c.d");
                 var model = horn.bind();
                 ok( model.a.b.c.d === -23);
         }});
@@ -923,7 +923,7 @@ test(
                 nodes:  $('<div data-horn="/key"><span data-horn-json=".">{"a": 1}</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key\\.a");
+                setPatternConverter( horn, "IntegerConverter", "key.a");
                 var model = horn.bind();
                 ok( isObject( model));
                 ok( isObject( model.key));
@@ -1386,7 +1386,7 @@ test(
                 nodes:  $('<div data-horn="/d"><span id="x__" data-horn="[2]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
@@ -1408,7 +1408,7 @@ test(
                 nodes:  $('<div data-horn="/d"><span id="x__" data-horn="[2]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
@@ -1430,7 +1430,7 @@ test(
                 nodes:  $('<div data-horn="/d"><span id="x__" data-horn="[2]">false</span></div>')}
             ],
             callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d\\[2\\]");
+                setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;

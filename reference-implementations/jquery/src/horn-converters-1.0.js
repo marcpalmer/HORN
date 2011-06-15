@@ -179,7 +179,7 @@ HornPatternConverter.prototype = {
      *  @methodOf HornPatternConverter.prototype
      */
     toRegularExpression: function( path ) {
-        return path.replace( /([\.\[\]])/g, "\\\\$1").replace( "*", ".*");
+        return path.replace( /([\.\[\]])/g, "\\$1").replace( "*", ".*");
     }
 };
 
