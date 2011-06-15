@@ -284,7 +284,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#combinePaths">combinePaths</a></b>(parent, child)
 								</div>
-								<div class="description">Join parent and child property paths.</div>
+								<div class="description">Join parent and child internal Horn property paths.</div>
 							</td>
 						</tr>
 					
@@ -337,7 +337,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#hasHornBinding">hasHornBinding</a></b>(node, parentPath)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#hasHornBinding">hasHornBinding</a></b>(node)
 								</div>
 								<div class="description">Determines if a given node in the context of a Horn DOM tree is a value
  node or not.</div>
@@ -358,7 +358,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#hornNodeValue">hornNodeValue</a></b>(args)
 								</div>
-								<div class="description">Retrieves a DOM node's displayed text.</div>
+								<div class="description">Sets or retrieves a DOM node's Horn text.</div>
 							</td>
 						</tr>
 					
@@ -479,6 +479,26 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#toExternalPath">toExternalPath</a></b>(path)
+								</div>
+								<div class="description">Converts an Horn property path in internal form to its external
+ (JavaScript) representation.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#toInternalPath">toInternalPath</a></b>(path)
+								</div>
+								<div class="description">Converts a Horn property path in external (JavaScript) form to that used
+ internally.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#traverse">traverse</a></b>(value, callback, path, context, propName)
 								</div>
 								<div class="description">Traverses an object graph and executes a callback function for each
@@ -489,10 +509,10 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#unbind">unbind</a></b>(pattern)
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#unbind">unbind</a></b>(args)
 								</div>
-								<div class="description">Removes either, all bindings or, all bindings with property paths that
- match a given regex pattern.</div>
+								<div class="description">Removes either, all bindings or, all bindings with a given path (that
+ matches a regular expression pattern).</div>
 							</td>
 						</tr>
 					
@@ -752,7 +772,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Join parent and child property paths.
+						Join parent and child internal Horn property paths.
  <p>
  If exactly one path is <code>null</code> or <code>undefined</code>, the
  other is returned. If both paths are not defined, the empty
@@ -1055,7 +1075,8 @@ ul.inheritsList
 									<span class="light fixedFont">{Function}</span> <b>fn</b>
 									
 								</dt>
-								<dd>the callback function which will be called for each item</dd>
+								<dd>the callback function which will be called for each
+     item</dd>
 							
 								<dt>
 									<span class="light fixedFont">{Object}</span> <b>ctx</b>
@@ -1078,7 +1099,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>hasHornBinding</b>(node, parentPath)
+					<b>hasHornBinding</b>(node)
 					
 					</div>
 					<div class="description">
@@ -1102,12 +1123,6 @@ ul.inheritsList
 									
 								</dt>
 								<dd>the DOM node to examine</dd>
-							
-								<dt>
-									<b>parentPath</b>
-									
-								</dt>
-								<dd>the node's parent Horn property path</dd>
 							
 							</dl>
 						
@@ -1189,7 +1204,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Retrieves a DOM node's displayed text.
+						Sets or retrieves a DOM node's Horn text.
  <p>
  The value retrieved is HTML un-escaped.
 						
@@ -1203,13 +1218,13 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>args</b>
+									<span class="light fixedFont">{Object}</span> <b>args</b>
 									
 								</dt>
 								<dd></dd>
 							
 								<dt>
-									<b>args.node</b>
+									<span class="light fixedFont">{Element}</span> <b>args.node</b>
 									
 								</dt>
 								<dd>the node from which to retrieve text</dd>
@@ -1806,6 +1821,88 @@ ul.inheritsList
 
 					<hr />
 				
+					<a name="toExternalPath"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toExternalPath</b>(path)
+					
+					</div>
+					<div class="description">
+						Converts an Horn property path in internal form to its external
+ (JavaScript) representation.
+ <p>
+ For example: <code>horn.toExternalPath( 'x-1-2-3-y-2-z') ===
+ 'x[1][2][3].y[2].z'.</code>
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>path</b>
+									
+								</dt>
+								<dd>internal Horn property path to convert</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toInternalPath"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toInternalPath</b>(path)
+					
+					</div>
+					<div class="description">
+						Converts a Horn property path in external (JavaScript) form to that used
+ internally.
+ <p>
+ For example: <code>horn.toInternalPath('x[1][2][3].y[2].z') ===
+ 'x-1-2-3-y-2-z'.</code>
+ <p>
+ This function tolerates extraneous leading '-' chars.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>path</b>
+									
+								</dt>
+								<dd>external Horn property path to convert</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="traverse"> </a>
 					<div class="fixedFont">
 					
@@ -1885,12 +1982,14 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>unbind</b>(pattern)
+					<b>unbind</b>(args)
 					
 					</div>
 					<div class="description">
-						Removes either, all bindings or, all bindings with property paths that
- match a given regex pattern.
+						Removes either, all bindings or, all bindings with a given path (that
+ matches a regular expression pattern).
+ <p>
+ If no arguments are defined, <strong>all bindings are removed</strong>.
 						
 						
 					</div>
@@ -1902,10 +2001,23 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>pattern</b>
+									<span class="light fixedFont">{Object}</span> <b>args</b>
 									
 								</dt>
-								<dd>a regular expression pattern to match against</dd>
+								<dd></dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>args.path</b>
+									<i>Optional</i>
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>args.pattern</b>
+									<i>Optional</i>
+								</dt>
+								<dd>a regular expression pattern to match
+     against</dd>
 							
 							</dl>
 						
@@ -2040,7 +2152,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Tue Jun 14 2011 17:00:40 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Jun 15 2011 03:39:53 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

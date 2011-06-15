@@ -7,23 +7,6 @@
  *  @version 1.0
  *
  *  @requires JQuery
- *
- *
- *
- *
- *  bind
- *  bindTo
- *  load
- *  unbind
- *  updateDOM
- *  convert()
- *  tests
- *  hornpatternconverter
- *
- *
- *
- *
- *
  */
 
 /**
@@ -124,8 +107,8 @@ var Horn = function() {
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
                     this.scope( function( k, v ) {
-                        addJSONHelper( $.extend( defaults,
-                            {value: v, path:  args.path + k})); }, this));
+                        addJSONHelper( $.extend( defaults, { value: v,
+                            path:  this.combinePaths( args.path, k)})); }, this));
             } else {
                 addJSONHelper( $.extend( defaults,
                     {value: jsonData, path:  args.path}));
@@ -138,8 +121,9 @@ var Horn = function() {
      */
     var convert = this.scope( function ( args ) {
         var converter = state.opts.converter;
-        return this.isDefinedNotNull( converter) ?
-            converter.call( this, args) : undefined;
+        if ( !this.isDefinedNotNull( converter) ) { return undefined; }
+        return converter.call( this, $.extend( {}, args,
+            {path: this.toExternalPath( args.path)}))
     }, this);
 
     /**
@@ -148,12 +132,12 @@ var Horn = function() {
      */
     var extract = this.scope( function( args ) {
         var _this = this;
-
+        var pathStem = this.definesProperty( args, 'path') ?
+            this.toInternalPath( args.path) : undefined;
         var rootNodes = this.definesProperty( args, 'rootNodes') ?
             args.rootNodes : (this.definesProperty( args, 'selector') ?
                 $(args.selector) : this.rootNodes());
         setDefaultModel();
-
         this.each( rootNodes,
             function( i, n ) {
                 var inGraph = false;
@@ -171,7 +155,8 @@ var Horn = function() {
                         if ( bindingData.isJSON === false ) {
                             bindingData.value = convert( {
                                 value: bindingData.text,
-                                path:  bindingData.path,
+                                path:  _this.combinePaths( pathStem,
+                                    bindingData.path),
                                 type:  'fromText',
                                 node:  bindingData.node
                             });
@@ -233,19 +218,20 @@ var Horn = function() {
         var binding = args.binding;
         var modelValue = binding.context[ binding.key];
         var textValue;
+        var cArgs;
         if ( modelValue !== binding.value ) {
             if ( !rootNode || (rootNode && this.contains(
                 $(binding.node).parents(), rootNode)) ) {
-                textValue = convert( {
+                cArgs = {
                     value: modelValue,
                     path:  args.path,
                     type:  'toText',
-                    node: binding.node});
+                    node: binding.node};
+                textValue = convert( cArgs);
                 if ( !this.isDefinedNotNull( textValue) ) {
                     textValue = modelValue + "";
                 }
-                this.hornNodeValue(
-                    {node: binding.node, value: textValue});
+                this.hornNodeValue( {node: binding.node, value: textValue});
                 binding.value = modelValue;
                 return binding.node;
             }
@@ -341,10 +327,11 @@ var Horn = function() {
      *  used.
      *
      *  @param {Object} args
-     *  @param {Object} [rootNodes] a collection of DOM nodes to bind from,
+     *  @param {Object} [args.rootNodes] a collection of DOM nodes to bind from,
      *      overrides the default node selection mechanism
-     *  @param {String} [selector] a jQuery DOM node selector for nodes to bind
-     *      from,
+     *  @param {String} [args.selector] a jQuery DOM node selector for nodes to
+     *      bind from
+     *  @param {String} args.path
      *
      *  @return the updated model
      *
@@ -391,7 +378,8 @@ var Horn = function() {
             }
         }
         setDefaultModel();
-        pathStem = this.definesProperty( args, 'path') ? args.path : '';
+        pathStem = this.definesProperty( args, 'path') ?
+            this.toInternalPath( args.path) : '';
         this.walkDOM( node,
             this.scope( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
@@ -461,23 +449,40 @@ var Horn = function() {
      *  @see Horn#option
      *
      *  @public
+     *
+     *  @test
      */
     this.reset = function() {
         state = { opts: $.extend( {}, {model: undefined, readOnly:  false})};
     };
 
     /**
-     *  Removes either, all bindings or, all bindings with property paths that
-     *  match a given regex pattern.
+     *  Removes either, all bindings or, all bindings with a given path (that
+     *  matches a regular expression pattern).
+     *  <p>
+     *  If no arguments are defined, <strong>all bindings are removed</strong>.
      *
-     *  @param {String} pattern a regular expression pattern to match against
+     *  @param {Object} args
+     *  @param {String} [args.path]
+     *  @param {String} [args.pattern] a regular expression pattern to match
+     *      against
      *
      *  @public
      */
-    this.unbind = function( pattern ) {
-        this.each( state.bindings, function( i, n ) {
-            if ( !pattern || (i.match( pattern) !== null) ) {
-                delete state.bindings[ i]; } }, this);
+    this.unbind = function( args ) {
+        var definesPath = this.definesProperty( args, 'path');
+        var internalPath = definesPath ? this.toInternalPath( args.path) :
+            undefined;
+        var definesPattern = this.definesProperty( args, 'pattern');
+        var unbindAll = !definesPattern && !definesPath;
+        this.each( state.bindings,
+            function( i, n ) {
+                if (    unbindAll ||
+                        (definesPath && (i === internalPath)) ||
+                        (definesPattern && (i.match( args.pattern)))) {
+                    delete state.bindings[ i];
+                }
+            }, this);
     };
 
     /**
@@ -496,10 +501,8 @@ var Horn = function() {
     this.updateDOM = function( rootNode ) {
         var alteredNodes = [];
         this.each( state.bindings, function( i, n ) {
-            var node = render( {rootNode: rootNode,
-                    binding: n, path: i});
-            if ( this.isDefinedNotNull( node) ) {
-                alteredNodes.push( node); }
+            var node = render( {rootNode: rootNode, binding: n, path: i});
+            if ( this.isDefinedNotNull( node) ) { alteredNodes.push( node); }
         }, this);
         return alteredNodes;
     };
@@ -510,7 +513,7 @@ var Horn = function() {
 Horn.prototype = {
 
     /**
-     *  Join parent and child property paths.
+     *  Join parent and child internal Horn property paths.
      *  <p>
      *  If exactly one path is <code>null</code> or <code>undefined</code>, the
      *  other is returned. If both paths are not defined, the empty
@@ -633,7 +636,8 @@ Horn.prototype = {
      *  item.
      *
      *  @param {Object} collection the item to iterate over
-     *  @param {Function} fn the callback function which will be called for each item
+     *  @param {Function} fn the callback function which will be called for each
+     *      item
      *  @param {Object} [ctx] the scope under which to execute the callback.
      *
      *  @methodOf Horn.prototype
@@ -887,10 +891,13 @@ Horn.prototype = {
     },
 
     /**
+     *  Converts an Horn property path in internal form to its external
+     *  (JavaScript) representation.
+     *  <p>
+     *  For example: <code>horn.toExternalPath( 'x-1-2-3-y-2-z') ===
+     *  'x[1][2][3].y[2].z'.</code>
      *
-     *
-     *
-     *  @param {String} path
+     *  @param {String} path internal Horn property path to convert
      *
      *  @methodOf Horn.prototype
      */
@@ -899,10 +906,15 @@ Horn.prototype = {
     },
 
     /**
+     *  Converts a Horn property path in external (JavaScript) form to that used
+     *  internally.
+     *  <p>
+     *  For example: <code>horn.toInternalPath('x[1][2][3].y[2].z') ===
+     *  'x-1-2-3-y-2-z'.</code>
+     *  <p>
+     *  This function tolerates extraneous leading '-' chars.
      *
-     *
-     *
-     *  @param {String} path
+     *  @param {String} path external Horn property path to convert
      *
      *  @methodOf Horn.prototype
      */

@@ -30,6 +30,8 @@ test(
 );
 
 
+
+
 test(
     "contains - returns false for empty, null and undefined collections.",
     function() {
@@ -555,7 +557,7 @@ test(
 
 
 test(
-    "option defaultModel')",
+    "option : defaultModel",
     function() {
         dataTest( {
             callback: function( horn ) {
