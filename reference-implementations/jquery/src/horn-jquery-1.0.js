@@ -143,7 +143,7 @@ var Horn = function() {
                 var inGraph = false;
                 this.walkDOM( n,
                     function( n, path ) {
-                        if ( _this.hasRootIndicator( {n: n}) ) {
+                        if ( _this.hasRootIndicator(n) ) {
                             if ( inGraph ) { return false; }
                                 else { inGraph = true; }
                         }
@@ -669,9 +669,9 @@ Horn.prototype = {
         var nodeName;
         var contents = $($(node).contents());
         var isAdjustingPath = this.isAdjustingPath(
-            this.pathIndicator({n: node}));
+            this.pathIndicator(node));
         var cd = {
-            isJSON: this.jsonIndicator({n: node}),
+            isJSON: this.jsonIndicator(node),
             node: node};
         var contentsSize = contents.size();
         var isEmptyNode = contentsSize === 0;
@@ -986,7 +986,7 @@ Horn.prototype = {
      */
     walkDOM: function( node, fn, path ) {
         if ( !this.isDefinedNotNull( path) ) { path = ''; }
-        path = this.combinePaths( path, this.pathIndicator({n: node}));
+        path = this.combinePaths( path, this.pathIndicator(node));
         if ( fn( node, path) === true ) {
             this.each( $(node).children(), function( i, n ) {
                 this.walkDOM( n, fn, path); }, this);

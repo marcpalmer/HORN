@@ -36,16 +36,16 @@ $.extend( Horn.prototype, {
         return path;
     },
 
-    hasRootIndicator: function( args ) {
-        return $(args.n).hasClass( this.cssRootContext);
+    hasRootIndicator: function( node ) {
+        return $(node).hasClass( this.cssRootContext);
     },
 
-    pathIndicator: function( args ) {
-        return this.extractCSSPropertyPath.call( this, args.n);
+    pathIndicator: function( node ) {
+        return this.extractCSSPropertyPath.call( this, node);
     },
 
-    jsonIndicator: function( args ) {
-        return $(args.n).hasClass( this.cssJSON);
+    jsonIndicator: function( node ) {
+        return $(node).hasClass( this.cssJSON);
     },
 
     rootNodes: function() {

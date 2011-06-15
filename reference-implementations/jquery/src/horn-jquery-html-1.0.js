@@ -22,23 +22,23 @@ $.extend(
             return (this.isDefinedNotNull( rv) === true) ? (rv + "") : undefined;
         },
 
-        hasRootIndicator: function( args ) {
-            var hornDeclaration = this.getDataAttr( args.n, this.dataNameHorn);
-            var jsonDeclaration = this.getDataAttr( args.n, this.dataNameJSON);
+        hasRootIndicator: function( node ) {
+            var hornDeclaration = this.getDataAttr( node, this.dataNameHorn);
+            var jsonDeclaration = this.getDataAttr( node, this.dataNameJSON);
             return ((this.isDefinedNotNull( hornDeclaration) === true) &&
                 (this.hasPrefix( hornDeclaration, "/") === true)) ||
                 ((this.isDefinedNotNull( jsonDeclaration) === true) &&
                 (this.hasPrefix( jsonDeclaration, "/") === true));
         },
 
-        jsonIndicator: function( args ) {
+        jsonIndicator: function( node ) {
             return this.isDefinedNotNull(
-                this.getDataAttr( args.n, this.dataNameJSON)) === true;
+                this.getDataAttr( node, this.dataNameJSON)) === true;
         },
 
-        pathIndicator: function( args ) {
-            var hornDeclaration = this.getDataAttr( args.n, this.dataNameHorn);
-            var jsonDeclaration = this.getDataAttr( args.n, this.dataNameJSON);
+        pathIndicator: function( node ) {
+            var hornDeclaration = this.getDataAttr( node, this.dataNameHorn);
+            var jsonDeclaration = this.getDataAttr( node, this.dataNameJSON);
             if ( jsonDeclaration === 'true' ) { jsonDeclaration = undefined; }
             var declaration = this.isDefinedNotNull( hornDeclaration) ?
                 hornDeclaration : jsonDeclaration;
