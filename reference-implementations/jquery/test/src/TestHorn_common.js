@@ -791,6 +791,20 @@ test(
             }, ".");
     });
 
+test(
+    "splitEach - returning 'false' backs out.",
+    function() {
+        var horn = new Horn();
+        var count = 0;
+        var expected = ['x'];
+        horn.splitEach( "__x____y_____z_____",
+            function( token ) {
+                ok( token === 'x');
+                ok( count++ === 0);
+                return false;
+            }, "_");
+    });
+
 
 
 
