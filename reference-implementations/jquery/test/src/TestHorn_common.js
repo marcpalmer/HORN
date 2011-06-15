@@ -244,7 +244,7 @@ test(
 
 
 test(
-    "Horn.toInternalPath() - various paths.",
+    "toInternalPath - various paths.",
     function() {
         var horn = new Horn();
         ok( horn.toInternalPath( 'a') === 'a');
@@ -259,7 +259,7 @@ test(
 
 
 test(
-    "Horn.toExternalPath() - various paths.",
+    "toExternalPath - various paths.",
     function() {
         var horn = new Horn();
         ok( horn.toExternalPath( 'a') === 'a');
@@ -455,7 +455,7 @@ test(
 
 
 test(
-    "isAdjustingPath() - horn.isAdjustingPath( null) === false.",
+    "isAdjustingPath - horn.isAdjustingPath( null) === false.",
     function() {
         var horn = new Horn();
 
@@ -463,7 +463,7 @@ test(
     });
 
 test(
-    "isAdjustingPath() - horn.isAdjustingPath( undefined) === false.",
+    "isAdjustingPath - horn.isAdjustingPath( undefined) === false.",
     function() {
         var horn = new Horn();
 
@@ -471,7 +471,7 @@ test(
     });
 
 test(
-    "isAdjustingPath() - horn.isAdjustingPath( '') === false.",
+    "isAdjustingPath - horn.isAdjustingPath( '') === false.",
     function() {
         var horn = new Horn();
 
@@ -479,7 +479,7 @@ test(
     });
 
 test(
-    "isAdjustingPath() - horn.isAdjustingPath( ' ') === false.",
+    "isAdjustingPath - horn.isAdjustingPath( ' ') === false.",
     function() {
         var horn = new Horn();
 
@@ -487,7 +487,7 @@ test(
     });
 
 test(
-    "isAdjustingPath() - horn.isAdjustingPath( 'null') === true.",
+    "isAdjustingPath - horn.isAdjustingPath( 'null') === true.",
     function() {
         var horn = new Horn();
 
@@ -495,7 +495,7 @@ test(
     });
 
 test(
-    "isAdjustingPath() - horn.isAdjustingPath( 'a') === true.",
+    "isAdjustingPath - horn.isAdjustingPath( 'a') === true.",
     function() {
         var horn = new Horn();
 
@@ -555,6 +555,18 @@ test(
 
 
 
+
+test(
+    "option : setting arbitrary (unsupported) option and retrieving.",
+    function() {
+        dataTest( {
+            callback: function( horn ) {
+                var name = "d";
+                var value = "x";
+                horn.option( name, value);
+                ok( horn.option( name) === value);
+            }});
+    });
 
 test(
     "option : defaultModel",
@@ -638,7 +650,7 @@ test(
 
 
 test(
-    "removeProperty() - that we can remove a new object's property X.",
+    "removeProperty - that we can remove a new object's property X.",
     function() {
         var horn = new Horn();
 
@@ -646,7 +658,7 @@ test(
     });
 
 test(
-    "removeProperty() - that we can't remove a property that doesn't exist.",
+    "removeProperty - that we can't remove a property that doesn't exist.",
     function() {
         var horn = new Horn();
         var propertyName = "ajsdjfklsadjkfljlksadjfkljsdklfjlksadjf";
@@ -657,7 +669,7 @@ test(
     });
 
 test(
-    "removeProperty() - removal of known property is reported as have being removed and is actually removed.",
+    "removeProperty - removal of known property is reported as have being removed and is actually removed.",
     function() {
         var testObj = {};
         ok( testObj.propertyName === undefined);
@@ -667,6 +679,20 @@ test(
 
         ok( horn.removeProperty( testObj, "propertyName") === true);
         ok( testObj.propertyName === undefined);
+    });
+
+
+
+
+test(
+    "reset - resets arbitrary set property.",
+    function() {
+        var horn = new Horn();
+        var name = "d";
+        var value = "x";
+        horn.option( name, value);
+        horn.reset();
+        ok( horn.option( name) === undefined);
     });
 
 
@@ -701,7 +727,7 @@ test(
 
 
 test(
-    "splitEach() - that an empty string doesn't yield a callback.",
+    "splitEach - that an empty string doesn't yield a callback.",
     function() {
         var horn = new Horn();
         var passed = true;
@@ -710,7 +736,7 @@ test(
     });
 
 test(
-    "splitEach() - called on a single delimiter doesn't yield a callback.",
+    "splitEach - called on a single delimiter doesn't yield a callback.",
     function() {
         var horn = new Horn();
         var passed = true;
@@ -719,7 +745,7 @@ test(
     });
 
 test(
-    "splitEach() - single token from a \"test\" string with trimming as of default \" \" delimiter.",
+    "splitEach - single token from a \"test\" string with trimming as of default \" \" delimiter.",
     function() {
         var horn = new Horn();
         var count = 0;
@@ -732,7 +758,7 @@ test(
     });
 
 test(
-    "splitEach() - three tokens from \"  x    y     z\" with trimming as of default \" \" delimiter.",
+    "splitEach - three tokens from \"  x    y     z\" with trimming as of default \" \" delimiter.",
     function() {
         var horn = new Horn();
         var count = 0;
@@ -744,7 +770,7 @@ test(
     });
 
 test(
-    "splitEach() - three tokens from \"__x____y_____z_____\" with trimming with non default \"_\" delimiter.",
+    "splitEach - three tokens from \"__x____y_____z_____\" with trimming with non default \"_\" delimiter.",
     function() {
         var horn = new Horn();
         var count = 0;
@@ -756,7 +782,7 @@ test(
     });
 
 test(
-    "splitEach() - that regex isn't supported.",
+    "splitEach - that regex isn't supported.",
     function() {
         var horn = new Horn();
         horn.splitEach( "abc",
@@ -857,7 +883,7 @@ test(
     function() { ok( window.hornConverter instanceof HornPatternConverter ); });
 
 test(
-    "toRegularExpression() - various",
+    "toRegularExpression - various",
     function() {
         ok( hornConverter.toRegularExpression( "a") === "a");
         ok( hornConverter.toRegularExpression( "a[0]") === "a\\[0\\]");

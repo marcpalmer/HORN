@@ -15,7 +15,11 @@
 /**
  *  Used to create new HornPatternConverter instances.
  *  <p>
- *  sajgflksalgjdsjakjsdf
+ *  The HornPatternConverter is a utility 'class' that binds itself to a Horn
+ *  instance and helps with converting Horn model data.
+ *  <p>
+ *  Reusable converter functions are registered to execute when conversion
+ *  involve property paths that match given expressions.
  *
  *  @param {Horn} args.horn the Horn instance to bind to
  *
