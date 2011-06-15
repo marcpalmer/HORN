@@ -31,7 +31,7 @@ $.extend(
                 (this.hasPrefix( jsonDeclaration, "/") === true));
         },
 
-        jsonIndicator: function( node ) {
+        hasJSONIndicator: function( node ) {
             return this.isDefinedNotNull(
                 this.getDataAttr( node, this.dataNameJSON)) === true;
         },

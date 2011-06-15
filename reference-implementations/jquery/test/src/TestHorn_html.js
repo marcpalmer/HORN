@@ -8,9 +8,9 @@ test(
 );
 
 test(
-    "Test horn has jsonIndicator function.",
+    "Test horn has hasJSONIndicator function.",
     function() {
-        ok( isFunction( new Horn().jsonIndicator));
+        ok( isFunction( new Horn().hasJSONIndicator));
     }
 );
 

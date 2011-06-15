@@ -21,14 +21,13 @@ $.extend( Horn.prototype, {
     extractCSSPropertyPath: function( n ) {
         var cssPrefixLength = this.cssPrefix.length;
         var classAttr = $(n).attr( "class");
-        var path = null;
+        var path;
         var _this = this;
         if ( classAttr ) {
             Horn.prototype.splitEach( classAttr,
                 function( token ) {
-                    if ( _this.hasPrefix( token, _this.cssPrefix) ) {
+                    if ( (path === undefined) && _this.hasPrefix( token, _this.cssPrefix) && (token.length > 1)) {
                         path = token.substring( cssPrefixLength);
-                        if ( path === '' ) { path = null; }
                         return false;
                     }
                 });
@@ -44,7 +43,7 @@ $.extend( Horn.prototype, {
         return this.extractCSSPropertyPath.call( this, node);
     },
 
-    jsonIndicator: function( node ) {
+    hasJSONIndicator: function( node ) {
         return $(node).hasClass( this.cssJSON);
     },
 

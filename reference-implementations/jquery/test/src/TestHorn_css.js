@@ -8,9 +8,9 @@ test(
 );
 
 test(
-    "Test horn has jsonIndicator function.",
+    "Test horn has hasJSONIndicator function.",
     function() {
-        ok( isFunction( new Horn().jsonIndicator));
+        ok( isFunction( new Horn().hasJSONIndicator));
     }
 );
 
@@ -28,6 +28,211 @@ test(
         ok( isFunction( horn.rootNodes));
     }
 );
+
+
+
+
+module( "horn-jquery-css-1.0.js - feature functions");
+
+
+
+
+test(
+    "extractCSSPropertyPath - that no key is extracted if no suitable 'class' attribute token exists.",
+    function() {
+        var horn = new Horn();
+        var badPrefix = String.fromCharCode( horn.cssPrefix.charCodeAt( 0) + 1);
+        ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
+        var node = $('<div class="' + badPrefix + '" />');
+
+        ok( horn.extractCSSPropertyPath.call( horn, node) === undefined);
+    });
+
+test(
+    "extractCSSPropertyPath - that the code handles the element having no 'class' atribute.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div />');
+
+        ok( horn.extractCSSPropertyPath.call( horn, node) === undefined);
+    });
+
+test(
+    "extractCSSPropertyPath - extracts known good key.",
+    function() {
+        var horn = new Horn();
+        var node = $('<div class="' + horn.cssPrefix + 'expected" />');
+
+        ok( horn.extractCSSPropertyPath.call( horn, node) === 'expected');
+    });
+
+test(
+    "hasRootIndicator - simple affirmative.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="horn"><span class="_0">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasRootIndicator( $('#grab')) === true);
+            }});
+    });
+
+test(
+    "hasRootIndicator - simple affirmative with other class attribute values.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="value test horn rubbish crap _test"></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasRootIndicator( $('#grab')) === true);
+            }});
+    });
+
+test(
+    "hasRootIndicator - sanity false case.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab"></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasRootIndicator( $('#grab')) === false);
+            }});
+    });
+
+test(
+    "hasRootIndicator - case sensitivity.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="HoRn"></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasRootIndicator( $('#grab')) === false);
+            }});
+    });
+
+
+test(
+    "hasJSONIndicator - simple affirmative case.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="data-json"></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasJSONIndicator( $('#grab')) === true);
+            }});
+    });
+
+test(
+    "hasJSONIndicator - affirmative case with surrounding class attribute values.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="x _value data-json missing"></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasJSONIndicator( $('#grab')) === true);
+            }});
+    });
+
+test(
+    "hasJSONIndicator - case sensitivity.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="x _value data-Json missing"></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.hasJSONIndicator( $('#grab')) === false);
+            }});
+    });
+
+
+
+
+test(
+    "rootNodes - none on test document, empty collection returned.",
+    function() {
+        ok( new Horn().rootNodes().length === 0);
+    });
+
+test(
+    "rootNodes - single rooted horn document.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab" class="horn"><span class="_0">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                var roots = horn.rootNodes();
+                ok( roots.length === 1);
+                ok( horn.compare( roots.get(0), $('#grab')) === true );
+            }});
+    });
+
+test(
+    "rootNodes - forest test.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab1" class="horn"><span class="_0">one</span></div><div id="grab2" class="horn"><span class="_0">one</span></div><div id="grab3" class="horn"><span class="_0">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                var roots = horn.rootNodes();
+                ok( roots.length === 3);
+                ok( horn.compare( roots.get(0), $('#grab1')) === true );
+                ok( horn.compare( roots.get(1), $('#grab2')) === true );
+                ok( horn.compare( roots.get(2), $('#grab3')) === true );
+            }});
+    });
+
+test(
+    "rootNodes - nested contexts, returns all roots.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="grab1" class="horn"><span class="_0">one</span><div id="grab2" class="horn"><span class="_0">one</span></div></div>')}
+            ],
+            callback: function( horn ) {
+                var roots = horn.rootNodes();
+                ok( roots.length === 2);
+                ok( horn.compare( roots.get(0), $('#grab1')) === true );
+                ok( horn.compare( roots.get(1), $('#grab2')) === true );
+            }});
+    });
+
+
+
+
+test(
+    "pathIndicator - simple positive/negative cases.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span id="grab1" class="_0">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.pathIndicator( $('#grab1')) === "0");
+                ok( horn.pathIndicator( $('#grab1')) !== "_0");
+                ok( horn.pathIndicator( $('#grab1')) !== "-0");
+            }});
+    });
+
+test(
+    "pathIndicator - first returned from many.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span id="grab1" class="_0 _1 _2">one</span></div>')}
+            ],
+            callback: function( horn ) {
+                ok( horn.pathIndicator( $('#grab1')) === "0");
+            }});
+    });
 
 
 
@@ -124,7 +329,6 @@ test(
                 ok( model.length === 1);
                 ok( model[ 0] === 'one');
             }});
-
     });
 
 test(
@@ -140,7 +344,6 @@ test(
                 ok( isArray( model));
                 ok( model.length === 2);
                 ok( model[ 1] === 2);
-
             }});
     });
 
@@ -1335,38 +1538,6 @@ test(
         }});
         ok( !horn.isAttached( $('.terms')));
 
-    });
-
-
-
-
-test(
-    "extractCSSPropertyPath - that no key is extracted if no suitable 'class' attribute token exists.",
-    function() {
-        var horn = new Horn();
-        var badPrefix = String.fromCharCode( horn.cssPrefix.charCodeAt( 0) + 1);
-        ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
-        var node = $('<div class="' + badPrefix + '" />');
-
-        ok( horn.extractCSSPropertyPath.call( horn, node) === null);
-    });
-
-test(
-    "extractCSSPropertyPath - that the code handles the element having no 'class' atribute.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div />');
-
-        ok( horn.extractCSSPropertyPath.call( horn, node) === null);
-    });
-
-test(
-    "extractCSSPropertyPath - extracts known good key.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div class="' + horn.cssPrefix + 'expected" />');
-
-        ok( horn.extractCSSPropertyPath.call( horn, node) === 'expected');
     });
 
 

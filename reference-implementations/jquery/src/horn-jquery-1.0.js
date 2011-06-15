@@ -671,7 +671,7 @@ Horn.prototype = {
         var isAdjustingPath = this.isAdjustingPath(
             this.pathIndicator(node));
         var cd = {
-            isJSON: this.jsonIndicator(node),
+            isJSON: this.hasJSONIndicator(node),
             node: node};
         var contentsSize = contents.size();
         var isEmptyNode = contentsSize === 0;
@@ -886,9 +886,13 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     splitEach: function( value, callback, delimiter ) {
+        var breakOut = false;
         this.each( (value + "").split( this.isDefinedNotNull( delimiter) ?
             delimiter : " "), function( i, token ) {
-                if ( token.trim() !== '' ) { callback( token); }
+                if ( token.trim() !== '' ) {
+                    breakOut = breakOut || (callback( token) === false);
+                    return !breakOut;
+                }
         });
     },
 
