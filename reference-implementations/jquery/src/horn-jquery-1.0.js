@@ -425,8 +425,10 @@ var Horn = function() {
      *  <ul>
      *      <li><strong>defaultModel</strong> - for setting an explicit default
      *          model (<code>Object</code> or <code>Array</code>)</li>
-     *      <li><strong>readOnly</strong> - </li>
-     *      <li><strong>converter</strong> - </li>
+     *      <li><strong>readOnly</strong> - If set to true, the automatic extraction 
+     *          at startup will call load() instead of bind() so there is no two-way binding to the DOM.</li>
+     *      <li><strong>converter</strong> - An object implementing the convert() function to perform
+     *          conversion to and from the DOM and model.</li>
      *  </ul>
      *
      *  @param {Object} optionName the name of the option to set
