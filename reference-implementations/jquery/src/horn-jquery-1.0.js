@@ -108,7 +108,7 @@ var Horn = function() {
                 this.traverse( jsonData,
                     this.scope( function( k, v ) {
                         addJSONHelper( $.extend( defaults, { value: v,
-                            path:  this.combinePaths( args.path, k)})); }, this));
+                            path:  args.path + k})); }, this));
             } else {
                 addJSONHelper( $.extend( defaults,
                     {value: jsonData, path:  args.path}));
