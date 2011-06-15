@@ -17,13 +17,6 @@ $.extend(
         dataNameHorn:           'horn',
         dataNameJSON:           'horn-json',
 
-        encodeCSS: function( args ) {
-            var rv = args.path.replace(
-                /(\[(\w+)\])/g, ".$2").replace( /\./g, "-").replace( "/", "");
-            rv = this.hasPrefix( rv, "-") ? rv.substring(1) : rv;
-            return rv;
-        },
-
         getDataAttr: function( n, name ) {
             var rv =  $(n).data( name);
             return (this.isDefinedNotNull( rv) === true) ? (rv + "") : undefined;
@@ -50,7 +43,7 @@ $.extend(
             var declaration = this.isDefinedNotNull( hornDeclaration) ?
                 hornDeclaration : jsonDeclaration;
             return this.isDefinedNotNull( declaration) ?
-                this.encodeCSS({path: declaration}) : declaration;
+                this.toInternalPath(declaration) : declaration;
         },
 
         rootNodes: function( args ) {

@@ -30,6 +30,8 @@ test(
 );
 
 
+
+
 test(
     "contains - returns false for empty, null and undefined collections.",
     function() {
@@ -238,6 +240,35 @@ test(
     }
 );
 
+
+
+
+test(
+    "Horn.toInternalPath() - various paths.",
+    function() {
+        var horn = new Horn();
+        ok( horn.toInternalPath( 'a') === 'a');
+        ok( horn.toInternalPath('a[10]') === 'a-10');
+        ok( horn.toInternalPath('[10]') === '10');
+        ok( horn.toInternalPath('[10][20]') === '10-20');
+        ok( horn.toInternalPath('x[1].y[2].z[3]') === 'x-1-y-2-z-3');
+        ok( horn.toInternalPath('x[1][2][3].y[2].z') === 'x-1-2-3-y-2-z');
+    });
+
+
+
+
+test(
+    "Horn.toExternalPath() - various paths.",
+    function() {
+        var horn = new Horn();
+        ok( horn.toExternalPath( 'a') === 'a');
+        ok( horn.toExternalPath( 'a-10') === 'a[10]');
+        ok( horn.toExternalPath( '10') === '[10]');
+        ok( horn.toExternalPath( '10-20') === '[10][20]');
+        ok( horn.toExternalPath( 'x-1-y-2-z-3') === 'x[1].y[2].z[3]');
+        ok( horn.toExternalPath( 'x-1-2-3-y-2-z') === 'x[1][2][3].y[2].z');
+    });
 
 
 
@@ -526,7 +557,7 @@ test(
 
 
 test(
-    "option defaultModel')",
+    "option : defaultModel",
     function() {
         dataTest( {
             callback: function( horn ) {
@@ -597,6 +628,12 @@ test(
         ok( arrayCompare( horn.pathToTokens( "-a--b-a"), ['a', 'b', 'a']) === false);
     });
 
+test(
+    "pathToTokens - Checking initial underscores are removed.",
+    function() {
+        var horn = new Horn();
+        ok( arrayCompare( horn.pathToTokens( "_a-b-a"), ['a', 'b', 'a']) === true);
+    });
 
 
 
@@ -778,6 +815,21 @@ test(
             ok(propName === expected[ count++][ 3], "propName");
         };
         horn.traverse( graph, f, prefix);
+    });
+
+
+
+
+test(
+    "walkDOM - count all visited nodes from html node downwards via two methods. ",
+    function() {
+        var nodeData = function( node ) { return {a: 1}; }
+        var expected = [];
+        walk( $('html')[0], function( node ) { expected.push( node); } );
+        var actual = [];
+        new Horn().walkDOM( $('html'),
+            function( node, path ) { actual.push( node); return true; } );
+        ok( expected.length, actual.length);
     });
 
 

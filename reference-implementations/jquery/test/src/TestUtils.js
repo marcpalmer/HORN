@@ -5,7 +5,9 @@ var isAttached = function( node ) {
 var countOwnProps = function( object ) {
     var index;
     var count = 0;
-    for ( index in object ) { if ( object.hasOwnProperty( index) ) { count++; } }
+    for ( index in object ) {
+        if ( object.hasOwnProperty( index) ) { count++; }
+    }
     return count;
 };
 
@@ -72,21 +74,23 @@ var isArray = function( object ) {
 var setPatternConverter = function( horn, converterName, pattern ) {
     if ( converterName === 'IntegerConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) ) {
+            if ( (args.path.match( pattern).toString() === args.path) ) {
                 return args.type === 'fromText' ? parseInt( args.value) :
                     args.value.toString();
             }
         });
     } else if ( converterName === 'BooleanConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) && (args.type !== 'fromJSON') ) {
+            if ((args.path.match( pattern).toString() === args.path) &&
+                (args.type !== 'fromJSON') ) {
                 return args.type === 'fromText' ?
                     (args.value.toLowerCase() === 'true') : (args.value + "");
             }
         });
     } else if ( converterName === 'DateConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) && (args.type !== 'fromJSON') ) {
+            if ( (args.path.match( pattern).toString() === args.path) &&
+                (args.type !== 'fromJSON') ) {
                 return args.type === 'fromText' ?
                     $.datepicker.parseDate( "yy-mm-dd", value) :
                     $.datepicker.formatDate( "yy-mm-dd", value);
@@ -98,7 +102,8 @@ var setPatternConverter = function( horn, converterName, pattern ) {
 var dataTest = function( args ) {
     if ( args.nodes ) {
         $.each( args.nodes, function( i, nodeInfo ) {
-            $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target : $('body'));
+            $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target :
+                $('body'));
         });
     }
     try {

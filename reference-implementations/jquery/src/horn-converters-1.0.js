@@ -50,9 +50,7 @@ var HornPatternConverter = function (args) {
      *
      *  @public
      */
-    this.add = function (name, converter) {
-        converters[name] = converter;
-    };
+    this.add = function (name, converter) { converters[name] = converter; };
 
     /**
      *  @return
@@ -62,7 +60,7 @@ var HornPatternConverter = function (args) {
     this.convert = function (args) {
         var rv;
         hornInstance.each(patterns, function (i, n) {
-            var match = args.path.match(i);
+            var match = args.path.match( i);
             if (hornInstance.isDefinedNotNull(match) &&
                 (match.toString() === args.path)) {
                 rv = converters[n](args);
@@ -81,9 +79,7 @@ var HornPatternConverter = function (args) {
      *
      *  @public
      */
-    this.get = function (name) {
-        return converters[name];
-    };
+    this.get = function (name) { return converters[name]; };
 
     /**
      *  Add a pattern, bound to a given named converter.
@@ -107,9 +103,7 @@ var HornPatternConverter = function (args) {
      *  @public
      */
     this.remove = function (name) {
-        if ( converters.hasOwnProperty( name) ) {
-            delete converters[name];
-        }
+        if ( converters.hasOwnProperty( name) ) { delete converters[name]; }
     };
 
     /**
@@ -119,9 +113,7 @@ var HornPatternConverter = function (args) {
      *
      *  @public
      */
-    this.removePattern = function (pattern) {
-        delete patterns[pattern];
-    };
+    this.removePattern = function (pattern) { delete patterns[pattern]; };
 
     /**
      *  Reset all internal state.
