@@ -272,15 +272,6 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#convert">convert</a></b>(args)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#get">get</a></b>(name)
 								</div>
 								<div class="description">Retrieve a named converter.</div>
@@ -293,6 +284,15 @@ ul.inheritsList
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#pattern">pattern</a></b>(pattern, converterName)
 								</div>
 								<div class="description">Add a pattern, bound to a given named converter.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#regexPattern">regexPattern</a></b>(pattern, converterName)
+								</div>
+								<div class="description">Add a regex pattern, bound to a given named converter.</div>
 							</td>
 						</tr>
 					
@@ -317,9 +317,28 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#removeRegexPattern">removeRegexPattern</a></b>(pattern)
+								</div>
+								<div class="description">Remove a regex pattern (pattern to converter binding).</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#reset">reset</a></b>(horn)
 								</div>
 								<div class="description">Reset all internal state.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/HornPatternConverter.html#toRegularExpression">toRegularExpression</a></b>(pattern)
+								</div>
+								<div class="description">Converts a horn property path with optional wildcard '*' characters into
+ a regular expression.</div>
 							</td>
 						</tr>
 					
@@ -345,6 +364,8 @@ ul.inheritsList
 				
 				<div class="description">
 					Used to create new HornPatternConverter instances.
+ <p>
+ sajgflksalgjdsjakjsdf
 					
 				</div>
 				
@@ -425,49 +446,6 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="convert"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>convert</b>(args)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>args</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
 					<a name="get"> </a>
 					<div class="fixedFont">
 					
@@ -520,6 +498,50 @@ ul.inheritsList
 					</div>
 					<div class="description">
 						Add a pattern, bound to a given named converter.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>pattern</b>
+									
+								</dt>
+								<dd>a Horn property path with optional wildcard '*'
+     characters</dd>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>converterName</b>
+									
+								</dt>
+								<dd>the name of the converter that will handle
+     conversions for the given property path</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="regexPattern"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>regexPattern</b>(pattern, converterName)
+					
+					</div>
+					<div class="description">
+						Add a regex pattern, bound to a given named converter.
 						
 						
 					</div>
@@ -627,6 +649,42 @@ ul.inheritsList
 
 					<hr />
 				
+					<a name="removeRegexPattern"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>removeRegexPattern</b>(pattern)
+					
+					</div>
+					<div class="description">
+						Remove a regex pattern (pattern to converter binding).
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>pattern</b>
+									
+								</dt>
+								<dd>the regular expression pattern to remove</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="reset"> </a>
 					<div class="fixedFont">
 					
@@ -665,6 +723,54 @@ ul.inheritsList
 						
 						
 
+					<hr />
+				
+					<a name="toRegularExpression"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>toRegularExpression</b>(pattern)
+					
+					</div>
+					<div class="description">
+						Converts a horn property path with optional wildcard '*' characters into
+ a regular expression.
+ <p>
+ '*' wildcards are converted into '.*' regular expression terms. Array
+ indexing and object dereferncing operators are correctly escaped.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>pattern</b>
+									
+								</dt>
+								<dd>the Horn property path to convert to a regular
+     expression</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{String}</span> a horn property path regular expression</dd>
+							
+							</dl>
+						
+						
+						
+
 					
 				
 			
@@ -679,7 +785,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Jun 15 2011 03:39:53 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Jun 15 2011 15:33:03 GMT+0100 (BST)
 		</div>
 	</body>
 </html>

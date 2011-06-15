@@ -14,6 +14,8 @@
 
 /**
  *  Used to create new HornPatternConverter instances.
+ *  <p>
+ *  sajgflksalgjdsjakjsdf
  *
  *  @param {Horn} args.horn the Horn instance to bind to
  *
@@ -48,16 +50,14 @@ var HornPatternConverter = function (args) {
      *  @param {String} name the name to associate with the converter
      *  @param {Function} converter the converter to add
      *
-     *  @public
      */
     this.add = function (name, converter) { converters[name] = converter; };
 
     /**
-     *  @return
-     *
-     *  @public
+     *  @private
+     *  @function
      */
-    this.convert = function (args) {
+    var convert = function (args) {
         var rv;
         hornInstance.each(patterns, function (i, n) {
             var match = args.path.match( i);
@@ -84,6 +84,20 @@ var HornPatternConverter = function (args) {
     /**
      *  Add a pattern, bound to a given named converter.
      *
+     *  @param {String} pattern a Horn property path with optional wildcard '*'
+     *      characters
+     *  @param {String} converterName the name of the converter that will handle
+     *      conversions for the given property path
+     *
+     *  @public
+     */
+    this.pattern = function (pattern, converterName) {
+        patterns[pattern] = this.toRegularExpression( converterName);
+    };
+
+    /**
+     *  Add a regex pattern, bound to a given named converter.
+     *
      *  @param {String} pattern a valid regular expression that is designed to
      *      match one or many <code>Horn</code> property paths.
      *  @param {String} converterName the name of the converter that will handle
@@ -91,7 +105,7 @@ var HornPatternConverter = function (args) {
      *
      *  @public
      */
-    this.pattern = function (pattern, converterName) {
+    this.regexPattern = function (pattern, converterName) {
         patterns[pattern] = converterName;
     };
 
@@ -107,13 +121,25 @@ var HornPatternConverter = function (args) {
     };
 
     /**
+     *  Remove a regex pattern (pattern to converter binding).
+     *
+     *  @param {String} pattern the regular expression pattern to remove
+     *
+     *  @public
+     */
+    this.removeRegexPattern = function (pattern) { delete patterns[pattern]; };
+
+
+    /**
      *  Remove a pattern (pattern to converter binding).
      *
      *  @param {String} pattern the regular expression pattern to remove
      *
      *  @public
      */
-    this.removePattern = function (pattern) { delete patterns[pattern]; };
+    this.removePattern = function (pattern) {
+        delete patterns[this.toRegularExpression( pattern)];
+    };
 
     /**
      *  Reset all internal state.
@@ -134,6 +160,27 @@ var HornPatternConverter = function (args) {
     };
 
     this.reset(args.horn);
+};
+
+HornPatternConverter.prototype = {
+
+    /**
+     *  Converts a horn property path with optional wildcard '*' characters into
+     *  a regular expression.
+     *  <p>
+     *  '*' wildcards are converted into '.*' regular expression terms. Array
+     *  indexing and object dereference operators are correctly escaped.
+     *
+     *  @param {String} pattern the Horn property path to convert to a regular
+     *      expression
+     *
+     *  @return {String} a horn property path regular expression
+     *
+     *  @methodOf HornPatternConverter.prototype
+     */
+    toRegularExpression: function( path ) {
+        return path.replace( /([\.\[\]])/g, "\\\\$1").replace( "*", ".*");
+    }
 };
 
 var hornConverter = new HornPatternConverter({horn: horn});

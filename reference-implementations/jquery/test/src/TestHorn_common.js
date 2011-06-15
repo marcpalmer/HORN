@@ -855,3 +855,16 @@ module( "horn-converters-1.0.js");
 test(
     "that we have the expected global (window) hornConverter property.",
     function() { ok( window.hornConverter instanceof HornPatternConverter ); });
+
+test(
+    "toRegularExpression() - various",
+    function() {
+        ok( hornConverter.toRegularExpression( "a") === "a");
+        ok( hornConverter.toRegularExpression( "a[0]") === "a\\\\[0\\\\]");
+        ok( hornConverter.toRegularExpression( "a[0].y") === "a\\\\[0\\\\]\\\\.y");
+        ok( hornConverter.toRegularExpression( "x.y") === "x\\\\.y");
+        ok( hornConverter.toRegularExpression( "x.y") === "x\\\\.y");
+        ok( hornConverter.toRegularExpression( "x.y*") === "x\\\\.y.*");
+        ok( hornConverter.toRegularExpression( "x.*y") === "x\\\\..*y");
+        ok( hornConverter.toRegularExpression( "*.*x.y") === ".*\\\\.*x\\\\.y");
+    });
