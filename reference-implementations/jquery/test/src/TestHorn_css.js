@@ -1074,6 +1074,21 @@ test(
     });
 
 test(
+    "bind - with pathStem supplied.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_a">value</span></div>')}
+            ],
+            callback: function( horn ) {
+                horn.name = "a";
+                var model = horn.bind({pathStem: "/a.b"});
+                ok( isObject( model));
+                ok( model.a.b.a === "value");
+        }});
+    });
+
+test(
     "bind -  that integers can be expressed using hexadecimal notation.",
     function() {
         dataTest( {

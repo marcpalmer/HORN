@@ -132,8 +132,8 @@ var Horn = function() {
      */
     var extract = this.scope( function( args ) {
         var _this = this;
-        var pathStem = this.definesProperty( args, 'path') ?
-            this.toInternalPath( args.path) : undefined;
+        var pathStem = this.definesProperty( args, 'pathStem') ?
+            this.toInternalPath( args.pathStem) : undefined;
         var rootNodes = this.definesProperty( args, 'rootNodes') ?
             args.rootNodes : (this.definesProperty( args, 'selector') ?
                 $(args.selector) : this.rootNodes());
@@ -151,12 +151,11 @@ var Horn = function() {
                         if ( bindingData === false ) {
                             return true; }
                         bindingData.readOnly = args.readOnly;
-                        bindingData.path = path;
+                        bindingData.path = _this.combinePaths( pathStem, path);
                         if ( bindingData.isJSON === false ) {
                             bindingData.value = convert( {
                                 value: bindingData.text,
-                                path:  _this.combinePaths( pathStem,
-                                    bindingData.path),
+                                path:  bindingData.path,
                                 type:  'fromText',
                                 node:  bindingData.node
                             });
@@ -243,8 +242,8 @@ var Horn = function() {
      * @function
      */
     var setDefaultArgs = this.scope( function( args ) {
-        var existingArgs = !this.definesProperty(
-            args, 'args') ? {} : args.args;
+        var existingArgs = this.definesProperty(
+            args, 'args') ? args.args : {};
         if ( this.definesProperty( args, 'defaults') ) {
             $.extend( existingArgs, args.defaults);
         }
@@ -296,21 +295,21 @@ var Horn = function() {
 
     /**
      *  Walk DOM tree(s) and extract model data, allowing for subsequent
-     *  updating.
+     *  model to DOM updates.
      *  <p>
-     *  After execution, each value element encountered will have a
+     *  After execution, each Horn value element encountered will have a
      *  corresponding representation in the model. Altering such model
      *  values and then calling <code>updateDOM(...)</code> will refresh their
      *  display values.
      *  <p>
-     *  The DOM tree(s) to walk can be specified in exactly one of three ways:
+     *  The DOM tree(s) to walk may be specified in exactly one of three ways:
      *  <ol>
      *      <li>
      *          Horn will automatically find all DOM trees that have a root
      *          indicator.
      *      </li>
      *      <li>
-     *          Passing a collection of DOM elements as
+     *          Passing a collection of DOM elements passed in as
      *          <code>args.rootNodes</code>.
      *      </li>
      *      <li>
@@ -324,14 +323,16 @@ var Horn = function() {
      *  <p>
      *  If later, model to DOM updates are not required, the alternative yet
      *  otherwise identical function, <code>{@link Horn#load}</code> should be
-     *  used.
+     *  used (or the ReadOnly option).
      *
      *  @param {Object} args
      *  @param {Object} [args.rootNodes] a collection of DOM nodes to bind from,
      *      overrides the default node selection mechanism
      *  @param {String} [args.selector] a jQuery DOM node selector for nodes to
      *      bind from
-     *  @param {String} args.path
+     *  @param {String} [args.pathStem] a Horn property path prefix that will be
+     *      appended the paths' of values' property paths before storage in the
+     *      model
      *
      *  @return the updated model
      *
@@ -424,10 +425,12 @@ var Horn = function() {
      *  <ul>
      *      <li><strong>defaultModel</strong> - for setting an explicit default
      *          model (<code>Object</code> or <code>Array</code>)</li>
-     *      <li><strong>readOnly</strong> - If set to true, the automatic extraction 
-     *          at startup will call load() instead of bind() so there is no two-way binding to the DOM.</li>
-     *      <li><strong>converter</strong> - An object implementing the convert() function to perform
-     *          conversion to and from the DOM and model.</li>
+     *      <li><strong>readOnly</strong> - If set to true, the automatic
+     *          extraction at startup will call load() instead of bind() so
+     *          there is no two-way binding to the DOM.</li>
+     *      <li><strong>converter</strong> - An object implementing the
+     *          convert() function to perform conversion to and from the DOM and
+     *          model.</li>
      *  </ul>
      *
      *  @param {Object} optionName the name of the option to set
