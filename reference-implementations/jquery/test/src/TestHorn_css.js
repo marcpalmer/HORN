@@ -1439,15 +1439,15 @@ test(
                             '    <div class="_a-b-c"><span class="_d">value</span></div>' +
                             '</div>' +
                             '<div id="template">' +
-                            '    <div class="_a-b-c"><span class="_d"></span></div>' +
+                            '    <div class="_f-b-c"><span class="_d"></span></div>' +
                             '</div>')}],
             callback: function( horn ) {
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
+                model.a.b.c.d == 'updatedValue';
                 var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    template: '#template',
-                    data: { f: { b: { c: { d: 'updatedValue'}}}}});
+                    template: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
@@ -1470,17 +1470,17 @@ test(
                             '    <div id="grabber1" class="_a-b-c"><span id="grabber2" class="_d">value</span></div>' +
                             '</div>' +
                             '<div id="template">' +
-                            '    <div class="_a-b-c"><span class="_d"></span></div>' +
+                            '    <div class="_a-b-c"><span class="_f"></span></div>' +
                             '</div>')}],
             callback: function( horn ) {
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 ok( horn.hasHornBinding( $('#grabber1')[0], '', true) === false);
                 ok( isObject( horn.hasHornBinding( $('#grabber2')[0], '')));
+                model.a.b.c.f = 'updatedValue';
                 var populatedTemplate = horn.bindTo( {
                     id: 'newID',
-                    template: '#template',
-                    data: { a: { b: { c: { f: 'updatedValue'}}}}});
+                    template: '#template'});
                 ok( isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
                 ok( isAttached( $('#newID')));
