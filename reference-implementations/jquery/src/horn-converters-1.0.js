@@ -13,13 +13,15 @@
  */
 
 /**
- *  Used to create new HornPatternConverter instances.
+ *  Used to create new <code>HornPatternConverter</code> instances, thus:
+ *  <code>var converter = new HornPatternConverter( {horn: aHornInstance});
+ *  </code>.
  *  <p>
- *  The HornPatternConverter is a utility 'class' that binds itself to a Horn
- *  instance and helps with converting Horn model data.
+ *  The HornPatternConverter is a utility class that binds itself to a
+ *  <code>Horn</code> instance and aides with model data type conversions.
  *  <p>
  *  Reusable converter functions are registered to execute when conversion
- *  involve property paths that match given expressions.
+ *  operations involve property paths that match given expressions.
  *
  *  @param {Horn} args.horn the Horn instance to bind to
  *
@@ -87,6 +89,14 @@ var HornPatternConverter = function (args) {
 
     /**
      *  Add a pattern, bound to a given named converter.
+     *  <p>
+     *  When <code>Horn</code> initiates a convert operation for a path that
+     *  matches 'pattern', the converter (previously registered) under
+     *  'converterName' will be called upon to perform the conversion operation.
+     *  <p>
+     *  Patterns registered with this function  are normal
+     *  <code>Horn</code> property paths that may or may not include the
+     *  meta-character '*' that will match any sequence of characters.
      *
      *  @param {String} pattern a Horn property path with optional wildcard '*'
      *      characters

@@ -455,51 +455,51 @@ test(
 
 
 test(
-    "isAdjustingPath - horn.isAdjustingPath( null) === false.",
+    "isPathDefined - horn.isPathDefined( null) === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingPath( null) === false);
+        ok( horn.isPathDefined( null) === false);
     });
 
 test(
-    "isAdjustingPath - horn.isAdjustingPath( undefined) === false.",
+    "isPathDefined - horn.isPathDefined( undefined) === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingPath( undefined) === false);
+        ok( horn.isPathDefined( undefined) === false);
     });
 
 test(
-    "isAdjustingPath - horn.isAdjustingPath( '') === false.",
+    "isPathDefined - horn.isPathDefined( '') === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingPath( '') === false);
+        ok( horn.isPathDefined( '') === false);
     });
 
 test(
-    "isAdjustingPath - horn.isAdjustingPath( ' ') === false.",
+    "isPathDefined - horn.isPathDefined( ' ') === false.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingPath( ' ') === false);
+        ok( horn.isPathDefined( ' ') === false);
     });
 
 test(
-    "isAdjustingPath - horn.isAdjustingPath( 'null') === true.",
+    "isPathDefined - horn.isPathDefined( 'null') === true.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingPath( 'null') === true);
+        ok( horn.isPathDefined( 'null') === true);
     });
 
 test(
-    "isAdjustingPath - horn.isAdjustingPath( 'a') === true.",
+    "isPathDefined - horn.isPathDefined( 'a') === true.",
     function() {
         var horn = new Horn();
 
-        ok( horn.isAdjustingPath( 'a') === true);
+        ok( horn.isPathDefined( 'a') === true);
     });
 
 

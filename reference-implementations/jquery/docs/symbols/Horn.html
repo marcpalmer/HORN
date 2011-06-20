@@ -236,8 +236,8 @@ ul.inheritsList
 							<div class="fixedFont">
 								<b><a href="../symbols/Horn.html#constructor">Horn</a></b>()
 							</div>
-							<div class="description">Used to create new Horn instances, thus:
-     <code> var horn = new Horn();</code>.</div>
+							<div class="description">Used to create new <code>Horn</code> instances, thus:
+     <code>var horn = new Horn();</code>.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -376,15 +376,6 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Horn.html#isAdjustingPath">isAdjustingPath</a></b>(path)
-								</div>
-								<div class="description">Determines if the given Horn property path is 'context-altering'.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#isAttached">isAttached</a></b>(ref)
 								</div>
 								<div class="description">Determines if an element is attached to the DOM or not.</div>
@@ -398,6 +389,15 @@ ul.inheritsList
 								</div>
 								<div class="description">Determines if a value is neither, <code>undefined</code> nor
  <code>null</code>?</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/Horn.html#isPathDefined">isPathDefined</a></b>(path)
+								</div>
+								<div class="description">Determines if a given value represents a property path.</div>
 							</td>
 						</tr>
 					
@@ -483,8 +483,8 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#toExternalPath">toExternalPath</a></b>(path)
 								</div>
-								<div class="description">Converts an Horn property path in internal form to its external
- (JavaScript) representation.</div>
+								<div class="description">Converts an Horn property path in internal form to its external,
+ JavaScript representation.</div>
 							</td>
 						</tr>
 					
@@ -493,7 +493,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Horn.html#toInternalPath">toInternalPath</a></b>(path)
 								</div>
-								<div class="description">Converts a Horn property path in external (JavaScript) form to that used
+								<div class="description">Converts a property path in external JavaScript form to that used
  internally.</div>
 							</td>
 						</tr>
@@ -559,8 +559,8 @@ ul.inheritsList
 				</div>
 				
 				<div class="description">
-					Used to create new Horn instances, thus:
-     <code> var horn = new Horn();</code>.
+					Used to create new <code>Horn</code> instances, thus:
+     <code>var horn = new Horn();</code>.
 					
 				</div>
 				
@@ -628,7 +628,7 @@ ul.inheritsList
  <p>
  If model to DOM updates are not required, the alternative yet otherwise
  identical function, <code><a href="../symbols/Horn.html#load">Horn#load</a></code> should be used
- (or the ReadOnly option).
+ (or the 'readOnly' option).
 						
 						
 					</div>
@@ -708,7 +708,7 @@ ul.inheritsList
  locations.
  <p>
  Model to DOM data conversions are performed using this function with the
- type parameter value <code>toText</code>.
+ type parameter value 'toText'.
 						
 						
 					</div>
@@ -1319,52 +1319,6 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="isAdjustingPath"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{Boolean}</span>
-					<b>isAdjustingPath</b>(path)
-					
-					</div>
-					<div class="description">
-						Determines if the given Horn property path is 'context-altering'.
- <p>
- The 'path' argument is converted to a <code>String</code> before
- examination.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>path</b>
-									
-								</dt>
-								<dd>an object that represents a Horn property path</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if , <code>false</code> otherwise</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
 					<a name="isAttached"> </a>
 					<div class="fixedFont">
 					
@@ -1447,6 +1401,53 @@ ul.inheritsList
 								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the value is neither,
      <code>undefined</code> nor <code>null</code>,
      <code>false</code> otherwise</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="isPathDefined"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Boolean}</span>
+					<b>isPathDefined</b>(path)
+					
+					</div>
+					<div class="description">
+						Determines if a given value represents a property path.
+ <p>
+ The 'path' argument is converted to a <code>String</code> before
+ examination.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>path</b>
+									
+								</dt>
+								<dd>an object that represents a property path</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Boolean}</span> <code>true</code> if the given path is a defined
+     property path, <code>false</code> otherwise</dd>
 							
 							</dl>
 						
@@ -1548,22 +1549,23 @@ ul.inheritsList
  <ul>
      <li>
          <p>
-         <h3>defaultModel</h3> For setting an explicit default
+         <strong>defaultModel</strong> - For setting an explicit default
          model (<code>Object</code> or <code>Array</code>)
          </p>
      </li>
      <li>
          <p>
-         <h3>readOnly</h3> If set to true, the automatic
+         <strong>readOnly</strong> - If set to true, the automatic
          extraction at startup will call load() instead of bind() so
          there is no two-way binding to the DOM.
          </p>
      </li>
      <li>
          <p>
-         <h3>converter</h3> A function with the following
+         <strong>converter</strong> - A function with the following
          signature, <code>(args)</code> that will be called upon to
          convert values under the following scenarios:
+         </p>
          <p>
              <ul>
                  <li>
@@ -1644,7 +1646,7 @@ ul.inheritsList
          <p>
              <strong>Only a single converter function can be registered,
              with any invocation overwriting any previously registered
-             funciton.
+             function.</strong>
          </p>
      </li>
  </ul>
@@ -1933,8 +1935,8 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Converts an Horn property path in internal form to its external
- (JavaScript) representation.
+						Converts an Horn property path in internal form to its external,
+ JavaScript representation.
  <p>
  For example: <code>horn.toExternalPath( 'x-1-2-3-y-2-z') ===
  'x[1][2][3].y[2].z'.</code>
@@ -1973,13 +1975,13 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Converts a Horn property path in external (JavaScript) form to that used
+						Converts a property path in external JavaScript form to that used
  internally.
  <p>
  For example: <code>horn.toInternalPath('x[1][2][3].y[2].z') ===
- 'x-1-2-3-y-2-z'.</code>
+ 'x-1-2-3-y-2-z'</code>.
  <p>
- This function tolerates extraneous leading '-' chars.
+ This function tolerates extraneous leading '-' characters.
 						
 						
 					</div>
@@ -1994,7 +1996,7 @@ ul.inheritsList
 									<span class="light fixedFont">{String}</span> <b>path</b>
 									
 								</dt>
-								<dd>external Horn property path to convert</dd>
+								<dd>the external property path to convert</dd>
 							
 							</dl>
 						
@@ -2046,11 +2048,11 @@ ul.inheritsList
 								</dt>
 								<dd>a callback function that will be executed for
      each value of the object graph encountered, it should have the
-     following signature: ( path, value, context, propName) where, 'path'
-     is the value's Horn path within its container, 'value' is the
-     current value found, 'context' is the object in which the value can
-     be found and 'key' is the property name within 'context' that the
-     value can be found.</dd>
+     following signature, <code>( path, value, context, propName)</code>,
+     where 'path' is the value's property path within its container,
+     'value' is the current value found, 'context' is the object in which
+     the value can be found and 'key' is the property name within
+     'context' that the value can be found.</dd>
 							
 								<dt>
 									<span class="light fixedFont">{String}</span> <b>path</b>
@@ -2063,13 +2065,13 @@ ul.inheritsList
 									<b>context</b>
 									<i>Optional</i>
 								</dt>
-								<dd>internal use only - no value required</dd>
+								<dd>internal (recursive) use only - do not supply a value</dd>
 							
 								<dt>
 									<b>propName</b>
 									<i>Optional</i>
 								</dt>
-								<dd>internal use only  - no value required</dd>
+								<dd>internal (recursive) use only  - do not supply a value</dd>
 							
 							</dl>
 						
@@ -2163,11 +2165,11 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>rootNode</b>
+									<span class="light fixedFont">{Element}</span> <b>rootNode</b>
 									
 								</dt>
-								<dd>optional DOM node such that if supplied, only nodes
-     under this nodes will be updated.</dd>
+								<dd>optional DOM node such that if supplied, only
+     nodes under this nodes will be updated</dd>
 							
 							</dl>
 						
@@ -2261,7 +2263,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 20 2011 18:30:57 GMT+0100 (BST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 20 2011 21:47:40 GMT+0100 (BST)
 		</div>
 	</body>
 </html>
