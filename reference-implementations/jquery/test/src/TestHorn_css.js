@@ -1555,7 +1555,35 @@ test(
 
     });
 
-
+test(
+    "bindTo - bindTo with pathStem argument supplied.",
+    function() {
+        ok( !isAttached( $('#newID')));
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn _a-b-c-d">value</div>' +
+                            '<div id="template">' +
+                            '    <div class="_b-c-d" id="xx"></div>' +
+                            '</div>')}],
+            callback: function( horn ) {
+                var model = horn.bind();
+                ok( model.a.b.c.d === 'value');
+                model.a.b.c.d = 'updatedValue';
+                var populatedTemplate = horn.bindTo( {
+                    pathStem: '/a',
+                    id: 'newID',
+                    template: '#template'});
+                ok( isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                ok( isAttached( $('#newID')));
+                try {
+                    ok($( '#xx', $('#newID')).text() === 'updatedValue');
+                } finally {
+                    $('#newID').remove();
+                }
+                ok( !isAttached( $('#newID')));
+            }});
+    });
 
 
 test(

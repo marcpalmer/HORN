@@ -174,7 +174,7 @@ Arguments:
 
 * template (_Optional_) - A jQuery object or selector string, indicating DOM node to _clone_ and use as the target for binding
 * node (_Optional_) - A jQuery object or selector to use as the target for binding, *without cloning first*
-* path (_Optional_) - The property path to which the DOM node should be bound. The data at
+* pathStem (_Optional_) - The property path to which the DOM node should be bound. The data at
   this path in the model will be used to populate the target DOM node. Alternatively use *data* to pass in data.
 * data (_Optional_) - An object to use as the model to populate the node. Use this to populate with data that is not yet in the node. *updateDOM* functionality will not be available, call *bindTo* again instead.
 * id (_Optional_) - The "id" attribute to set on a cloned template DOM node after cloning. Any id from the template is necessarily stripped out after cloning as duplicate ids are invalid in the DOM.
@@ -190,7 +190,7 @@ $( function() {
         
         var domNode = horn.bindTo( { 
             template:'#bookEntryTemplate', 
-            path:'books['+newIdx+']' 
+            pathStem:'books['+newIdx+']'
         });
         
         $(domNode).appendTo($('#bookList')).show();

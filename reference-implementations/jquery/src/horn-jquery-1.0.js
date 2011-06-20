@@ -354,12 +354,12 @@ var Horn = function() {
      *  data from the specified property path.
      *
      *  @param {Object} args
-     *  @param {String} args.path the property path within the model, to use to
-     *      populate this DOM node and its descendants
      *  @param {Object} [args.data]
      *  @param {Element|String} [args.node] a jQuery node or selector String
      *  @param {Element|String} [args.template] jQuery node or selector String
      *  @param [args.id] the new 'id' attribute value for a cloned args.template
+     *  @param {String} [args.pathStem] the model property path under which to locate
+     *      values encountered
      *
      *  @return the newly cloned and populated template
      *
@@ -379,8 +379,8 @@ var Horn = function() {
             }
         }
         setDefaultModel();
-        pathStem = this.definesProperty( args, 'path') ?
-            this.toInternalPath( args.path) : '';
+        pathStem = this.definesProperty( args, 'pathStem') ?
+            this.toInternalPath( args.pathStem) : '';
         this.walkDOM( node,
             this.scope( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
