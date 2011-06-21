@@ -13,10 +13,10 @@
  */
 
 /**
- *  Used to create new <code>HornPatternConverter</code> instances, thus:
+ *  Used to create new <code>HornPatternConverter</code> instances, thus:<br/>
  *  <code>var converter = new HornPatternConverter( {horn: aHornInstance});
  *  </code>.
- *  <p>
+ *  <p><br/>
  *  The HornPatternConverter is a utility class that binds itself to a
  *  <code>Horn</code> instance and helps with model type conversions.
  *  <p>
