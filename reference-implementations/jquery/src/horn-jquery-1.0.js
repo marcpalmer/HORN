@@ -15,7 +15,7 @@
  *
  *  @constructor
  *
- *  @return {Horn} a newly initialized Horn instance
+ *  @return {Horn} a newly initialised Horn instance
  */
 var Horn = function() {
 

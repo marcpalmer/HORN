@@ -18,10 +18,10 @@
  *  </code>.
  *  <p>
  *  The HornPatternConverter is a utility class that binds itself to a
- *  <code>Horn</code> instance and aides with model data type conversions.
+ *  <code>Horn</code> instance and helps with model type conversions.
  *  <p>
- *  Reusable converter functions are registered to execute when conversion
- *  operations involve property paths that match given expressions.
+ *  Reusable converter functions are registered to execute when Horn conversion
+ *  operations involve property paths that match given criteria.
  *
  *  @param {Horn} args.horn the Horn instance to bind to
  *
@@ -50,12 +50,12 @@ var HornPatternConverter = function (args) {
     var patterns;
 
     /**
-     *  Add a named converter.
-     *  <p>
+     *  Add a named converter function.
      *
      *  @param {String} name the name to associate with the converter
      *  @param {Function} converter the converter to add
      *
+     *  @see Horn#option for the specification of conveter functions
      */
     this.add = function (name, converter) { converters[name] = converter; };
 
@@ -77,9 +77,9 @@ var HornPatternConverter = function (args) {
     };
 
     /**
-     *  Retrieve a named converter.
+     *  Retrieve a converter by name.
      *
-     *  @param {String} name the name associated with the converter
+     *  @param {String} name the name of the converter to retrieve
      *
      *  @return {Function} the given converter else <code>undefined</code>
      *
@@ -111,6 +111,9 @@ var HornPatternConverter = function (args) {
 
     /**
      *  Add a regex pattern, bound to a given named converter.
+     *  <p>
+     *  You will need to ensure the proper escaping of the Horn property path
+     *  characters: '.', '[' and ']'.
      *
      *  @param {String} pattern a valid regular expression that is designed to
      *      match one or many <code>Horn</code> property paths.
@@ -160,7 +163,7 @@ var HornPatternConverter = function (args) {
      *  <p>
      *  Removes all converters and patterns.
      *  <p>
-     *  Take a new <code>Horn</code> instance to bind to.
+     *  Takes a new <code>Horn</code> instance to bind to.
      *
      *  @param {Horn} horn the new <code>Horn</code> instance to use
      *

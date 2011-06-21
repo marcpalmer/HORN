@@ -908,3 +908,9 @@ test(
         ok( hornConverter.toRegularExpression( "x.*y") === "x\\..*y");
         ok( hornConverter.toRegularExpression( "*.*x.y") === ".*\\.*x\\.y");
     });
+
+test(
+    "get - unregistered converter",
+    function() {
+        ok( hornConverter.get( "") === undefined);
+    });
