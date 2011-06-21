@@ -159,7 +159,7 @@ $( function() {
 
 ### bindTo(args)
 
-This method will populate a DOM node and its descendents using this
+This method will populate a DOM node and its descendants using this
 information, pulling values in from the model and binding from the
 model to the DOM nodes so that calls to *updateDOM* can re-populate the DOM
 when data is changed.
