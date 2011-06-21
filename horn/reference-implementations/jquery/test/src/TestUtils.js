@@ -5,8 +5,18 @@ var isAttached = function( node ) {
 var countOwnProps = function( object ) {
     var index;
     var count = 0;
-    for ( index in object ) { if ( object.hasOwnProperty( index) ) { count++; } }
+    for ( index in object ) {
+        if ( object.hasOwnProperty( index) ) { count++; }
+    }
     return count;
+};
+
+var walk = function walk(node, func) {
+    func( node);
+    var children = $(node).children();
+    for ( var index = 0; index < children.length; index++ ) {
+        walk( children[ index], func);
+    }
 };
 
 var isJQueryObject = function( object ) {
@@ -18,6 +28,19 @@ var isEmptyObject = function( object ) {
     var index;
     if ( !isObject( object) ) { return false; }
     if ( countOwnProps( object) > 0 ) { return false; }
+    return true;
+};
+
+var arrayCompare = function( array1, array2 ) {
+    var i;
+    var array1Length = array1.length;
+    if (array1Length != array2.length) { return false; }
+    for ( i = 0; i < array1Length; i++ ) {
+        if ( (array1[i].compare && array2[i].compare( array2[i])) ||
+            (array1[i] !== array2[i]) ) {
+            return false;
+        }
+    }
     return true;
 };
 
@@ -49,23 +72,29 @@ var isArray = function( object ) {
 };
 
 var setPatternConverter = function( horn, converterName, pattern ) {
+    pattern = hornConverter.toRegularExpression( pattern);
     if ( converterName === 'IntegerConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) ) {
+            if ( (args.path.match( pattern).toString() === args.path) ) {
                 return args.type === 'fromText' ? parseInt( args.value) :
                     args.value.toString();
             }
         });
     } else if ( converterName === 'BooleanConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) ) {
-                return args.type === 'fromText' ? (args.value.toLowerCase() === 'true') : (args.value + "");
+            if ((args.path.match( pattern).toString() === args.path) &&
+                (args.type !== 'fromJSON') ) {
+                return args.type === 'fromText' ?
+                    (args.value.toLowerCase() === 'true') : (args.value + "");
             }
         });
     } else if ( converterName === 'DateConverter' ) {
         horn.option( "converter", function( args ) {
-            if ( pattern.match( args.path) ) {
-                return args.type === 'fromText' ? $.datepicker.parseDate( "yy-mm-dd", value) : $.datepicker.formatDate( "yy-mm-dd", value);
+            if ( (args.path.match( pattern).toString() === args.path) &&
+                (args.type !== 'fromJSON') ) {
+                return args.type === 'fromText' ?
+                    $.datepicker.parseDate( "yy-mm-dd", value) :
+                    $.datepicker.formatDate( "yy-mm-dd", value);
             }
         });
     }
@@ -74,7 +103,8 @@ var setPatternConverter = function( horn, converterName, pattern ) {
 var dataTest = function( args ) {
     if ( args.nodes ) {
         $.each( args.nodes, function( i, nodeInfo ) {
-            $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target : $('body'));
+            $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target :
+                $('body'));
         });
     }
     try {

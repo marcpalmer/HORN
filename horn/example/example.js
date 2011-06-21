@@ -26,15 +26,15 @@
     var converterNameForNode = function( node ) {
         node = $(node);
         if ( node.hasClass( 'numberValue') ) {
-            return "IntegerConverter";
+            return "Integer";
         }
 
         if ( node.hasClass( 'dateValue') ) {
-            return "DateConverter";
+            return "Date";
         }
 
         if ( node.hasClass( 'booleanValue') ) {
-            return "BooleanConverter";
+            return "BooleanYesNo";
         }
 
         return null;
@@ -51,14 +51,22 @@
             classAttribute.toString() + '\'') : '') + '>' + text + '</span>';
     };
 
+    var inputValues = {};
     var input = function ( value, type, id ) {
-        var insert = (type ? "Value" : "");
-        return "<input value='" + value + "' class='dynamic " + type + insert +
+        var insert = (type ? (type + "Value") : "");
+        inputValues[ id] = value;
+        return "<input class='dynamic " + insert +
             "'  id='" + id + "' type='text'/>";
     };
 
+    var render = function ( target, hornModel ) {
+        target.html( renderHTML( hornModel));
+        horn.each( inputValues, function( i, n ) {
+            $('#' + i).val( n);
+        });
+    };
 
-    var render = function ( object, ind, parent, pk ) {
+    var renderHTML = function ( object, ind, parent, pk ) {
         var rv;
         var isO = isObject( object);
         var isA = isArray( object);
@@ -67,7 +75,7 @@
             rv = (isA ? "[" : "{") + "<br/>"
             horn.each( object, function( key, value ) {
                 rv +=   indent( ind + 1) + "\"" + key + "\": " +
-                        render( value, ind + 1, object, key) + ",<br/>";
+                        renderHTML( value, ind + 1, object, key) + ",<br/>";
             });
             rv += indent( ind) + (isA ? "]" : "}");
             return  rv;
@@ -86,29 +94,28 @@
         }
     };
 
-    hornConverter.addConverter( {
-        name: "BooleanConverter",
-        converter: function( args ) {
+    hornConverter.add(
+        "BooleanYesNo",
+        function( args ) {
             return args.type === 'fromText' ?
                 value.toLowerCase() === 'yes' :
                 (args.value === true ? "Yes" : "No");
-        }});
+        });
 
-    hornConverter.addConverter( {
-        name: "DateConverter",
-        converter: function( args ) {
+    hornConverter.add(
+        "Date",
+        function( args ) {
             return args.type === 'fromText' ?
                 $.datepicker.parseDate( DATE_FORMAT, args.value) :
                 ($.datepicker.formatDate( DATE_FORMAT, args.value));
-    }});
+    });
 
-    hornConverter.addPattern( { pattern: '.*Date', converterName: 'DateConverter'});
-    hornConverter.addPattern( { pattern: '.*pages', converterName: 'IntegerConverter'});
-    hornConverter.addPattern( { pattern: '.*price', converterName: 'IntegerConverter'});
+    hornConverter.pattern( '.*Date', 'Date');
+    hornConverter.pattern( '.*pages', 'Integer');
+    hornConverter.pattern( '.*price', 'Integer');
 
 $(function() {
-    horn.load();
-    $('#formattedOutput').html( render( horn.model() ));
+    render( $('#formattedOutput'), horn.model());
     $('.dynamic').change( function( event ) {
         var obj = $(this);
         var binding = bindings[ obj.attr('id')];
@@ -117,14 +124,16 @@ $(function() {
         if ( !converterName ) {
             binding.parent[ binding.pk] = obj.val();
         } else {
-            converter = hornConverter.getConverter({name: converterName});
+            converter = hornConverter.get(converterName);
             convertedValue = converter( {type: 'fromText', value: obj.val()});
             binding.parent[ binding.pk] = convertedValue;
         }
     });
     $('.dateValue').datepicker({dateFormat: DATE_FORMAT});
     $('a.refreshButton').click( function( event ) {
-        horn.updateDOM();
+        $('.changed').removeClass('changed');
+        var affected = horn.updateDOM();
+        $(affected).addClass('changed');
         event.stopPropagation();
         return false;
     });

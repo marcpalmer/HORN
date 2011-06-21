@@ -7,7 +7,7 @@ HORN jQuery Reference Implementation 1.0
 ========================================
 
 This is a reference implementation of a parser and UI populator for the [HORN
-Specification](http://horn.io/horn/spec/horn-specification-1.0.html). You must
+Specification 1.0](http://horn.io/horn/spec/horn-specification-1.0.html). You must
 markup your HTML with "indicators" according to the HORN Specification in
 order for this library to function.
 
@@ -73,8 +73,10 @@ so that you can update their display values when the model changes.
 
 The methods take a single object parameter with two optional arguments:
 
-* rootNodes - A list of jQuery nodes that are to be scanned for data
-* selector - a jQuery selector string to choose the correct root nodes for scanning
+* nodes (_Optional_) - A list of jQuery nodes or a selector string to identify the nodes
+  that are to be scanned for data
+* pathStem (_Optional_) - A string property path to be prepended to the 
+  property paths before values are copied into the model
 
 Neither of these arguments is necessary, as by default the CSS/HTML5
 implementations will determine which are the relevant nodes to scan. In some
@@ -93,16 +95,16 @@ be merged into the existing model, unless you call *reset* before.
 
 The return value of *load* and *bind* is your data model object.
 
-### updateDOM(args)
+### updateDOM(rootNode)
 
 Call this method to update your DOM with the data that is currently in your model.
 
 This will look at the HORN-marked up nodes and resolve them to the data in the
 model, and update their text or values as appropriate.
 
-There is a single optional argument you can pass in the args object:
+There is a single optional parameter you can pass in:
 
-* rootNode - The jQuery object representing the DOM node to update. Used to
+* rootNode (_Optional_) - The jQuery object representing the DOM node to update. Used to
   limit the scope of DOM traversal if performance is an issue.
 
 The return value is a list of DOM nodes that were affected by the update. You
@@ -123,7 +125,7 @@ horn.updateDOM();
 {% endhighlight %}
 
 
-### unbind(propertyPath)
+### unbind(args)
 
 This method allows you to remove bindings from the model to DOM elements for a
 given property path within the model. 
@@ -131,11 +133,18 @@ given property path within the model.
 For example if a user deletes an entry in your UI, you will want to remove the
 bindings for it so that Horn does not keep references to invalid DOM nodes.
 
+The arguments supported are:
+
+* path (_Optional_) - A property path to unbind
+* pattern (_Optional_) - A regular expression to match against property paths to unbind
+
+If no arguments are passed, all the DOM elements will be unbound from the model.
+
 Example:
 
 {% highlight javascript %}
 publisherDOMNode.remove();
-horn.unbind('books[3].publishers[1]');
+horn.unbind({path:'books[3].publishers[1]'});
 horn.model().books[3].publishers.splice(1, 1);
 {% endhighlight %}
 
@@ -155,13 +164,58 @@ $( function() {
 });
 {% endhighlight %}
 
+### bindTo(args)
+
+This method will populate a DOM node and its descendants using this
+information, pulling values in from the model and binding from the
+model to the DOM nodes so that calls to *updateDOM* can re-populate the DOM
+when data is changed.
+
+It will also optionally clone a DOM node template first, and bind into that.
+
+This is useful for UIs where the user can create new "entries" that follow a
+DOM template. You update your model with the data, and then call this function
+to create the on-screen representation.
+
+Arguments:
+
+* template (_Optional_) - A jQuery object or selector string, indicating DOM node to _clone_ and use as the target for binding
+* node (_Optional_) - A jQuery object or selector to use as the target for binding, *without cloning first*
+* pathStem (_Optional_) - The property path to which the DOM node should be bound. The data at
+  this path in the model will be used to populate the target DOM node. Alternatively use *data* to pass in data.
+* id (_Optional_) - The "id" attribute to set on a cloned template DOM node after cloning. Any id from the template is necessarily stripped out after cloning as duplicate ids are invalid in the DOM.
+
+Example:
+
+{% highlight javascript %}
+$( function() {
+    $('.addButton').click( function() {
+        var ourModel = horn.model();
+        var newIdx = ourModel.books.length;
+        ourModel.books[newIdx] = { saved: false };
+        
+        var domNode = horn.bindTo( { 
+            template:'#bookEntryTemplate', 
+            pathStem:'books['+newIdx+']'
+        });
+        
+        $(domNode).appendTo($('#bookList')).show();
+    });
+});
+{% endhighlight %}
+
 ### option(optionName) and option(optionName, value)
 
 Call this to get/set an option on the HORN parser instance. Valid options are:
 
-* readOnly - Setting this to true prevents the auto-loader for the single "horn" instance from binding to DOM nodes, causing it to call load() instead of bind()
-* defaultModel - A default model object to apply before parsing. Any data from the page will be merged with this.
-* converters -
+* readOnly - Setting this to true prevents the auto-loader for the single
+  "horn" instance from binding to DOM nodes, causing it to call load() instead
+  of bind()
+* defaultModel - A default model object to apply before parsing. Any data from
+  the page will be merged with this.
+* converter - An object that implements the convert() function to perform
+  mapping to and from DOM and model. See horn-converters JS file for an
+  example.
 
 ### reset()
 
@@ -201,24 +255,27 @@ The converter functions are passed a map of arguments containing:
 
 * value - the value to convert from
 * path - the property path of the value within the model
-* type - the operation type, either 'fromText' or 'toText'
+* type - the operation type, either 'fromText', 'fromJSON' or 'toText'
 * node - the DOM node that is bound to the property path
+
+When the fromJSON type is invoked, the value is the JSON object parsed out of the HTML.
 
 ### Telling HORN which model values should be converted
 
 Once you have added your custom converter, you can tell HORN which property
 paths should have the converter applied.
 
-To do this you just call *pattern*:
+To do this you just call *pattern* or *RegexPattern*:
 
 {% highlight javascript %}
-hornConverter.pattern( ".*Date", "Date");
-hornConverter.pattern( ".*Count", "Integer");
+hornConverter.pattern( "*.*Date", "Date");
+hornConverter.pattern( "*.*Count", "Integer");
 hornConverter.pattern( "books*.authors.total", "Integer");
 hornConverter.pattern( "books*.publicDomain", "Boolean");
+hornConverter.regexPattern( "books\[\d+\].public", "Boolean");
 {% endhighlight %}
 
-The first argument is a regular expression matching the property paths you
-want to have the converter applied to, and the second argument is the name of
-the converter.
+The first argument is a simple wildcard expression (* = any number of chars)
+or full regular expression matching the property paths you want to have the
+converter applied to, and the second argument is the name of the converter.
 
