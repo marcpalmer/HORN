@@ -1,4 +1,4 @@
-module( "horn-jquery-html-1.0.js - Features");
+module( "horn-jquery-html5-1.0.js - Features");
 
 test(
     "Test horn has hasRootIndicator function.",
@@ -32,7 +32,7 @@ test(
 
 
 
-module( "horn-jquery-html-1.0.js - feature functions");
+module( "horn-jquery-html5-1.0.js - feature functions");
 
 
 
@@ -210,7 +210,7 @@ test(
 
 
 
-module( "horn-jquery-html-1.0.js - horn functions");
+module( "horn-jquery-html5-1.0.js - horn functions");
 
 test(
     "bind - _0 - 'one'",

@@ -106,7 +106,7 @@ var HornPatternConverter = function (args) {
      *  @public
      */
     this.pattern = function (pattern, converterName) {
-        patterns[pattern] = this.toRegularExpression( converterName);
+        patterns[this.toRegularExpression( pattern)] = converterName;
     };
 
     /**
@@ -196,7 +196,9 @@ HornPatternConverter.prototype = {
      *  @methodOf HornPatternConverter.prototype
      */
     toRegularExpression: function( path ) {
-        return path.replace( /([\.\[\]])/g, "\\$1").replace( "*", ".*");
+        var newpath = path.replace( /([\.\[\]])/g, "\\$1")
+        newpath = newpath.replace( "*", ".*");
+        return newpath;
     }
 };
 
