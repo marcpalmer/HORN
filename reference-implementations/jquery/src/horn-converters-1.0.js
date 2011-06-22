@@ -173,7 +173,7 @@ var HornPatternConverter = function (args) {
         converters = {};
         patterns = {};
         hornInstance = horn;
-        hornInstance.option("converter", this.convert);
+        hornInstance.option("converter", convert);
     };
 
     this.reset(args.horn);

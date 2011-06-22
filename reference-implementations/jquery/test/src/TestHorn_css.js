@@ -1081,7 +1081,6 @@ test(
                 nodes:  $('<div class="horn"><span class="_a">value</span></div>')}
             ],
             callback: function( horn ) {
-                horn.name = "a";
                 var model = horn.bind({pathStem: "/a.b"});
                 ok( isObject( model));
                 ok( model.a.b.a === "value");
@@ -1403,13 +1402,15 @@ test(
                 nodes:  $('<div class="horn _key">12</div>')}
             ],
             callback: function( horn ) {
+                var passed = false;
                 var hpc = new HornPatternConverter( {horn: horn});
-                var converter = function( args ) {};
-                hpc.add( "converter", converter);
-                hpc.pattern( "key", "converter");
+                var converter = function( args ) {
+                    passed = args.value == "12";
+                };
+                hpc.add( "conv.erter", converter);
+                hpc.pattern( "key", "conv.erter");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( model.key === 12);
+                ok( passed);
         }});
     });
 
