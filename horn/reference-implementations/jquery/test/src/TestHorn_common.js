@@ -910,7 +910,7 @@ test(
     });
 
 test(
-    "get - unregistered converter",
+    "get - unregistered converter is undefined",
     function() {
         ok( hornConverter.get( "") === undefined);
     });

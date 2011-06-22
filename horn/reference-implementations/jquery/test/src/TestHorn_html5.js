@@ -1,4 +1,4 @@
-module( "horn-jquery-html-1.0.js - Features");
+module( "horn-jquery-html5-1.0.js - Features");
 
 test(
     "Test horn has hasRootIndicator function.",
@@ -32,7 +32,7 @@ test(
 
 
 
-module( "horn-jquery-html-1.0.js - feature functions");
+module( "horn-jquery-html5-1.0.js - feature functions");
 
 
 
@@ -210,7 +210,7 @@ test(
 
 
 
-module( "horn-jquery-html-1.0.js - horn functions");
+module( "horn-jquery-html5-1.0.js - horn functions");
 
 test(
     "bind - _0 - 'one'",
@@ -972,20 +972,25 @@ test(
         }});
     });
 
-test(
-    "bind - with pathStem supplied.",
-    function() {
-        dataTest( {
-            nodes: [ {
-                nodes:  $('<div data-horn="/"><span data-horn="a">value</span></div>')}
-            ],
-            callback: function( horn ) {
-                horn.name = "a";
-                var model = horn.bind({pathStem: "/a.b"});
-                ok( isObject( model));
-                ok( model.a.b.a === "value");
-        }});
-    });
+//test(
+//    "bind - Testing HornPatternConverter.",
+//    function() {
+//        dataTest( {
+//            nodes: [ {
+//                nodes:  $('<div data-horn="/key">12</div>')}
+//            ],
+//            callback: function( horn ) {
+//                var passed = false;
+//                var hpc = new HornPatternConverter( {horn: horn});
+//                var converter = function( args ) {
+//                    passed = args.value == "12";
+//                };
+//                hpc.add( "con.verter", converter);
+//                hpc.pattern( "key", "con.verter");
+//                var model = horn.bind();
+//                ok( passed);
+//        }});
+//    });
 
 test(
     "bind - that integers can be expressed using hexadecimal notation.",
@@ -1297,8 +1302,25 @@ test(
         }});
     });
 
-
-
+test(
+    "bind - Testing HornPatternConverter.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="/key">12</div>')}
+            ],
+            callback: function( horn ) {
+                var passed = false;
+                var hpc = new HornPatternConverter( {horn: horn});
+                var converter = function( args ) {
+                    passed = args.value == "12";
+                };
+                hpc.add( "conv.erter", converter);
+                hpc.pattern( "key", "conv.erter");
+                var model = horn.bind();
+                ok( passed);
+        }});
+    });
 
 test(
     "bindTo - Testing the population of a template with no type conversion nor pattern matching.",
