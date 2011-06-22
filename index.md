@@ -47,7 +47,7 @@ $ git clone git://github.com/marcpalmer/HORN
 ## Applications and tools using HORN
 
 [NoticeLocal](http://noticelocal.com)  
-[Grails HORN Plugin](http://grails.org/plugin/horn]) - Resources and tags for Grails developers to use HORN
+[Grails HORN Plugin](http://grails.org/plugin/horn) - Resources and tags for Grails developers to use HORN
 
 ## Contributors / Contact
 
