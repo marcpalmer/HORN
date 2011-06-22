@@ -30,7 +30,7 @@ specific MVC approach.
 ### Based on jQuery
 
 [Source code](https://github.com/marcpalmer/HORN/tree/master/reference-implementations/jquery)  
-[Download](https://github.com/marcpalmer/HORN/zipball/master)
+[Download](https://github.com/marcpalmer/HORN/zipball/master)  
 [User guide](horn/reference-implementations/jquery/manual.html)  
 [Test reports (for CSS indicators)](horn/reference-implementations/jquery/test/test-css.html)  
 [Test reports (for HTML5 indicators)](horn/reference-implementations/jquery/test/test-html5.html)
