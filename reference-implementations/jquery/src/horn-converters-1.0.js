@@ -55,7 +55,7 @@ var HornPatternConverter = function (args) {
      *  @param {String} name the name to associate with the converter
      *  @param {Function} converter the converter to add
      *
-     *  @see Horn#option for the specification of conveter functions
+     *  @see Horn#option for the specification of converter functions
      */
     this.add = function (name, converter) { converters[name] = converter; };
 

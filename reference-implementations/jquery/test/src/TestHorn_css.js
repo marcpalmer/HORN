@@ -1395,6 +1395,23 @@ test(
         }});
     });
 
+test(
+    "bind - Testing HornPatternConverter.",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _key">12</div>')}
+            ],
+            callback: function( horn ) {
+                var hpc = new HornPatternConverter( {horn: horn});
+                var converter = function( args ) {};
+                hpc.add( "converter", converter);
+                hpc.pattern( "key", "converter");
+                var model = horn.bind();
+                ok( isObject( model));
+                ok( model.key === 12);
+        }});
+    });
 
 
 
