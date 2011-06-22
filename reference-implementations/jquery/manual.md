@@ -73,9 +73,9 @@ so that you can update their display values when the model changes.
 
 The methods take a single object parameter with two optional arguments:
 
-* nodes (_Optional_) - A list of jQuery nodes or a selector string to identify the nodes
+* nodes (*Optional*) - A list of jQuery nodes or a selector string to identify the nodes
   that are to be scanned for data
-* pathStem (_Optional_) - A string property path to be prepended to the 
+* pathStem (*Optional*) - A string property path to be prepended to the 
   property paths before values are copied into the model
 
 Neither of these arguments is necessary, as by default the CSS/HTML5
@@ -104,7 +104,7 @@ model, and update their text or values as appropriate.
 
 There is a single optional parameter you can pass in:
 
-* rootNode (_Optional_) - The jQuery object representing the DOM node to update. Used to
+* rootNode (*Optional*) - The jQuery object representing the DOM node to update. Used to
   limit the scope of DOM traversal if performance is an issue.
 
 The return value is a list of DOM nodes that were affected by the update. You
@@ -135,8 +135,8 @@ bindings for it so that Horn does not keep references to invalid DOM nodes.
 
 The arguments supported are:
 
-* path (_Optional_) - A property path to unbind
-* pattern (_Optional_) - A regular expression to match against property paths to unbind
+* path (*Optional*) - A property path to unbind
+* pattern (*Optional*) - A regular expression to match against property paths to unbind
 
 If no arguments are passed, all the DOM elements will be unbound from the model.
 
@@ -179,11 +179,11 @@ to create the on-screen representation.
 
 Arguments:
 
-* template (_Optional_) - A jQuery object or selector string, indicating DOM node to _clone_ and use as the target for binding
-* node (_Optional_) - A jQuery object or selector to use as the target for binding, *without cloning first*
-* pathStem (_Optional_) - The property path to which the DOM node should be bound. The data at
+* template (*Optional*) - A jQuery object or selector string, indicating DOM node to _clone_ and use as the target for binding
+* node (*Optional*) - A jQuery object or selector to use as the target for binding, *without cloning first*
+* pathStem (*Optional*) - The property path to which the DOM node should be bound. The data at
   this path in the model will be used to populate the target DOM node. Alternatively use *data* to pass in data.
-* id (_Optional_) - The "id" attribute to set on a cloned template DOM node after cloning. Any id from the template is necessarily stripped out after cloning as duplicate ids are invalid in the DOM.
+* id (*Optional*) - The "id" attribute to set on a cloned template DOM node after cloning. Any id from the template is necessarily stripped out after cloning as duplicate ids are invalid in the DOM.
 
 Example:
 
