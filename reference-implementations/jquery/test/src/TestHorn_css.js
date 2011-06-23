@@ -1414,8 +1414,6 @@ test(
         }});
     });
 
-
-
 test(
     "bindTo - Testing the population of a template with no type conversion nor pattern matching.",
     function() {
@@ -1885,4 +1883,19 @@ test(
                 ok( count === expected.length);
             }
         });
+    });
+
+test(
+    "hornConverter - matching pattern for unknown converter",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _value">12</div>')}
+            ],
+            callback: function( horn ) {
+                hornConverter.reset( horn)
+                hornConverter.pattern( "*", "unknownConverter");
+                var model = horn.bind();
+                ok( model.value === "12");
+        }});
     });

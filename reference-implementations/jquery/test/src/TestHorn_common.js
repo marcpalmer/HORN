@@ -897,6 +897,12 @@ test(
     function() { ok( window.hornConverter instanceof HornPatternConverter ); });
 
 test(
+    "reset - can be called with the default horn instance",
+    function() {
+        hornConverter.reset( horn);
+    });
+
+test(
     "toRegularExpression - various",
     function() {
         ok( hornConverter.toRegularExpression( "a") === "a");

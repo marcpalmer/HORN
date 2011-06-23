@@ -1658,3 +1658,19 @@ test(
                 ok( $('#grabMe').val() === 'false');
         }});
     });
+
+
+test(
+    "hornConverter - matching pattern for unknown converter",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $('<div data-horn="/value">12</div>')}
+            ],
+            callback: function( horn ) {
+                hornConverter.reset( horn)
+                hornConverter.pattern( "*", "unknownConverter");
+                var model = horn.bind();
+                ok( model.value === "12");
+        }});
+    });
