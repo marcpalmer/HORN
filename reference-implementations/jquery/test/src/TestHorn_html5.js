@@ -972,26 +972,6 @@ test(
         }});
     });
 
-//test(
-//    "bind - Testing HornPatternConverter.",
-//    function() {
-//        dataTest( {
-//            nodes: [ {
-//                nodes:  $('<div data-horn="/key">12</div>')}
-//            ],
-//            callback: function( horn ) {
-//                var passed = false;
-//                var hpc = new HornPatternConverter( {horn: horn});
-//                var converter = function( args ) {
-//                    passed = args.value == "12";
-//                };
-//                hpc.add( "con.verter", converter);
-//                hpc.pattern( "key", "con.verter");
-//                var model = horn.bind();
-//                ok( passed);
-//        }});
-//    });
-
 test(
     "bind - that integers can be expressed using hexadecimal notation.",
     function() {
@@ -1446,6 +1426,64 @@ test(
                 ok( !isAttached( $('#newID')));
             }});
     });
+
+
+
+
+test(
+    "blankModelEntries - returns expected blank String model entries, with and without path - all blank node values",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div data-horn="/"><span data-horn="a"></span><div data-horn="b"><span data-horn="[0]"></span><span data-horn="[1]"></span><div data-horn="c"><span data-horn="d"></span><div data-horn="e"><span data-horn="[0]"></span><span data-horn="[1]"></span></div></div></div></div>')}],
+            callback: function( horn ) {
+                horn.bind();
+                ok( arrayCompare(
+                        ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                        horn.blankModelEntries()));
+                ok( arrayCompare(
+                        ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                        horn.blankModelEntries( {path: "b"})));
+                ok( arrayCompare(
+                        ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                        horn.blankModelEntries({inspectDOM: true})));
+            }});
+    }
+);
+
+test(
+    "blankModelEntries - returns expected blank String model entries, with and without path - mixed node values",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div data-horn="/"><span data-horn="a"></span><div data-horn="b"><span data-horn="[0]">zz</span><span data-horn="[1]"></span><div data-horn="c"><span data-horn="d"></span><div data-horn="e"><span data-horn="[0]">xxx</span><span data-horn="[1]"></span></div></div></div></div>')}],
+            callback: function( horn ) {
+                horn.bind().x = "";
+                ok( arrayCompare( ["a", "b[1]", "b.c.d", "b.c.e[1]"],
+                        horn.blankModelEntries()));
+                ok( arrayCompare( ["b[1]", "b.c.d", "b.c.e[1]"],
+                        horn.blankModelEntries( {path: "b"})));
+                ok( arrayCompare( ["b[1]", "b.c.d", "b.c.e[1]"],
+                        horn.blankModelEntries( {path: "b", inspectDOM: true})));
+            }});
+    }
+);
+
+
+
+
+test(
+    "nodeForPath - bind a graph, nodeForPath for known path has expected ID",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div data-horn="/"><span data-horn="a"></span><div data-horn="b"><span data-horn="[0]">zz</span><span data-horn="[1]"></span><div data-horn="c"><span data-horn="d"></span><div data-horn="e"><span data-horn="[0]">xxx</span><span id="xqs" data-horn="[1]">ourValue</span></div></div></div></div>')}],
+            callback: function( horn ) {
+                var model = horn.bind();
+                ok( $(horn.nodeForPath( "b.c.e[1]")).attr( 'id') === 'xqs');
+            }});
+    }
+);
 
 
 

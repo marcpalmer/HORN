@@ -341,6 +341,50 @@ var Horn = function() {
     };
 
     /**
+     *  Returns all <strong>bound</strong> model-entry paths that contain blank
+     *  <code>""</code> <code>String</code> values.
+     *  <p>
+     *  The model paths can be optionally filtered by requiring them to have a
+     *  given prefix.
+     *  <p>
+     *  Also optionally, the DOM nodes corresponding to the given model entry
+     *  can be content-checked to determine if it (instead) has a blank
+     *  <code>String</code> value.
+     *
+     *  @param {Object} args
+     *  @param {String} [args.path] the prefix that returned property paths must
+     *      have, if not supplied all property paths will be returned - if they
+     *      fulfill the content requirements
+     *  @param {Boolean} [args.inspectDOM] iff. <code>true<code> then instead
+     *      of using the model entries' value to compare with <code>""</code>,
+     *      the model entries' corresponding DOM node's value will be used
+     *      instead
+     *
+     *  @return {Array} an <code>Array</code> containing all model entries that
+     *      have the given (or any) path prefix and have either their model, or
+     *      DOM node values equal to the blank <code>String</code>
+     *      <code>""</code>
+     *
+     *  @public
+     */
+    this.blankModelEntries = function( args ) {
+        var blankPaths = [];
+        var pathDefined = this.definesProperty( args, 'path');
+        var inspectDOM = this.definesProperty( args, 'inspectDOM') &&
+            (args.inspectDOM === true);
+        var path = pathDefined ? this.toInternalPath( args.path) : undefined;
+        this.each( state.bindings, function( i, n ) {
+            if ( (!pathDefined || this.hasPrefix( i, path)) ) {
+                if (((inspectDOM && this.isDefinedNotNull( n.node)) ?
+                    this.hornNodeValue( {node: n.node}) : n.value) === "") {
+                    blankPaths.push(this.toExternalPath(i));
+                }
+            }
+        }, this);
+        return blankPaths;
+    };
+
+    /**
      *  Walks a tree of cloned (or selected) DOM nodes, binding them to model
      *  elements and populating their display values.
      *  <p>
@@ -420,6 +464,28 @@ var Horn = function() {
      */
     this.model = function() {
         return state.model;
+    };
+
+    /**
+     *  Return the DOM node that corresponds to a given model value's Horn
+     *  property path.
+     *  <p>
+     *  If there is no model value bound to a DOM node for the supplied path,
+     *  <code>undefined</code> is returned.
+     *
+     *  @param {String} path the property path corresponding to a DOM node that
+     *      yielded a given model value
+     *
+     *  @return the DOM node that corresponds to a given model value
+     *
+     *  @public
+     */
+    this.nodeForPath = function( path ) {
+        path = this.toInternalPath( path);
+        return (this.isDefinedNotNull( state.bindings) &&
+            this.isDefinedNotNull( state.bindings[path]) &&
+            this.isDefinedNotNull( state.bindings[path].node)) ?
+                state.bindings[ path].node : undefined;
     };
 
     /**
@@ -625,7 +691,7 @@ var Horn = function() {
 Horn.prototype = {
 
     /**
-     *  Join parent and child internal Horn property paths.
+     *  Join parent and child (internal) property paths.
      *  <p>
      *  If exactly one path is <code>null</code> or <code>undefined</code>, the
      *  other is returned. If both paths are not defined, the empty
@@ -941,10 +1007,9 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     pathToTokens: function( path ) {
-        return path ?
-            ((this.hasPrefix( path, "-")|| this.hasPrefix( path, "_"))  ?
-                path.substring( 1) : path).split( "-") :
-            undefined;
+        return path ? ((this.hasPrefix( path, "-") ||
+            this.hasPrefix( path, "_"))  ?
+                path.substring( 1) : path).split( "-") : undefined;
     },
 
     /**

@@ -1602,6 +1602,67 @@ test(
     });
 
 
+
+
+test(
+    "blankModelEntries - returns expected blank String model entries, with and without path - all blank node values",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0"></span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0"></span><span class="_1"></span></div></div></div></div>')}],
+            callback: function( horn ) {
+                horn.bind();
+                ok( arrayCompare(
+                        ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                        horn.blankModelEntries()));
+                ok( arrayCompare(
+                        ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                        horn.blankModelEntries( {path: "b"})));
+                ok( arrayCompare(
+                     ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                     horn.blankModelEntries( {path: "b", inspectDOM: true})));
+            }});
+    }
+);
+
+test(
+    "blankModelEntries - returns expected blank String model entries, with and without path - mixed node values",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0">zz</span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0">xxx</span><span id="_x" class="_1"></span></div></div></div></div>')}],
+            callback: function( horn ) {
+                horn.bind().x = "";
+                ok( arrayCompare( ["a", "b[1]", "b.c.d", "b.c.e[1]"],
+                        horn.blankModelEntries()));
+                ok( arrayCompare( ["b[1]", "b.c.d", "b.c.e[1]"],
+                        horn.blankModelEntries( {path: "b"})));
+                horn.hornNodeValue( {node: $('#_x'), value: "a"});
+                ok( arrayCompare( ["b[1]", "b.c.d"],
+                        horn.blankModelEntries( {path: "b", inspectDOM: true})));
+            }});
+    }
+);
+
+
+
+
+test(
+    "nodeForPath - bind a graph, nodeForPath for known path has expected ID",
+    function() {
+        dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0">zz</span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0">xxx</span><span id="xqs" class="_1">ourValue</span></div></div></div></div>')}],
+            callback: function( horn ) {
+                var model = horn.bind();
+                ok( $(horn.nodeForPath( "b.c.e[1]")).attr( 'id') === 'xqs');
+            }});
+    }
+);
+
+
+
+
 test(
     "reset - the model is cleared upon reset and the 'readOnly' option is reset.",
     function() {
