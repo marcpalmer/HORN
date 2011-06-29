@@ -19,20 +19,20 @@ $.extend(
 
         getDataAttr: function( n, name ) {
             var rv =  $(n).data( name);
-            return (this.isDefinedNotNull( rv) === true) ? (rv + "") : undefined;
+            return (SMUtils.isDefinedNotNull( rv) === true) ? (rv + "") : undefined;
         },
 
         hasRootIndicator: function( node ) {
             var hornDeclaration = this.getDataAttr( node, this.dataNameHorn);
             var jsonDeclaration = this.getDataAttr( node, this.dataNameJSON);
-            return ((this.isDefinedNotNull( hornDeclaration) === true) &&
-                (this.hasPrefix( hornDeclaration, "/") === true)) ||
-                ((this.isDefinedNotNull( jsonDeclaration) === true) &&
-                (this.hasPrefix( jsonDeclaration, "/") === true));
+            return ((SMUtils.isDefinedNotNull( hornDeclaration) === true) &&
+                (SMUtils.hasPrefix( hornDeclaration, "/") === true)) ||
+                ((SMUtils.isDefinedNotNull( jsonDeclaration) === true) &&
+                (SMUtils.hasPrefix( jsonDeclaration, "/") === true));
         },
 
         hasJSONIndicator: function( node ) {
-            return this.isDefinedNotNull(
+            return SMUtils.isDefinedNotNull(
                 this.getDataAttr( node, this.dataNameJSON)) === true;
         },
 
@@ -40,9 +40,9 @@ $.extend(
             var hornDeclaration = this.getDataAttr( node, this.dataNameHorn);
             var jsonDeclaration = this.getDataAttr( node, this.dataNameJSON);
             if ( jsonDeclaration === 'true' ) { jsonDeclaration = undefined; }
-            var declaration = this.isDefinedNotNull( hornDeclaration) ?
+            var declaration = SMUtils.isDefinedNotNull( hornDeclaration) ?
                 hornDeclaration : jsonDeclaration;
-            return this.isDefinedNotNull( declaration) ?
+            return SMUtils.isDefinedNotNull( declaration) ?
                 this.toInternalPath(declaration) : declaration;
         },
 

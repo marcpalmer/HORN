@@ -65,11 +65,11 @@ var HornPatternConverter = function (args) {
      */
     var convert = function (args) {
         var rv;
-        hornInstance.each(patterns, function (i, n) {
+        SMUtils.each(patterns, function (i, n) {
             var match = args.path.match( i);
             var converter = converters[n];
-            if (hornInstance.isDefinedNotNull(converter) &&
-                hornInstance.isDefinedNotNull(match) &&
+            if (SMUtils.isDefinedNotNull(converter) &&
+                SMUtils.isDefinedNotNull(match) &&
                 (match.toString() === args.path) ) {
                 rv = converter(args);
                 return false;

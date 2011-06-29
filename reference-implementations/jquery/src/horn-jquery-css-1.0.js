@@ -24,9 +24,9 @@ $.extend( Horn.prototype, {
         var path;
         var _this = this;
         if ( classAttr ) {
-            Horn.prototype.splitEach( classAttr,
+            SMUtils.splitEach( classAttr,
                 function( token ) {
-                    if ( (path === undefined) && _this.hasPrefix( token, _this.cssPrefix) && (token.length > 1)) {
+                    if ( (path === undefined) && SMUtils.hasPrefix( token, _this.cssPrefix) && (token.length > 1)) {
                         path = token.substring( cssPrefixLength);
                         return false;
                     }

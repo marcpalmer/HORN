@@ -3,21 +3,21 @@ module( "horn-jquery-css-1.0.js - Features");
 test(
     "Test horn has hasRootIndicator function.",
     function() {
-        ok( isFunction( new Horn().hasRootIndicator));
+        ok( SMTestUtils.isFunction( new Horn().hasRootIndicator));
     }
 );
 
 test(
     "Test horn has hasJSONIndicator function.",
     function() {
-        ok( isFunction( new Horn().hasJSONIndicator));
+        ok( SMTestUtils.isFunction( new Horn().hasJSONIndicator));
     }
 );
 
 test(
     "Test horn has pathIndicator function.",
     function() {
-        ok( isFunction( new Horn().pathIndicator));
+        ok( SMTestUtils.isFunction( new Horn().pathIndicator));
     }
 );
 
@@ -25,7 +25,7 @@ test(
     "Test horn has rootNodes function.",
     function() {
         var horn = new Horn();
-        ok( isFunction( horn.rootNodes));
+        ok( SMTestUtils.isFunction( horn.rootNodes));
     }
 );
 
@@ -62,18 +62,18 @@ test(
     function() {
         var horn = new Horn();
         var node = $('<div class="' + horn.cssPrefix + 'expected" />');
-
         ok( horn.extractCSSPropertyPath.call( horn, node) === 'expected');
     });
 
 test(
     "hasRootIndicator - simple affirmative.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="horn"><span class="_0">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.hasRootIndicator( $('#grab')) === true);
             }});
     });
@@ -81,11 +81,12 @@ test(
 test(
     "hasRootIndicator - simple affirmative with other class attribute values.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="value test horn rubbish crap _test"></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.hasRootIndicator( $('#grab')) === true);
             }});
     });
@@ -93,11 +94,12 @@ test(
 test(
     "hasRootIndicator - sanity false case.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab"></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.hasRootIndicator( $('#grab')) === false);
             }});
     });
@@ -105,11 +107,12 @@ test(
 test(
     "hasRootIndicator - case sensitivity.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="HoRn"></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.hasRootIndicator( $('#grab')) === false);
             }});
     });
@@ -118,11 +121,12 @@ test(
 test(
     "hasJSONIndicator - simple affirmative case.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="data-json"></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.hasJSONIndicator( $('#grab')) === true);
             }});
     });
@@ -130,11 +134,12 @@ test(
 test(
     "hasJSONIndicator - affirmative case with surrounding class attribute values.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="x _value data-json missing"></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {    
+                var horn = new Horn();
                 ok( horn.hasJSONIndicator( $('#grab')) === true);
             }});
     });
@@ -142,11 +147,12 @@ test(
 test(
     "hasJSONIndicator - case sensitivity.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="x _value data-Json missing"></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.hasJSONIndicator( $('#grab')) === false);
             }});
     });
@@ -163,45 +169,48 @@ test(
 test(
     "rootNodes - single rooted horn document.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab" class="horn"><span class="_0">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var roots = horn.rootNodes();
                 ok( roots.length === 1);
-                ok( horn.compare( roots.get(0), $('#grab')) === true );
+                ok( SMUtils.compare( roots.get(0), $('#grab')) === true );
             }});
     });
 
 test(
     "rootNodes - forest test.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab1" class="horn"><span class="_0">one</span></div><div id="grab2" class="horn"><span class="_0">one</span></div><div id="grab3" class="horn"><span class="_0">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var roots = horn.rootNodes();
                 ok( roots.length === 3);
-                ok( horn.compare( roots.get(0), $('#grab1')) === true );
-                ok( horn.compare( roots.get(1), $('#grab2')) === true );
-                ok( horn.compare( roots.get(2), $('#grab3')) === true );
+                ok( SMUtils.compare( roots.get(0), $('#grab1')) === true );
+                ok( SMUtils.compare( roots.get(1), $('#grab2')) === true );
+                ok( SMUtils.compare( roots.get(2), $('#grab3')) === true );
             }});
     });
 
 test(
     "rootNodes - nested contexts, returns all roots.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="grab1" class="horn"><span class="_0">one</span><div id="grab2" class="horn"><span class="_0">one</span></div></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var roots = horn.rootNodes();
                 ok( roots.length === 2);
-                ok( horn.compare( roots.get(0), $('#grab1')) === true );
-                ok( horn.compare( roots.get(1), $('#grab2')) === true );
+                ok( SMUtils.compare( roots.get(0), $('#grab1')) === true );
+                ok( SMUtils.compare( roots.get(1), $('#grab2')) === true );
             }});
     });
 
@@ -211,11 +220,12 @@ test(
 test(
     "pathIndicator - simple positive/negative cases.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span id="grab1" class="_0">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.pathIndicator( $('#grab1')) === "0");
                 ok( horn.pathIndicator( $('#grab1')) !== "_0");
                 ok( horn.pathIndicator( $('#grab1')) !== "-0");
@@ -225,11 +235,12 @@ test(
 test(
     "pathIndicator - first returned from many.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span id="grab1" class="_0 _1 _2">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.pathIndicator( $('#grab1')) === "0");
             }});
     });
@@ -310,8 +321,9 @@ module( "horn-jquery-css-1.0.js - horn functions");
 test(
     "bind -  no data expected, undefined returned.",
     function() {
-        dataTest( {
-            callback: function( horn ) {
+        SMTestUtils.dataTest( {
+            callback: function() {
+                var horn = new Horn();
                 ok( horn.bind() === undefined);
             }});
     });
@@ -319,13 +331,14 @@ test(
 test(
     "bind -  _0 - 'one'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_0">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 1);
                 ok( model[ 0] === 'one');
             }});
@@ -334,14 +347,15 @@ test(
 test(
     "bind -  _1 - 2",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_1">2</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[1]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[1]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 2);
                 ok( model[ 1] === 2);
             }});
@@ -350,14 +364,15 @@ test(
 test(
     "bind -  _2 - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_2">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[2]");
                 var data = horn.bind();
-                ok( isArray( data));
+                ok( SMTestUtils.isArray( data));
                 ok( data.length === 3);
                 ok( data[ 2] === true);
             }});
@@ -366,16 +381,17 @@ test(
 test(
     "bind -  _3-0 - 'three'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3"><span class="_0">three</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 1);
 
                 ok( model[ 3][ 0] === 'three');
@@ -385,17 +401,18 @@ test(
 test(
     "bind -  _3-1 - 4",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3"><span class="_1">4</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[3][1]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][1]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 2);
 
                 ok( model[ 3][ 1] === 4);
@@ -405,17 +422,18 @@ test(
 test(
     "bind -  _3-2 - false",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[3][2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][2]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 3);
 
                 ok( model[ 3][ 2] === false);
@@ -425,19 +443,20 @@ test(
 test(
     "bind -  _3-3-0 - 'five'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3-3"><span class="_0">five</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 4);
 
-                ok( isArray( model[ 3][ 3]));
+                ok( SMTestUtils.isArray( model[ 3][ 3]));
                 ok( model[ 3][ 3].length === 1);
 
                 ok( model[ 3][ 3][ 0] === 'five');
@@ -447,20 +466,21 @@ test(
 test(
     "bind -  _3-3-1 - 6",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3-3"><span class="_1">6</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[3][3][1]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][3][1]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 4);
 
-                ok( isArray( model[ 3][ 3]));
+                ok( SMTestUtils.isArray( model[ 3][ 3]));
                 ok( model[ 3][ 3].length === 2);
 
                 ok( model[ 3][ 3][ 1] === 6);
@@ -470,20 +490,21 @@ test(
 test(
     "bind -  _3-3-2 - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3-3"><span class="_2">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[3][3][2]");
+            callback: function() {
+                var horn = new Horn();  
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][3][2]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 4);
 
-                ok( isArray( model[ 3][ 3]));
+                ok( SMTestUtils.isArray( model[ 3][ 3]));
                 ok( model[ 3][ 3].length === 3);
 
                 ok( model[ 3][ 3][ 2] === true);
@@ -493,19 +514,20 @@ test(
 test(
     "bind -  _3-4-k - 'seven'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3-4"><span class="_k">seven</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 5);
 
-                ok( isObject( model[ 3][ 4]));
+                ok( SMTestUtils.isObject( model[ 3][ 4]));
                 ok( model[ 3][ 4][ 'k'] === 'seven');
             }});
     });
@@ -513,20 +535,21 @@ test(
 test(
     "bind -  _3-4-l - 8",
     function() {
-         dataTest( {
+         SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3-4"><span class="_l">8</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[3][4].l");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][4].l");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 5);
 
-                ok( isObject( model[ 3][ 4]));
+                ok( SMTestUtils.isObject( model[ 3][ 4]));
                 ok( model[ 3][ 4][ 'l'] === 8);
             }});
     });
@@ -534,20 +557,21 @@ test(
 test(
     "bind -  _3-4-m - false",
     function() {
-         dataTest( {
+         SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _3-4"><span class="_m">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[3][4].m");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][4].m");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
-                ok( isArray( model[ 3]));
+                ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 5);
 
-                ok( isObject( model[ 3][ 4]));
+                ok( SMTestUtils.isObject( model[ 3][ 4]));
                 ok( model[ 3][ 4][ 'm'] === false);
             }});
     });
@@ -555,16 +579,17 @@ test(
 test(
     "bind -  _4-f - 'nine'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4"><span class="_f">nine</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();3
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
+                ok( SMTestUtils.isObject( model[ 4]));
                 ok( model[ 4][ 'f'] === 'nine');
             }});
     });
@@ -572,17 +597,18 @@ test(
 test(
     "bind -  _4-g - 10",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4"><span class="_g">10</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[4].g");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].g");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
+                ok( SMTestUtils.isObject( model[ 4]));
                 ok( model[ 4][ 'g'] === 10);
             }});
     });
@@ -590,17 +616,18 @@ test(
 test(
     "bind -  _4-h - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4"><span class="_h">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[4].h");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].h");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
+                ok( SMTestUtils.isObject( model[ 4]));
                 ok( model[ 4][ 'h'] === true);
             }});
     });
@@ -608,17 +635,18 @@ test(
 test(
     "bind -  _4-i-0 - 'eleven'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4-i"><span class="_0">eleven</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
-                ok( isArray( model[ 4][ 'i']));
+                ok( SMTestUtils.isObject( model[ 4]));
+                ok( SMTestUtils.isArray( model[ 4][ 'i']));
                 ok( model[ 4][ 'i'].length === 1);
 
                 ok( model[ 4][ 'i'][0] === 'eleven');
@@ -628,18 +656,19 @@ test(
 test(
     "bind -  _4-i-1 - 12",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4-i"><span class="_1">12</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[4].i[1]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].i[1]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
-                ok( isArray( model[ 4][ 'i']));
+                ok( SMTestUtils.isObject( model[ 4]));
+                ok( SMTestUtils.isArray( model[ 4][ 'i']));
                 ok( model[ 4][ 'i'].length === 2);
 
                 ok( model[ 4][ 'i'][ 1] === 12);
@@ -649,18 +678,19 @@ test(
 test(
     "bind -  _4-i-2 - false",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4-i"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[4].i[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].i[2]");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
-                ok( isArray( model[ 4][ 'i']));
+                ok( SMTestUtils.isObject( model[ 4]));
+                ok( SMTestUtils.isArray( model[ 4][ 'i']));
                 ok( model[ 4][ 'i'].length === 3);
 
                 ok( model[ 4][ 'i'][ 2] === false);
@@ -670,17 +700,18 @@ test(
 test(
     "bind -  _4-j-n - 'thirteen'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4-j"><span class="_n">thirteen</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
-                ok( isObject( model[ 4][ 'j']));
+                ok( SMTestUtils.isObject( model[ 4]));
+                ok( SMTestUtils.isObject( model[ 4][ 'j']));
 
                 ok( model[ 4][ 'j'][ 'n'] === 'thirteen');
             }});
@@ -689,18 +720,19 @@ test(
 test(
     "bind -  _4-j-o - 14",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4-j"><span class="_o">14</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "[4].j.o");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].j.o");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
-                ok( isObject( model[ 4][ 'j']));
+                ok( SMTestUtils.isObject( model[ 4]));
+                ok( SMTestUtils.isObject( model[ 4][ 'j']));
 
                 ok( model[ 4][ 'j'][ 'o'] === 14);
         }});
@@ -709,18 +741,19 @@ test(
 test(
     "bind -  _4-j-p - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _4-j"><span class="_p">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "[4].j.p");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].j.p");
                 var model = horn.bind();
-                ok( isArray( model));
+                ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
 
-                ok( isObject( model[ 4]));
-                ok( isObject( model[ 4][ 'j']));
+                ok( SMTestUtils.isObject( model[ 4]));
+                ok( SMTestUtils.isObject( model[ 4][ 'j']));
 
                 ok( model[ 4][ 'j'][ 'p'] === true);
         }});
@@ -729,13 +762,14 @@ test(
 test(
     "bind -  _a - 'one'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_a">one</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model[ 'a'] === 'one');
         }});
     });
@@ -743,14 +777,15 @@ test(
 test(
     "bind -  _b - 2",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_b">2</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "b");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "b");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.b === 2);
         }});
     });
@@ -758,14 +793,15 @@ test(
 test(
     "bind -  _d-0 - 'three'",
     function() {
-    dataTest( {
+    SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_0">three</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isArray( model.d));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 1);
                 ok( model.d[ 0] === 'three');
         }});
@@ -774,15 +810,16 @@ test(
 test(
     "bind -  _d-1 - 4",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_1">4</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "d[1]");
+            callback: function() {
+                var horn = new Horn();3
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[1]");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isArray( model.d));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 2);
                 ok( model.d[ 1] === 4);
         }});
@@ -791,15 +828,16 @@ test(
 test(
     "bind -  _d-2 - false",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isArray( model.d));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 3);
                 ok( model.d[ 2] === false);
         }});
@@ -808,16 +846,17 @@ test(
 test(
     "bind -  _d-3-0 - 'five'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d-3"><span class="_0">five</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isArray( model.d));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 4);
-                ok( isArray( model.d[3]));
+                ok( SMTestUtils.isArray( model.d[3]));
                 ok( model.d[3].length === 1);
                 ok( model.d[3][0] === 'five');
         }});
@@ -826,17 +865,18 @@ test(
 test(
     "bind -  _d-3-1 - 6",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d-3"><span class="_1">6</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "d[3][1]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[3][1]");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isArray( model.d));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 4);
-                ok( isArray( model.d[3]));
+                ok( SMTestUtils.isArray( model.d[3]));
                 ok( model.d[3].length === 2);
                 ok( model.d[3][1] === 6);
         }});
@@ -845,17 +885,18 @@ test(
 test(
     "bind -  _d-3-2 - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d-3"><span class="_2">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[3][2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[3][2]");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isArray( model.d));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 4);
-                ok( isArray( model.d[3]));
+                ok( SMTestUtils.isArray( model.d[3]));
                 ok( model.d[3].length === 3);
                 ok( model.d[3][2] === true);
         }});
@@ -864,18 +905,19 @@ test(
 test(
     "bind -  _d-4-k - 'seven'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d-4"><span class="_k">seven</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
 
-                ok( isArray( model.d));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 5);
 
-                ok( isObject( model.d[ 4]));
+                ok( SMTestUtils.isObject( model.d[ 4]));
 
                 ok( model.d[ 4].k === 'seven');
         }});
@@ -884,19 +926,20 @@ test(
 test(
     "bind -  _d-4-l - 8",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d-4"><span class="_l">8</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "d[4].l");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[4].l");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
 
-                ok( isArray( model.d));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 5);
 
-                ok( isObject( model.d[ 4]));
+                ok( SMTestUtils.isObject( model.d[ 4]));
 
                 ok( model.d[ 4].l === 8);
         }});
@@ -905,19 +948,20 @@ test(
 test(
     "bind -  _d-4-m - false",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d-4"><span class="_m">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[4].m");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[4].m");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
 
-                ok( isArray( model.d));
+                ok( SMTestUtils.isArray( model.d));
                 ok( model.d.length === 5);
 
-                ok( isObject( model.d[ 4]));
+                ok( SMTestUtils.isObject( model.d[ 4]));
 
                 ok( model.d[ 4].m === false);
         }});
@@ -926,14 +970,15 @@ test(
 test(
     "bind -  _e-f - 'nine'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e"><span class="_f">nine</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
                 ok( model.e.f === 'nine');
         }});
     });
@@ -941,15 +986,16 @@ test(
 test(
     "bind -  _e-g - 10",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e"><span class="_g">10</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "e.g");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.g");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
                 ok( model.e.g === 10);
         }});
     });
@@ -957,15 +1003,16 @@ test(
 test(
     "bind -  _e-h - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e"><span class="_h">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "e.h");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.h");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
                 ok( model.e.h === true);
         }});
     });
@@ -973,15 +1020,16 @@ test(
 test(
     "bind -  _e-i-0 - 'eleven'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_0">eleven</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isArray( model.e.i));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
+                ok( SMTestUtils.isArray( model.e.i));
                 ok( model.e.i.length === 1);
                 ok( model.e.i[ 0] === 'eleven');
         }});
@@ -990,16 +1038,17 @@ test(
 test(
     "bind -  _e-i-1 - 12",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_1">12</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "e.i[1]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.i[1]");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isArray( model.e.i));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
+                ok( SMTestUtils.isArray( model.e.i));
                 ok( model.e.i.length === 2);
                 ok( model.e.i[ 1] === 12);
         }});
@@ -1008,16 +1057,17 @@ test(
 test(
     "bind -  _e-i-2 - false",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "e.i[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.i[2]");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isArray( model.e.i));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
+                ok( SMTestUtils.isArray( model.e.i));
                 ok( model.e.i.length === 3);
                 ok( model.e.i[ 2] === false);
         }});
@@ -1026,15 +1076,16 @@ test(
 test(
     "bind -  _e-j-n - 'thirteen'",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_n">thirteen</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isObject( model.e.i));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
+                ok( SMTestUtils.isObject( model.e.i));
                 ok( model.e.i.n === 'thirteen');
         }});
     });
@@ -1042,16 +1093,17 @@ test(
 test(
     "bind -  _e-j-o - 14",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_o">14</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "e.i.o");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.i.o");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isObject( model.e.i));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
+                ok( SMTestUtils.isObject( model.e.i));
                 ok( model.e.i.o === 14);
         }});
     });
@@ -1059,16 +1111,17 @@ test(
 test(
     "bind -  _e-j-p - true",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _e-i"><span class="_p">true</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "e.i.p");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.i.p");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.e));
-                ok( isObject( model.e.i));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.e));
+                ok( SMTestUtils.isObject( model.e.i));
                 ok( model.e.i.p === true);
         }});
     });
@@ -1076,13 +1129,14 @@ test(
 test(
     "bind - with pathStem supplied.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_a">value</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {    
+                var horn = new Horn();
                 var model = horn.bind({pathStem: "/a.b"});
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.a.b.a === "value");
         }});
     });
@@ -1090,14 +1144,15 @@ test(
 test(
     "bind -  that integers can be expressed using hexadecimal notation.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class=" _a">0x10</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "a");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.a === 16);
         }});
     });
@@ -1105,14 +1160,15 @@ test(
 test(
     "bind -  that integers can be expressed using octal notation.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_a">0310667130</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "a");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.a === 52653656);
         }});
     });
@@ -1120,12 +1176,13 @@ test(
 test(
     "bind -  Split key definition using nested html.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _a"><div class="_b"><div class="_c"><span class="_d">-23</span></div></div></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "a.b.c.d");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a.b.c.d");
                 var model = horn.bind();
                 ok( model.a.b.c.d === -23);
         }});
@@ -1134,14 +1191,15 @@ test(
 test(
     "bind -  Embedded JSON Object with string property stored in object in root context.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _0"><span class="data-json">{"a": "hello"}</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
-                ok( isObject( model[0]));
+                ok( SMTestUtils.isArray( model));
+                ok( SMTestUtils.isObject( model[0]));
                 ok( model[ 0].hasOwnProperty( 'a'));
                 ok( model[ 0].a === 'hello');
         }});
@@ -1150,14 +1208,15 @@ test(
 test(
     "bind -  Embedded JSON Object with integer property stored in array root context.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _0"><span class="data-json">{"a": 1}</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
-                ok( isObject( model[ 0]));
+                ok( SMTestUtils.isArray( model));
+                ok( SMTestUtils.isObject( model[ 0]));
                 ok( model[ 0].a === 1);
         }});
   });
@@ -1165,14 +1224,15 @@ test(
 test(
     "bind -  Embedded JSON Object with boolean property stored in array root context.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _0"><span class="data-json">{"a": true}</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isArray( model));
-                ok( isObject( model[ 0]));
+                ok( SMTestUtils.isArray( model));
+                ok( SMTestUtils.isObject( model[ 0]));
                 ok( model[ 0].a === true);
         }});
   });
@@ -1180,13 +1240,14 @@ test(
 test(
     "bind -  Embedded JSON Object with two properties.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _key"><span class="data-json">{"a": true, "b": false}</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model.key));
+                ok( SMTestUtils.isObject( model.key));
                 ok( model.key.a === true);
                 ok( model.key.b === false);
         }});
@@ -1195,17 +1256,18 @@ test(
 test(
     "bind -  Embedded JSON with nested filth.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _key"><span class="data-json">{"a": [1], "b": {"c": false}}</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model.key));
-                ok( isArray( model.key.a));
+                ok( SMTestUtils.isObject( model.key));
+                ok( SMTestUtils.isArray( model.key.a));
                 ok( model.key.a.length === 1);
                 ok( model.key.a[ 0] === 1);
-                ok( isObject( model.key.b));
+                ok( SMTestUtils.isObject( model.key.b));
                 ok( model.key.b.c === false);
 
         }});
@@ -1214,15 +1276,16 @@ test(
 test(
     "bind -  Embedded JSON and type conversion.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _key"><span class="data-json">{"a": 1}</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key.a");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key.a");
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.key));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.key));
                 ok( model.key.a === "1");
         }});
   });
@@ -1230,13 +1293,14 @@ test(
 test(
     "bind -  that two properties can exist in the same context.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_a">one</span><span class="_b">two</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model[ 'a'] === 'one');
                 ok( model[ 'b'] === 'two');
         }});
@@ -1248,20 +1312,21 @@ test(
 test(
     "bind -  Only nodes under rootNode are populated.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div id="root" class="horn"><div id="div0" class="_a">true</div></div><div id="root2" class="horn"><div id="div1" class="_b">false</div></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model;
-                ok( horn.isAttached( $('#root')));
-                ok( horn.isAttached( $('#root2')));
-                setPatternConverter( horn, "BooleanConverter", "a|b");
+                ok( SMUtils.isAttached( $('#root')));
+                ok( SMUtils.isAttached( $('#root2')));
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "a|b");
                 model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.a === true);
                 ok( model.b === false);
-                ok( horn.contains( $('#div0').parents(), $('#root')), "sssss");
+                ok( SMUtils.contains( $('#div0').parents(), $('#root')), "sssss");
                 model.a = false;
                 model.b = true;
                 ok( $('#div0').text() === 'true');
@@ -1275,15 +1340,16 @@ test(
 test(
     "bind -  Single node doing the whole job non JSON.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<span class="horn _propName">true</span>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "propName");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "propName");
                 var model = horn.bind();
                 model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.propName === true);
         }});
     });
@@ -1291,13 +1357,14 @@ test(
 test(
     "bind -  Single node doing the whole job JSON.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<span class="horn _propName data-json">true</span>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.propName === true);
         }});
     });
@@ -1305,13 +1372,14 @@ test(
 test(
     "bind - ABBR node for value, no type conversion.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><abbr class="_key" title="alternative">value</abbr></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === 'alternative');
         }});
     });
@@ -1319,14 +1387,14 @@ test(
 test(
     "bind - ABBR node for value, converted to Integer.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><abbr class="_key" title="12">value</abbr></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key");
+            callback: function() {
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === 12);
         }});
     });
@@ -1334,14 +1402,15 @@ test(
 test(
     "bind - Simple nested in immediate parent.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _z"><div class="horn"><span class="_b">b</span></div><span class="_a">a</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
-                ok( isObject( model.z));
+                ok( SMTestUtils.isObject( model));
+                ok( SMTestUtils.isObject( model.z));
                 ok( model.z.hasOwnProperty( 'a'));
                 ok( model.z.a === 'a');
                 ok( model.b === 'b');
@@ -1353,13 +1422,14 @@ test(
 test(
     "bind - INPUT node for value, no type conversion.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><input class="_key" value="testValue"/></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === 'testValue');
         }});
     });
@@ -1367,14 +1437,15 @@ test(
 test(
     "bind - INPUT node for value, converted to Integer.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><input class="_key" value="12"/></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === 12);
         }});
     });
@@ -1382,14 +1453,15 @@ test(
 test(
     "bind - TEXTAREA node for value, converted to Integer.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><textarea class="_key">12</textarea></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === 12);
         }});
     });
@@ -1397,11 +1469,12 @@ test(
 test(
     "bind - Testing HornPatternConverter.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _key">12</div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var passed = false;
                 var hpc = new HornPatternConverter( {horn: horn});
                 var converter = function( args ) {
@@ -1409,7 +1482,7 @@ test(
                 };
                 hpc.add( "conv.erter", converter);
                 hpc.pattern( "key", "conv.erter");
-                var model = horn.bind();
+                horn.bind();
                 ok( passed);
         }});
     });
@@ -1417,8 +1490,8 @@ test(
 test(
     "bindTo - Testing the population of a template with no type conversion nor pattern matching.",
     function() {
-        ok( !isAttached( $('#newID')));
-        dataTest( {
+        ok( !SMUtils.isAttached( $('#newID')));
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn">' +
                             '    <div class="_a-b-c"><span class="_d">value</span></div>' +
@@ -1426,30 +1499,31 @@ test(
                             '<div id="template">' +
                             '    <div class="_a-b-c"><span class="_d"></span></div>' +
                             '</div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
                 var populatedTemplate = horn.bindTo( {
                     id: 'newID',
                     template: '#template'});
-                ok( isJQueryObject( populatedTemplate));
+                ok( SMTestUtils.isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
-                ok( isAttached( $('#newID')));
+                ok( SMUtils.isAttached( $('#newID')));
                 try {
                     ok($( '._d', $('#newID')).text() === 'updatedValue');
                 } finally {
                     $('#newID').remove();
                 }
-                ok( !isAttached( $('#newID')));
+                ok( !SMUtils.isAttached( $('#newID')));
             }});
     });
 
 test(
     "bindTo - Testing the population of a template with no type conversion - no matching data a.",
     function() {
-        ok( !isAttached( $('#newID')));
-        dataTest( {
+        ok( !SMUtils.isAttached( $('#newID')));
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn">' +
                             '    <div class="_a-b-c"><span class="_d">value</span></div>' +
@@ -1457,30 +1531,31 @@ test(
                             '<div id="template">' +
                             '    <div class="_f-b-c"><span class="_d"></span></div>' +
                             '</div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
-                model.a.b.c.d == 'updatedValue';
+                model.a.b.c.d = 'updatedValue';
                 var populatedTemplate = horn.bindTo( {
                     id: 'newID',
                     template: '#template'});
-                ok( isJQueryObject( populatedTemplate));
+                ok( SMTestUtils.isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
-                ok( isAttached( $('#newID')));
+                ok( SMUtils.isAttached( $('#newID')));
                 try {
                     ok($( '._d', $('#newID')).text() !== 'updatedValue');
                 } finally {
                     $('#newID').remove();
                 }
-                ok( !isAttached( $('#newID')));
+                ok( !SMUtils.isAttached( $('#newID')));
             }});
     });
 
 test(
     "bindTo - Testing the population of a template with no type conversion - no matching data b.",
     function() {
-        ok( !isAttached( $('#newID')));
-        dataTest( {
+        ok( !SMUtils.isAttached( $('#newID')));
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn">' +
                             '    <div id="grabber1" class="_a-b-c"><span id="grabber2" class="_d">value</span></div>' +
@@ -1488,32 +1563,33 @@ test(
                             '<div id="template">' +
                             '    <div class="_a-b-c"><span class="_f"></span></div>' +
                             '</div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 ok( horn.hasHornBinding( $('#grabber1')[0], '', true) === false);
-                ok( isObject( horn.hasHornBinding( $('#grabber2')[0], '')));
+                ok( SMTestUtils.isObject( horn.hasHornBinding( $('#grabber2')[0], '')));
                 model.a.b.c.f = 'updatedValue';
                 var populatedTemplate = horn.bindTo( {
                     id: 'newID',
                     template: '#template'});
-                ok( isJQueryObject( populatedTemplate));
+                ok( SMTestUtils.isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
-                ok( isAttached( $('#newID')));
+                ok( SMUtils.isAttached( $('#newID')));
                 try {
                     ok($( '._d', $('#newID')).text() !== 'upda  tedValue');
                 } finally {
                     $('#newID').remove();
                 }
-                ok( !isAttached( $('#newID')));
+                ok( !SMUtils.isAttached( $('#newID')));
             }});
     });
 
 test(
     "bindTo - Real word case of populating html template from a given data structure - rootNode passed.",
     function() {
-        ok( !horn.isAttached( $('.terms')));
-        dataTest( {
+        ok( !SMUtils.isAttached( $('.terms')));
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div id="newNotice" class="boardtype_events hidden" title="ui.events.label.addNewEvent">' +
                             '    <label for="title" class="main">What*</label>' +
@@ -1542,9 +1618,10 @@ test(
                             '</div>'
                             )}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();                                        
                 horn.debug = true;
-                ok( horn.isAttached( $('.terms')));
+                ok( SMUtils.isAttached( $('.terms')));
                 var date = new Date();
                 horn.option( "defaultModel", {
                     place:          'where',
@@ -1567,21 +1644,22 @@ test(
                 ok( $('._contact').val() === 'contact');
                 ok( $('._description').val() === 'moredetails');
         }});
-        ok( !horn.isAttached( $('.terms')));
+        ok( !SMUtils.isAttached( $('.terms')));
 
     });
 
 test(
     "bindTo - bindTo with pathStem argument supplied.",
     function() {
-        ok( !isAttached( $('#newID')));
-        dataTest( {
+        ok( !SMUtils.isAttached( $('#newID')));
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn _a-b-c-d">value</div>' +
                             '<div id="template">' +
                             '    <div class="_b-c-d" id="xx"></div>' +
                             '</div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
@@ -1589,15 +1667,15 @@ test(
                     pathStem: '/a',
                     id: 'newID',
                     template: '#template'});
-                ok( isJQueryObject( populatedTemplate));
+                ok( SMTestUtils.isJQueryObject( populatedTemplate));
                 $(populatedTemplate).appendTo( $('body'));
-                ok( isAttached( $('#newID')));
+                ok( SMUtils.isAttached( $('#newID')));
                 try {
                     ok($( '#xx', $('#newID')).text() === 'updatedValue');
                 } finally {
                     $('#newID').remove();
                 }
-                ok( !isAttached( $('#newID')));
+                ok( !SMUtils.isAttached( $('#newID')));
             }});
     });
 
@@ -1607,20 +1685,21 @@ test(
 test(
     "blankModelEntries - returns expected blank String model entries, with and without path - all blank node values",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0"></span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0"></span><span class="_1"></span></div></div></div></div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 horn.bind();
-                ok( arrayCompare(
-                        ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
-                        horn.blankModelEntries()));
-                ok( arrayCompare(
-                        ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
-                        horn.blankModelEntries( {path: "b"})));
-                ok( arrayCompare(
-                     ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
-                     horn.blankModelEntries( {path: "b", inspectDOM: true})));
+                ok( SMTestUtils.arrayCompare(
+                    ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                    horn.blankModelEntries()));
+                ok( SMTestUtils.arrayCompare(
+                    ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                    horn.blankModelEntries( {path: "b"})));
+                ok( SMTestUtils.arrayCompare(
+                    ["b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
+                    horn.blankModelEntries( {path: "b", inspectDOM: true})));
             }});
     }
 );
@@ -1628,17 +1707,18 @@ test(
 test(
     "blankModelEntries - returns expected blank String model entries, with and without path - mixed node values",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0">zz</span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0">xxx</span><span id="_x" class="_1"></span></div></div></div></div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();                                                
                 horn.bind().x = "";
-                ok( arrayCompare( ["a", "b[1]", "b.c.d", "b.c.e[1]"],
+                ok( SMTestUtils.arrayCompare( ["a", "b[1]", "b.c.d", "b.c.e[1]"],
                         horn.blankModelEntries()));
-                ok( arrayCompare( ["b[1]", "b.c.d", "b.c.e[1]"],
+                ok( SMTestUtils.arrayCompare( ["b[1]", "b.c.d", "b.c.e[1]"],
                         horn.blankModelEntries( {path: "b"})));
                 horn.hornNodeValue( {node: $('#_x'), value: "a"});
-                ok( arrayCompare( ["b[1]", "b.c.d"],
+                ok( SMTestUtils.arrayCompare( ["b[1]", "b.c.d"],
                         horn.blankModelEntries( {path: "b", inspectDOM: true})));
             }});
     }
@@ -1650,10 +1730,11 @@ test(
 test(
     "nodeForPath - bind a graph, nodeForPath for known path has expected ID",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0">zz</span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0">xxx</span><span id="xqs" class="_1">ourValue</span></div></div></div></div>')}],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
                 ok( $(horn.nodeForPath( "b.c.e[1]")).attr( 'id') === 'xqs');
             }});
@@ -1666,12 +1747,13 @@ test(
 test(
     "reset - the model is cleared upon reset and the 'readOnly' option is reset.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 horn.reset();
@@ -1687,12 +1769,13 @@ test(
 test(
     "unbind - unbind all by not defining an argument.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
@@ -1709,12 +1792,13 @@ test(
 test(
     "unbind - unbind all using regex.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
@@ -1731,12 +1815,13 @@ test(
 test(
     "unbind - unbind a single property.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn _d"><span class="_2">false</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "d[2]");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
@@ -1756,16 +1841,16 @@ test(
 test(
     "updateDOM - TEXTAREA node for value, converted to Boolean, repopulated and checked.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn">baskdfhjdshfds h<textarea class="_key" >true</textarea>akdsjf kljdskf jdskf</div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "key");
-
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
+                ok( SMUtils.isAttached( $('._key')));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === true);
                 model.key = false;
                 horn.updateDOM();
@@ -1776,17 +1861,18 @@ test(
 test(
     "updateDOM - ABBR node for value, converted to Boolean, repopulated and checked.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn">baskdfhjdshfds h<abbr class="_key" title="true">value</abbr> akdsjf kljdskf jdskf</div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model;
-                setPatternConverter( horn, "BooleanConverter", "key");
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
 
                 model = horn.bind();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
+                ok( SMUtils.isAttached( $('._key')));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === true);
                 model.key = false;
                 horn.updateDOM();
@@ -1797,16 +1883,17 @@ test(
 test(
     "updateDOM - integer from horn, extracted, modified in model, repopulated and checked.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_key">-1</span></div>'),}
+                nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
 
                 var model = horn.bind();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
+                ok( SMUtils.isAttached( $('._key')));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === -1);
                 model.key = 13;
                 horn.updateDOM();
@@ -1817,15 +1904,16 @@ test(
 test(
     "updateDOM - testing the correct nodes are reruned from populate, in the correct order.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_key1">a</span><span class="_key2">b</span></div>'),}
+                nodes:  $('<div class="horn"><span class="_key1">a</span><span class="_key2">b</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( horn.isAttached( $('._key1')));
-                ok( horn.isAttached( $('._key2')));
-                ok( isObject( model));
+                ok( SMUtils.isAttached( $('._key1')));
+                ok( SMUtils.isAttached( $('._key2')));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key1 === 'a');
                 ok( model.key2 === 'b');
                 model.key1 = 'b';
@@ -1843,16 +1931,17 @@ test(
 test(
     "updateDOM - integer from horn, extracted, modified in model, repopulated and checked.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_key">-1</span></div>'),}
+                nodes:  $('<div class="horn"><span class="_key">-1</span></div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "IntegerConverter", "key");
+            callback: function() {
+                var horn = new Horn();
+                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
 
                 var model = horn.bind();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
+                ok( SMUtils.isAttached( $('._key')));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === -1);
                 model.key = 13;
                 horn.updateDOM();
@@ -1863,16 +1952,16 @@ test(
 test(
     "updateDOM - INPUT node for value, converted to Boolean, repopulated and checked.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn">baskdfhjdshfds h<input class="_key" value="true"/>akdsjf kljdskf jdskf</div>')}
             ],
-            callback: function( horn ) {
-                setPatternConverter( horn, "BooleanConverter", "key");
-
+            callback: function() {
+                var horn = new Horn();                
+                SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
-                ok( horn.isAttached( $('._key')));
-                ok( isObject( model));
+                ok( SMUtils.isAttached( $('._key')));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === true);
                 model.key = false;
                 horn.updateDOM();
@@ -1883,13 +1972,14 @@ test(
 test(
     "updateDOM - TEXTAREA node for value, no type conversion.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="horn"><textarea class="_key">testValue</textarea></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var model = horn.bind();
-                ok( isObject( model));
+                ok( SMTestUtils.isObject( model));
                 ok( model.key === 'testValue');
         }});
     });
@@ -1899,11 +1989,12 @@ test(
 test(
     "walkDOM - div/span test.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="_a"><span id="b">adsfadsfds</span></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var count = 0;
                 var expected = [
                     ["a", $('._a')]
@@ -1922,11 +2013,12 @@ test(
 test(
     "walkDOM - more involved tag nesting.",
     function() {
-        dataTest( {
+        SMTestUtils.dataTest( {
             nodes: [ {
                 nodes:  $('<div class="_a"><div class="_aa"><span id="a"></span></div><div class="_ab"><span id="b"></span></div></div><div class="_b"><div class="_ba"><span id="c"></span></div><div class="_bb"><span id="d"></span></div></div>')}
             ],
-            callback: function( horn ) {
+            callback: function() {
+                var horn = new Horn();
                 var count = 0;
                 var expected = [
                     ["a", $('._a')],
@@ -1937,7 +2029,7 @@ test(
                 ];
                 var f = function( node, path ) {
                     ok(path === expected[ count][ 0], "path");
-                    ok(horn.compare( node, expected[ count++][ 1]), "node");
+                    ok(SMUtils.compare( node, expected[ count++][ 1]), "node");
                     return true;
                 };
                 horn.walkDOM( $('._a'), f);
@@ -1949,14 +2041,14 @@ test(
 test(
     "hornConverter - matching pattern for unknown converter",
     function() {
-        dataTest( {
-            nodes: [ {
-                nodes:  $('<div class="horn _value">12</div>')}
-            ],
-            callback: function( horn ) {
-                hornConverter.reset( horn)
+        SMTestUtils.dataTest( {
+            nodes: [ { nodes:  $('<div class="horn _value">12</div>')} ],
+            callback: function() {
+                var horn = new Horn();
+                hornConverter.reset( horn);
                 hornConverter.pattern( "*", "unknownConverter");
                 var model = horn.bind();
                 ok( model.value === "12");
-        }});
+            }
+        });
     });

@@ -15,7 +15,7 @@
  *
  *  @constructor
  *
- *  @return {Horn} a newly initialised Horn instance
+ *  @return {Horn} a newly initialised <code>Horn</code> instance
  */
 var Horn = function() {
 
@@ -29,21 +29,21 @@ var Horn = function() {
      * @private
      * @function
      */
-    var addBinding = this.scope( function( args ) {
+    var addBinding = SMUtils.bind( function( args ) {
         var rv;
         var details;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
         if ( (args.readOnly === false) && (!args.isJSON) ) {
-            if ( this.isDefinedNotNull( details) ) {
+            if ( SMUtils.isDefinedNotNull( details) ) {
                 args.context = details.context;
                 args.key = details.key;
             }
-            if ( !this.isDefinedNotNull( state.bindings) ) {
+            if ( !SMUtils.isDefinedNotNull( state.bindings) ) {
                 state.bindings = {}; }
             rv = {node: args.node, value: args.value};
-            if ( this.isDefinedNotNull( args.context) ) {
+            if ( SMUtils.isDefinedNotNull( args.context) ) {
                 rv.context = args.context;
                 rv.key = args.key;
             }
@@ -55,14 +55,14 @@ var Horn = function() {
      * @private
      * @function
      */
-    var addBindings = this.scope( function( args ) {
-        this.each(
+    var addBindings = SMUtils.bind( function( args ) {
+        SMUtils.each(
             args.bindings,
             function( i, newArgs ) {
                 var modelValue;
                 var textValue;
                 var ref = getModelReference( newArgs);
-                if ( this.isDefinedNotNull( ref) )  {
+                if ( SMUtils.isDefinedNotNull( ref) )  {
                     modelValue = ref.ref[ ref.key];
                     textValue = convert( {
                         value: modelValue,
@@ -71,7 +71,7 @@ var Horn = function() {
                         node:  newArgs.node
                     });
                     if ( (textValue === undefined) &&
-                        this.isDefinedNotNull( modelValue)) {
+                        SMUtils.isDefinedNotNull( modelValue)) {
                         textValue = modelValue + "";
                     }
                     newArgs.text = textValue;
@@ -92,14 +92,14 @@ var Horn = function() {
      * @private
      * @function
      */
-    var addJSONBindings = this.scope(
+    var addJSONBindings = SMUtils.bind(
         function( args ) {
             var defaults = {type:  'fromJSON', node:  args.node,
                 readOnly: args.readOnly};
-            var addJSONHelper = this.scope( function( vargs ) {
+            var addJSONHelper = SMUtils.bind( function( vargs ) {
                 var oldValue = vargs.value;
                 vargs.value = convert( vargs);
-                if ( !this.isDefinedNotNull( vargs.value) ) {
+                if ( !SMUtils.isDefinedNotNull( vargs.value) ) {
                     vargs.value = oldValue;
                 }
                 addBinding( vargs);
@@ -107,7 +107,7 @@ var Horn = function() {
             var jsonData = $.evalJSON( args.text);
             if ( typeof jsonData === 'object' ) {
                 this.traverse( jsonData,
-                    this.scope( function( k, v ) {
+                    SMUtils.bind( function( k, v ) {
                         addJSONHelper( $.extend( defaults, { value: v,
                             path:  args.path + k})); }, this));
             } else {
@@ -120,9 +120,9 @@ var Horn = function() {
      * @private
      * @function
      */
-    var convert = this.scope( function ( args ) {
+    var convert = SMUtils.bind( function ( args ) {
         var converter = state.opts.converter;
-        if ( !this.isDefinedNotNull( converter) ) { return undefined; }
+        if ( !SMUtils.isDefinedNotNull( converter) ) { return undefined; }
         return converter.call( this, $.extend( {}, args,
             {path: this.toExternalPath( args.path)}))
     }, this);
@@ -131,14 +131,14 @@ var Horn = function() {
      * @private
      * @function
      */
-    var extract = this.scope( function( args ) {
+    var extract = SMUtils.bind( function( args ) {
         var _this = this;
-        var pathStem = this.definesProperty( args, 'pathStem') ?
+        var pathStem = SMUtils.definesProperty( args, 'pathStem') ?
             this.toInternalPath( args.pathStem) : undefined;
-        var rootNodes = this.definesProperty( args, 'nodes') ?
+        var rootNodes = SMUtils.definesProperty( args, 'nodes') ?
             $(args.nodes) : this.rootNodes();
         setDefaultModel();
-        this.each( rootNodes,
+        SMUtils.each( rootNodes,
             function( i, n ) {
                 var inGraph = false;
                 this.walkDOM( n,
@@ -159,7 +159,7 @@ var Horn = function() {
                                 type:  'fromText',
                                 node:  bindingData.node
                             });
-                            if ( !_this.isDefinedNotNull( bindingData.value) ) {
+                            if ( !SMUtils.isDefinedNotNull( bindingData.value) ) {
                                 bindingData.value = bindingData.text;
                             }
                             addBinding( bindingData);
@@ -177,19 +177,19 @@ var Horn = function() {
      * @private
      * @function
      */
-    var getModelReference = this.scope( function( args ) {
+    var getModelReference = SMUtils.bind( function( args ) {
         var rv;
         var tokens = this.pathToTokens( args.path);
         var length = tokens.length;
         if ( length > 0 ) {
             rv = {ref: state.model, key: tokens[ length - 1]};
             tokens.length = tokens.length - 1;
-            this.each( tokens, function( i, n ) {
-                if ( this.isDefinedNotNull( rv.ref) ) {
+            SMUtils.each( tokens, function( i, n ) {
+                if ( SMUtils.isDefinedNotNull( rv.ref) ) {
                     if ( rv.ref.hasOwnProperty( n) ) { rv.ref = rv.ref[ n]; }
                 } else { return false; }
             }, this);
-            if ( !this.isDefinedNotNull( rv.ref) ) { rv = undefined; }
+            if ( !SMUtils.isDefinedNotNull( rv.ref) ) { rv = undefined; }
         }
         return rv;
     }, this);
@@ -198,7 +198,7 @@ var Horn = function() {
      *  @private
      *  @function
      */
-    var handleTemplateBinding = this.scope( function( node, path, bindings ) {
+    var handleTemplateBinding = SMUtils.bind( function( node, path, bindings ) {
         var bindingData = this.hasHornBinding( node);
         if ( (bindingData !== false) && !bindingData.isJSON ) {
             bindingData.path = path;
@@ -212,14 +212,14 @@ var Horn = function() {
      * @private
      * @function
      */
-    var render = this.scope( function( args ) {
+    var render = SMUtils.bind( function( args ) {
         var rootNode = args.rootNode;
         var binding = args.binding;
         var modelValue = binding.context[ binding.key];
         var textValue;
         var cArgs;
         if ( modelValue !== binding.value ) {
-            if ( !rootNode || (rootNode && this.contains(
+            if ( !rootNode || (rootNode && SMUtils.contains(
                 $(binding.node).parents(), rootNode)) ) {
                 cArgs = {
                     value: modelValue,
@@ -227,7 +227,7 @@ var Horn = function() {
                     type:  'toText',
                     node: binding.node};
                 textValue = convert( cArgs);
-                if ( !this.isDefinedNotNull( textValue) ) {
+                if ( !SMUtils.isDefinedNotNull( textValue) ) {
                     textValue = modelValue + "";
                 }
                 this.hornNodeValue( {node: binding.node, value: textValue});
@@ -241,10 +241,10 @@ var Horn = function() {
      * @private
      * @function
      */
-    var setDefaultArgs = this.scope( function( args ) {
-        var existingArgs = this.definesProperty(
+    var setDefaultArgs = SMUtils.bind( function( args ) {
+        var existingArgs = SMUtils.definesProperty(
             args, 'args') ? args.args : {};
-        if ( this.definesProperty( args, 'defaults') ) {
+        if ( SMUtils.definesProperty( args, 'defaults') ) {
             $.extend( existingArgs, args.defaults);
         }
         return existingArgs;
@@ -254,10 +254,10 @@ var Horn = function() {
      * @private
      * @function
      */
-    var setDefaultModel = this.scope( function() {
-        if ( !this.isDefinedNotNull( state.model)
+    var setDefaultModel = SMUtils.bind( function() {
+        if ( !SMUtils.isDefinedNotNull( state.model)
             && state.opts.hasOwnProperty( 'defaultModel') ) {
-            state.model = state.opts.defaultModel;
+            state.model = state.opts.defaultModel; // @todo clone here
         }
     }, this);
 
@@ -265,13 +265,13 @@ var Horn = function() {
      * @private
      * @function
      */
-    var setValue = this.scope( function( value, path, parentContext ) {
+    var setValue = SMUtils.bind( function( value, path, parentContext ) {
         var token;
         var numTokens;
         var subContext;
         if ( typeof path === 'string' ) {
             path = this.pathToTokens( path);
-            if ( !this.isDefinedNotNull( state.model) ) {
+            if ( !SMUtils.isDefinedNotNull( state.model) ) {
                 state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
             }
             parentContext = state.model;
@@ -369,13 +369,13 @@ var Horn = function() {
      */
     this.blankModelEntries = function( args ) {
         var blankPaths = [];
-        var pathDefined = this.definesProperty( args, 'path');
-        var inspectDOM = this.definesProperty( args, 'inspectDOM') &&
+        var pathDefined = SMUtils.definesProperty( args, 'path');
+        var inspectDOM = SMUtils.definesProperty( args, 'inspectDOM') &&
             (args.inspectDOM === true);
         var path = pathDefined ? this.toInternalPath( args.path) : undefined;
-        this.each( state.bindings, function( i, n ) {
-            if ( (!pathDefined || this.hasPrefix( i, path)) ) {
-                if (((inspectDOM && this.isDefinedNotNull( n.node)) ?
+        SMUtils.each( state.bindings, function( i, n ) {
+            if ( (!pathDefined || SMUtils.hasPrefix( i, path)) ) {
+                if (((inspectDOM && SMUtils.isDefinedNotNull( n.node)) ?
                     this.hornNodeValue( {node: n.node}) : n.value) === "") {
                     blankPaths.push(this.toExternalPath(i));
                 }
@@ -406,9 +406,9 @@ var Horn = function() {
      *      selected by this argument will not be cloned.
      *  @param {Element|String} [args.template] jQuery node or selector - these
      *      nodes will be cloned and the root node will have its 'id' attribute
-     *      removed and possibly set to 'args.newID'
+     *      removed and set to 'args.newID' if supplied
      *  @param {String} [args.id] the new 'id' attribute value applied to nodes
-     *      cloned or selected using 'args.template'
+     *      cloned, if using 'args.template'
      *  @param {String} [args.pathStem] a property path prefix appended to all
      *      walked DOM nodes before binding to model values
      *
@@ -420,20 +420,20 @@ var Horn = function() {
         var node;
         var pathStem;
         var bindings = [];
-        if ( this.definesProperty( args, 'node') ) {
+        if ( SMUtils.definesProperty( args, 'node') ) {
             node = $(args.node);
         } else {
             node = $(args.template).clone();
             node.removeAttr( "id");
-            if ( this.definesProperty( args, 'id') ) {
+            if ( SMUtils.definesProperty( args, 'id') ) {
                node.attr( "id", args.id);
             }
         }
         setDefaultModel();
-        pathStem = this.definesProperty( args, 'pathStem') ?
+        pathStem = SMUtils.definesProperty( args, 'pathStem') ?
             this.toInternalPath( args.pathStem) : '';
         this.walkDOM( node,
-            this.scope( function( n, path ) {
+            SMUtils.bind( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
             }, this), pathStem);
         addBindings({bindings: bindings});
@@ -482,9 +482,9 @@ var Horn = function() {
      */
     this.nodeForPath = function( path ) {
         path = this.toInternalPath( path);
-        return (this.isDefinedNotNull( state.bindings) &&
-            this.isDefinedNotNull( state.bindings[path]) &&
-            this.isDefinedNotNull( state.bindings[path].node)) ?
+        return (SMUtils.isDefinedNotNull( state.bindings) &&
+            SMUtils.isDefinedNotNull( state.bindings[path]) &&
+            SMUtils.isDefinedNotNull( state.bindings[path].node)) ?
                 state.bindings[ path].node : undefined;
     };
 
@@ -648,12 +648,12 @@ var Horn = function() {
      *  @public
      */
     this.unbind = function( args ) {
-        var definesPath = this.definesProperty( args, 'path');
+        var definesPath = SMUtils.definesProperty( args, 'path');
         var internalPath = definesPath ? this.toInternalPath( args.path) :
             undefined;
-        var definesPattern = this.definesProperty( args, 'pattern');
+        var definesPattern = SMUtils.definesProperty( args, 'pattern');
         var unbindAll = !definesPattern && !definesPath;
-        this.each( state.bindings,
+        SMUtils.each( state.bindings,
             function( i, n ) {
                 if (    unbindAll ||
                         (definesPath && (i === internalPath)) ||
@@ -678,9 +678,9 @@ var Horn = function() {
      */
     this.updateDOM = function( rootNode ) {
         var alteredNodes = [];
-        this.each( state.bindings, function( i, n ) {
+        SMUtils.each( state.bindings, function( i, n ) {
             var node = render( {rootNode: rootNode, binding: n, path: i});
-            if ( this.isDefinedNotNull( node) ) { alteredNodes.push( node); }
+            if ( SMUtils.isDefinedNotNull( node) ) { alteredNodes.push( node); }
         }, this);
         return alteredNodes;
     };
@@ -717,114 +717,6 @@ Horn.prototype = {
     },
 
     /**
-     *  Determines if two values are the same.
-     *  <p>
-     *  Uses the <code>compare</code> function if it is defined on either
-     *  argument else, the strict equality operator <code>===</code> is put
-     *  to work.
-     *  <p>
-     *  Handles de-referencing jQuery instances.
-     *
-     *  @param i a value to compare
-     *  @param j a value to compare
-     *
-     *  @return {Boolean} <code>true</code> if the two values are equal,
-     *      <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    compare: function( i, j ) {
-        if ( i instanceof jQuery ) { i = i.get(0); }
-        if ( j instanceof jQuery ) { j = j.get(0); }
-        return (i.compare && i.compare( j)) ||
-            (j.compare && j.compare( i)) || (i === j);
-    },
-
-    /**
-     *  Returns <code>true</code> if a container contains an item.
-     *
-     *  @param {Object|Array} container the container to search
-     *  @param {Object} item the item to locate
-     *
-     *  @return {Boolean} <code>true</code> if the item was found,
-     *      <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    contains: function( container, item ) {
-        return this.indexOf(container, item) !== -1;
-    },
-
-    /**
-     *  Shallow copy properties from source to destination objects.
-     *  <p>
-     *  Copies neither, <code>undefined</code> nor prototypical, properties.
-     *  <p>
-     *  The source of property names to copy is given by the property names
-     *  defined in 'args.dest' unless the optional 'args.props' argument is
-     *  supplied, in which case it is used instead.
-     *
-     *  @param {Object} args
-     *  @param {Object} args.src the property source
-     *  @param {Object} args.dest the property destination
-     *  @param {Object} [args.props] an alternative source of property names
-     *
-     *  @methodOf Horn.prototype
-     */
-    copyInto: function( args ) {
-        var val;
-        this.each( this.isDefinedNotNull( args.props) ?
-            args.props : args.dest, function( i, n ) {
-            if ( args.src.hasOwnProperty( i) ) {
-                val = args.src[ i];
-                if ( val !== undefined ) { args.dest[ i] = val; }
-            } }, this);
-    },
-
-    /**
-     *  Determines if a collection defines a named property.
-     *  <p>
-     *  The property can be neither, prototypical nor <code>undefined</code>
-     *  nor <code>null</code>.
-     *
-     *  @param args the object to check for the given property
-     *  @param propertyName the name of the property to check for
-     *
-     *  @return {Boolean} <code>true</code> if the arguments do define the given
-     *      property, <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    definesProperty: function( args, propertyName ) {
-        return (args !== undefined) && (args.hasOwnProperty( propertyName)) &&
-            this.isDefinedNotNull( args[ propertyName]);
-    },
-
-    /**
-     *  Iterates over collection types and executes a callback for each value
-     *  encountered.
-     *  <p>
-     *  An optional scope context can be provided which will provide the
-     *  <code>this</code> for the callback function.
-     *  <p>
-     *  The callback function should have the following signature
-     *  <strong>( i, n )</strong> : where 'i' is the propertyName of the item
-     *  within its container (for objects and arrays and strings) and 'n' is the
-     *  item.
-     *
-     *  @param {Object} collection the item to iterate over
-     *  @param {Function} fn the callback function which will be called for each
-     *      item
-     *  @param {Object} [ctx] the scope under which to execute the callback.
-     *
-     *  @methodOf Horn.prototype
-     */
-    each: function( collection, fn, ctx ) {
-        if ( (collection === undefined) || (collection === null) ) { return; }
-        $.each( collection, ctx ? this.scope( fn, ctx) : fn);
-    },
-
-    /**
      *  Determines if a given node in the context of a Horn DOM tree is a value
      *  node or not.
      *  <p>
@@ -843,11 +735,8 @@ Horn.prototype = {
         var theContained;
         var nodeName;
         var contents = $($(node).contents());
-        var isPathDefined = this.isPathDefined(
-            this.pathIndicator(node));
-        var cd = {
-            isJSON: this.hasJSONIndicator(node),
-            node: node};
+        var isPathDefined = this.isPathDefined( this.pathIndicator(node));
+        var cd = { isJSON: this.hasJSONIndicator(node), node: node};
         var contentsSize = contents.size();
         var isEmptyNode = contentsSize === 0;
         if ( (contentsSize === 1) || (isEmptyNode && !cd.isJSON))  {
@@ -870,25 +759,6 @@ Horn.prototype = {
     },
 
     /**
-     *  Is the given <code>String</code> value prefixed by a given stem.
-     *  <p>
-     *  'Stem' can be a regular expression pattern.
-     *
-     *  @param value the value to test
-     *  @param stem the candidate prefix for the given value
-     *
-     *  @return {Boolean} <code>true</code> if the given <code>String</code> is
-     *      prefixed, by the given stem, <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    hasPrefix: function ( value, stem ) {
-        return  (stem.length > 0) &&
-            ((value = value.match( "^" + stem)) !== null) &&
-                (value.toString() === stem);
-    },
-
-    /**
      *  Sets or retrieves a DOM node's Horn text.
      *  <p>
      *  The value retrieved is HTML un-escaped.
@@ -902,7 +772,7 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     hornNodeValue: function( args ) {
-        var isSet = this.definesProperty( args, 'value');
+        var isSet = SMUtils.definesProperty( args, 'value');
         var jNode = $(args.node);
         switch (jNode[0].nodeName.toLowerCase()) {
             case "input": case "textarea":
@@ -923,31 +793,6 @@ Horn.prototype = {
     },
 
     /**
-     *  Determines the index of an item with a container.
-     *  <p>
-     *  Returns the <code>Number</code> array index, OR {String} property name
-     *  of the given item relative to its container if the item was found else
-     *  <code>undefined</code>.
-     *
-     *  @param container {Object|Array} container the item collection
-     *  @param item item the element for which to determine its index
-     *
-     *  @return the index of the item in its container else
-     *
-     *  @methodOf Horn.prototype
-     */
-    indexOf: function( container, item, index ) {
-        index = -1;
-        this.each( container, function( i, o ) {
-            if ( this.compare( o, item ) ) {
-                index = i;
-                return false;
-            }
-        }, this);
-        return index;
-    },
-
-    /**
      *  Determines if a given value represents a property path.
      *  <p>
      *  The 'path' argument is converted to a <code>String</code> before
@@ -961,37 +806,7 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     isPathDefined: function ( path ) {
-        return this.isDefinedNotNull( path) && ((path + "").trim() !== '');
-    },
-
-    /**
-     *  Determines if an element is attached to the DOM or not.
-     *
-     *  @param ref a DOM element to check for being attached
-     *
-     *  @return {Boolean} <code>true</code> if the element is attached,
-     *      <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    isAttached: function( node ) {
-        return $(node).parents(':last').is('html');
-    },
-
-    /**
-     *  Determines if a value is neither, <code>undefined</code> nor
-     *  <code>null</code>?
-     *
-     *  @param value the value to check
-     *
-     *  @return {Boolean} <code>true</code> if the value is neither,
-     *      <code>undefined</code> nor <code>null</code>,
-     *      <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    isDefinedNotNull: function( value ) {
-        return (value !== undefined) && (value !== null);
+        return SMUtils.isDefinedNotNull( path) && ((path + "").trim() !== '');
     },
 
     /**
@@ -1007,68 +822,9 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     pathToTokens: function( path ) {
-        return path ? ((this.hasPrefix( path, "-") ||
-            this.hasPrefix( path, "_"))  ?
+        return path ? ((SMUtils.hasPrefix( path, "-") ||
+            SMUtils.hasPrefix( path, "_"))  ?
                 path.substring( 1) : path).split( "-") : undefined;
-    },
-
-    /**
-     *  Removes a named property from an object if it exists and is non
-     *  prototypical.
-     *
-     *  @param {Object} object the object to remove the property from
-     *  @param {String} propName the name of the property to remove
-     *
-     *  @return {Boolean} <code>true</code> if the property was defined and was
-     *      removed, <code>false</code> otherwise
-     *
-     *  @methodOf Horn.prototype
-     */
-    removeProperty: function( object, propName ) {
-        return object.hasOwnProperty( propName) && delete object[ propName];
-    },
-
-    /**
-     *  Returns a new function that executes the given one under a new head
-     *  context.
-     *
-     *  @param {Function} fn the function to bind a new context to
-     *  @param {Object} ctx the new 'this' context the function will be executed
-     *      under
-     *
-     *  @return {Function} a new function that calls the supplied, under a new
-     *      context
-     *
-     *  @methodOf Horn.prototype
-     */
-    scope: function( fn, ctx ) {
-        return function() { return fn.apply(ctx, arguments); };
-    },
-
-    /**
-     *  Execute a callback function for each token of a split
-     *  <code>String</code>.
-     *  <p>
-     *  The value is converted to a <code>String</code> and then split, using
-     *  either a supplied delimiter or the default delimiter, " ".
-     *
-     *  @param value converted to a <code>String</code> and then split
-     *  @param {Function} callback a function with the following signature
-     *  <code>( i, token )</code> - where i is the index of the token
-     *      (zero based), and token is the current token
-     *  @param {String} [delimiter] a delimiter used to split 'object's
-     *
-     *  @methodOf Horn.prototype
-     */
-    splitEach: function( value, callback, delimiter ) {
-        var breakOut = false;
-        this.each( (value + "").split( this.isDefinedNotNull( delimiter) ?
-            delimiter : " "), function( i, token ) {
-                if ( token.trim() !== '' ) {
-                    breakOut = breakOut || (callback( token) === false);
-                    return !breakOut;
-                }
-        });
     },
 
     /**
@@ -1102,7 +858,7 @@ Horn.prototype = {
     toInternalPath: function( path ) {
         var rv = path.replace(
             /(\[(\w+)\])/g, ".$2").replace( /\./g, "-").replace( "/", "");
-        return this.hasPrefix( rv, "-") ? rv.substring(1) : rv;
+        return SMUtils.hasPrefix( rv, "-") ? rv.substring(1) : rv;
     },
 
     /**
@@ -1133,7 +889,7 @@ Horn.prototype = {
      */
     traverse: function( value, callback, path, context, propName ) {
         if ( (value instanceof Object) || (value instanceof Array) ) {
-            this.each( value, function( k, v ) { this.traverse( v, callback,
+            SMUtils.each( value, function( k, v ) { this.traverse( v, callback,
                 path ? (path + '-' + k) : ("-" + k), value, k);
             }, this);
         } else { callback( path, value, context, propName); }
@@ -1163,10 +919,10 @@ Horn.prototype = {
      *  @methodOf Horn.prototype
      */
     walkDOM: function( node, callback, path ) {
-        if ( !this.isDefinedNotNull( path) ) { path = ''; }
+        if ( !SMUtils.isDefinedNotNull( path) ) { path = ''; }
         path = this.combinePaths( path, this.pathIndicator(node));
         if ( callback( node, path) === true ) {
-            this.each( $(node).children(), function( i, n ) {
+            SMUtils.each( $(node).children(), function( i, n ) {
                 this.walkDOM( n, callback, path); }, this);
         }
     }
