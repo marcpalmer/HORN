@@ -200,10 +200,11 @@ SMUtils.cloneAndStripID = function ( idOrObject, newID ) {
  *  argument else, the strict equality operator <code>===</code> is put
  *  to work.
  *  <p>
- *  Handles de-referencing jQuery instances.
+ *  Handles de-referencing jQuery instances. jQuery lists always compare
+ *  <code>fasle</code>.
  *
- *  @param i a value to compare
- *  @param j a value to compare
+ *  @param i a value to compare to 'j'
+ *  @param j a value to compare to 'i'
  *
  *  @return {Boolean} <code>true</code> if the two values are equal,
  *      <code>false</code> otherwise
@@ -211,10 +212,22 @@ SMUtils.cloneAndStripID = function ( idOrObject, newID ) {
  *  @public
  */
 SMUtils.compare = function( i, j ) {
-    if ( i instanceof jQuery ) { i = i.get(0); }
-    if ( j instanceof jQuery ) { j = j.get(0); }
-    return (i.compare && i.compare( j)) ||
-        (j.compare && j.compare( i)) || (i === j);
+
+    if ( i instanceof jQuery ) {
+        if ( i.length !== 1 ) { return false; }
+        i = i.get(0);
+    }
+
+    if ( j instanceof jQuery ) {
+        if ( j.length !== 1 ) { return false; }
+        j = j.get(0);
+    }
+
+    return (SMUtils.isDefinedNotNull( i) &&
+        SMUtils.isDefinedNotNull( j) &&
+        SMUtils.isDefinedNotNull( i.compare) &&
+        SMUtils.isDefinedNotNull( j.compare) ) ?
+            i.compare( j) && j.compare( i) : (i === j);
 };
 
 /**

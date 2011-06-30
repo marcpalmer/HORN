@@ -216,8 +216,7 @@ test(
                 horn.option( "defaultModel", model);
                 horn.bind();
                 var extractedModel = horn.model();
-                ok( extractedModel === model);
-
+                ok( extractedModel !=== model);
                 ok( SMTestUtils.isObject( extractedModel));
                 ok( SMTestUtils.isArray( extractedModel.notices));
                 ok( extractedModel.notices.length === 0);

@@ -256,9 +256,9 @@ var Horn = function() {
      * @function
      */
     var setDefaultModel = SMUtils.bind( function() {
-        if ( !SMUtils.isDefinedNotNull( state.model)
-            && state.opts.hasOwnProperty( 'defaultModel') ) {
-            state.model = state.opts.defaultModel; // @todo clone here
+        if ( !SMUtils.isDefinedNotNull( state.model) &&
+            SMUtils.isDefinedNotNull( state.opts.defaultModel) ) {
+            state.model = $.evalJSON( $.toJSON( state.opts.defaultModel));
         }
     }, this);
 

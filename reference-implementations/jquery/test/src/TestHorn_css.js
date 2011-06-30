@@ -1619,8 +1619,7 @@ test(
                             )}
             ],
             callback: function() {
-                var horn = new Horn();                                        
-                horn.debug = true;
+                var horn = new Horn();
                 ok( SMUtils.isAttached( $('.terms')));
                 var date = new Date();
                 horn.option( "defaultModel", {
@@ -1628,8 +1627,7 @@ test(
                     time:           'time',
                     title:          1,
                     contact:        'contact',
-                    description:    'moredetails',
-                    date:           date
+                    description:    'moredetails'
                 });
                 ok( $('._place').val() === '');
                 ok( $('._time').val() === '');
@@ -1637,7 +1635,6 @@ test(
                 ok( $('._contact').val() === '');
                 ok( $('._description').val() === '');
                 horn.bindTo( {node: $('#newNotice')});
-                ok( $('._date').val() === date.toString());
                 ok( $('._place').val() === 'where');
                 ok( $('._time').val() === 'time');
                 ok( $('._title').val() === '1');
@@ -2070,4 +2067,70 @@ test(
                 ok( model.value === "12");
             }
         });
+    });
+
+test(
+    "option(defaultModel) - Checking that it is copied on use and left untouched after binds.",
+    function() {
+        ok( !SMUtils.isAttached( $('.test')));
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="test horn _key">value</div>')}
+            ],
+            callback: function() {
+                var defaultModel = {key2: true, key3: [0]};
+                var horn = new Horn();
+                var model;
+                ok( SMUtils.isAttached( $('.test')));
+                horn.option( "defaultModel", defaultModel);
+
+                model = horn.bind();
+
+                ok( SMUtils.isDefinedNotNull( model));
+                ok( model.key === "value");
+                ok( model.key2 === true);
+                ok( SMTestUtils.isArray(model.key3));
+                ok( SMTestUtils.arrayCompare( model.key3, defaultModel.key3));
+
+                ok( !SMUtils.isDefinedNotNull( defaultModel.key));
+                ok( defaultModel.key2 === true);
+                ok( SMTestUtils.arrayCompare( defaultModel.key3, [0]));
+        }});
+        ok( !SMUtils.isAttached( $('.test')));
+    });
+
+test(
+    "option(defaultModel) - Testing array as defaultModel root context.",
+    function() {
+        ok( !SMUtils.isAttached( $('.test')));
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $(  '<div class="test horn _3">value</div>')}
+            ],
+            callback: function() {
+                var model;
+                var defaultModel = [true, [0], ""];
+                var horn = new Horn();
+                ok( SMUtils.isAttached( $('.test')));
+                horn.option( "defaultModel", defaultModel);
+                model = horn.bind();
+
+                ok( SMUtils.isDefinedNotNull( model));
+                ok( SMTestUtils.isArray( model));
+                ok( model.length === 4);
+                ok( model[ 0] === true);
+                ok( SMTestUtils.isArray( model[ 1]));
+                ok( SMTestUtils.arrayCompare( model[ 1], [0]));
+                ok( model[ 2] === "");
+                ok( model[ 3] === "value");
+
+                ok( defaultModel.length === 3);
+                ok( defaultModel[ 0] === true);
+                ok( SMTestUtils.isArray( defaultModel[ 1]));
+                ok( SMTestUtils.arrayCompare( defaultModel[ 1], [0]));
+                ok( defaultModel[ 2] === "");
+
+                ok( defaultModel !== model);
+        }});
+        ok( !SMUtils.isAttached( $('.test')));
     });

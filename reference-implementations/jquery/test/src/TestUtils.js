@@ -48,34 +48,7 @@ SMTestUtils.isEmptyArray = function( object ) {
     return object.length === 0;
 };
 
-SMTestUtils.isArray = function( object ) {
-    if ( object === undefined ) { return false; }
-    if ( object === null ) { return false; }
-    if ( typeof object !== 'object' ) { return false; }
-    if ( object.constructor.toString().indexOf( 'Array') < 0) { return false; }
-    return true;
-};
-
-
-
-SMTestUtils.dataTest = function( args ) {
-    if ( args.nodes ) {
-        $.each( args.nodes, function( i, nodeInfo ) {
-            $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target :
-                $('body'));
-        });
-    }
-    try {
-        args.callback();
-    } finally {
-        if ( args.nodes ) {
-            $.each( args.nodes, function( i, nodeInfo ) {
-                $(nodeInfo.nodes).remove();
-            });
-        }
-    }
-};
-
+SMTestUtils.isArray = function( object ) { return jQuery.isArray( object); };
 
 /**
  *  Test helper function that 'appendTo's nodes to a the DOM, calls a callback
