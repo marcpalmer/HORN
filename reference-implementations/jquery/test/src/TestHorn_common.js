@@ -4,15 +4,26 @@ test(
     "that we have the expected global (window) horn property.",
     function() { ok( window.horn instanceof Horn ); });
 
+test(
+    "test that all the public API methods are defined.",
+    function() {
+        var horn = new Horn();
+        ok( SMUtils.isDefinedNotNull( horn.bind));
+        ok( SMUtils.isDefinedNotNull( horn.blankModelEntries));
+        ok( SMUtils.isDefinedNotNull( horn.bindTo));
+        ok( SMUtils.isDefinedNotNull( horn.load));
+        ok( SMUtils.isDefinedNotNull( horn.model));
+        ok( SMUtils.isDefinedNotNull( horn.nodeForPath));
+        ok( SMUtils.isDefinedNotNull( horn.option));
+        ok( SMUtils.isDefinedNotNull( horn.reset));
+        ok( SMUtils.isDefinedNotNull( horn.unbind));
+        ok( SMUtils.isDefinedNotNull( horn.updateDOM));
+    });
+
 
 
 
 module( "horn-jquery-1.0.js - horn functions");
-
-
-
-
-
 
 
 
