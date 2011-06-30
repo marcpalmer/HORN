@@ -218,9 +218,10 @@ var Horn = function() {
         var modelValue = binding.context[ binding.key];
         var textValue;
         var cArgs;
-        if ( modelValue !== binding.value ) {
-            if ( !rootNode || (rootNode && SMUtils.contains(
-                $(binding.node).parents(), rootNode)) ) {
+        if ( !SMUtils.compare( modelValue, binding.value) ) {
+            if ( !SMUtils.isDefinedNotNull( rootNode) ||
+                SMUtils.compare( rootNode, binding.node) ||
+                SMUtils.contains( $(binding.node).parents(), rootNode) ) {
                 cArgs = {
                     value: modelValue,
                     path:  args.path,

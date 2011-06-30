@@ -1902,7 +1902,7 @@ test(
     });
 
 test(
-    "updateDOM - testing the correct nodes are reruned from populate, in the correct order.",
+    "updateDOM - testing the correct nodes are returned and in the correct order.",
     function() {
         SMTestUtils.dataTest( {
             nodes: [ {
@@ -1984,6 +1984,25 @@ test(
         }});
     });
 
+test(
+    "updateDOM - works on a single node",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _key">aValue</div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                var model = horn.bind();
+                var node;
+                ok( SMTestUtils.isObject( model));
+                ok( model.key === 'aValue');
+                model.key = "a";
+                node = $('._key');
+                horn.updateDOM( node);
+                ok( horn.hornNodeValue( {node: node}) === "a");
+        }});
+    });
 
 
 test(
