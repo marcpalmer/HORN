@@ -61,7 +61,7 @@ var input = function ( value, type, id ) {
 
 var render = function ( target, hornModel ) {
     target.html( renderHTML( hornModel));
-    horn.each( inputValues, function( i, n ) {
+    SMUtils.each( inputValues, function( i, n ) {
         $('#' + i).val( n);
     });
 };
@@ -73,7 +73,7 @@ var renderHTML = function ( object, ind, parent, pk ) {
     if ( ind === undefined ) { ind = 0; }
     if ( isO || isA ) {
         rv = (isA ? "[" : "{") + "<br/>"
-        horn.each( object, function( key, value ) {
+        SMUtils.each( object, function( key, value ) {
             rv +=   indent( ind + 1) + "\"" + key + "\": " +
                     renderHTML( value, ind + 1, object, key) + ",<br/>";
         });
