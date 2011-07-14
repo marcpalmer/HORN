@@ -26,16 +26,31 @@ var Horn = function() {
     var state;
 
     /**
-     * @private
-     * @function
+     *  Sets a model value given a path and value (if desired) and optionally
+     *  adds a binding for the given: context, key, node, value and path.
+     *
+     *  @param {Object} args
+     *  @param {Boolean} [args.setModel] default <code>true</code>, if
+     *      <code>false</code> the model value isn't set, otherwise it is
+     *  @param {Boolean} [args.readOnly] default <code>false</code>, if 
+     *      <code>true</code> this binding is readOnly, otherwise it is two-way
+     *  @param {Boolean} [args.isJSON] default <code>false</code>
+     *  @param {String} [args.path]
+     *  @param {Object} [args.context]
+     *  @param {String} [args.key]
+     *  @param {Element} [args.node]
+     *  @param args.value
+     *
+     *  @private
+     *  @function
      */
-    var addBinding = SMUtils.bind( function( args ) {
+    var setModelAddBinding = SMUtils.bind( function( args ) {
         var rv;
         var details;
         if ( args.setModel !== false ) {
             details = setValue(  args.value, args.path);
         }
-        if ( (args.readOnly === false) && (!args.isJSON) ) {
+        if ( (args.readOnly !== true) && (args.isJSON !== true) ) {
             if ( SMUtils.isDefinedNotNull( details) ) {
                 args.context = details.context;
                 args.key = details.key;
@@ -55,7 +70,7 @@ var Horn = function() {
      * @private
      * @function
      */
-    var addBindings = SMUtils.bind( function( args ) {
+    var setModelAddBindings = SMUtils.bind( function( args ) {
         SMUtils.each(
             args.bindings,
             function( i, newArgs ) {
@@ -77,7 +92,7 @@ var Horn = function() {
                     newArgs.text = textValue;
                     this.hornNodeValue( {node: newArgs.node,
                         value: newArgs.text});
-                    addBinding({
+                    setModelAddBinding({
                         setModel: false,
                         value: modelValue,
                         node: newArgs.node,
@@ -102,7 +117,7 @@ var Horn = function() {
                 if ( !SMUtils.isDefinedNotNull( vargs.value) ) {
                     vargs.value = oldValue;
                 }
-                addBinding( vargs);
+                setModelAddBinding( vargs);
             }, this);
             var jsonData = $.evalJSON( args.text);
             if ( typeof jsonData === 'object' ) {
@@ -162,7 +177,7 @@ var Horn = function() {
                             if ( !SMUtils.isDefinedNotNull( bindingData.value) ) {
                                 bindingData.value = bindingData.text;
                             }
-                            addBinding( bindingData);
+                            setModelAddBinding( bindingData);
                         } else {
                             addJSONBindings( bindingData);
                         }
@@ -437,7 +452,7 @@ var Horn = function() {
             SMUtils.bind( function( n, path ) {
                 return handleTemplateBinding( n, path, bindings);
             }, this), pathStem);
-        addBindings({bindings: bindings});
+        setModelAddBindings({bindings: bindings});
         return node;
     };
 
@@ -622,8 +637,6 @@ var Horn = function() {
      *  @see Horn#option
      *
      *  @public
-     *
-     *  @test
      */
     this.reset = function() {
         state = { opts: $.extend( {}, {model: undefined, readOnly:  false})};

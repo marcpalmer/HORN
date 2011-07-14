@@ -1504,6 +1504,33 @@ test(
             }});
     });
 
+test(
+    "bindTo - attaching cloned template to newly defined model location.",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div id="template"><div data-horn="key" id="xx"></div></div>')}],
+            callback: function() {
+                var horn = new Horn();
+                horn.option( "defaultModel", {});
+                var model = horn.bind();
+                ok( model.key === undefined);
+                model.a = {key: 'value'};
+                var populatedTemplate = horn.bindTo( {
+                    pathStem: '/a',
+                    id: 'newID',
+                    template: '#template'});
+                ok( SMTestUtils.isJQueryObject( populatedTemplate));
+                $(populatedTemplate).appendTo( $('body'));
+                try {
+                    ok($( '#xx', $('#newID')).text() === 'value');
+                } finally {
+                    $('#newID').remove();
+                }
+            }});
+    });
+
+
 
 
 
