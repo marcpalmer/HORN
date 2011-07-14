@@ -148,13 +148,45 @@ SMUtils.bind = function( fn, ctx ) {
 };
 
 /**
+ *  Call a list of functions in order.
+ *  <p>
+ *  Passes the return value of the previous function to the next using
+ *  'args._rv' (else <code>undefined</code>.
+ *  <p>
+ *  Passes the index of the function in the collection to the function as
+ *  'args._i'.
+ *  <p>
+ *  Passes 'args' as the single argument to each called function.
+ *
+ *  @param fns a collection of functions to be called in order, traversed using
+ *      SMUtils.each
+ *  @param {Object} ctx the context under which each function is executed
+ *  @param {Object} [args] if not provided a default empty object is used, this
+ *      is the single argument passed to each function in 'fns'
+ *
+ *  @return {Object} args either returns, the 'args' argument passed in or, the
+ *      default value used instead - possibly modified after the operation of
+ *      the function calls
+ *
+ *  @public
+ */
+SMUtils.chain = function( fns, ctx, args ) {
+    if ( !SMUtils.isDefinedNotNull( args) ) { args = {}; }
+    SMUtils.each( fns, function( i, n ) {
+        args._i = i;
+        args._rv = SMUtils.bind( n, ctx)( args);
+    }, this);
+    return args;
+};
+
+/**
  *  Clears all input element found on the given form.
  *
  *  @param {Element} the form to reset
  *
  *  @public
  */
-SMUtils.clearForm = function clearForm( form ) {
+SMUtils.clearForm = function( form ) {
     $(':input', form).each(function() {
         var type = this.type;
         var tag = this.tagName.toLowerCase();
@@ -201,7 +233,7 @@ SMUtils.cloneAndStripID = function ( idOrObject, newID ) {
  *  to work.
  *  <p>
  *  Handles de-referencing jQuery instances. jQuery lists always compare
- *  <code>fasle</code>.
+ *  <code>false</code>.
  *
  *  @param i a value to compare to 'j'
  *  @param j a value to compare to 'i'

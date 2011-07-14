@@ -669,13 +669,21 @@ var Horn = function() {
         var unbindAll = !definesPattern && !definesPath;
         SMUtils.each( state.bindings,
             function( i, n ) {
-                if (    unbindAll ||
-                        (definesPath && (i === internalPath)) ||
-                        (definesPattern && (i.match( args.pattern)))) {
-                    delete state.bindings[ i];
+                var externalPath;
+                var match;
+                var deleteBinding = unbindAll ||
+                    (definesPath && (i === internalPath));
+
+                if ( !deleteBinding && definesPattern ) {
+                    externalPath = this.toExternalPath( i);
+                    match = externalPath.match( args.pattern);
+                    deleteBinding = match &&
+                        (match.toString() === externalPath);
                 }
+
+                if ( deleteBinding ) { delete state.bindings[ i]; }
             }, this);
-    };
+    }
 
     /**
      *  Update all bound DOM nodes with their current model values, if altered.
