@@ -140,7 +140,7 @@ SMTestUtils.arrayCompare = function( array1, array2 ) {
 };
 
 SMTestUtils.setPatternConverter = function( horn, converterName, pattern ) {
-    pattern = hornConverter.toRegularExpression( pattern);
+    pattern = Horn.toRegularExpression( pattern);
     if ( converterName === 'IntegerConverter' ) {
         horn.option( "converter", function( args ) {
             if ( (args.path.match( pattern).toString() === args.path) ) {

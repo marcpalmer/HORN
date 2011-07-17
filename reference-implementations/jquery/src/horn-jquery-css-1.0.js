@@ -10,44 +10,107 @@
  */
 
 /**
- *  Used to...
+ *  Used to create new <code>HornCSSFeatures</code> instances, thus:
+ *      <code>var hornCSSFeatures = new HornCSSFeatures();</code>.
+ *
+ *  @constructor
+ *
+ *  @return {HornCSSFeatures} a newly initialised
+ *      <code>HornCSSFeatures</code> instance
  */
-$.extend( Horn.prototype, {
-    cssPrefix:          '_',
-    cssDelimiter:       '-',
-    cssRootContext:     'horn',
-    cssJSON:            'data-json',
+function HornCSSFeatures() {
 
-    extractCSSPropertyPath: function( n ) {
-        var cssPrefixLength = this.cssPrefix.length;
-        var classAttr = $(n).attr( "class");
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.hasRootIndicator = function( node ) {
+        return $(node).hasClass( HornCSSFeatures.cssRootContext);
+    };
+
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.pathIndicator = function( node ) {
+        var cssPrefixLength = HornCSSFeatures.cssPrefix.length;
+        var classAttr = $(node).attr( "class");
         var path;
-        var _this = this;
         if ( classAttr ) {
             SMUtils.splitEach( classAttr,
                 function( token ) {
-                    if ( (path === undefined) && SMUtils.hasPrefix( token, _this.cssPrefix) && (token.length > 1)) {
+                    if ( (path === undefined) &&
+                        SMUtils.hasPrefix( token, HornCSSFeatures.cssPrefix) &&
+                            (token.length > 1)) {
                         path = token.substring( cssPrefixLength);
                         return false;
                     }
                 });
         }
         return path;
-    },
+    };
 
-    hasRootIndicator: function( node ) {
-        return $(node).hasClass( this.cssRootContext);
-    },
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.hasJSONIndicator = function( node ) {
+        return $(node).hasClass( HornCSSFeatures.cssJSON);
+    };
 
-    pathIndicator: function( node ) {
-        return this.extractCSSPropertyPath.call( this, node);
-    },
+    /**
+     *  description
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.rootNodes = function() {
+        return $("." + HornCSSFeatures.cssRootContext);
+    };
+}
 
-    hasJSONIndicator: function( node ) {
-        return $(node).hasClass( this.cssJSON);
-    },
+horn.delegate( new HornCSSFeatures());
 
-    rootNodes: function() {
-        return $("." + this.cssRootContext);
-    }
-});
+/**
+ *  Description
+ *
+ *  @public
+ */
+HornCSSFeatures.cssPrefix = '_';
+
+/**
+ *  Description
+ *
+ *  @public
+ */
+HornCSSFeatures.cssDelimiter = '-';
+
+/**
+ *  Description
+ *
+ *  @public
+ */
+HornCSSFeatures.cssRootContext = 'horn';
+
+/**
+ *  Description
+ *
+ *  @public
+ */
+HornCSSFeatures.cssJSON  = 'data-json';

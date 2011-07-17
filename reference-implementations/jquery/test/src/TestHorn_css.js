@@ -3,21 +3,21 @@ module( "horn-jquery-css-1.0.js - Features");
 test(
     "Test horn has hasRootIndicator function.",
     function() {
-        ok( SMTestUtils.isFunction( new Horn().hasRootIndicator));
+        ok( SMTestUtils.isFunction( horn.delegate().hasRootIndicator));
     }
 );
 
 test(
     "Test horn has hasJSONIndicator function.",
     function() {
-        ok( SMTestUtils.isFunction( new Horn().hasJSONIndicator));
+        ok( SMTestUtils.isFunction( horn.delegate().hasJSONIndicator));
     }
 );
 
 test(
     "Test horn has pathIndicator function.",
     function() {
-        ok( SMTestUtils.isFunction( new Horn().pathIndicator));
+        ok( SMTestUtils.isFunction( horn.delegate().pathIndicator));
     }
 );
 
@@ -25,7 +25,7 @@ test(
     "Test horn has rootNodes function.",
     function() {
         var horn = new Horn();
-        ok( SMTestUtils.isFunction( horn.rootNodes));
+        ok( SMTestUtils.isFunction( horn.delegate().rootNodes));
     }
 );
 
@@ -38,34 +38,6 @@ module( "horn-jquery-css-1.0.js - feature functions");
 
 
 test(
-    "extractCSSPropertyPath - that no key is extracted if no suitable 'class' attribute token exists.",
-    function() {
-        var horn = new Horn();
-        var badPrefix = String.fromCharCode( horn.cssPrefix.charCodeAt( 0) + 1);
-        ok( horn.CONST_HORN_CSS_PREFIX !== badPrefix);
-        var node = $('<div class="' + badPrefix + '" />');
-
-        ok( horn.extractCSSPropertyPath.call( horn, node) === undefined);
-    });
-
-test(
-    "extractCSSPropertyPath - that the code handles the element having no 'class' atribute.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div />');
-
-        ok( horn.extractCSSPropertyPath.call( horn, node) === undefined);
-    });
-
-test(
-    "extractCSSPropertyPath - extracts known good key.",
-    function() {
-        var horn = new Horn();
-        var node = $('<div class="' + horn.cssPrefix + 'expected" />');
-        ok( horn.extractCSSPropertyPath.call( horn, node) === 'expected');
-    });
-
-test(
     "hasRootIndicator - simple affirmative.",
     function() {
         SMTestUtils.dataTest( {
@@ -73,8 +45,7 @@ test(
                 nodes:  $('<div id="grab" class="horn"><span class="_0">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === true);
+                ok( new HornCSSFeatures().hasRootIndicator( $('#grab')) === true);
             }});
     });
 
@@ -86,8 +57,7 @@ test(
                 nodes:  $('<div id="grab" class="value test horn rubbish crap _test"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === true);
+                ok( new HornCSSFeatures().hasRootIndicator( $('#grab')) === true);
             }});
     });
 
@@ -99,8 +69,7 @@ test(
                 nodes:  $('<div id="grab"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === false);
+                ok( new HornCSSFeatures().hasRootIndicator( $('#grab')) === false);
             }});
     });
 
@@ -112,8 +81,7 @@ test(
                 nodes:  $('<div id="grab" class="HoRn"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === false);
+                ok( new HornCSSFeatures().hasRootIndicator( $('#grab')) === false);
             }});
     });
 
@@ -126,8 +94,7 @@ test(
                 nodes:  $('<div id="grab" class="data-json"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasJSONIndicator( $('#grab')) === true);
+                ok( new HornCSSFeatures().hasJSONIndicator( $('#grab')) === true);
             }});
     });
 
@@ -138,9 +105,8 @@ test(
             nodes: [ {
                 nodes:  $('<div id="grab" class="x _value data-json missing"></div>')}
             ],
-            callback: function() {    
-                var horn = new Horn();
-                ok( horn.hasJSONIndicator( $('#grab')) === true);
+            callback: function() {
+                ok( new HornCSSFeatures().hasJSONIndicator( $('#grab')) === true);
             }});
     });
 
@@ -152,8 +118,7 @@ test(
                 nodes:  $('<div id="grab" class="x _value data-Json missing"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasJSONIndicator( $('#grab')) === false);
+                ok( new HornCSSFeatures().hasJSONIndicator( $('#grab')) === false);
             }});
     });
 
@@ -163,7 +128,7 @@ test(
 test(
     "rootNodes - none on test document, empty collection returned.",
     function() {
-        ok( new Horn().rootNodes().length === 0);
+        ok( new HornCSSFeatures().rootNodes().length === 0);
     });
 
 test(
@@ -174,8 +139,7 @@ test(
                 nodes:  $('<div id="grab" class="horn"><span class="_0">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                var roots = horn.rootNodes();
+                var roots = new HornCSSFeatures().rootNodes();
                 ok( roots.length === 1);
                 ok( SMUtils.compare( roots.get(0), $('#grab')) === true );
             }});
@@ -189,8 +153,7 @@ test(
                 nodes:  $('<div id="grab1" class="horn"><span class="_0">one</span></div><div id="grab2" class="horn"><span class="_0">one</span></div><div id="grab3" class="horn"><span class="_0">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                var roots = horn.rootNodes();
+                var roots = new HornCSSFeatures().rootNodes();
                 ok( roots.length === 3);
                 ok( SMUtils.compare( roots.get(0), $('#grab1')) === true );
                 ok( SMUtils.compare( roots.get(1), $('#grab2')) === true );
@@ -206,8 +169,7 @@ test(
                 nodes:  $('<div id="grab1" class="horn"><span class="_0">one</span><div id="grab2" class="horn"><span class="_0">one</span></div></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                var roots = horn.rootNodes();
+                var roots = new HornCSSFeatures().rootNodes();
                 ok( roots.length === 2);
                 ok( SMUtils.compare( roots.get(0), $('#grab1')) === true );
                 ok( SMUtils.compare( roots.get(1), $('#grab2')) === true );
@@ -225,10 +187,10 @@ test(
                 nodes:  $('<div class="horn"><span id="grab1" class="_0">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.pathIndicator( $('#grab1')) === "0");
-                ok( horn.pathIndicator( $('#grab1')) !== "_0");
-                ok( horn.pathIndicator( $('#grab1')) !== "-0");
+                var features = new HornCSSFeatures();
+                ok( features.pathIndicator( $('#grab1')) === "0");
+                ok( features.pathIndicator( $('#grab1')) !== "_0");
+                ok( features.pathIndicator( $('#grab1')) !== "-0");
             }});
     });
 
@@ -240,8 +202,8 @@ test(
                 nodes:  $('<div class="horn"><span id="grab1" class="_0 _1 _2">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.pathIndicator( $('#grab1')) === "0");
+                var features = new HornCSSFeatures();
+                ok( features.pathIndicator( $('#grab1')) === "0");
             }});
     });
 
@@ -249,6 +211,106 @@ test(
 
 
 module( "horn-jquery-css-1.0.js - horn functions");
+
+
+
+
+// 0-0-0 0
+// 0-0-1 1
+// 0-1-0 2
+// 0-1-1 3
+
+
+test(
+    "adjustModelArray - remove single bound array element.",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">one</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                var model = horn.bind();
+                ok( SMTestUtils.isArray( model));
+                ok( model.length === 1);
+                ok( model[ 0] === "one");
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
+                horn.adjustModelArray( {isInsert: false, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 0);
+            }});
+    });
+
+test(
+    "adjustModelArray - .",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">one</span><span class="_1">two</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                var model = horn.bind();
+                ok( SMTestUtils.isArray( model));
+                ok( model.length === 2);
+                ok( model[ 0] === "one");
+                ok( model[ 1] === "two");
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 2);
+                horn.adjustModelArray( {isInsert: false, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
+                ok( horn.state().bindings.hasOwnProperty("0"));
+                ok( horn.state().bindings["0"].key === "0");
+            }});
+    });
+
+test(
+    "adjustModelArray - .",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_a"><span class="_0">one</span><span class="_1">two</span></span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                var model = horn.bind();
+                ok( SMTestUtils.isArray( model.a));
+                ok( model.a.length === 2);
+                ok( model.a[ 0] === "one");
+                ok( model.a[ 1] === "two");
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 2);
+                horn.adjustModelArray( {isInsert: false, path: "/a[0]"});
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
+                ok( SMUtils.isDefinedNotNull( horn.state().bindings["a-0"]));
+                ok( horn.state().bindings["a-0"].key === "0");
+                ok( horn.state().bindings["a-0"].context[ horn.state().bindings["a-0"].key] === "two");
+            }});
+    });
+
+test(
+    "adjustModelArray - .",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">one</span><span class="_1"><span class="_a">two</span></span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.name = true;
+                var model = horn.bind();
+                ok( SMTestUtils.isArray( model));
+                ok( model.length === 2);
+                ok( model[ 0] === "one");
+                ok( model[ 1].a === "two");
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 2);
+                ok( SMUtils.isDefinedNotNull( horn.state().bindings["0"]));
+                ok( SMUtils.isDefinedNotNull( horn.state().bindings["1-a"]));
+                horn.adjustModelArray( {isInsert: false, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
+                ok( SMUtils.isDefinedNotNull( horn.state().bindings["0-a"]));
+                ok( horn.state().bindings["0-a"].key === "a");
+                ok( horn.state().bindings["0-a"].context[ horn.state().bindings["0-a"].key] === "two");
+            }});
+    });
+
 
 /*
                                     'Key' - 'Value'         Structure           Java
@@ -316,7 +378,6 @@ module( "horn-jquery-css-1.0.js - horn functions");
             }
     }
 */
-
 
 test(
     "bind -  no data expected, undefined returned.",
@@ -1740,7 +1801,7 @@ test(
                         horn.blankModelEntries()));
                 ok( SMTestUtils.arrayCompare( ["b[1]", "b.c.d", "b.c.e[1]"],
                         horn.blankModelEntries( {path: "b"})));
-                horn.hornNodeValue( {node: $('#_x'), value: "a"});
+                Horn.hornNodeValue( {node: $('#_x'), value: "a"});
                 ok( SMTestUtils.arrayCompare( ["b[1]", "b.c.d"],
                         horn.blankModelEntries( {path: "b", inspectDOM: true})));
             }});
@@ -1803,11 +1864,11 @@ test(
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('._2')}) === "true");
                 horn.unbind();
                 model.d[ 2] = false;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('._2')}) === "true");
             }
         });
     });
@@ -1826,11 +1887,11 @@ test(
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('._2')}) === "true");
                 horn.unbind( {pattern: ".*"});
                 model.d[ 2] = false;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('._2')}) === "true");
             }
         });
     });
@@ -1849,11 +1910,11 @@ test(
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('._2')}) === "true");
                 horn.unbind( {path: "d[2]"});
                 model.d[ 2] = false;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('._2')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('._2')}) === "true");
             }
         });
     });
@@ -2023,7 +2084,7 @@ test(
                 model.key = "a";
                 node = $('._key');
                 horn.updateDOM( node);
-                ok( horn.hornNodeValue( {node: node}) === "a");
+                ok( Horn.hornNodeValue( {node: node}) === "a");
         }});
     });
 

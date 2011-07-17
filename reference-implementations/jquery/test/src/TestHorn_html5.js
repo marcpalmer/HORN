@@ -3,29 +3,28 @@ module( "horn-jquery-html5-1.0.js - Features");
 test(
     "Test horn has hasRootIndicator function.",
     function() {
-        ok( SMTestUtils.isFunction( new Horn().hasRootIndicator));
+        ok( SMTestUtils.isFunction( new HornHTML5Features().hasRootIndicator));
     }
 );
 
 test(
     "Test horn has hasJSONIndicator function.",
     function() {
-        ok( SMTestUtils.isFunction( new Horn().hasJSONIndicator));
+        ok( SMTestUtils.isFunction( new HornHTML5Features().hasJSONIndicator));
     }
 );
 
 test(
     "Test horn has pathIndicator function.",
     function() {
-        ok( SMTestUtils.isFunction( new Horn().pathIndicator));
+        ok( SMTestUtils.isFunction( new HornHTML5Features().pathIndicator));
     }
 );
 
 test(
     "Test horn has rootNodes function.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.isFunction( horn.rootNodes));
+        ok( SMTestUtils.isFunction( new HornHTML5Features().rootNodes));
     }
 );
 
@@ -38,32 +37,6 @@ module( "horn-jquery-html5-1.0.js - feature functions");
 
 
 test(
-    "getDataAttr - Returns the attribute value expected.",
-    function() {
-        SMTestUtils.dataTest( {
-            nodes: [ {
-                nodes:  $('<div data-horn="testingHTML5DataAttributes" id="testing" />')}
-            ],
-            callback: function() {
-                var horn = new Horn();
-                ok( SMUtils.isAttached( $('#testing')));
-                ok( horn.getDataAttr( $('#testing'), "horn") === 'testingHTML5DataAttributes');
-
-        }});
-    });
-
-test(
-    "getDataAttr - Returns undefined if no such attribute exists for the node.",
-    function() {
-        var horn = new Horn();
-        ok( !SMUtils.isAttached( $('#testing')));
-        ok( horn.getDataAttr( $('#testing'), "dataNameHorn") === undefined);
-    });
-
-
-
-
-test(
     "hasRootIndicator - simple affirmative.",
     function() {
         SMTestUtils.dataTest( {
@@ -71,8 +44,7 @@ test(
                 nodes:  $('<div id="grab" data-horn="/"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === true);
+                ok( new HornHTML5Features().hasRootIndicator( $('#grab')) === true);
             }});
     });
 
@@ -84,8 +56,7 @@ test(
                 nodes:  $('<div id="grab"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === false);
+                ok( new HornHTML5Features().hasRootIndicator( $('#grab')) === false);
             }});
     });
 
@@ -97,8 +68,7 @@ test(
                 nodes:  $('<div id="grab" data-Horn="/prop"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === true);
+                ok( new HornHTML5Features().hasRootIndicator( $('#grab')) === true);
             }});
     });
 
@@ -110,8 +80,7 @@ test(
                 nodes:  $('<div id="grab" data-Horn-JSON="/prop"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasRootIndicator( $('#grab')) === true);
+                ok( new HornHTML5Features().hasRootIndicator( $('#grab')) === true);
             }});
     });
 
@@ -124,8 +93,7 @@ test(
                 nodes:  $('<div id="grab" data-horn-json="aa"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasJSONIndicator( $('#grab')) === true);
+                ok( new HornHTML5Features().hasJSONIndicator( $('#grab')) === true);
             }});
     });
 
@@ -137,8 +105,7 @@ test(
                 nodes:  $('<div id="grab" data-horn-Json="/ss"></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.hasJSONIndicator( $('#grab')) === true);
+                ok( new HornHTML5Features().hasJSONIndicator( $('#grab')) === true);
             }});
     });
 
@@ -148,7 +115,7 @@ test(
 test(
     "rootNodes - none on test document, empty collection returned.",
     function() {
-        ok( new Horn().rootNodes().length === 0);
+        ok( new HornHTML5Features().rootNodes().length === 0);
     });
 
 test(
@@ -159,8 +126,7 @@ test(
                 nodes:  $('<div id="grab" data-horn="/"><span class="_0">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                var roots = horn.rootNodes();
+                var roots = new HornHTML5Features().rootNodes();
                 ok( roots.length === 1);
                 ok( SMUtils.compare( roots.get(0), $('#grab')) === true );
             }});
@@ -174,8 +140,7 @@ test(
                 nodes:  $('<div id="grab1" data-horn="/"><span data-horn="0">one</span></div><div id="grab2" data-horn="/"><span data-horn="0">one</span></div><div id="grab3" data-horn="/"><span data-horn="0">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                var roots = horn.rootNodes();
+                var roots = new HornHTML5Features().rootNodes();
                 ok( roots.length === 3);
                 ok( SMUtils.compare( roots.get(0), $('#grab1')) === true );
                 ok( SMUtils.compare( roots.get(1), $('#grab2')) === true );
@@ -191,8 +156,7 @@ test(
                 nodes:  $('<div id="grab1" data-horn="/"><span data-horn="0">one</span><div id="grab2" data-horn="/"><span data-horn="0">one</span></div></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                var roots = horn.rootNodes();
+                var roots = new HornHTML5Features().rootNodes();
                 ok( roots.length === 2);
                 ok( SMUtils.compare( roots.get(0), $('#grab1')) === true );
                 ok( SMUtils.compare( roots.get(1), $('#grab2')) === true );
@@ -210,11 +174,11 @@ test(
                 nodes:  $('<div data-horn="/prop"><span id="grab1" data-horn="[0]">one</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                ok( horn.pathIndicator( $('#grab1')) === "0");
-                ok( horn.pathIndicator( $('#grab1')) !== ".0");
-                ok( horn.pathIndicator( $('#grab1')) !== "_0");
-                ok( horn.pathIndicator( $('#grab1')) !== "-0");
+                var features = new HornHTML5Features();
+                ok( features.pathIndicator( $('#grab1')) === "0");
+                ok( features.pathIndicator( $('#grab1')) !== ".0");
+                ok( features.pathIndicator( $('#grab1')) !== "_0");
+                ok( features.pathIndicator( $('#grab1')) !== "-0");
             }});
     });
 
@@ -1609,11 +1573,11 @@ test(
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('#x__')}) === "true");
                 horn.unbind();
                 model.d[ 2] = false;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('#x__')}) === "true");
             }
         });
     });
@@ -1632,11 +1596,11 @@ test(
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('#x__')}) === "true");
                 horn.unbind( {pattern: ".*"});
                 model.d[ 2] = false;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('#x__')}) === "true");
             }
         });
     });
@@ -1655,11 +1619,11 @@ test(
                 ok( model.d[ 2] === false);
                 model.d[ 2] = true;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('#x__')}) === "true");
                 horn.unbind( {path: "d[2]"});
                 model.d[ 2] = false;
                 horn.updateDOM();
-                ok( horn.hornNodeValue( {node: $('#x__')}) === "true");
+                ok( Horn.hornNodeValue( {node: $('#x__')}) === "true");
             }
         });
     });
@@ -1829,7 +1793,7 @@ test(
                 model.key = "a";
                 node = $('#grabber');
                 horn.updateDOM( node);
-                ok( horn.hornNodeValue( {node: node}) === "a");
+                ok( Horn.hornNodeValue( {node: node}) === "a");
         }});
     });
 

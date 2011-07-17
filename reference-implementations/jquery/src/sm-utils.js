@@ -92,19 +92,25 @@ function SMUtils(){
  *  <p>
  *  Preserves the identity of the array.
  *
- *  @param {Array} array
- *  @param {Number} position
- *  @param item
+ *  @param {Array} array the array to modify
+ *  @param {Number} position the position at which to insert the new array
+ *      element
+ *  @param [item] the value to assign to the new array element
+ *      (if not <code>undefined</code>)
+ *
+ *  @return {Array} the array 'array' passed in
  *
  *  @public
  */
 SMUtils.arrayInsert = function (array, position, item) {
     var shiftCount;
     var length = array.length;
-    for ( shiftCount = 0; shiftCount <= length - position; shiftCount = shiftCount + 1 ) {
+    for ( shiftCount = 0; shiftCount <= length - position;
+        shiftCount = shiftCount + 1 ) {
         array[ length - shiftCount] = array[ length - 1 - shiftCount];
     }
-    array[ position] = item;
+    if ( item !== undefined ) { array[ position] = item; }
+    return array;
 };
 
 /**
@@ -115,8 +121,11 @@ SMUtils.arrayInsert = function (array, position, item) {
  *  Assumes that array is filled contiguously from index 0 to index
  *  <code>array.length - 1</code>
  *
- *  @param {Array} array
- *  @param {Number} position
+ *  @param {Array} array the array to remove an element from
+ *  @param {Number} position the position of the element to remove from the
+ *      array
+ *
+ *  @return {Array} the array 'array' passed in
  *
  *  @public
  */
@@ -128,6 +137,7 @@ SMUtils.arrayRemove = function (array, position) {
         array[ position + shiftCount] = array[ position + shiftCount + 1];
     }
     array.length = array.length - 1;
+    return array;
 };
 
 /**
@@ -544,6 +554,39 @@ SMUtils.getCookie = function( name ) {
 };
 
 /**
+ *  Returns a node's named data attribute value.
+ *
+ *  @param {Element} node the node to extract the named data attribute from
+ *  @param {String} name the name of the data attribute to retrieve
+ *
+ *  @return a {String} representation of the given node's named data
+ *      attribute (if it exists) else <code>undefined</code>
+ *
+ *  @public
+ */
+SMUtils.getDataAttr = function( node, name ) {
+    var rv =  $(node).data( name);
+    return SMUtils.isDefinedNotNull( rv) ? (rv + "") : undefined;
+};
+
+/**
+ *  Fade an element to a given opacity and optionally hide it.
+ *  <p>
+ *  If the opacity is specified as '0' then the element will be hidden.
+ *
+ *  @param {Element} object the object to fade in or out
+ *  @param {Number} msTime the time in milli-Seconds to take to do the fade
+ *  @param {Number} opactity the final desired opacity (0 to 100 inclusive)
+ *
+ *  @public
+ */
+SMUtils.fadeHide = function(object, msTime, opacity) {
+    if ( opacity === 0 ) {
+        object.fadeTo( msTime, opacity, function() { object.hide(); });
+    } else { object.show().fadeTo( msTime, opacity); }
+};
+
+/**
  *  Is the given <code>String</code> value prefixed by a given stem.
  *  <p>
  *  'Stem' can be a regular expression pattern.
@@ -664,6 +707,45 @@ SMUtils.removeProperty = function( object, propName ) {
     return object.hasOwnProperty( propName) && delete object[ propName];
 };
 
+
+/**
+ *  Replace all character sequences that match the pattern
+ *      <code>search</code> with the <code>replacement</code> pattern.
+ *
+ *  @param {String} text the text to search for replacement characters
+ *  @param {String} search the search pattern to apply
+ *  @param {String} replacement the replacement pattern to apply
+ *
+ *  @return {String} a new <code>String</code> with any character sequences that
+ *      matched <code>search</code> transformed using <code>replacement</code>
+ *
+ *  @public
+ */
+SMUtils.replaceAll = function( text, search, replacement )  {
+    return text.replace( new RegExp( search,"g"), replacement);
+};
+
+/**
+ *  Replaces a given string's postfix.
+ *  <P>
+ *  If 'text' does not end with 'postfix', it remains unaltered.
+ *
+ *  @param {String} text the text that ends with a given prefix
+ *  @param {String} postfix the postfix of 'text' to replace
+ *  @param {String} replacement the replacement postfix text
+ *
+ *  @return the possibly modified version of 'text'
+ *
+ *  @public
+ */
+SMUtils.replacePostfix = function( text, postfix, replacement ) {
+    var textLength = text.length;
+    var postfixLength = postfix.length;
+    var index = text.lastIndexOf( postfix);
+    return ( (index !== -1) && ((textLength - index) === postfixLength) ) ?
+        (text.substring( 0, index) + replacement) : text;
+};
+
 /**
  *  Execute a callback function for each token of a split
  *  <code>String</code>.
@@ -691,39 +773,19 @@ SMUtils.splitEach = function( value, callback, delimiter ) {
 };
 
 /**
- *  Fade an element to a given opacity and optionally hide it.
- *  <p>
- *  If the opacity is specified as '0' then the element will be hidden.
+ *  Determines if a <code>String</code> value start with a given character
+ *  sequence.
  *
- *  @param {Element} object the object to fade in or out
- *  @param {Number} msTime the time in milli-Seconds to take to do the fade
- *  @param {Number} opactity the final desired opacity (0 to 100 inclusive)
+ *  @param {String} value the sequence to test
+ *  @param {String} prefix the initial character sequence to test for
  *
- *  @public
- */
-SMUtils.fadeHide = function(object, msTime, opacity) {
-    if ( opacity === 0 ) {
-        object.fadeTo( msTime, opacity, function() { object.hide(); });
-    } else { object.show().fadeTo( msTime, opacity); }
-};
-
-/**
- *  Sets all time fields of a given <code>Date</code> instance to <code>0</code>.
- *  <p>
- *  Affects the: hours, mintues, seconds and milliseconds fields.
- *
- *  @param {Date} date the date instance to 'zero'.
- *
- *  @return {Date} the same instance passed in, with all time fields set to <code>0</code>
+ *  @return {Boolean} <code>true</code> if the given value is a postfix of
+ *      'value', <code>false</code> otherwise
  *
  *  @public
  */
-SMUtils.zeroTime = function( date ) {
-    date.setHours( 0);
-    date.setMinutes( 0);
-    date.setSeconds( 0);
-    date.setMilliseconds( 0);
-    return date;
+SMUtils.startsWith = function( value, prefix ) {
+    return SMUtils.isDefinedNotNull( value.match( "^" + prefix));
 };
 
 /**
@@ -776,39 +838,6 @@ SMUtils.stopTimer = function( args ) {
 };
 
 /**
- *  Replace all character sequences that match the pattern
- *      <code>search</code> with the <code>replacement</code> pattern.
- *
- *  @param {String} text the text to search for replacement characters
- *  @param {String} search the search pattern to apply
- *  @param {String} replacement the replacement pattern to apply
- *
- *  @return {String} a new <code>String</code> with any character sequences that
- *      matched <code>search</code> transformed using <code>replacement</code>
- *
- *  @public
- */
-SMUtils.replaceAll = function( text, search, replacement )  {
-    return text.replace( new RegExp( search,"g"), replacement);
-};
-
-/**
- *  Determines if a <code>String</code> value start with a given character
- *  sequence.
- *
- *  @param {String} value the sequence to test
- *  @param {String} prefix the initial character sequence to test for
- *
- *  @return {Boolean} <code>true</code> if the given value is a postfix of
- *      'value', <code>false</code> otherwise
- *
- *  @public
- */
-SMUtils.startsWith = function( value, prefix ) {
-    return SMUtils.isDefinedNotNull( value.match( "^" + prefix));
-};
-
-/**
  *  Strip the query-parameters portion of a url, if present.
  *  <p>
  *  This function has no effect if no query parameters are present in the
@@ -837,6 +866,46 @@ SMUtils.stripQueryParameters = function( url ) {
  */
 SMUtils.trim = function( value ) {
     return value.replace(/^\s+|\s+$/g, '');
+};
+
+/**
+ *  Walk a DOM tree (TBLR) staring with element 'node'.
+ *  <P>
+ *  A given node's children are visited only iff the callback function
+ *  'callback' for the given parent return <code>true</code>.
+ *
+ *  @param {Element} node the first node to visit
+ *  @param {Function} callback a function with the signature,
+ *      <code>({Element})</code> that will be called for every node visited (
+ *      starting with 'node'). To stop the walk at any given element, return
+ *      a non <code>true</code> value.
+ *
+ *  @public
+ */
+SMUtils.walkDOM = function( node, callback ) {
+    if (callback(node) === true) {
+        SMUtils.each( $(node).children(), function( i, n ) {
+            SMUtils.walkDOM( n, callback); }, this);
+    }
+};
+
+/**
+ *  Sets all time fields of a given <code>Date</code> instance to <code>0</code>.
+ *  <p>
+ *  Affects the: hours, minutes, seconds and milliseconds fields.
+ *
+ *  @param {Date} date the date instance to 'zero'.
+ *
+ *  @return {Date} the same instance passed in, with all time fields set to <code>0</code>
+ *
+ *  @public
+ */
+SMUtils.zeroTime = function( date ) {
+    date.setHours( 0);
+    date.setMinutes( 0);
+    date.setSeconds( 0);
+    date.setMilliseconds( 0);
+    return date;
 };
 
 var smUtils = new SMUtils();

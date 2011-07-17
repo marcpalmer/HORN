@@ -10,43 +10,97 @@
  */
 
 /**
- *  Used to...
+ *  Used to create new <code>HornHTML5Features</code> instances, thus:
+ *      <code>var hornHTML5Features = new HornHTML5Features();</code>.
+ *
+ *  @constructor
+ *
+ *  @return {HornHTML5Features} a newly initialised
+ *      <code>HornHTML5Features</code> instance
  */
-$.extend(
-    Horn.prototype, {
-        dataNameHorn:           'horn',
-        dataNameJSON:           'horn-json',
+function HornHTML5Features() {
 
-        getDataAttr: function( n, name ) {
-            var rv =  $(n).data( name);
-            return (SMUtils.isDefinedNotNull( rv) === true) ? (rv + "") : undefined;
-        },
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.hasRootIndicator = function( node ) {
+        var hornDeclaration = SMUtils.getDataAttr(
+            node, HornHTML5Features.dataNameHorn);
+        var jsonDeclaration = SMUtils.getDataAttr(
+            node, HornHTML5Features.dataNameJSON);
+        return (SMUtils.isDefinedNotNull( hornDeclaration) &&
+            SMUtils.hasPrefix( hornDeclaration, "/")) ||
+            (SMUtils.isDefinedNotNull( jsonDeclaration) &&
+                SMUtils.hasPrefix( jsonDeclaration, "/"));
+    };
 
-        hasRootIndicator: function( node ) {
-            var hornDeclaration = this.getDataAttr( node, this.dataNameHorn);
-            var jsonDeclaration = this.getDataAttr( node, this.dataNameJSON);
-            return ((SMUtils.isDefinedNotNull( hornDeclaration) === true) &&
-                (SMUtils.hasPrefix( hornDeclaration, "/") === true)) ||
-                ((SMUtils.isDefinedNotNull( jsonDeclaration) === true) &&
-                (SMUtils.hasPrefix( jsonDeclaration, "/") === true));
-        },
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.hasJSONIndicator = function( node ) {
+        return SMUtils.isDefinedNotNull(
+            SMUtils.getDataAttr( node, HornHTML5Features.dataNameJSON));
+    };
 
-        hasJSONIndicator: function( node ) {
-            return SMUtils.isDefinedNotNull(
-                this.getDataAttr( node, this.dataNameJSON)) === true;
-        },
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.pathIndicator = function( node ) {
+        var hornDeclaration = SMUtils.getDataAttr(
+            node, HornHTML5Features.dataNameHorn);
+        var jsonDeclaration = SMUtils.getDataAttr(
+            node, HornHTML5Features.dataNameJSON);
+        if ( jsonDeclaration === 'true' ) { jsonDeclaration = undefined; }
+        var declaration = SMUtils.isDefinedNotNull( hornDeclaration) ?
+            hornDeclaration : jsonDeclaration;
+        return SMUtils.isDefinedNotNull( declaration) ?
+            Horn.toInternalPath(declaration) : declaration;
+    };
 
-        pathIndicator: function( node ) {
-            var hornDeclaration = this.getDataAttr( node, this.dataNameHorn);
-            var jsonDeclaration = this.getDataAttr( node, this.dataNameJSON);
-            if ( jsonDeclaration === 'true' ) { jsonDeclaration = undefined; }
-            var declaration = SMUtils.isDefinedNotNull( hornDeclaration) ?
-                hornDeclaration : jsonDeclaration;
-            return SMUtils.isDefinedNotNull( declaration) ?
-                this.toInternalPath(declaration) : declaration;
-        },
+    /**
+     *  description
+     *
+     *  @param {Element} node
+     *
+     *  @return
+     *
+     *  @public
+     */
+    this.rootNodes = function( args ) {
+        return $('[data-horn*="/"], [data-horn-json*="/"]');
+    };
+}
 
-        rootNodes: function( args ) {
-            return $('[data-horn*="/"], [data-horn-json*="/"]');
-        }
-    });
+horn.delegate( new HornHTML5Features());
+
+/**
+ *  Description
+ *
+ *  @public
+ */
+HornHTML5Features.dataNameHorn = 'horn';
+
+/**
+ *  Description
+ *
+ *  @public
+ */
+HornHTML5Features.dataNameJSON = 'horn-json';

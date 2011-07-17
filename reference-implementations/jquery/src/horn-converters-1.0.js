@@ -108,7 +108,7 @@ var HornPatternConverter = function (args) {
      *  @public
      */
     this.pattern = function (pattern, converterName) {
-        patterns[this.toRegularExpression( pattern)] = converterName;
+        patterns[Horn.toRegularExpression( pattern)] = converterName;
     };
 
     /**
@@ -157,7 +157,7 @@ var HornPatternConverter = function (args) {
      *  @public
      */
     this.removePattern = function (pattern) {
-        delete patterns[this.toRegularExpression( pattern)];
+        delete patterns[Horn.toRegularExpression( pattern)];
     };
 
     /**
@@ -179,29 +179,6 @@ var HornPatternConverter = function (args) {
     };
 
     this.reset(args.horn);
-};
-
-HornPatternConverter.prototype = {
-
-    /**
-     *  Converts a horn property path with optional wildcard '*' characters into
-     *  a regular expression.
-     *  <p>
-     *  '*' wildcards are converted into '.*' regular expression terms. Array
-     *  indexing and object dereference operators are correctly escaped.
-     *
-     *  @param {String} pattern the Horn property path to convert to a regular
-     *      expression
-     *
-     *  @return {String} a horn property path regular expression
-     *
-     *  @methodOf HornPatternConverter.prototype
-     */
-    toRegularExpression: function( path ) {
-        var newpath = path.replace( /([\.\[\]])/g, "\\$1")
-        newpath = newpath.replace( "*", ".*");
-        return newpath;
-    }
 };
 
 var hornConverter = new HornPatternConverter({horn: horn});

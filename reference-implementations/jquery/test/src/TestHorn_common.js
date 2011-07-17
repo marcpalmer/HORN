@@ -31,13 +31,12 @@ module( "horn-jquery-1.0.js - horn functions");
 test(
     "toInternalPath - various paths.",
     function() {
-        var horn = new Horn();
-        ok( horn.toInternalPath( 'a') === 'a');
-        ok( horn.toInternalPath('a[10]') === 'a-10');
-        ok( horn.toInternalPath('[10]') === '10');
-        ok( horn.toInternalPath('[10][20]') === '10-20');
-        ok( horn.toInternalPath('x[1].y[2].z[3]') === 'x-1-y-2-z-3');
-        ok( horn.toInternalPath('x[1][2][3].y[2].z') === 'x-1-2-3-y-2-z');
+        ok( Horn.toInternalPath( 'a') === 'a');
+        ok( Horn.toInternalPath('a[10]') === 'a-10');
+        ok( Horn.toInternalPath('[10]') === '10');
+        ok( Horn.toInternalPath('[10][20]') === '10-20');
+        ok( Horn.toInternalPath('x[1].y[2].z[3]') === 'x-1-y-2-z-3');
+        ok( Horn.toInternalPath('x[1][2][3].y[2].z') === 'x-1-2-3-y-2-z');
     });
 
 
@@ -46,13 +45,12 @@ test(
 test(
     "toExternalPath - various paths.",
     function() {
-        var horn = new Horn();
-        ok( horn.toExternalPath( 'a') === 'a');
-        ok( horn.toExternalPath( 'a-10') === 'a[10]');
-        ok( horn.toExternalPath( '10') === '[10]');
-        ok( horn.toExternalPath( '10-20') === '[10][20]');
-        ok( horn.toExternalPath( 'x-1-y-2-z-3') === 'x[1].y[2].z[3]');
-        ok( horn.toExternalPath( 'x-1-2-3-y-2-z') === 'x[1][2][3].y[2].z');
+        ok( Horn.toExternalPath( 'a') === 'a');
+        ok( Horn.toExternalPath( 'a-10') === 'a[10]');
+        ok( Horn.toExternalPath( '10') === '[10]');
+        ok( Horn.toExternalPath( '10-20') === '[10][20]');
+        ok( Horn.toExternalPath( 'x-1-y-2-z-3') === 'x[1].y[2].z[3]');
+        ok( Horn.toExternalPath( 'x-1-2-3-y-2-z') === 'x[1][2][3].y[2].z');
     });
 
 
@@ -62,7 +60,6 @@ test(
 test(
     "hornNodeValue - get tests for various tags.",
     function() {
-        var horn = new Horn();
         var tagData = [
             "<a>initialValue</a>",
             "<h3>initialValue</h3>",
@@ -83,7 +80,7 @@ test(
                     node.attr( "id", "_soonToBeRemoved");
                     $('body').append( node);
                     ok( SMUtils.isAttached( node) === true);
-                    ok( horn.hornNodeValue( {node: node}) === 'initialValue');
+                    ok( Horn.hornNodeValue( {node: node}) === 'initialValue');
                 } finally {
                     node.remove();
                     ok( SMUtils.isAttached( node) === false);
@@ -94,7 +91,6 @@ test(
 test(
     "hornNodeValue - set tests for various tags.",
     function() {
-        var horn = new Horn();
         var tagData = [
             "<a>initialValue</a>",
             "<h3>initialValue</h3>",
@@ -115,9 +111,9 @@ test(
                     node.attr( "id", "_soonToBeRemoved");
                     $('body').append( node);
                     ok( SMUtils.isAttached( node) === true);
-                    ok( horn.hornNodeValue( {node: node}) === 'initialValue');
-                    horn.hornNodeValue( {node: node, value: 'newValue'});
-                    ok( horn.hornNodeValue( {node: node}) === 'newValue');
+                    ok( Horn.hornNodeValue( {node: node}) === 'initialValue');
+                    Horn.hornNodeValue( {node: node, value: 'newValue'});
+                    ok( Horn.hornNodeValue( {node: node}) === 'newValue');
                 } finally {
                     node.remove();
                     ok( SMUtils.isAttached( node) === false);
@@ -139,7 +135,7 @@ test(
     function() {
         var horn = new Horn();
 
-        ok( horn.isPathDefined( null) === false);
+        ok( Horn.isPathDefined( null) === false);
     });
 
 test(
@@ -147,7 +143,7 @@ test(
     function() {
         var horn = new Horn();
 
-        ok( horn.isPathDefined( undefined) === false);
+        ok( Horn.isPathDefined( undefined) === false);
     });
 
 test(
@@ -155,7 +151,7 @@ test(
     function() {
         var horn = new Horn();
 
-        ok( horn.isPathDefined( '') === false);
+        ok( Horn.isPathDefined( '') === false);
     });
 
 test(
@@ -163,7 +159,7 @@ test(
     function() {
         var horn = new Horn();
 
-        ok( horn.isPathDefined( ' ') === false);
+        ok( Horn.isPathDefined( ' ') === false);
     });
 
 test(
@@ -171,7 +167,7 @@ test(
     function() {
         var horn = new Horn();
 
-        ok( horn.isPathDefined( 'null') === true);
+        ok( Horn.isPathDefined( 'null') === true);
     });
 
 test(
@@ -179,7 +175,7 @@ test(
     function() {
         var horn = new Horn();
 
-        ok( horn.isPathDefined( 'a') === true);
+        ok( Horn.isPathDefined( 'a') === true);
     });
 
 
@@ -216,7 +212,7 @@ test(
                 horn.option( "defaultModel", model);
                 horn.bind();
                 var extractedModel = horn.model();
-                ok( extractedModel !=== model);
+                ok( extractedModel !== model);
                 ok( SMTestUtils.isObject( extractedModel));
                 ok( SMTestUtils.isArray( extractedModel.notices));
                 ok( extractedModel.notices.length === 0);
@@ -233,53 +229,46 @@ test(
 test(
     "pathToTokens - Check 'false' type values..",
     function() {
-        var horn = new Horn();
-        ok( horn.pathToTokens( undefined) === undefined);
-        ok( horn.pathToTokens( null) === undefined);
-        ok( horn.pathToTokens( ) === undefined);
-        ok( horn.pathToTokens( "") === undefined);
+        ok( Horn.pathToTokens( undefined) === undefined);
+        ok( Horn.pathToTokens( null) === undefined);
+        ok( Horn.pathToTokens( ) === undefined);
+        ok( Horn.pathToTokens( "") === undefined);
     });
 
 test(
     "pathToTokens - Sanity check on documented example.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.arrayCompare( horn.pathToTokens( "-a-0-b-2-2"), ['a', '0', 'b', '2', '2']));
+        ok( SMTestUtils.arrayCompare( Horn.pathToTokens( "-a-0-b-2-2"), ['a', '0', 'b', '2', '2']));
     });
 
 test(
     "pathToTokens - Checking token lengths.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.arrayCompare( horn.pathToTokens( "-a0-0-b0b-21-222"), ['a0', '0', 'b0b', '21', '222']));
+        ok( SMTestUtils.arrayCompare( Horn.pathToTokens( "-a0-0-b0b-21-222"), ['a0', '0', 'b0b', '21', '222']));
     });
 
 test(
     "pathToTokens - Checking trailing dereference operators.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.arrayCompare( horn.pathToTokens( "-a----"), ['a']) === false);
+        ok( SMTestUtils.arrayCompare( Horn.pathToTokens( "-a----"), ['a']) === false);
     });
 
 test(
     "pathToTokens - Checking leading dereference operators.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.arrayCompare( horn.pathToTokens( "-----a"), ['a']) === false);
+        ok( SMTestUtils.arrayCompare( Horn.pathToTokens( "-----a"), ['a']) === false);
     });
 
 test(
     "pathToTokens - Checking extra dereference operators.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.arrayCompare( horn.pathToTokens( "-a--b-a"), ['a', 'b', 'a']) === false);
+        ok( SMTestUtils.arrayCompare( Horn.pathToTokens( "-a--b-a"), ['a', 'b', 'a']) === false);
     });
 
 test(
     "pathToTokens - Checking initial underscores are removed.",
     function() {
-        var horn = new Horn();
-        ok( SMTestUtils.arrayCompare( horn.pathToTokens( "_a-b-a"), ['a', 'b', 'a']) === true);
+        ok( SMTestUtils.arrayCompare( Horn.pathToTokens( "_a-b-a"), ['a', 'b', 'a']) === true);
     });
 
 
@@ -300,10 +289,18 @@ test(
 
 
 
-
-
-
-
+test(
+    "toRegularExpression - various",
+    function() {
+        ok( Horn.toRegularExpression( "a") === "a");
+        ok( Horn.toRegularExpression( "a[0]") === "a\\[0\\]");
+        ok( Horn.toRegularExpression( "a[0].y") === "a\\[0\\]\\.y");
+        ok( Horn.toRegularExpression( "x.y") === "x\\.y");
+        ok( Horn.toRegularExpression( "x.y") === "x\\.y");
+        ok( Horn.toRegularExpression( "x.y*") === "x\\.y.*");
+        ok( Horn.toRegularExpression( "x.*y") === "x\\..*y");
+        ok( Horn.toRegularExpression( "*.*x.y") === ".*\\.*x\\.y");
+    });
 
 
 
@@ -324,7 +321,7 @@ test(
             ok(context === expected[ count][ 2]);
             ok(propName === expected[ count++][ 3]);
         };
-        horn.traverse( graph, f);
+        Horn.traverse( graph, f);
     });
 
 test(
@@ -354,37 +351,7 @@ test(
             ok(context === expected[ count][ 2], "context");
             ok(propName === expected[ count++][ 3], "propName");
         };
-        horn.traverse( graph, f, prefix);
-    });
-
-
-
-
-test(
-    "walkDOM - count all visited nodes from html node downwards via two methods. ",
-    function() {
-        var nodeData = function( node ) { return {a: 1}; };
-        var expected = [];
-        SMTestUtils.walk( $('html')[0], function( node ) { expected.push( node); } );
-        var actual = [];
-        new Horn().walkDOM( $('html'),
-            function( node, path ) { actual.push( node); return true; } );
-        ok( expected.length, actual.length);
-    });
-
-
-
-
-test(
-    "walkDOM - count all visited nodes from html node downwards via two methods. ",
-    function() {
-        var nodeData = function( node ) { return {a: 1}; };
-        var expected = [];
-        SMTestUtils.walk( $('html')[0], function( node ) { expected.push( node); } );
-        var actual = [];
-        new Horn().walkDOM( $('html'),
-            function( node, path ) { actual.push( node); return true; } );
-        ok( expected.length, actual.length);
+        Horn.traverse( graph, f, prefix);
     });
 
 
@@ -392,9 +359,15 @@ test(
 
 module( "horn-converters-1.0.js");
 
+
+
+
 test(
     "that we have the expected global (window) hornConverter property.",
     function() { ok( window.hornConverter instanceof HornPatternConverter ); });
+
+
+
 
 test(
     "reset - can be called with the default horn instance",
@@ -402,18 +375,8 @@ test(
         hornConverter.reset( horn);
     });
 
-test(
-    "toRegularExpression - various",
-    function() {
-        ok( hornConverter.toRegularExpression( "a") === "a");
-        ok( hornConverter.toRegularExpression( "a[0]") === "a\\[0\\]");
-        ok( hornConverter.toRegularExpression( "a[0].y") === "a\\[0\\]\\.y");
-        ok( hornConverter.toRegularExpression( "x.y") === "x\\.y");
-        ok( hornConverter.toRegularExpression( "x.y") === "x\\.y");
-        ok( hornConverter.toRegularExpression( "x.y*") === "x\\.y.*");
-        ok( hornConverter.toRegularExpression( "x.*y") === "x\\..*y");
-        ok( hornConverter.toRegularExpression( "*.*x.y") === ".*\\.*x\\.y");
-    });
+
+
 
 test(
     "get - unregistered converter is undefined",
