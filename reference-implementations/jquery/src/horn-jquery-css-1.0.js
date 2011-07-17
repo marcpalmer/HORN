@@ -10,8 +10,19 @@
  */
 
 /**
- *  Used to create new <code>HornCSSFeatures</code> instances, thus:
- *      <code>var hornCSSFeatures = new HornCSSFeatures();</code>.
+ *  A Horn delegate implementation that extracts Horn data from DOM elements
+ *  that possess certain custom CSS classes.
+ *  <P>
+ *  Use this implementation if using HTML5 is not an option.
+ *  <P>
+ *  Please refer to our online documentation for fuller details
+ *  <a href="http://horn.io/">http://horn.io/</a>.
+ *  <P>
+ *  Use this function to create new <code>HornCSSFeatures</code> instances,
+ *  thus: <code>var hornCSSFeatures = new HornCSSFeatures();</code>.
+ *  <P>
+ *  Set it to use on a horn instance,
+ *  <code>horn.delegate( hornCSSFeatures);</code>.
  *
  *  @constructor
  *
@@ -21,11 +32,14 @@
 function HornCSSFeatures() {
 
     /**
-     *  description
+     *  Determine if a given node possesses a Horn root node indicator
+     *  (the CSS class 'horn').
      *
-     *  @param {Element} node
+     *  @param {Element} node the node to examine as to declaring a root
+     *      indicator
      *
-     *  @return
+     *  @return <code>true</code> if 'node' does possess a Horn root node
+     *      indicator, <code>false</code> otherwise.
      *
      *  @public
      */
@@ -34,11 +48,17 @@ function HornCSSFeatures() {
     };
 
     /**
-     *  description
+     *  Extracts and returns the Horn path indicator for a given node.
+     *  <P>
+     *  In this implementation, path indicators are CSS class attribute values
+     *  such as, '_a-0-b-c', that start with the underscore '_' and are formed
+     *  of words or numbers interspersed with the minus character '-'.
      *
-     *  @param {Element} node
+     *  @param {Element} node the node from which to extract the path indicator
      *
-     *  @return
+     *  @return {String|Boolean} if 'node' does have a Horn path indicator, it
+     *      is returned in <code>String</code> form, else
+     *      <code>Boolean false</code> is be returned
      *
      *  @public
      */
@@ -61,11 +81,16 @@ function HornCSSFeatures() {
     };
 
     /**
-     *  description
+     *  Determine if a node declares the JSON indicator.
+     *  <P>
+     *  Nodes that declare this indicator are implicitly value nodes and contain
+     *  literal JSON encoded as the single text element body value child  of
+     *  declaring elements.
      *
-     *  @param {Element} node
+     *  @param {Element} node the element that may declare the Horn JSON
+     *      indicator
      *
-     *  @return
+     *  @return <code>true</code> if 'node' declares the Horn JSON indicator
      *
      *  @public
      */
@@ -74,9 +99,12 @@ function HornCSSFeatures() {
     };
 
     /**
-     *  description
+     *  Return all the current HTML document's Horn root nodes.
+     *  <P>
+     *  This implementation thus returns all nodes with the CSS attribute
+     *  'class' value '_horn' (regardless of nesting considerations).
      *
-     *  @return
+     *  @return a list of this document's Horn root nodes
      *
      *  @public
      */
@@ -88,28 +116,32 @@ function HornCSSFeatures() {
 horn.delegate( new HornCSSFeatures());
 
 /**
- *  Description
+ *  The expected prefix for Horn property path indicators encoded as CSS
+ *  'class' attribute values.
  *
  *  @public
  */
 HornCSSFeatures.cssPrefix = '_';
 
 /**
- *  Description
+ *  The delimiter used to separate Horn property path tokens encoded as CSS
+ *  'class' attribute values.
  *
  *  @public
  */
 HornCSSFeatures.cssDelimiter = '-';
 
 /**
- *  Description
+ *  The CSS 'class' attribute value, nodes declare to indicate they are the root
+ *  of a data-hierarchy.
  *
  *  @public
  */
 HornCSSFeatures.cssRootContext = 'horn';
 
 /**
- *  Description
+ *  The CSS 'class' attribute value, nodes declare to indicate they contain
+ *  literal JSON data as their single child text element.
  *
  *  @public
  */
