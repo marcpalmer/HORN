@@ -51,11 +51,7 @@
 		
 		Documentation generator: <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0<br />
 		Template: <a href="http://www.thebrightlines.com/2010/05/06/new-template-for-jsdoctoolkit-codeview/" target="_blank">Codeview</a> 1.2<br />
-<<<<<<< HEAD
-		Generated on: 2011-6-17 23:20
-=======
-		Generated on: 2011-6-17 23:17
->>>>>>> 0106b1dc6fe5a311d022ddb06a4ed5b023439a72
+		Generated on: 2011-6-17 23:40
 	</div>
 </div>
 
@@ -102,8 +98,8 @@
 								<div class="fixedFont">
 									<b><a href="../symbols/HornHTML5Features.html#constructor">HornHTML5Features</a></b>()
 								</div>
-								<div class="description">Used to create new <code>HornHTML5Features</code> instances, thus:
-     <code>var hornHTML5Features = new HornHTML5Features();</code>.</div>
+								<div class="description">A Horn delegate implementation that extracts Horn data from custom HTML5
+ data attributes.</div>
 							</td>
 						</tr>
 					</tbody>
@@ -133,7 +129,7 @@
 										<div class="fixedFont">
 										HornHTML5Features.<b><a href="../symbols/HornHTML5Features.html#.dataNameHorn">dataNameHorn</a></b>
 										</div>
-										<div class="description">Description</div>
+										<div class="description">The HTML5 data-attribute name for nodes declaring Horn property paths.</div>
 									</td>
 								</tr>
 							
@@ -143,7 +139,8 @@
 										<div class="fixedFont">
 										HornHTML5Features.<b><a href="../symbols/HornHTML5Features.html#.dataNameJSON">dataNameJSON</a></b>
 										</div>
-										<div class="description">Description</div>
+										<div class="description">The HTML5 data-attribute name for nodes declaring Horn JSON data property
+ paths.</div>
 									</td>
 								</tr>
 							
@@ -182,7 +179,7 @@
 									<td class="nameDescription">
 										<div class="fixedFont"><b><a href="../symbols/HornHTML5Features.html#hasJSONIndicator">hasJSONIndicator</a></b>(node)
 										</div>
-										<div class="description">description</div>
+										<div class="description">Determine if a node declares the JSON indicator.</div>
 									</td>
 								</tr>
 							
@@ -193,7 +190,8 @@
 									<td class="nameDescription">
 										<div class="fixedFont"><b><a href="../symbols/HornHTML5Features.html#hasRootIndicator">hasRootIndicator</a></b>(node)
 										</div>
-										<div class="description">description</div>
+										<div class="description">Determine if a given node possesses a Horn root node indicator
+ (the data attribute 'horn').</div>
 									</td>
 								</tr>
 							
@@ -204,7 +202,7 @@
 									<td class="nameDescription">
 										<div class="fixedFont"><b><a href="../symbols/HornHTML5Features.html#pathIndicator">pathIndicator</a></b>(node)
 										</div>
-										<div class="description">description</div>
+										<div class="description">Extracts and returns the Horn path indicator for a given node.</div>
 									</td>
 								</tr>
 							
@@ -213,9 +211,9 @@
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
-										<div class="fixedFont"><b><a href="../symbols/HornHTML5Features.html#rootNodes">rootNodes</a></b>(node)
+										<div class="fixedFont"><b><a href="../symbols/HornHTML5Features.html#rootNodes">rootNodes</a></b>(args)
 										</div>
-										<div class="description">description</div>
+										<div class="description">Return all the current HTML document's Horn root nodes.</div>
 									</td>
 								</tr>
 							
@@ -246,8 +244,17 @@
 					</div>
 					
 					<div class="description">
-						Used to create new <code>HornHTML5Features</code> instances, thus:
-     <code>var hornHTML5Features = new HornHTML5Features();</code>.
+						A Horn delegate implementation that extracts Horn data from custom HTML5
+ data attributes.
+ <P>
+ Please refer to our online documentation for fuller details
+ <a href="http://horn.io/">http://horn.io/</a>.
+ <P>
+ Use this function to create new <code>HornHTML5Features</code> instances,
+ thus: <code>var hornHTML5Features = new HornHTML5Features();</code>.
+ <P>
+ Set it to use on a horn instance,
+ <code>horn.delegate( hornHTML5Features);</code>.
 						
 					</div>
 					
@@ -301,7 +308,7 @@
 						</div>
 						
 						<div class="description">
-							Description
+							The HTML5 data-attribute name for nodes declaring Horn property paths.
 							
 							
 							
@@ -323,7 +330,8 @@
 						</div>
 						
 						<div class="description">
-							Description
+							The HTML5 data-attribute name for nodes declaring Horn JSON data property
+ paths.
 							
 							
 							
@@ -364,7 +372,11 @@
 								</div>
 								
 								<div class="description">
-									description
+									Determine if a node declares the JSON indicator.
+ <P>
+ Nodes that declare this indicator are implicitly value nodes and contain
+ literal JSON encoded as the single text element body value child  of
+ declaring elements.
 									
 									
 									
@@ -381,7 +393,8 @@
 												<span class="light fixedFont">{Element}</span> <b>node</b>
 												
 											</dt>
-											<dd></dd>
+											<dd>the element that may declare the Horn JSON
+     indicator</dd>
 										
 									</dl>
 								
@@ -398,7 +411,7 @@
 										
 											<dt class="heading">Returns:</dt>
 											
-												<dd></dd>
+												<dd><code>true</code> if 'node' declares the Horn JSON indicator</dd>
 											
 										
 										
@@ -425,7 +438,11 @@
 								</div>
 								
 								<div class="description">
-									description
+									Determine if a given node possesses a Horn root node indicator
+ (the data attribute 'horn').
+ <P>
+ In this implementation we return <code>true</code> if 'node' declares
+ a data-attribute named 'horn' with any value whatsoever.
 									
 									
 									
@@ -442,7 +459,8 @@
 												<span class="light fixedFont">{Element}</span> <b>node</b>
 												
 											</dt>
-											<dd></dd>
+											<dd>the node to examine as to declaring a root
+     indicator</dd>
 										
 									</dl>
 								
@@ -459,7 +477,8 @@
 										
 											<dt class="heading">Returns:</dt>
 											
-												<dd></dd>
+												<dd><code>true</code> if 'node' does possess a Horn root node
+     indicator (of any value), <code>false</code> otherwise.</dd>
 											
 										
 										
@@ -480,13 +499,19 @@
 									
 									</span>
 									
-									
+									<span class="light">{String|Boolean}</span>
 									
 									<b>pathIndicator</b>(node)
 								</div>
 								
 								<div class="description">
-									description
+									Extracts and returns the Horn path indicator for a given node.
+ <P>
+ In this, the HTML5 implementation, nodes can declare paths using
+ data-attributes named, either 'horn', OR 'json'.
+ <P>
+ Paths are given in full JavaScript-like syntax so for example,
+ <code>a.b[a].x[2][3</code>
 									
 									
 									
@@ -503,7 +528,7 @@
 												<span class="light fixedFont">{Element}</span> <b>node</b>
 												
 											</dt>
-											<dd></dd>
+											<dd>the node from which to extract the path indicator</dd>
 										
 									</dl>
 								
@@ -520,7 +545,9 @@
 										
 											<dt class="heading">Returns:</dt>
 											
-												<dd></dd>
+												<dd><span class="light fixedFont">{String|Boolean}</span> if 'node' does have a Horn path indicator, it
+     is returned in <code>String</code> form, else
+     <code>Boolean false</code> is be returned</dd>
 											
 										
 										
@@ -543,11 +570,14 @@
 									
 									
 									
-									<b>rootNodes</b>(node)
+									<b>rootNodes</b>(args)
 								</div>
 								
 								<div class="description">
-									description
+									Return all the current HTML document's Horn root nodes.
+ <P>
+ This implementation thus returns all nodes with a data-attribute named
+ 'horn' with a value that starts with a forward-slash character '/'.
 									
 									
 									
@@ -561,7 +591,7 @@
 										<dt class="heading">Parameters:</dt>
 										
 											<dt>
-												<span class="light fixedFont">{Element}</span> <b>node</b>
+												<b>args</b>
 												
 											</dt>
 											<dd></dd>
@@ -581,7 +611,7 @@
 										
 											<dt class="heading">Returns:</dt>
 											
-												<dd></dd>
+												<dd>a list of this document's Horn root nodes</dd>
 											
 										
 										

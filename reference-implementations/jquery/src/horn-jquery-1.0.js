@@ -6,7 +6,9 @@
  *
  *  @version 1.0
  *
- *  @requires JQuery
+ *  @requires jQuery
+ *
+ *  (C) Spotty Mushroom 2011
  */
 
 /**

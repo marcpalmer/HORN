@@ -8,8 +8,10 @@
  *
  *  @version 1.0
  *
- *  @requires JQuery
+ *  @requires jQuery
  *  @requires Horn
+ *
+ *  (C) Spotty Mushroom 2011
  */
 
 /**

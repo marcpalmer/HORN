@@ -6,7 +6,10 @@
  *
  *  @version 1.0
  *
- *  @requires
+ *  @requires jQuery
+ *  @requires Horn
+ *
+ *  (C) Spotty Mushroom 2011
  */
 
 /**
@@ -113,8 +116,6 @@ function HornCSSFeatures() {
     };
 }
 
-horn.delegate( new HornCSSFeatures());
-
 /**
  *  The expected prefix for Horn property path indicators encoded as CSS
  *  'class' attribute values.
@@ -146,3 +147,5 @@ HornCSSFeatures.cssRootContext = 'horn';
  *  @public
  */
 HornCSSFeatures.cssJSON  = 'data-json';
+
+if ( SMUtils.isDefinedNotNull( horn) ) { horn.delegate( new HornCSSFeatures()); }
