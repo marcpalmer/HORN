@@ -21,6 +21,8 @@
  */
 function Horn() {
 
+    var delegate;
+
     /**
      *  @private
      *  @field
@@ -284,32 +286,26 @@ function Horn() {
      * @private
      * @function
      */
-    var setValue = SMUtils.bind( function( value, path, parentContext ) {
-        var token;
-        var numTokens;
-        var subContext;
-        if ( typeof path === 'string' ) {
-            path = Horn.pathToTokens( path);
-            if ( !SMUtils.isDefinedNotNull( state.model) ) {
-                state.model = (!isNaN( parseInt( path[ 0])) ? [] : {});
-            }
-            parentContext = state.model;
+    var setValue = SMUtils.bind( function( value, path ) {
+        var container;
+        var key;
+        if ( typeof path === 'string' ) { path = Horn.pathToTokens( path); }
+        if ( !SMUtils.isDefinedNotNull( state.model) ) {
+            state.model = Horn.containerFromToken( path[0]);
         }
-        numTokens = path.length;
-        if ( numTokens > 0 ) {
-            token = path.shift();
-            if ( numTokens > 1 ) {
-                if ( !parentContext.hasOwnProperty( token) ) {
-                    subContext = !isNaN( parseInt( path[ 0])) ? [] : {};
-                    parentContext[ token] = subContext;
+        container = state.model;
+        while ( path.length > 0 ) {
+            key = path.shift();
+            if ( path.length > 0 ) {
+                if ( !container.hasOwnProperty(key) ) {
+                    container[key] = Horn.containerFromToken(path[0]);
                 }
-                subContext = parentContext[ token];
-                return setValue( value, path, subContext);
+                container = container[key];
             } else {
-                parentContext[ token] = value;
-                return {context: parentContext, key: token, value: value};
+                container[key] = value;
             }
         }
+        return {context: container, key: key, value: value};
     }, this);
 
     /**
@@ -328,30 +324,31 @@ function Horn() {
     this.adjustModelArray = function( args ) {
         var prefix;
         var prefixLength;
-        var postfix;
         var alteredIndex;
         var newBindings = {};
         var path = Horn.toInternalPath( args.path);
         var isInsert = args.isInsert === true;
         var modelRef = getModelReference( {path: path});
-        var keyLength = (modelRef.key + "").length;
         if ( SMUtils.isDefinedNotNull(modelRef) && $.isArray(modelRef.ref) ) {
             prefix = SMUtils.replacePostfix( path, modelRef.key, "");
             prefixLength = prefix.length;
-            postfix = path.substring( prefixLength + keyLength + 1);
             alteredIndex = parseInt( modelRef.key);
-            SMUtils[isInsert ? 'arrayInsert' : 'arrayRemove']( modelRef.ref,
+            SMUtils[ 'array' + (isInsert ? 'Insert' : 'Remove')]( modelRef.ref,
                 alteredIndex);
             SMUtils.each( state.bindings, function( bindingPath, n ) {
                 var index;
                 var indexStr;
                 var hitUs;
+                var postfix;
+                var isSplit;
+                path = bindingPath;
                 if ( bindingPath.substring( 0, prefixLength) === prefix ) {
-                    path = bindingPath.substring(prefixLength);
-                    index = path.indexOf( "-");
-                    indexStr = path.substring( 0, index !== -1 ?
-                        index : path.length);
-                    index = parseInt( indexStr);
+                    index = bindingPath.indexOf( "-");
+                    isSplit = index !== -1;
+                    path = bindingPath.substring( prefixLength);
+                    indexStr = isSplit ? path.substring( 0, index) : path;
+                    postfix = isSplit ? path.substring( indexStr.length) : '';
+                    index = parseInt( indexStr, 10);
                     hitUs = index === alteredIndex;
                     if ( hitUs && !isInsert ) { return; }
                     if (index > alteredIndex) {
@@ -359,13 +356,17 @@ function Horn() {
                     } else if (hitUs) {
                         index++;
                     }
-                    path = prefix + index + path.substring( indexStr.length);
-                    if ( n.key === indexStr ) { n.key = index + ""; }
+                    path = prefix + index + postfix;
+                    if ( (bindingPath !== path) && (postfix.length === 0) ) {
+                        n.key = index + "";
+                    }
                 }
                 newBindings[ path] = n;
+
             }, this);
         }
-        state.bindings = newBindings;
+        SMUtils.removeAllProperties( state.bindings);
+        SMUtils.each(newBindings,function(i,n){state.bindings[i] = n});
     };
 
     /**
@@ -528,6 +529,18 @@ function Horn() {
     };
 
     /**
+     *  Get or set the Horn delegate.
+     *  <P>
+     *  Horn delegates implement the task of extracting horn data from HTML
+     *  nodes, subject to encoding variations (CSS vs HTML5 for example).
+     *  <P>
+     *  If 'hornDelegate' is provided, it will be used thereafter and the return
+     *  value from this method is undefined, else, the current delegate in use
+     *  is returned.
+     *
+     *  @param {Object} [hornDelegate] the new hornDelegate to use
+     *
+     *  @return {Object|undefined} the current Horn delegate
      *
      *  @public
      */
@@ -551,8 +564,6 @@ function Horn() {
      *      extracted
      *
      *  @public
-     *
-     *  @todo move
      */
     this.hasHornBinding = function( node ) {
         var theContained;
@@ -900,6 +911,22 @@ Horn.combinePaths = function( parent, child ) {
     } else if ( childDefined ) {
         return child;
     } else { return ""; }
+};
+
+/**
+ *  Creates either an array or object based on a token's value.
+ *  <P>
+ *  If <code>parseInt</code> on 'token' yields a valid number, say 'num'  we
+ *  return an array of size <code>num + 1</code> else we return a new empty
+ *  object.
+ *
+ *  @param {String} token the string value to inspect
+ *
+ *  @public
+ */
+Horn.containerFromToken = function( token ) {
+    var num = parseInt( token, 10);
+    return isNaN(num) ? {} : new Array(num + 1);
 };
 
 /**

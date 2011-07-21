@@ -56,6 +56,23 @@ test(
 
 
 
+test(
+    "containerFromToken - various.",
+    function() {
+        ok( $.isArray( Horn.containerFromToken( '0')));
+        ok( $.isArray( Horn.containerFromToken( '1')));
+        ok( $.isArray( Horn.containerFromToken( '01')));
+        ok( $.isArray( Horn.containerFromToken( '22')));
+        ok( $.isArray( Horn.containerFromToken( '32')));
+        ok( $.isArray( Horn.containerFromToken( '102')));
+        ok( !$.isArray( Horn.containerFromToken( 'a')));
+        ok( !$.isArray( Horn.containerFromToken( '_a')));
+        ok( !$.isArray( Horn.containerFromToken( '__a')));
+        ok( !$.isArray( Horn.containerFromToken( '_0_a')));
+    });
+
+
+
 
 test(
     "hornNodeValue - get tests for various tags.",
@@ -196,30 +213,6 @@ test(
                 var value = "x";
                 horn.option( name, value);
                 ok( horn.option( name) === value);
-            }});
-    });
-
-test(
-    "option : defaultModel",
-    function() {
-        SMTestUtils.dataTest( {
-            callback: function() {
-                var horn = new Horn();
-                var model = {
-                    notices: [],
-                    newNotice: { title: 'testTitle' }
-                };
-                horn.option( "defaultModel", model);
-                horn.bind();
-                var extractedModel = horn.model();
-                ok( extractedModel !== model);
-                ok( SMTestUtils.isObject( extractedModel));
-                ok( SMTestUtils.isArray( extractedModel.notices));
-                ok( extractedModel.notices.length === 0);
-                ok( SMTestUtils.isObject( extractedModel.newNotice));
-                ok( SMTestUtils.countOwnProps( extractedModel) === 2);
-                ok( SMTestUtils.countOwnProps( extractedModel.newNotice) === 1);
-                ok( extractedModel.newNotice.title === 'testTitle');
             }});
     });
 

@@ -51,7 +51,7 @@
 		
 		Documentation generator: <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0<br />
 		Template: <a href="http://www.thebrightlines.com/2010/05/06/new-template-for-jsdoctoolkit-codeview/" target="_blank">Codeview</a> 1.2<br />
-		Generated on: 2011-6-17 23:40
+		Generated on: 2011-6-21 21:57
 	</div>
 </div>
 
@@ -190,16 +190,27 @@
 								<tr
 									 class='item5'
 								>
-									<td class="attributes">&nbsp;</td>
+									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
-										<div class="fixedFont"><b><a href="../symbols/Horn.html#delegate">delegate</a></b>(hornDelegate)
+										<div class="fixedFont">Horn.<b><a href="../symbols/Horn.html#.containerFromToken">containerFromToken</a></b>(token)
 										</div>
-										<div class="description"></div>
+										<div class="description">Creates either an array or object based on a token's value.</div>
 									</td>
 								</tr>
 							
 								<tr
 									 class='item6'
+								>
+									<td class="attributes">&nbsp;</td>
+									<td class="nameDescription">
+										<div class="fixedFont"><b><a href="../symbols/Horn.html#delegate">delegate</a></b>(hornDelegate)
+										</div>
+										<div class="description">Get or set the Horn delegate.</div>
+									</td>
+								</tr>
+							
+								<tr
+									 class='item7'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -211,7 +222,7 @@
 								</tr>
 							
 								<tr
-									 class='item7'
+									 class='item8'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -222,7 +233,7 @@
 								</tr>
 							
 								<tr
-									 class='item8'
+									 class='item9'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -233,7 +244,7 @@
 								</tr>
 							
 								<tr
-									 class='item9'
+									 class='item10'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -245,7 +256,7 @@
 								</tr>
 							
 								<tr
-									 class='item10'
+									 class='item11'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -256,7 +267,7 @@
 								</tr>
 							
 								<tr
-									 class='item11'
+									 class='item12'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -268,7 +279,7 @@
 								</tr>
 							
 								<tr
-									 class='item12'
+									 class='item13'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -279,7 +290,7 @@
 								</tr>
 							
 								<tr
-									 class='item13'
+									 class='item14'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -290,7 +301,7 @@
 								</tr>
 							
 								<tr
-									 class='item14'
+									 class='item15'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -302,7 +313,7 @@
 								</tr>
 							
 								<tr
-									 class='item15'
+									 class='item16'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -313,7 +324,7 @@
 								</tr>
 							
 								<tr
-									 class='item16'
+									 class='item17'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -325,7 +336,7 @@
 								</tr>
 							
 								<tr
-									 class='item17'
+									 class='item18'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -337,7 +348,7 @@
 								</tr>
 							
 								<tr
-									 class='item18'
+									 class='item19'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -349,7 +360,7 @@
 								</tr>
 							
 								<tr
-									 class='item19'
+									 class='item20'
 								>
 									<td class="attributes">&lt;static&gt; &nbsp;</td>
 									<td class="nameDescription">
@@ -361,7 +372,7 @@
 								</tr>
 							
 								<tr
-									 class='item20'
+									 class='item21'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -374,7 +385,7 @@
 								</tr>
 							
 								<tr
-									 class='item21'
+									 class='item22'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -385,7 +396,7 @@
 								</tr>
 							
 								<tr
-									 class='item22'
+									 class='item23'
 								>
 									<td class="attributes">&nbsp;</td>
 									<td class="nameDescription">
@@ -889,18 +900,22 @@
 							<li 
 								 class='item5'
 							>
-								<div class="fixedFont heading" id="delegate">
+								<div class="fixedFont heading" id=".containerFromToken">
 									<span class='lighter'>
-									
+									&lt;static&gt; 
 									</span>
 									
 									
 									
-									<b>delegate</b>(hornDelegate)
+									<span class="light">Horn.</span><b>containerFromToken</b>(token)
 								</div>
 								
 								<div class="description">
-									
+									Creates either an array or object based on a token's value.
+ <P>
+ If <code>parseInt</code> on 'token' yields a valid number, say 'num'  we
+ return an array of size <code>num + 1</code> else we return a new empty
+ object.
 									
 									
 									
@@ -914,10 +929,10 @@
 										<dt class="heading">Parameters:</dt>
 										
 											<dt>
-												<b>hornDelegate</b>
+												<span class="light fixedFont">{String}</span> <b>token</b>
 												
 											</dt>
-											<dd></dd>
+											<dd>the string value to inspect</dd>
 										
 									</dl>
 								
@@ -928,6 +943,74 @@
 						
 							<li 
 								 class='item6'
+							>
+								<div class="fixedFont heading" id="delegate">
+									<span class='lighter'>
+									
+									</span>
+									
+									<span class="light">{Object|undefined}</span>
+									
+									<b>delegate</b>(hornDelegate)
+								</div>
+								
+								<div class="description">
+									Get or set the Horn delegate.
+ <P>
+ Horn delegates implement the task of extracting horn data from HTML
+ nodes, subject to encoding variations (CSS vs HTML5 for example).
+ <P>
+ If 'hornDelegate' is provided, it will be used thereafter and the return
+ value from this method is undefined, else, the current delegate in use
+ is returned.
+									
+									
+									
+									
+								</div>
+								
+								
+								
+								
+									<dl class="detailList params">
+										<dt class="heading">Parameters:</dt>
+										
+											<dt>
+												<span class="light fixedFont">{Object}</span> <b>hornDelegate</b>
+												<i>Optional</i>
+											</dt>
+											<dd>the new hornDelegate to use</dd>
+										
+									</dl>
+								
+								
+								
+									<dl class="detailList nomargin">
+									
+										
+										
+										
+										
+										
+										
+										
+											<dt class="heading">Returns:</dt>
+											
+												<dd><span class="light fixedFont">{Object|undefined}</span> the current Horn delegate</dd>
+											
+										
+										
+										
+										
+										
+									
+									</dl>
+								
+								<div class="hr"></div>
+							</li>
+						
+							<li 
+								 class='item7'
 							>
 								<div class="fixedFont heading" id="hasHornBinding">
 									<span class='lighter'>
@@ -994,7 +1077,7 @@
 							</li>
 						
 							<li 
-								 class='item7'
+								 class='item8'
 							>
 								<div class="fixedFont heading" id=".hornNodeValue">
 									<span class='lighter'>
@@ -1069,7 +1152,7 @@
 							</li>
 						
 							<li 
-								 class='item8'
+								 class='item9'
 							>
 								<div class="fixedFont heading" id=".isPathDefined">
 									<span class='lighter'>
@@ -1134,7 +1217,7 @@
 							</li>
 						
 							<li 
-								 class='item9'
+								 class='item10'
 							>
 								<div class="fixedFont heading" id="load">
 									<span class='lighter'>
@@ -1196,7 +1279,7 @@
 							</li>
 						
 							<li 
-								 class='item10'
+								 class='item11'
 							>
 								<div class="fixedFont heading" id="model">
 									<span class='lighter'>
@@ -1246,7 +1329,7 @@
 							</li>
 						
 							<li 
-								 class='item11'
+								 class='item12'
 							>
 								<div class="fixedFont heading" id="nodeForPath">
 									<span class='lighter'>
@@ -1312,7 +1395,7 @@
 							</li>
 						
 							<li 
-								 class='item12'
+								 class='item13'
 							>
 								<div class="fixedFont heading" id="option">
 									<span class='lighter'>
@@ -1489,7 +1572,7 @@
 							</li>
 						
 							<li 
-								 class='item13'
+								 class='item14'
 							>
 								<div class="fixedFont heading" id=".pathToTokens">
 									<span class='lighter'>
@@ -1553,7 +1636,7 @@
 							</li>
 						
 							<li 
-								 class='item14'
+								 class='item15'
 							>
 								<div class="fixedFont heading" id="reset">
 									<span class='lighter'>
@@ -1604,7 +1687,7 @@
 							</li>
 						
 							<li 
-								 class='item15'
+								 class='item16'
 							>
 								<div class="fixedFont heading" id="state">
 									<span class='lighter'>
@@ -1657,7 +1740,7 @@
 							</li>
 						
 							<li 
-								 class='item16'
+								 class='item17'
 							>
 								<div class="fixedFont heading" id=".toExternalPath">
 									<span class='lighter'>
@@ -1701,7 +1784,7 @@
 							</li>
 						
 							<li 
-								 class='item17'
+								 class='item18'
 							>
 								<div class="fixedFont heading" id=".toInternalPath">
 									<span class='lighter'>
@@ -1747,7 +1830,7 @@
 							</li>
 						
 							<li 
-								 class='item18'
+								 class='item19'
 							>
 								<div class="fixedFont heading" id=".toRegularExpression">
 									<span class='lighter'>
@@ -1813,7 +1896,7 @@
 							</li>
 						
 							<li 
-								 class='item19'
+								 class='item20'
 							>
 								<div class="fixedFont heading" id=".traverse">
 									<span class='lighter'>
@@ -1892,7 +1975,7 @@
 							</li>
 						
 							<li 
-								 class='item20'
+								 class='item21'
 							>
 								<div class="fixedFont heading" id="unbind">
 									<span class='lighter'>
@@ -1961,7 +2044,7 @@
 							</li>
 						
 							<li 
-								 class='item21'
+								 class='item22'
 							>
 								<div class="fixedFont heading" id="updateDOM">
 									<span class='lighter'>
@@ -2033,7 +2116,7 @@
 							</li>
 						
 							<li 
-								 class='item22'
+								 class='item23'
 							>
 								<div class="fixedFont heading" id="walkDOM">
 									<span class='lighter'>

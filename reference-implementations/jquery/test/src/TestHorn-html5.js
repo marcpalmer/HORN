@@ -196,6 +196,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMUtils.isDefinedNotNull( model));
                 ok( SMTestUtils.isArray( model));
@@ -214,6 +215,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -231,6 +233,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[2]");
                 var data = horn.bind();
                 ok( SMTestUtils.isArray( data));
@@ -248,6 +251,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
@@ -268,6 +272,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -289,6 +294,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -310,6 +316,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
@@ -333,6 +340,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][3][1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -357,6 +365,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][3][2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -381,6 +390,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
@@ -402,6 +412,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][4].l");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -424,6 +435,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][4].m");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -446,6 +458,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
@@ -464,6 +477,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].g");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -483,6 +497,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].h");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -502,6 +517,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
@@ -523,6 +539,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].i[2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -545,6 +562,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].i[3]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -567,6 +585,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
@@ -587,6 +606,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].j.o");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -608,6 +628,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].j.p");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -629,6 +650,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model[ 'a'] === 'one');
@@ -644,6 +666,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "b");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -660,6 +683,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isArray( model.d));
@@ -677,6 +701,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -695,6 +720,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -713,6 +739,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isArray( model.d));
@@ -732,6 +759,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[3][1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -752,6 +780,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[3][2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -772,6 +801,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
 
@@ -793,6 +823,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[4].l");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -815,6 +846,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[4].m");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -837,6 +869,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.e));
@@ -853,6 +886,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.g");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -870,6 +904,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.h");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -887,6 +922,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.e));
@@ -905,6 +941,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 horn.option( "pattern", "e-i-2", "IntegerConverter");
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.i[2]");
                 var model = horn.bind();
@@ -925,6 +962,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.i[3]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -944,6 +982,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.e));
@@ -961,6 +1000,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.i.o");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -979,6 +1019,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.i.p");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -997,6 +1038,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1013,6 +1055,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1029,6 +1072,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a.b.c.d");
                 var model = horn.bind();
                 ok( model.a.b.c.d === -23);
@@ -1044,6 +1088,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( SMTestUtils.isObject( model[0]));
@@ -1060,6 +1105,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( SMTestUtils.isObject( model[ 0]));
@@ -1076,6 +1122,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( SMTestUtils.isObject( model[ 0]));
@@ -1092,6 +1139,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model.key));
                 ok( model.key.a === true);
@@ -1108,6 +1156,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model.key));
                 ok( SMTestUtils.isArray( model.key.a));
@@ -1128,6 +1177,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key.a");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1145,6 +1195,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model.key));
                 ok( model.key.a === true);
@@ -1161,6 +1212,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model.key));
                 ok( SMTestUtils.isArray( model.key.a));
@@ -1182,6 +1234,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model[ 'a'] === 'one');
@@ -1200,6 +1253,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "propName");
                 var model = horn.bind();
                 model = horn.bind();
@@ -1217,6 +1271,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "propName");
                 var model = horn.bind();
                 model = horn.bind();
@@ -1234,6 +1289,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === 'alternative');
@@ -1249,6 +1305,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1265,6 +1322,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === 'testValue');
@@ -1280,6 +1338,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1296,6 +1355,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === 'testValue');
@@ -1311,6 +1371,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1327,6 +1388,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var passed = false;
                 var hpc = new HornPatternConverter( {horn: horn});
                 var converter = function( args ) {
@@ -1353,6 +1415,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
@@ -1385,6 +1448,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.e = 'updatedValue';
@@ -1417,6 +1481,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 ok( horn.hasHornBinding( $('#grabber1')[0], '', true) === false);
@@ -1449,6 +1514,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
@@ -1476,6 +1542,7 @@ test(
                 nodes:  $('<div id="template"><div data-horn="key" id="xx"></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 horn.option( "defaultModel", {});
                 var model = horn.bind();
                 ok( model.key === undefined);
@@ -1506,6 +1573,7 @@ test(
                 nodes:  $(  '<div data-horn="/"><span data-horn="a"></span><div data-horn="b"><span data-horn="[0]"></span><span data-horn="[1]"></span><div data-horn="c"><span data-horn="d"></span><div data-horn="e"><span data-horn="[0]"></span><span data-horn="[1]"></span></div></div></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 horn.bind();
                 ok( SMTestUtils.arrayCompare(
                         ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
@@ -1528,6 +1596,7 @@ test(
                 nodes:  $(  '<div data-horn="/"><span data-horn="a"></span><div data-horn="b"><span data-horn="[0]">zz</span><span data-horn="[1]"></span><div data-horn="c"><span data-horn="d"></span><div data-horn="e"><span data-horn="[0]">xxx</span><span data-horn="[1]"></span></div></div></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 horn.bind().x = "";
                 ok( SMTestUtils.arrayCompare( ["a", "b[1]", "b.c.d", "b.c.e[1]"],
                         horn.blankModelEntries()));
@@ -1550,6 +1619,7 @@ test(
                 nodes:  $(  '<div data-horn="/"><span data-horn="a"></span><div data-horn="b"><span data-horn="[0]">zz</span><span data-horn="[1]"></span><div data-horn="c"><span data-horn="d"></span><div data-horn="e"><span data-horn="[0]">xxx</span><span id="xqs" data-horn="[1]">ourValue</span></div></div></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( $(horn.nodeForPath( "b.c.e[1]")).attr( 'id') === 'xqs');
             }});
@@ -1568,6 +1638,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1591,6 +1662,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1614,6 +1686,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1640,6 +1713,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1659,6 +1733,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1678,6 +1753,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === false);
@@ -1695,6 +1771,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
                 ok( SMUtils.isAttached( $('.key')));
@@ -1715,6 +1792,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 ok( SMUtils.isAttached( $('.key1')));
                 ok( SMUtils.isAttached( $('.key2')));
@@ -1742,6 +1820,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model;
                 ok( SMUtils.isAttached( $('#root')));
                 ok( SMUtils.isAttached( $('#root2')));
@@ -1767,6 +1846,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1786,6 +1866,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model = horn.bind();
                 var node;
                 ok( SMTestUtils.isObject( model));
@@ -1807,6 +1888,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 hornConverter.reset( horn);
                 hornConverter.pattern( "*", "unknownConverter");
                 var model = horn.bind();
@@ -1829,6 +1911,7 @@ test(
             callback: function() {
                 var defaultModel = {key2: true, key3: [0]};
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 var model;
                 ok( SMUtils.isAttached( $('.test')));
                 horn.option( "defaultModel", defaultModel);
@@ -1860,6 +1943,7 @@ test(
                 var model;
                 var defaultModel = [true, [0], ""];
                 var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
                 ok( SMUtils.isAttached( $('.test')));
                 horn.option( "defaultModel", defaultModel);
                 model = horn.bind();
@@ -1882,4 +1966,30 @@ test(
                 ok( defaultModel !== model);
         }});
         ok( !SMUtils.isAttached( $('.test')));
+    });
+
+
+test(
+    "option : defaultModel",
+    function() {
+        SMTestUtils.dataTest( {
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornHTML5Features());
+                var model = {
+                    notices: [],
+                    newNotice: { title: 'testTitle' }
+                };
+                horn.option( "defaultModel", model);
+                horn.bind();
+                var extractedModel = horn.model();
+                ok( extractedModel !== model);
+                ok( SMTestUtils.isObject( extractedModel));
+                ok( SMTestUtils.isArray( extractedModel.notices));
+                ok( extractedModel.notices.length === 0);
+                ok( SMTestUtils.isObject( extractedModel.newNotice));
+                ok( SMTestUtils.countOwnProps( extractedModel) === 2);
+                ok( SMTestUtils.countOwnProps( extractedModel.newNotice) === 1);
+                ok( extractedModel.newNotice.title === 'testTitle');
+            }});
     });

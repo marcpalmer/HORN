@@ -24,7 +24,6 @@ test(
 test(
     "Test horn has rootNodes function.",
     function() {
-        var horn = new Horn();
         ok( SMTestUtils.isFunction( horn.delegate().rootNodes));
     }
 );
@@ -212,105 +211,809 @@ test(
 
 module( "horn-jquery-css-1.0.js - horn functions");
 
+// 0-0-0    0 = A
+// 0-0-1    1
+// 0-1-0    2
+// 0-0-2    3
+// 0-1-0    4
+// 1-0-0    5
+// 2-0-1    6
+// 3-0-0-0  7
+// 3-1-0-0  8
 
-
-
-// 0-0-0 0
-// 0-0-1 1
-// 0-1-0 2
-// 0-1-1 3
-
+/*
+<div class="horn">
+    <span class="_0-0-0">0</span>
+    <span class="_0-0-1">1</span>
+    <span class="_0-1-0">2</span>
+    <span class="_0-1-1">3</span>
+    <span class="_1-0-0">4</span>
+    <span class="_2-0-1">5</span>
+    <span class="_2-1-0">6</span>
+    <span class="_3-0-0-0">7</span>
+    <span class="_3-1-0-0">8</span>
+</div>
+<div class="horn"><span class="_0-0-0">0</span><span class="_0-0-1">1</span><span class="_0-1-0">2</span><span class="_0-1-1">3</span><span class="_1-0-0">4</span><span class="_2-0-1">5</span><span class="_2-1-0">6</span><span class="_3-0-0-0">7</span><span class="_3-1-0-0">8</span></div>
+*/
 
 test(
-    "adjustModelArray - remove single bound array element.",
+    "adjustModelArray - [0]-/[0]",
     function() {
         SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_0">one</span></div>')}
+                nodes:  $('<div class="horn"><span class="_0">0</span></div>')}
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
-                ok( SMTestUtils.isArray( model));
-                ok( model.length === 1);
-                ok( model[ 0] === "one");
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 1);
+                ok( b["0"].context[ b["0"].key] === "0");
                 horn.adjustModelArray( {isInsert: false, path: "/[0]"});
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 0);
+                ok( SMTestUtils.countOwnProps( b) === 0);
             }});
     });
 
 test(
-    "adjustModelArray - .",
+    "adjustModelArray - [0,1]-/[0]",
     function() {
         SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_0">one</span><span class="_1">two</span></div>')}
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
-                ok( SMTestUtils.isArray( model));
-                ok( model.length === 2);
-                ok( model[ 0] === "one");
-                ok( model[ 1] === "two");
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 2);
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
                 horn.adjustModelArray( {isInsert: false, path: "/[0]"});
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
-                ok( horn.state().bindings.hasOwnProperty("0"));
-                ok( horn.state().bindings["0"].key === "0");
+                ok( SMTestUtils.countOwnProps( b) === 1);
+                ok( b["0"].context[ b["0"].key] === "1");
             }});
     });
 
 test(
-    "adjustModelArray - .",
+    "adjustModelArray - [0,1]-/[1]",
     function() {
         SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_a"><span class="_0">one</span><span class="_1">two</span></span></div>')}
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
-                ok( SMTestUtils.isArray( model.a));
-                ok( model.a.length === 2);
-                ok( model.a[ 0] === "one");
-                ok( model.a[ 1] === "two");
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 2);
-                horn.adjustModelArray( {isInsert: false, path: "/a[0]"});
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
-                ok( SMUtils.isDefinedNotNull( horn.state().bindings["a-0"]));
-                ok( horn.state().bindings["a-0"].key === "0");
-                ok( horn.state().bindings["a-0"].context[ horn.state().bindings["a-0"].key] === "two");
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                horn.adjustModelArray( {isInsert: false, path: "/[1]"});
+                ok( SMTestUtils.countOwnProps( b) === 1);
+                ok( b["0"].context[ b["0"].key] === "0");
             }});
     });
 
 test(
-    "adjustModelArray - .",
+    "adjustModelArray - [0,1,2]-/[0]",
     function() {
         SMTestUtils.dataTest( {
             nodes: [ {
-                nodes:  $('<div class="horn"><span class="_0">one</span><span class="_1"><span class="_a">two</span></span></div>')}
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div>')}
             ],
             callback: function() {
                 var horn = new Horn();
-                horn.name = true;
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
-                ok( SMTestUtils.isArray( model));
-                ok( model.length === 2);
-                ok( model[ 0] === "one");
-                ok( model[ 1].a === "two");
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 2);
-                ok( SMUtils.isDefinedNotNull( horn.state().bindings["0"]));
-                ok( SMUtils.isDefinedNotNull( horn.state().bindings["1-a"]));
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2"].context[ b["2"].key] === "2");
                 horn.adjustModelArray( {isInsert: false, path: "/[0]"});
-                ok( SMTestUtils.countOwnProps( horn.state().bindings) === 1);
-                ok( SMUtils.isDefinedNotNull( horn.state().bindings["0-a"]));
-                ok( horn.state().bindings["0-a"].key === "a");
-                ok( horn.state().bindings["0-a"].context[ horn.state().bindings["0-a"].key] === "two");
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "1");
+                ok( b["1"].context[ b["1"].key] === "2");
             }});
     });
 
+test(
+    "adjustModelArray - [0,1,2]-/[1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2"].context[ b["2"].key] === "2");
+                horn.adjustModelArray( {isInsert: false, path: "/[1]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "2");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,2]-/[2]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2"].context[ b["2"].key] === "2");
+                horn.adjustModelArray( {isInsert: false, path: "/[2]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0]]-/[0][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 1);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                horn.adjustModelArray( {isInsert: false, path: "/[0][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 0);
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1,2]]-/[0][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["0-2"].context[ b["0-2"].key] === "2");
+                horn.adjustModelArray( {isInsert: false, path: "/[0][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0-0"].context[ b["0-0"].key] === "1");
+                ok( b["0-1"].context[ b["0-1"].key] === "2");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1,2]]-/[0][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["0-2"].context[ b["0-2"].key] === "2");
+                horn.adjustModelArray( {isInsert: false, path: "/[0][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "2");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1,2]]-/[0][2]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["0-2"].context[ b["0-2"].key] === "2");
+                horn.adjustModelArray( {isInsert: false, path: "/[0][2]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1,2]]-/[0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["0-2"].context[ b["0-2"].key] === "2");
+                horn.adjustModelArray( {isInsert: false, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( b) === 0);
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( b) === 4);
+                ok( b["0-0"].context[ b["0-0"].key] === "2");
+                ok( b["0-1"].context[ b["0-1"].key] === "3");
+                ok( b["1-0"].context[ b["1-0"].key] === "4");
+                ok( b["1-1"].context[ b["1-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[1]"});
+                ok( SMTestUtils.countOwnProps( b) === 4);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "4");
+                ok( b["1-1"].context[ b["1-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[2]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[2]"});
+                ok( SMTestUtils.countOwnProps( b) === 4);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[0][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[0][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 5);
+                ok( b["0-0"].context[ b["0-0"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[0][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[0][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 5);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[1][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[1][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 5);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[1][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[1][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 5);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[2][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 5);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]-/[2][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 5);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[0]"});
+                ok( b["0"].context[ b["0"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1-0"].context[ b["1-1-0"].key] === "3");
+                ok( b["1-1-1"].context[ b["1-1-1"].key] === "4");
+                ok( b["1-1-2"].context[ b["1-1-2"].key] === "5");
+                ok( b["1-2"].context[ b["1-2"].key] === "6");
+                ok( b["2"].context[ b["2"].key] === "7");
+                ok( b["3"].context[ b["3"].key] === "8");
+                ok( SMTestUtils.countOwnProps( b) === 8);
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[1]"});
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1-0"].context[ b["1-1-0"].key] === "3");
+                ok( b["1-1-1"].context[ b["1-1-1"].key] === "4");
+                ok( b["1-1-2"].context[ b["1-1-2"].key] === "5");
+                ok( b["1-2"].context[ b["1-2"].key] === "6");
+                ok( b["2"].context[ b["2"].key] === "7");
+                ok( b["3"].context[ b["3"].key] === "8");
+                ok( SMTestUtils.countOwnProps( b) === 8);
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2]"});
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2"].context[ b["2"].key] === "7");
+                ok( b["3"].context[ b["3"].key] === "8");
+                ok( SMTestUtils.countOwnProps( b) === 4);
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[3]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[3]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "4");
+                ok( b["2-1-2"].context[ b["2-1-2"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "8");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[4]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[4]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "4");
+                ok( b["2-1-2"].context[ b["2-1-2"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0-0"].context[ b["2-0-0"].key] === "3");
+                ok( b["2-0-1"].context[ b["2-0-1"].key] === "4");
+                ok( b["2-0-2"].context[ b["2-0-2"].key] === "5");
+                ok( b["2-1"].context[ b["2-1"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1"].context[ b["2-1"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+
+
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][2]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][2]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "4");
+                ok( b["2-1-2"].context[ b["2-1-2"].key] === "5");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][1][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][1][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "4");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][1][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][1][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][1][2]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: false, path: "/[2][1][2]"});
+                ok( SMTestUtils.countOwnProps( b) === 8);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "4");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+            }});
+    });
 
 /*
                                     'Key' - 'Value'         Structure           Java
@@ -385,6 +1088,7 @@ test(
         SMTestUtils.dataTest( {
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 ok( horn.bind() === undefined);
             }});
     });
@@ -398,6 +1102,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 1);
@@ -414,6 +1119,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -431,6 +1137,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[2]");
                 var data = horn.bind();
                 ok( SMTestUtils.isArray( data));
@@ -448,12 +1155,15 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
 
                 ok( SMTestUtils.isArray( model[ 3]));
                 ok( model[ 3].length === 1);
+
+
 
                 ok( model[ 3][ 0] === 'three');
             }});
@@ -468,6 +1178,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -489,6 +1200,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -510,6 +1222,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
@@ -533,6 +1246,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][3][1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -556,7 +1270,8 @@ test(
                 nodes:  $('<div class="horn _3-3"><span class="_2">true</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();  
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][3][2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -581,6 +1296,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 4);
@@ -602,6 +1318,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[3][4].l");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -624,6 +1341,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[3][4].m");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -645,7 +1363,8 @@ test(
                 nodes:  $('<div class="horn _4"><span class="_f">nine</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();3
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
@@ -664,6 +1383,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].g");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -683,6 +1403,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].h");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -702,6 +1423,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
@@ -723,6 +1445,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].i[1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -745,6 +1468,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].i[2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -767,6 +1491,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( model.length === 5);
@@ -787,6 +1512,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "[4].j.o");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -808,6 +1534,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "[4].j.p");
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
@@ -829,6 +1556,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model[ 'a'] === 'one');
@@ -844,6 +1572,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "b");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -860,6 +1589,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isArray( model.d));
@@ -876,7 +1606,8 @@ test(
                 nodes:  $('<div class="horn _d"><span class="_1">4</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();3
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -895,6 +1626,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -913,6 +1645,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isArray( model.d));
@@ -932,6 +1665,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[3][1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -952,6 +1686,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[3][2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -972,6 +1707,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
 
@@ -993,6 +1729,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "d[4].l");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1015,6 +1752,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[4].m");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1037,6 +1775,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.e));
@@ -1053,6 +1792,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.g");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1070,6 +1810,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.h");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1087,6 +1828,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.e));
@@ -1105,6 +1847,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.i[1]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1124,6 +1867,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.i[2]");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1143,6 +1887,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.e));
@@ -1160,6 +1905,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "e.i.o");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1178,6 +1924,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "e.i.p");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1194,8 +1941,9 @@ test(
             nodes: [ {
                 nodes:  $('<div class="horn"><span class="_a">value</span></div>')}
             ],
-            callback: function() {    
+            callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind({pathStem: "/a.b"});
                 ok( SMTestUtils.isObject( model));
                 ok( model.a.b.a === "value");
@@ -1211,6 +1959,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1227,6 +1976,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1243,6 +1993,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a.b.c.d");
                 var model = horn.bind();
                 ok( model.a.b.c.d === -23);
@@ -1258,6 +2009,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( SMTestUtils.isObject( model[0]));
@@ -1275,6 +2027,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( SMTestUtils.isObject( model[ 0]));
@@ -1291,6 +2044,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isArray( model));
                 ok( SMTestUtils.isObject( model[ 0]));
@@ -1307,6 +2061,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model.key));
                 ok( model.key.a === true);
@@ -1323,6 +2078,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model.key));
                 ok( SMTestUtils.isArray( model.key.a));
@@ -1343,6 +2099,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key.a");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1360,6 +2117,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model[ 'a'] === 'one');
@@ -1379,6 +2137,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model;
                 ok( SMUtils.isAttached( $('#root')));
                 ok( SMUtils.isAttached( $('#root2')));
@@ -1407,6 +2166,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "propName");
                 var model = horn.bind();
                 model = horn.bind();
@@ -1424,6 +2184,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.propName === true);
@@ -1439,6 +2200,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === 'alternative');
@@ -1469,6 +2231,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( SMTestUtils.isObject( model.z));
@@ -1489,6 +2252,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === 'testValue');
@@ -1504,6 +2268,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1520,6 +2285,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
@@ -1536,6 +2302,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var passed = false;
                 var hpc = new HornPatternConverter( {horn: horn});
                 var converter = function( args ) {
@@ -1547,6 +2314,62 @@ test(
                 ok( passed);
         }});
     });
+
+test(
+    "bind - out of order array creation",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn _1">a</div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                horn.bind();
+                ok( SMTestUtils.isArray( horn.model()));
+                ok( horn.model().length === 2);
+                ok( horn.model()[ 1] === "a");
+           }});
+    });
+
+test(
+    "bind - out of order array creation - nested",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_1-2-3">a</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                horn.bind();
+                ok( SMTestUtils.isArray( horn.model()));
+                ok( horn.model().length === 2);
+                ok( horn.model()[1].length === 3);
+                ok( horn.model()[1][2].length === 4);
+                ok( horn.model()[1][2][3] === "a");
+           }});
+    });
+
+test(
+    "bind - out of order array creation - nested 2",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0_2">0</span><span class="_0-1-2">3</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                horn.bind();
+                ok( SMTestUtils.isArray( horn.model()));
+           }});
+    });
+
+
+
+
+
 
 test(
     "bindTo - Testing the population of a template with no type conversion nor pattern matching.",
@@ -1562,6 +2385,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
@@ -1594,6 +2418,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
@@ -1626,6 +2451,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 ok( horn.hasHornBinding( $('#grabber1')[0], '', true) === false);
@@ -1681,6 +2507,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 ok( SMUtils.isAttached( $('.terms')));
                 var date = new Date();
                 horn.option( "defaultModel", {
@@ -1718,6 +2545,7 @@ test(
                             '</div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( model.a.b.c.d === 'value');
                 model.a.b.c.d = 'updatedValue';
@@ -1745,6 +2573,7 @@ test(
                 nodes:  $('<div id="template"><div class="_key" id="xx"></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 horn.option( "defaultModel", {});
                 var model = horn.bind();
                 ok( model.key === undefined);
@@ -1774,6 +2603,7 @@ test(
                 nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0"></span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0"></span><span class="_1"></span></div></div></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 horn.bind();
                 ok( SMTestUtils.arrayCompare(
                     ["a", "b[0]", "b[1]", "b.c.d", "b.c.e[0]", "b.c.e[1]"],
@@ -1795,7 +2625,8 @@ test(
             nodes: [ {
                 nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0">zz</span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0">xxx</span><span id="_x" class="_1"></span></div></div></div></div>')}],
             callback: function() {
-                var horn = new Horn();                                                
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 horn.bind().x = "";
                 ok( SMTestUtils.arrayCompare( ["a", "b[1]", "b.c.d", "b.c.e[1]"],
                         horn.blankModelEntries()));
@@ -1819,6 +2650,7 @@ test(
                 nodes:  $(  '<div class="horn"><span class="_a"></span><div class="_b"><span class="_0">zz</span><span class="_1"></span><div class="_c"><span class="_d"></span><div class="_e"><span class="_0">xxx</span><span id="xqs" class="_1">ourValue</span></div></div></div></div>')}],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( $(horn.nodeForPath( "b.c.e[1]")).attr( 'id') === 'xqs');
             }});
@@ -1837,6 +2669,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1859,6 +2692,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1882,6 +2716,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1905,6 +2740,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "d[2]");
                 var model = horn.bind();
                 ok( model.d[ 2] === false);
@@ -1931,6 +2767,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
                 ok( SMUtils.isAttached( $('._key')));
@@ -1951,6 +2788,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model;
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
 
@@ -1973,6 +2811,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
 
                 var model = horn.bind();
@@ -1994,6 +2833,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMUtils.isAttached( $('._key1')));
                 ok( SMUtils.isAttached( $('._key2')));
@@ -2021,6 +2861,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "IntegerConverter", "key");
 
                 var model = horn.bind();
@@ -2041,7 +2882,8 @@ test(
                 nodes:  $('<div class="horn">baskdfhjdshfds h<input class="_key" value="true"/>akdsjf kljdskf jdskf</div>')}
             ],
             callback: function() {
-                var horn = new Horn();                
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 SMTestUtils.setPatternConverter( horn, "BooleanConverter", "key");
                 var model = horn.bind();
                 ok( SMUtils.isAttached( $('._key')));
@@ -2062,6 +2904,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 ok( SMTestUtils.isObject( model));
                 ok( model.key === 'testValue');
@@ -2077,6 +2920,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model = horn.bind();
                 var node;
                 ok( SMTestUtils.isObject( model));
@@ -2098,6 +2942,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var count = 0;
                 var expected = [
                     ["a", $('._a')]
@@ -2122,6 +2967,7 @@ test(
             ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var count = 0;
                 var expected = [
                     ["a", $('._a')],
@@ -2148,6 +2994,7 @@ test(
             nodes: [ { nodes:  $('<div class="horn _value">12</div>')} ],
             callback: function() {
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 hornConverter.reset( horn);
                 hornConverter.pattern( "*", "unknownConverter");
                 var model = horn.bind();
@@ -2167,6 +3014,7 @@ test(
             callback: function() {
                 var defaultModel = {key2: true, key3: [0]};
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 var model;
                 ok( SMUtils.isAttached( $('.test')));
                 horn.option( "defaultModel", defaultModel);
@@ -2198,6 +3046,7 @@ test(
                 var model;
                 var defaultModel = [true, [0], ""];
                 var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
                 ok( SMUtils.isAttached( $('.test')));
                 horn.option( "defaultModel", defaultModel);
                 model = horn.bind();
@@ -2220,4 +3069,29 @@ test(
                 ok( defaultModel !== model);
         }});
         ok( !SMUtils.isAttached( $('.test')));
+    });
+
+test(
+    "option : defaultModel",
+    function() {
+        SMTestUtils.dataTest( {
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = {
+                    notices: [],
+                    newNotice: { title: 'testTitle' }
+                };
+                horn.option( "defaultModel", model);
+                horn.bind();
+                var extractedModel = horn.model();
+                ok( extractedModel !== model);
+                ok( SMTestUtils.isObject( extractedModel));
+                ok( SMTestUtils.isArray( extractedModel.notices));
+                ok( extractedModel.notices.length === 0);
+                ok( SMTestUtils.isObject( extractedModel.newNotice));
+                ok( SMTestUtils.countOwnProps( extractedModel) === 2);
+                ok( SMTestUtils.countOwnProps( extractedModel.newNotice) === 1);
+                ok( extractedModel.newNotice.title === 'testTitle');
+            }});
     });

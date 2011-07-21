@@ -692,6 +692,20 @@ SMUtils.isDefinedNotNull = function( value ) {
 };
 
 /**
+ *  Removes all non-prototype properties from an object.
+ *
+ *  @param {Object} object the object to remove the property from
+ *
+ *  @return {Object} the possibly modified 'object'
+ *
+ *  @public
+ */
+SMUtils.removeAllProperties = function( object ) {
+    SMUtils.each(object, function(i, n) { SMUtils.removeProperty(object, i); });
+
+};
+
+/**
  *  Removes a named property from an object if it exists and is non
  *  prototypical.
  *
@@ -706,7 +720,6 @@ SMUtils.isDefinedNotNull = function( value ) {
 SMUtils.removeProperty = function( object, propName ) {
     return object.hasOwnProperty( propName) && delete object[ propName];
 };
-
 
 /**
  *  Replace all character sequences that match the pattern
