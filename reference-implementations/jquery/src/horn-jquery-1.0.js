@@ -332,7 +332,7 @@ function Horn() {
         if ( SMUtils.isDefinedNotNull(modelRef) && $.isArray(modelRef.ref) ) {
             prefix = SMUtils.replacePostfix( path, modelRef.key, "");
             prefixLength = prefix.length;
-            alteredIndex = parseInt( modelRef.key);
+            alteredIndex = parseInt( modelRef.key, 10);
             SMUtils[ 'array' + (isInsert ? 'Insert' : 'Remove')]( modelRef.ref,
                 alteredIndex);
             SMUtils.each( state.bindings, function( bindingPath, n ) {
@@ -352,9 +352,9 @@ function Horn() {
                     hitUs = index === alteredIndex;
                     if ( hitUs && !isInsert ) { return; }
                     if (index > alteredIndex) {
-                        isInsert ? index++ : index--;
+                        index += isInsert ? 1 : -1;
                     } else if (hitUs) {
-                        index++;
+                        index += 1;
                     }
                     path = prefix + index + postfix;
                     if ( (bindingPath !== path) && (postfix.length === 0) ) {
@@ -366,7 +366,7 @@ function Horn() {
             }, this);
         }
         SMUtils.removeAllProperties( state.bindings);
-        SMUtils.each(newBindings,function(i,n){state.bindings[i] = n});
+        SMUtils.each(newBindings,function(i,n){state.bindings[i] = n;});
     };
 
     /**

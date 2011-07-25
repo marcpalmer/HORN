@@ -237,6 +237,50 @@ module( "horn-jquery-css-1.0.js - horn functions");
 */
 
 test(
+    "adjustModelArray - notices[0,1,2]-/notices[1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><div class="_notices"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( $.isArray( model.notices));
+                ok( model.notices.length === 3);
+                horn.adjustModelArray( {isInsert: false, path: "/notices[1]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["notices-0"].context[ b["notices-0"].key] === "0");
+                ok( b["notices-1"].context[ b["notices-1"].key] === "2");
+            }});
+    });
+
+test(
+    "adjustModelArray - notices[0,1,2]+/notices[0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><div class="_notices"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( $.isArray( model.notices));
+                horn.adjustModelArray( {isInsert: true, path: "/notices[0]"});
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["notices-1"].context[ b["notices-1"].key] === "0");
+                ok( b["notices-2"].context[ b["notices-2"].key] === "1");
+                ok( b["notices-3"].context[ b["notices-3"].key] === "2");
+            }});
+    });
+
+test(
     "adjustModelArray - [0]-/[0]",
     function() {
         SMTestUtils.dataTest( {
@@ -277,6 +321,28 @@ test(
     });
 
 test(
+    "adjustModelArray - [0,1]+/[0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                horn.adjustModelArray( {isInsert: true, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["1"].context[ b["1"].key] === "0");
+                ok( b["2"].context[ b["2"].key] === "1");
+            }});
+    });
+
+test(
     "adjustModelArray - [0,1]-/[1]",
     function() {
         SMTestUtils.dataTest( {
@@ -294,6 +360,28 @@ test(
                 horn.adjustModelArray( {isInsert: false, path: "/[1]"});
                 ok( SMTestUtils.countOwnProps( b) === 1);
                 ok( b["0"].context[ b["0"].key] === "0");
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1]+/[1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                horn.adjustModelArray( {isInsert: true, path: "/[1]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["2"].context[ b["2"].key] === "1");
             }});
     });
 
@@ -386,6 +474,26 @@ test(
     });
 
 test(
+    "adjustModelArray - [[0]]+/[0][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 1);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                horn.adjustModelArray( {isInsert: true, path: "/[0][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 1);
+                ok( b["0-1"].context[ b["0-1"].key] === "0");
+            }});
+    });
+
+test(
     "adjustModelArray - [[0,1,2]]-/[0][0]",
     function() {
         SMTestUtils.dataTest( {
@@ -428,6 +536,30 @@ test(
                 ok( SMTestUtils.countOwnProps( b) === 2);
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
                 ok( b["0-1"].context[ b["0-1"].key] === "2");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1,2]]+/[0][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["0-2"].context[ b["0-2"].key] === "2");
+                horn.adjustModelArray( {isInsert: true, path: "/[0][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 3);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-2"].context[ b["0-2"].key] === "1");
+                ok( b["0-3"].context[ b["0-3"].key] === "2");
             }});
     });
 
@@ -500,6 +632,36 @@ test(
                 ok( b["0-1"].context[ b["0-1"].key] === "3");
                 ok( b["1-0"].context[ b["1-0"].key] === "4");
                 ok( b["1-1"].context[ b["1-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]+/[0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: true, path: "/[0]"});
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                ok( b["1-0"].context[ b["1-0"].key] === "0");
+                ok( b["1-1"].context[ b["1-1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1"].context[ b["2-1"].key] === "3");
+                ok( b["3-0"].context[ b["3-0"].key] === "4");
+                ok( b["3-1"].context[ b["3-1"].key] === "5");
             }});
     });
 
@@ -585,6 +747,36 @@ test(
                 ok( b["1-1"].context[ b["1-1"].key] === "3");
                 ok( b["2-0"].context[ b["2-0"].key] === "4");
                 ok( b["2-1"].context[ b["2-1"].key] === "5");
+            }});
+    });
+
+test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]+/[0][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: true, path: "/[0][0]"});
+                ok( b["0-1"].context[ b["0-1"].key] === "0");
+                ok( b["0-2"].context[ b["0-2"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
             }});
     });
 
@@ -705,6 +897,36 @@ test(
     });
 
 test(
+    "adjustModelArray - [[0,1],[2,3],[4,5]]+/[2][0]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-0"].context[ b["2-0"].key] === "4");
+                ok( b["2-1"].context[ b["2-1"].key] === "5");
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                horn.adjustModelArray( {isInsert: true, path: "/[2][0]"});
+                ok( SMTestUtils.countOwnProps( b) === 6);
+                ok( b["0-0"].context[ b["0-0"].key] === "0");
+                ok( b["0-1"].context[ b["0-1"].key] === "1");
+                ok( b["1-0"].context[ b["1-0"].key] === "2");
+                ok( b["1-1"].context[ b["1-1"].key] === "3");
+                ok( b["2-1"].context[ b["2-1"].key] === "4");
+                ok( b["2-2"].context[ b["2-2"].key] === "5");
+            }});
+    });
+
+test(
     "adjustModelArray - [[0,1],[2,3],[4,5]]-/[2][1]",
     function() {
         SMTestUtils.dataTest( {
@@ -782,6 +1004,42 @@ test(
                 ok( b["2"].context[ b["2"].key] === "7");
                 ok( b["3"].context[ b["3"].key] === "8");
                 ok( SMTestUtils.countOwnProps( b) === 8);
+            }});
+    });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]+/[2][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "4");
+                ok( b["2-1-2"].context[ b["2-1-2"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: true, path: "/[2][1]"});
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-2-0"].context[ b["2-2-0"].key] === "3");
+                ok( b["2-2-1"].context[ b["2-2-1"].key] === "4");
+                ok( b["2-2-2"].context[ b["2-2-2"].key] === "5");
+                ok( b["2-3"].context[ b["2-3"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+                ok( SMTestUtils.countOwnProps( b) === 9);
             }});
     });
 
@@ -988,6 +1246,43 @@ test(
                 ok( b["4"].context[ b["4"].key] === "8");
             }});
     });
+
+test(
+    "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]+/[2][1][1]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-1"].context[ b["2-1-1"].key] === "4");
+                ok( b["2-1-2"].context[ b["2-1-2"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                horn.adjustModelArray( {isInsert: true, path: "/[2][1][1]"});
+                ok( SMTestUtils.countOwnProps( b) === 9);
+                ok( b["0"].context[ b["0"].key] === "0");
+                ok( b["1"].context[ b["1"].key] === "1");
+                ok( b["2-0"].context[ b["2-0"].key] === "2");
+                ok( b["2-1-0"].context[ b["2-1-0"].key] === "3");
+                ok( b["2-1-2"].context[ b["2-1-2"].key] === "4");
+                ok( b["2-1-3"].context[ b["2-1-3"].key] === "5");
+                ok( b["2-2"].context[ b["2-2"].key] === "6");
+                ok( b["3"].context[ b["3"].key] === "7");
+                ok( b["4"].context[ b["4"].key] === "8");
+            }});
+    });
+
 
 test(
     "adjustModelArray - [0,1,[2,[3,4,5],6],7,8]-/[2][1][2]",
@@ -2306,7 +2601,7 @@ test(
                 var passed = false;
                 var hpc = new HornPatternConverter( {horn: horn});
                 var converter = function( args ) {
-                    passed = args.value == "12";
+                    passed = args.value === "12";
                 };
                 hpc.add( "conv.erter", converter);
                 hpc.pattern( "key", "conv.erter");
@@ -2948,7 +3243,8 @@ test(
                     ["a", $('._a')]
                 ];
                 var f = function( node, path ) {
-                    ok(path === expected[ count++][ 0], "path");
+                    ok(path === expected[ count][ 0], "path");
+                    count+=1;
                 };
                 horn.walkDOM( $('._a'), f);
             }
@@ -2978,7 +3274,8 @@ test(
                 ];
                 var f = function( node, path ) {
                     ok(path === expected[ count][ 0], "path");
-                    ok(SMUtils.compare( node, expected[ count++][ 1]), "node");
+                    ok(SMUtils.compare( node, expected[ count][ 1]), "node");
+                    count+=1;
                     return true;
                 };
                 horn.walkDOM( $('._a'), f);

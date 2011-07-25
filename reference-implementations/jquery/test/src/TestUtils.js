@@ -1,18 +1,19 @@
-function SMTestUtils(){};
+function SMTestUtils(){}
 
 SMTestUtils.countOwnProps = function( object ) {
     var index;
     var count = 0;
     for ( index in object ) {
-        if ( object.hasOwnProperty( index) ) { count++; }
+        if ( object.hasOwnProperty( index) ) { count+=1; }
     }
     return count;
 };
 
 SMTestUtils.walk = function walk(node, func) {
+    var index;
     func( node);
     var children = $(node).children();
-    for ( var index = 0; index < children.length; index++ ) {
+    for ( index = 0; index < children.length; index+=1 ) {
         walk( children[ index], func);
     }
 };
@@ -25,7 +26,7 @@ SMTestUtils.isEmptyObject = function( object ) {
     var count;
     var index;
     if ( !isObject( object) ) { return false; }
-    if ( countOwnProps( object) > 0 ) { return false; }
+    if ( SMTestUtils.countOwnProps( object) > 0 ) { return false; }
     return true;
 };
 
@@ -82,8 +83,7 @@ SMTestUtils.isArray = function( object ) { return jQuery.isArray( object); };
  */
 SMTestUtils.dataTest = function( args ) {
     SMUtils.each( args.nodes, function( i, nodeInfo ) {
-        $(nodeInfo.nodes).appendTo(nodeInfo.target ? nodeInfo.target :
-            $('body'));
+        $(nodeInfo.nodes).appendTo(nodeInfo.target || $('body'));
     });
     try {
         SMUtils.each( args.globals, function( i, varInfo ) {
@@ -104,9 +104,10 @@ SMTestUtils.dataTest = function( args ) {
 };
 
 SMTestUtils.walk = function walk(node, func) {
+    var index;
     func( node);
     var children = $(node).children();
-    for ( var index = 0; index < children.length; index++ ) {
+    for ( index = 0; index < children.length; index+=1 ) {
         walk( children[ index], func);
     }
 };
@@ -115,7 +116,7 @@ SMTestUtils.randomString = function( alphabet, length ) {
     var i;
     var numChars = alphabet.length;
     var text = "";
-    for ( i = 0; i < length; i++ ) {
+    for ( i = 0; i < length; i+=1 ) {
         text += alphabet.charAt( Math.floor( Math.random() * numChars));
     }
     return text;
@@ -132,7 +133,7 @@ SMTestUtils.replaceAt = function( value, index, char ) {
 SMTestUtils.arrayCompare = function( array1, array2 ) {
     var i;
     if ( array2.length !== array1.length ) { return false; }
-    for ( i = 0; i < array1.length; i++ ) {
+    for ( i = 0; i < array1.length; i+=1 ) {
         if ( (array2[i].compare && !array2[i].compare(array1[i])) ||
             (array2[i] !== array1[i]) ) { return false; }
     }
