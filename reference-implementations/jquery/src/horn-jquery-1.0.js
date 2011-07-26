@@ -19,9 +19,12 @@
  *
  *  @return {Horn} a newly initialised <code>Horn</code> instance
  */
-function Horn() {
+function Horn( args ) {
 
-    var delegate;
+    var debug = (args !== undefined) && (args.debug === true);
+
+    var delegate = ((args !== undefined) &&
+        SMUtils.isDefinedNotNull( args.delegate)) ? args.delegate : undefined;
 
     /**
      *  @private
@@ -318,6 +321,9 @@ function Horn() {
      *      inserting into, or deleting from the given array
      *  @params {String} args.path the path (into the model) of the array
      *      element being added or removed
+     *  @params [args.value] if <code>args.isInsert === true </code> and a
+     *      (non <code>undefined</code>) value is supplied for this argument, it
+     *      is used for the new array value
      *
      *  @public
      */
@@ -334,7 +340,7 @@ function Horn() {
             prefixLength = prefix.length;
             alteredIndex = parseInt( modelRef.key, 10);
             SMUtils[ 'array' + (isInsert ? 'Insert' : 'Remove')]( modelRef.ref,
-                alteredIndex);
+                alteredIndex, args.value);
             SMUtils.each( state.bindings, function( bindingPath, n ) {
                 var index;
                 var indexStr;
@@ -367,18 +373,6 @@ function Horn() {
         SMUtils.removeAllProperties( state.bindings);
         SMUtils.each(newBindings,function(i,n){state.bindings[i] = n;});
     };
-
-    /**
-     *  Returns this instance's state.
-     *  <P>
-     *  <strong>This function is designed for test/debugging use only, expect
-     *  the unexpected if you modify it in any way.</strong>
-     *
-     *  @return {Object|Array} this horn instance's state
-     *
-     *  @public
-     */
-    this.state = function() { return state; };
 
     /**
      *  Walk DOM tree(s) and extract model data, allowing for subsequent model
@@ -776,6 +770,23 @@ function Horn() {
     this.reset = function() {
         state = { opts: $.extend( {}, {model: undefined, readOnly:  false})};
     };
+
+    if ( debug ) {
+        /**
+         *  Returns this instance's state.
+         *  <P>
+         *  <strong>This function is designed for test/debugging use only,
+         *  expect the unexpected if you modify it in any way.</strong>
+         *  <P>
+         *  This function is only present when the horn instance is constructed
+         *  with the argument and value, <code>debug === true</code>.
+         *
+         *  @return {Object|Array} this horn instance's state
+         *
+         *  @public
+         */
+        this.state = function() { return state; };
+    }
 
     /**
      *  Removes either, all bindings or, all bindings with a given property path

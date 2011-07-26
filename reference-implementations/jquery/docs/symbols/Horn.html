@@ -51,7 +51,7 @@
 		
 		Documentation generator: <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0<br />
 		Template: <a href="http://www.thebrightlines.com/2010/05/06/new-template-for-jsdoctoolkit-codeview/" target="_blank">Codeview</a> 1.2<br />
-		Generated on: 2011-6-25 5:01
+		Generated on: 2011-6-26 22:02
 	</div>
 </div>
 
@@ -96,7 +96,7 @@
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription" >
 								<div class="fixedFont">
-									<b><a href="../symbols/Horn.html#constructor">Horn</a></b>()
+									<b><a href="../symbols/Horn.html#constructor">Horn</a></b>(args)
 								</div>
 								<div class="description">Used to create new <code>Horn</code> instances, thus:
      <code>var horn = new Horn();</code>.</div>
@@ -430,7 +430,7 @@
 					</h2>
 					
 					<div class="fixedFont">
-						<b>Horn</b>()
+						<b>Horn</b>(args)
 					</div>
 					
 					<div class="description">
@@ -441,6 +441,17 @@
 					
 					
 				
+					
+						<dl class="detailList params">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									 <b>args</b>
+									
+								</dt>
+								<dd></dd>
+							
+						</dl>
 					
 					
 					
@@ -1702,8 +1713,11 @@
 								<div class="description">
 									Returns this instance's state.
  <P>
- <strong>This function is designed for test/debugging use only, expect
- the unexpected if you modify it in any way.</strong>
+ <strong>This function is designed for test/debugging use only,
+ expect the unexpected if you modify it in any way.</strong>
+ <P>
+ This function is only present when the horn instance is constructed
+ with the argument and value, <code>debug === true</code>.
 									
 									
 									

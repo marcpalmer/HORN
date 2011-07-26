@@ -228,8 +228,7 @@ test(
                 nodes:  $('<div class="horn"><div class="_notices"><div class="_0"><span class="_title">0title</span><span class="_desc">0desc</span></div><div class="_1"><span class="_title">1title</span><span class="_desc">1desc</span></div></div></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 4);
@@ -261,8 +260,7 @@ test(
                 nodes:  $('<div class="horn"><div class="_notices"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -283,8 +281,7 @@ test(
                 nodes:  $('<div class="horn"><div class="_notices"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -305,8 +302,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 1);
@@ -324,8 +320,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 2);
@@ -345,8 +340,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 2);
@@ -367,8 +361,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 2);
@@ -388,8 +381,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 2);
@@ -410,8 +402,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -433,8 +424,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -456,8 +446,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -479,8 +468,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 1);
@@ -498,8 +486,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 1);
@@ -518,8 +505,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -541,8 +527,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -564,8 +549,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -588,8 +572,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -611,8 +594,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_0-2">2</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 3);
@@ -632,8 +614,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -660,8 +641,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -690,8 +670,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -718,8 +697,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -746,8 +724,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -775,8 +752,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -805,8 +781,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -834,8 +809,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -863,8 +837,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -892,8 +865,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -921,8 +893,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -951,8 +922,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0-0">0</span><span class="_0-1">1</span><span class="_1-0">2</span><span class="_1-1">3</span><span class="_2-0">4</span><span class="_2-1">5</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0-0"].context[ b["0-0"].key] === "0");
@@ -980,8 +950,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1006,8 +975,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1032,8 +1000,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0"].context[ b["0"].key] === "0");
@@ -1068,8 +1035,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1090,8 +1056,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1116,8 +1081,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1142,8 +1106,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1168,8 +1131,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1194,8 +1156,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1220,8 +1181,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1246,8 +1206,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
@@ -1272,8 +1231,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( b["0"].context[ b["0"].key] === "0");
@@ -1309,8 +1267,7 @@ test(
                 nodes:  $('<div class="horn"><span class="_0">0</span><span class="_1">1</span><span class="_2-0">2</span><span class="_2-1-0">3</span><span class="_2-1-1">4</span><span class="_2-1-2">5</span><span class="_2-2">6</span><span class="_3">7</span><span class="_4">8</span></div>')}
             ],
             callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornCSSFeatures());
+                var horn = new Horn({debug: true, delegate: new HornCSSFeatures()});
                 var model = horn.bind();
                 var b = horn.state().bindings;
                 ok( SMTestUtils.countOwnProps( b) === 9);
