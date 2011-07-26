@@ -211,30 +211,47 @@ test(
 
 module( "horn-jquery-css-1.0.js - horn functions");
 
-// 0-0-0    0 = A
-// 0-0-1    1
-// 0-1-0    2
-// 0-0-2    3
-// 0-1-0    4
-// 1-0-0    5
-// 2-0-1    6
-// 3-0-0-0  7
-// 3-1-0-0  8
 
 /*
-<div class="horn">
-    <span class="_0-0-0">0</span>
-    <span class="_0-0-1">1</span>
-    <span class="_0-1-0">2</span>
-    <span class="_0-1-1">3</span>
-    <span class="_1-0-0">4</span>
-    <span class="_2-0-1">5</span>
-    <span class="_2-1-0">6</span>
-    <span class="_3-0-0-0">7</span>
-    <span class="_3-1-0-0">8</span>
-</div>
-<div class="horn"><span class="_0-0-0">0</span><span class="_0-0-1">1</span><span class="_0-1-0">2</span><span class="_0-1-1">3</span><span class="_1-0-0">4</span><span class="_2-0-1">5</span><span class="_2-1-0">6</span><span class="_3-0-0-0">7</span><span class="_3-1-0-0">8</span></div>
+
+
+
+
+
 */
+
+test(
+    "adjustModelArray - notices[{title: '0title', desc: '0desc'},{title: '1title', desc: '1desc'}]",
+    function() {
+        SMTestUtils.dataTest( {
+            nodes: [ {
+                nodes:  $('<div class="horn"><div class="_notices"><div class="_0"><span class="_title">0title</span><span class="_desc">0desc</span></div><div class="_1"><span class="_title">1title</span><span class="_desc">1desc</span></div></div></div>')}
+            ],
+            callback: function() {
+                var horn = new Horn();
+                horn.delegate( new HornCSSFeatures());
+                var model = horn.bind();
+                var b = horn.state().bindings;
+                ok( SMTestUtils.countOwnProps( b) === 4);
+                ok( $.isArray( model.notices));
+                ok( model.notices.length === 2);
+                ok( model.notices[0].title === "0title");
+                ok( model.notices[0].desc === "0desc");
+                ok( model.notices[1].title === "1title");
+                ok( model.notices[1].desc === "1desc");
+                ok( b["notices-0-title"].context[ b["notices-0-title"].key] === "0title");
+                ok( b["notices-0-desc"].context[ b["notices-0-desc"].key] === "0desc");
+                ok( b["notices-1-title"].context[ b["notices-1-title"].key] === "1title");
+                ok( b["notices-1-desc"].context[ b["notices-1-desc"].key] === "1desc");
+                horn.adjustModelArray( {isInsert: false, path: "/notices[0]"});
+                ok( SMTestUtils.countOwnProps( b) === 2);
+                ok( b["notices-0-title"].context[ b["notices-0-title"].key] === "1title");
+                ok( b["notices-0-desc"].context[ b["notices-0-desc"].key] === "1desc");
+            }});
+    });
+
+
+
 
 test(
     "adjustModelArray - notices[0,1,2]-/notices[1]",

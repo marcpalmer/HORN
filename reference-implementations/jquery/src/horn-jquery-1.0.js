@@ -343,9 +343,9 @@ function Horn() {
                 var isSplit;
                 path = bindingPath;
                 if ( bindingPath.substring( 0, prefixLength) === prefix ) {
-                    index = bindingPath.indexOf( "-");
-                    isSplit = index !== -1;
                     path = bindingPath.substring( prefixLength);
+                    index = path.indexOf( "-");
+                    isSplit = index !== -1;
                     indexStr = isSplit ? path.substring( 0, index) : path;
                     postfix = isSplit ? path.substring( indexStr.length) : '';
                     index = parseInt( indexStr, 10);
@@ -362,7 +362,6 @@ function Horn() {
                     }
                 }
                 newBindings[ path] = n;
-
             }, this);
         }
         SMUtils.removeAllProperties( state.bindings);
@@ -904,13 +903,11 @@ function Horn() {
 Horn.combinePaths = function( parent, child ) {
     var parentDefined = Horn.isPathDefined( parent);
     var childDefined = Horn.isPathDefined( child);
-    if ( parentDefined && childDefined ) {
-        return parent + "-" + child;
-    } else if ( parentDefined ) {
-        return parent;
-    } else if ( childDefined ) {
-        return child;
-    } else { return ""; }
+    return (parentDefined && childDefined) ?
+        (parent + "-" + child) :
+            (parentDefined ?
+                parent :
+                (childDefined ? child : ""));
 };
 
 /**
