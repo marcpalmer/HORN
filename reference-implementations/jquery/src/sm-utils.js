@@ -586,6 +586,26 @@ SMUtils.fadeHide = function(object, msTime, opacity) {
     } else { object.show().fadeTo( msTime, opacity); }
 };
 
+
+/**
+ *  Return the current window's location with a new or changed anchor portion.
+ *
+ *  @param {String} anchor the new anchor to use
+ *
+ *  @return {String} the current window's location with a possibly modified
+ *      anchor portion so as to use the value of the 'anchor' argument
+ *
+ *  @public
+ */
+SMUtils.getLocation = function( anchor ) {
+    var url = location.toString();
+    var indexOfHash = url.toString().indexOf( "#");
+    if ( indexOfHash > 0 ) {
+        url = url.toString().substring( 0, indexOfHash);
+    }
+    return url + '#' + anchor;
+};
+
 /**
  *  Is the given <code>String</code> value prefixed by a given stem.
  *  <p>
@@ -722,6 +742,17 @@ SMUtils.removeProperty = function( object, propName ) {
 };
 
 /**
+ *  Change the hosting window's location to a new value.
+ *
+ *  @param {String} url the new URL to navigate to
+ *
+ *  @public
+ *
+ *  @test
+ */
+SMUtils.redirect = function ( url ) { window.location = url; };
+
+/**
  *  Replace all character sequences that match the pattern
  *      <code>search</code> with the <code>replacement</code> pattern.
  *
@@ -757,6 +788,25 @@ SMUtils.replacePostfix = function( text, postfix, replacement ) {
     var index = text.lastIndexOf( postfix);
     return ( (index !== -1) && ((textLength - index) === postfixLength) ) ?
         (text.substring( 0, index) + replacement) : text;
+};
+
+
+/**
+ *  Displays a centered pop-up window with content from the given URL.
+ *
+ *  @param {Object} url the (typically HTTP) url to navigate the pop-up
+ *      window to
+ *  @param {Object} id the id value to pass to <code>window.open</code>
+ *  @param {String|Number} w the width of the new window (in pixels)
+ *  @param {String|Number} h the height of the new window  (in pixels)
+ *
+ *  @public
+ */
+SMUtils.showCenteredPopupWindow = function( url, id, w, h ) {
+    window.open( url, id, SMUtils.format(
+        'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,' +
+            'resizable=0,width={0},height={1},left={2},top={3}',
+        [w, h, ((screen.width - w) * 2), ((screen.height - h) * 2)]));
 };
 
 /**
