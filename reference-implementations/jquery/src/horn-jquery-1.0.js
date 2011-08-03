@@ -240,8 +240,7 @@ function Horn( args ) {
         var modelValue = binding.context[ binding.key];
         var textValue;
         var cArgs;
-        if ( args.forceRender === true ||
-            !SMUtils.compare( modelValue, binding.value) ) {
+        if ( !SMUtils.compare( modelValue, binding.value) ) {
             if ( !SMUtils.isDefinedNotNull( rootNode) ||
                 SMUtils.compare( rootNode, binding.node) ||
                 SMUtils.contains( $(binding.node).parents(), rootNode) ) {
@@ -281,7 +280,7 @@ function Horn( args ) {
     var setDefaultModel = SMUtils.bind( function() {
         if ( !SMUtils.isDefinedNotNull( state.model) &&
             SMUtils.isDefinedNotNull( state.opts.defaultModel) ) {
-            state.model = $.evalJSON( $.toJSON( state.opts.defaultModel));
+            state.model = state.opts.defaultModel;
         }
     }, this);
 
@@ -843,18 +842,15 @@ function Horn( args ) {
      *
      *  @param {Element} rootNode optional DOM node such that if supplied, only
      *      nodes under this nodes will be updated
-     *  @param {Boolean} forceRender if set, nodes will be rendered regardless
-     *      of the state of th
      *
      *  @return {Array} an array of nodes that had their DOM values changed
      *
      *  @public
      */
-    this.updateDOM = function( rootNode, forceRender ) {
+    this.updateDOM = function( rootNode ) {
         var alteredNodes = [];
         SMUtils.each( state.bindings, function( i, n ) {
-            var node = render( {rootNode: rootNode, binding: n, path: i,
-                forceRender: forceRender});
+            var node = render( {rootNode: rootNode, binding: n, path: i});
             if ( SMUtils.isDefinedNotNull( node) ) { alteredNodes.push( node); }
         }, this);
         return alteredNodes;

@@ -88,6 +88,43 @@ function SMUtils(){
 }
 
 /**
+ *  Wrapper around jQuery $.ajax call for (typically) JSON content types.
+ *  Sensible defaults are provided, intended to cover the majority of cases.
+ *  <P>
+ *  This function also works-around a jQuery bug by proxying the success
+ *  handler.
+ *
+ *  @param args
+ *  @param {String} [args.contentType] default value <code>"text/json"</code>
+ *  @param {Function|String} [args.data] jQuery compatible data or a function
+ *      that yields such
+ *  @param {String} [args.dataType] default value <code>"json"</code>
+ *  @param {Boolean} [args.processData] default value <coded>true</code> iff
+ *      <code>args.type === "GET"</code>
+ *  @param {Number} [args.timeout] default value <code>8000</code>
+ *  @param {String} [args.type] default value <code>"GET"</code>
+ *
+ *  @todo test
+ */
+SMUtils.ajax = function( args ) {
+    var successProxy = function(data, textStatus) {
+        if ( (data !== null) && (SMUtils.isDefinedNotNull( args.success)) ) { // Trap CONN_REFUSED jquery bug
+            return args.success( data, textStatus);
+        }
+    };
+    if ( typeof args.data === 'function' ) { args.data = args.data(); }
+    var defaults = {
+        contentType: "text/json",
+        dataType: "json",
+        processData: args.type === "GET",
+        timeout: 8000,
+        success: successProxy,
+        type: "GET"};
+    $.extend( defaults, args);
+    $.ajax( defaults);
+};
+
+/**
  *  Inserts an element into an existing array by index.
  *  <p>
  *  Preserves the identity of the array.
@@ -187,27 +224,6 @@ SMUtils.chain = function( fns, ctx, args ) {
         args._rv = SMUtils.bind( n, ctx)( args);
     }, this);
     return args;
-};
-
-/**
- *  Clears all input element found on the given form.
- *
- *  @param {Element} the form to reset
- *
- *  @public
- */
-SMUtils.clearForm = function( form ) {
-    $(':input', form).each(function() {
-        var type = this.type;
-        var tag = this.tagName.toLowerCase();
-        if (type === 'text' || type === 'password' || tag === 'textarea') {
-            $(this).val( '');
-        } else if (type === 'checkbox' || type === 'radio') {
-            this.checked = false;
-        } else if (tag === 'select') {
-            this.selectedIndex = 0;
-        }
-    });
 };
 
 /**
@@ -500,6 +516,23 @@ SMUtils.firstTokenWithPrefix = function( args ) {
 };
 
 /**
+ *  Focuses the child of 'args.parent' with a given or default tab index.
+ *
+ *  @param args
+ *  @param args.element only children of this element will be considered for
+ *      focusing
+ *  @param [args.index] (default <code>0</code>) the tab index of the child to
+ *      attempt to focus
+ *
+ *  @public
+ */
+SMUtils.focusTabChild = function( args ) {
+    var element = $("[tabindex='" +
+        (typeof args.index !== 'number' ? 0 : args.index) + "']", args.parent);
+    if ( SMUtils.isDefinedNotNull(element) ) { $(element).focus(); }
+};
+
+/**
  *  Format a <code>String</code> using a template and variable context.
  *  <p>
  *  "foo bar {0} {sausages} bar foo fnar {fnar}" with the following
@@ -588,14 +621,17 @@ SMUtils.fadeHide = function(object, msTime, opacity) {
 
 
 /**
- *  Return the current window's location with a new or changed anchor portion.
+ *  Return the current window's location (minus any anchor portion) with an
+ *  optional new anchor.
  *
- *  @param {String} anchor the new anchor to use
+ *  @param {String} [anchor] the new anchor to apply
  *
- *  @return {String} the current window's location with a possibly modified
- *      anchor portion so as to use the value of the 'anchor' argument
+ *  @return {String} the current window's location with no, or a new anchor
+ *      portion
  *
  *  @public
+ *
+ *  @test
  */
 SMUtils.getLocation = function( anchor ) {
     var url = location.toString();
@@ -603,7 +639,7 @@ SMUtils.getLocation = function( anchor ) {
     if ( indexOfHash > 0 ) {
         url = url.toString().substring( 0, indexOfHash);
     }
-    return url + '#' + anchor;
+    return url + (SMUtils.isDefinedNotNull( anchor) ? ('#' + anchor) : '');
 };
 
 /**
@@ -747,8 +783,6 @@ SMUtils.removeProperty = function( object, propName ) {
  *  @param {String} url the new URL to navigate to
  *
  *  @public
- *
- *  @test
  */
 SMUtils.redirect = function ( url ) { window.location = url; };
 
@@ -767,6 +801,42 @@ SMUtils.redirect = function ( url ) { window.location = url; };
  */
 SMUtils.replaceAll = function( text, search, replacement )  {
     return text.replace( new RegExp( search,"g"), replacement);
+};
+
+/**
+ *  Replace matching character-sequences in a given <code>String</code> with
+ *  values returned from 'replacementFunction'.
+ *
+ *  @param {String} dataString
+ *  @param {String} pattern
+ *  @param {Function} replacementFunction
+ *
+ *  @public
+ *
+ *  @todo test
+ */
+SMUtils.replaceWithTemplate = function ( dataString, pattern,
+    replacementFunction ) {
+    var result = '';
+    var matchIndex;
+    var u;
+    while (matchIndex !== -1) {
+        matchIndex = dataString.search(pattern);
+
+        if (matchIndex > 0) {
+            result += dataString.substring(0, matchIndex);
+            dataString = dataString.slice(matchIndex);
+        }
+        if (matchIndex !== -1) {
+            u = pattern.exec(dataString);
+            result += replacementFunction.call(u);
+            dataString = dataString.slice(u[0].length);
+        } else {
+            result += dataString;
+        }
+    }
+    pattern.lastIndex = 0;
+    return result;
 };
 
 /**
@@ -790,6 +860,14 @@ SMUtils.replacePostfix = function( text, postfix, replacement ) {
         (text.substring( 0, index) + replacement) : text;
 };
 
+/**
+ *  Resets the given form element.
+ *
+ *  @param {jQuery} the form element to reset
+ *
+ *  @public
+ */
+SMUtils.resetForm = function( form ) { form[0].reset(); };
 
 /**
  *  Displays a centered pop-up window with content from the given URL.
@@ -875,8 +953,7 @@ SMUtils.startTimer = function( args ) {
     if ( SMUtils.isDefinedNotNull( args.data[ args.id]) ) {
         SMUtils.stopTimer( args);
     }
-    args.data[ args.id] =
-        window.setTimeout( args.callback, args.timeout);
+    args.data[ args.id] = window.setTimeout( args.callback, args.timeout);
 };
 
 /**

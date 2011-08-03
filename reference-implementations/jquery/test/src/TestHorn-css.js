@@ -3275,7 +3275,7 @@ test(
     });
 
 test(
-    "option(defaultModel) - Checking that it is copied on use and left untouched after binds.",
+    "option(defaultModel) - various.",
     function() {
         ok( !SMUtils.isAttached( $('.test')));
         SMTestUtils.dataTest( {
@@ -3298,7 +3298,7 @@ test(
                 ok( SMTestUtils.isArray(model.key3));
                 ok( SMTestUtils.arrayCompare( model.key3, defaultModel.key3));
 
-                ok( !SMUtils.isDefinedNotNull( defaultModel.key));
+                ok( SMUtils.isDefinedNotNull( defaultModel.key));
                 ok( defaultModel.key2 === true);
                 ok( SMTestUtils.arrayCompare( defaultModel.key3, [0]));
         }});
@@ -3331,13 +3331,7 @@ test(
                 ok( model[ 2] === "");
                 ok( model[ 3] === "value");
 
-                ok( defaultModel.length === 3);
-                ok( defaultModel[ 0] === true);
-                ok( SMTestUtils.isArray( defaultModel[ 1]));
-                ok( SMTestUtils.arrayCompare( defaultModel[ 1], [0]));
-                ok( defaultModel[ 2] === "");
-
-                ok( defaultModel !== model);
+                ok( defaultModel === model);
         }});
         ok( !SMUtils.isAttached( $('.test')));
     });
@@ -3356,7 +3350,7 @@ test(
                 horn.option( "defaultModel", model);
                 horn.bind();
                 var extractedModel = horn.model();
-                ok( extractedModel !== model);
+                ok( extractedModel === model);
                 ok( SMTestUtils.isObject( extractedModel));
                 ok( SMTestUtils.isArray( extractedModel.notices));
                 ok( extractedModel.notices.length === 0);
