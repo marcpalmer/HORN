@@ -422,7 +422,8 @@ SMUtils.each = function( collection, fn, ctx ) {
 };
 
 /**
- *  Determines if a <code>String</code> value end with a given character sequence.
+ *  Determines if a <code>String</code> value end with a given character
+ *  sequence.
  *
  *  @param {String} value the sequence to test
  *  @param {String} postfix the terminating character sequence to test for
@@ -525,6 +526,10 @@ SMUtils.firstTokenWithPrefix = function( args ) {
  *      attempt to focus
  *
  *  @public
+ *
+ *  @test
+ *
+ *  @todo work any conditions about disabled controls
  */
 SMUtils.focusTabChild = function( args ) {
     var element = $("[tabindex='" +
@@ -542,7 +547,7 @@ SMUtils.focusTabChild = function( args ) {
  *  Substituted values are read from the context using the name they have
  *  in the format string, so '0', 'sausages' etc.
  *
- *  @param {Objet|Array} context the source of values substituted by name into
+ *  @param {Object|Array} context the source of values substituted by name into
  *      the format string
  *
  *  @return {String} the same or a modified version of the string this method is
@@ -565,7 +570,7 @@ SMUtils.format = function( value, context ) {
  *
  *  @param {String} name the name of the cookie of which to return its value
  *
- *  @return {String} the 'unescaped' named cookie value, else
+ *  @return {String} the 'un-escaped' named cookie value, else
  *      <code>null<code>
  *
  *  @public
@@ -609,7 +614,7 @@ SMUtils.getDataAttr = function( node, name ) {
  *
  *  @param {Element} object the object to fade in or out
  *  @param {Number} msTime the time in milli-Seconds to take to do the fade
- *  @param {Number} opactity the final desired opacity (0 to 100 inclusive)
+ *  @param {Number} opacity the final desired opacity (0 to 100 inclusive)
  *
  *  @public
  */
@@ -689,7 +694,7 @@ SMUtils.indexOf = function( container, item, index ) {
 /**
  *  Execute a function after a given delay.
  *
- *  @param {Function} funktion the function to call after the specified time
+ *  @param {Function} fn the function to call after the specified time
  *      delay
  *  @param {Number} delay the time delay (in milli-Seconds) to wait before
  *      calling the function
@@ -699,8 +704,8 @@ SMUtils.indexOf = function( container, item, index ) {
  *
  *  @public
  */
-SMUtils.invokeLater = function( funktion, delay ) {
-    return setTimeout( function() { funktion(); }, delay);
+SMUtils.invokeLater = function( fn, delay ) {
+    return setTimeout( function() { fn(); }, delay);
 };
 
 /**

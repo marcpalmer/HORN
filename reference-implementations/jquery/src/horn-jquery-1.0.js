@@ -981,7 +981,7 @@ Horn.hornNodeValue = function( args ) {
  *  @public
  */
 Horn.isPathDefined = function ( path ) {
-    return SMUtils.isDefinedNotNull( path) && ((path + "").trim() !== '');
+    return SMUtils.isDefinedNotNull( path) && (SMUtils.trim(path + "") !== '');
 };
 
 /**
