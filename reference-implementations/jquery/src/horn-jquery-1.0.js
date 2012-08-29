@@ -20,11 +20,12 @@
  *  @return {Horn} a newly initialised <code>Horn</code> instance
  */
 function Horn( args ) {
-
-    var debug = (args !== undefined) && (args.debug === true);
-
-    var delegate = ((args !== undefined) &&
-        SMUtils.isDefinedNotNull( args.delegate)) ? args.delegate : undefined;
+    var debug;
+    var delegate;
+    if ( args ) {
+        debug = ((args !== undefined) && (args.debug === true));
+        delegate = ((args !== undefined) && SMUtils.isDefinedNotNull( args.delegate)) ? args.delegate : undefined;
+    }
 
     /**
      *  @private
@@ -116,8 +117,7 @@ function Horn( args ) {
      */
     var addJSONBindings = SMUtils.bind(
         function( args ) {
-            var defaults = {type:  'fromJSON', node:  args.node,
-                readOnly: args.readOnly};
+            var defaults = {type:  'fromJSON', node:  args.node, readOnly: args.readOnly};
             var addJSONHelper = SMUtils.bind( function( vargs ) {
                 var oldValue = vargs.value;
                 vargs.value = convert( vargs);
@@ -130,11 +130,9 @@ function Horn( args ) {
             if ( typeof jsonData === 'object' ) {
                 Horn.traverse( jsonData,
                     SMUtils.bind( function( k, v ) {
-                        addJSONHelper( $.extend( defaults, { value: v,
-                            path:  args.path + k})); }, this));
+                        addJSONHelper( $.extend( defaults, { value: v, path:  args.path + k})); }, this));
             } else {
-                addJSONHelper( $.extend( defaults,
-                    {value: jsonData, path:  args.path}));
+                addJSONHelper( $.extend( defaults, {value: jsonData, path:  args.path}));
             }
         }, this);
 
@@ -145,8 +143,7 @@ function Horn( args ) {
     var convert = SMUtils.bind( function ( args ) {
         var converter = state.opts.converter;
         if ( !SMUtils.isDefinedNotNull( converter) ) { return undefined; }
-        return converter.call( this, $.extend( {}, args,
-            {path: Horn.toExternalPath( args.path)}));
+        return converter.call( this, $.extend( {}, args, {path: Horn.toExternalPath( args.path)}));
     }, this);
 
     /**
@@ -155,10 +152,8 @@ function Horn( args ) {
      */
     var extract = SMUtils.bind( function( args ) {
         var _this = this;
-        var pathStem = SMUtils.definesProperty( args, 'pathStem') ?
-            Horn.toInternalPath( args.pathStem) : undefined;
-        var rootNodes = SMUtils.definesProperty( args, 'nodes') ?
-            $(args.nodes) : delegate.rootNodes();
+        var pathStem = SMUtils.definesProperty( args, 'pathStem') ? Horn.toInternalPath( args.pathStem) : undefined;
+        var rootNodes = SMUtils.definesProperty( args, 'nodes') ? $(args.nodes) : delegate.rootNodes();
         setDefaultModel();
         SMUtils.each( rootNodes,
             function( i, n ) {
@@ -571,10 +566,8 @@ function Horn( args ) {
                 nodeName = node.nodeName.toLowerCase();
                 cd.isFormElementNode =
                     (nodeName === 'input') || (nodeName === 'textarea');
-                cd.isABBRNode = !cd.isFormElementNode &&
-                    (nodeName.toLowerCase() === "abbr");
-                cd.isTextNode = !cd.isABBRNode && (isEmptyNode ||
-                    (theContained.nodeType === Node.TEXT_NODE));
+                cd.isABBRNode = !cd.isFormElementNode && (nodeName.toLowerCase() === "abbr");
+                cd.isTextNode = !cd.isABBRNode && (isEmptyNode || (theContained.nodeType === Node.TEXT_NODE));
                 if ( cd.isFormElementNode || cd.isTextNode || cd.isABBRNode ) {
                     cd.text = Horn.hornNodeValue( {node: node});
                     return cd;
@@ -595,8 +588,7 @@ function Horn( args ) {
      *  @public
      */
     this.load = function( args ) {
-        return extract(
-            setDefaultArgs( {args: args, defaults: {readOnly: true}}));
+        return extract( setDefaultArgs( {args: args, defaults: {readOnly: true}}));
     };
 
     /**
@@ -912,9 +904,7 @@ Horn.combinePaths = function( parent, child ) {
     var childDefined = Horn.isPathDefined( child);
     return (parentDefined && childDefined) ?
         (parent + "-" + child) :
-            (parentDefined ?
-                parent :
-                (childDefined ? child : ""));
+            (parentDefined ? parent : (childDefined ? child : ""));
 };
 
 /**

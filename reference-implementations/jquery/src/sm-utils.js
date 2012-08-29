@@ -45,10 +45,10 @@ function SMUtils(){
         var data = this.cacheEntry( selector);
         if ( !SMUtils.isDefinedNotNull( data) || (refresh === true) ) {
             data = $(selector);
-            if ( data.length == 0 ) { data = undefined; }
-            elementCache[ selector] = data;
+            if ( data.length === 0 ) { data = undefined; }
+            this.setCacheEntry( selector, data);
         }
-        return SMUtils.isDefinedNotNull( data) ? data : undefined;
+        return data;
     };
 
     /**
@@ -116,11 +116,13 @@ SMUtils.ajax = function( args ) {
     var defaults = {
         contentType: "text/json",
         dataType: "json",
-        processData: args.type === "GET",
         timeout: 8000,
         success: successProxy,
         type: "GET"};
     $.extend( defaults, args);
+    if ( args.processData === undefined ) {
+        defaults.processData = (defaults.type.toUpperCase() === "GET");
+    }
     $.ajax( defaults);
 };
 
@@ -170,10 +172,10 @@ SMUtils.arrayRemove = function (array, position) {
     var shiftCount;
     var length = array.length;
     for ( shiftCount = 0; shiftCount < length - position - 1;
-        shiftCount = shiftCount + 1 ) {
+        shiftCount += 1 ) {
         array[ position + shiftCount] = array[ position + shiftCount + 1];
     }
-    array.length = array.length - 1;
+    array.length -= 1;
     return array;
 };
 
@@ -191,7 +193,9 @@ SMUtils.arrayRemove = function (array, position) {
  *  @public
  */
 SMUtils.bind = function( fn, ctx ) {
-    return function() { return fn.apply(ctx, arguments); };
+    return function() {
+        return fn.apply(ctx, arguments);
+    };
 };
 
 /**
@@ -208,22 +212,14 @@ SMUtils.bind = function( fn, ctx ) {
  *  @param fns a collection of functions to be called in order, traversed using
  *      SMUtils.each
  *  @param {Object} ctx the context under which each function is executed
- *  @param {Object} [args] if not provided a default empty object is used, this
- *      is the single argument passed to each function in 'fns'
- *
- *  @return {Object} args either returns, the 'args' argument passed in or, the
- *      default value used instead - possibly modified after the operation of
- *      the function calls
  *
  *  @public
  */
-SMUtils.chain = function( fns, ctx, args ) {
-    if ( !SMUtils.isDefinedNotNull( args) ) { args = {}; }
+SMUtils.chain = function( fns, ctx ) {
+    var args = Array.prototype.slice.call(arguments).slice(2);
     SMUtils.each( fns, function( i, n ) {
-        args._i = i;
-        args._rv = SMUtils.bind( n, ctx)( args);
-    }, this);
-    return args;
+        n.apply(ctx,args);
+    });
 };
 
 /**

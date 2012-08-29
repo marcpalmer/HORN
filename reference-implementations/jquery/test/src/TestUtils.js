@@ -168,3 +168,16 @@ SMTestUtils.setPatternConverter = function( horn, converterName, pattern ) {
         });
     }
 };
+
+SMTestUtils.shallowStrictCompare = function( ref1, ref2 ) {
+    if ( SMTestUtils.isObject(ref1) && SMTestUtils.isObject(ref2) ) {
+        for ( prop in ref1 ) {
+            if ( ref1.hasOwnProperty(prop) ) {
+                if ( (ref1[prop] !== ref2[prop]) ) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+};
