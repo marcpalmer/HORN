@@ -1047,23 +1047,6 @@ test(
     });
 
 test(
-    "bind - that integers can be expressed using octal notation.",
-    function() {
-        SMTestUtils.dataTest( {
-            nodes: [ {
-                nodes:  $('<div data-horn="/"><span data-horn="a">0310667130</span></div>')}
-            ],
-            callback: function() {
-                var horn = new Horn();
-                horn.delegate( new HornHTML5Features());
-                SMTestUtils.setPatternConverter( horn, "IntegerConverter", "a");
-                var model = horn.bind();
-                ok( SMTestUtils.isObject( model));
-                ok( model.a === 52653656);
-        }});
-    });
-
-test(
     "bind - Split key definition using nested html.",
     function() {
         SMTestUtils.dataTest( {
